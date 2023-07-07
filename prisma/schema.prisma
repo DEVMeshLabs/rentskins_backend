@@ -1,0 +1,86 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Skin {
+  id              String         @id @default(uuid()) @db.VarChar(36)
+  skin_image      String?        @db.VarChar(255)
+  skin_name       String         @db.VarChar(255)
+  skin_category   String         @db.VarChar(255)
+  skin_weapon     String         @db.VarChar(255)
+  skin_price      String         @db.VarChar(255)
+  skin_float      String         @db.VarChar(255)
+  skin_color      String         @db.VarChar(255)
+  skin_link_game  String         @db.VarChar(255)
+  skin_link_steam String         @db.VarChar(255)
+  seller_name     String         @db.VarChar(255)
+  seller_id       String         @db.VarChar(255)
+  buyer_name      String?        @db.VarChar(255)
+  buyer_id        String?        @db.VarChar(255)
+  status          String         @db.VarChar(255)
+  status_float    String         @db.VarChar(255)
+  sale_type       String?        @db.VarChar(255)
+  stickers        String[]
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime?
+  deletedAt       DateTime?
+  cartId          String?
+  Cart            Cart?          @relation(fields: [cartId], references: [id])
+  Notification    Notification[]
+}
+
+model Cart {
+  id          String    @id @default(uuid()) @db.VarChar(36)
+  buyer_name  String    @db.VarChar(255)
+  buyer_id    String    @db.VarChar(255)
+  buyer_skins Skin[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime?
+  deletedAt   DateTime?
+}
+
+model Wallet {
+  id         String    @id @default(uuid()) @db.VarChar(36)
+  owner_name String    @db.VarChar(255)
+  owner_id   String    @db.VarChar(255)
+  value      String    @default("0") @db.VarChar(255)
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime?
+  deletedAt  DateTime?
+}
+
+model Configuration {
+  id                 String    @id @default(uuid()) @db.VarChar(36)
+  owner_name         String    @db.VarChar(255)
+  owner_id           String    @db.VarChar(255)
+  owner_email        String    @db.VarChar(255)
+  url_trade          String    @db.VarChar(255)
+  url_sell           String    @db.VarChar(255)
+  agreed_with_emails Boolean?  @default(false)
+  agreed_with_terms  Boolean?  @default(false)
+  steam_guard        Boolean?  @default(false)
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime?
+  deletedAt          DateTime?
+}
+
+model Notification {
+  id          String    @id @default(uuid()) @db.VarChar(36)
+  owner_name  String    @db.VarChar(255)
+  owner_id    String    @db.VarChar(255)
+  description String?   @db.VarChar(255)
+  new         Boolean?  @default(true)
+  skin        Skin?     @relation(fields: [skin_id], references: [id])
+  skin_id     String?   @db.VarChar(36)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime?
+  deletedAt   DateTime?
+}
