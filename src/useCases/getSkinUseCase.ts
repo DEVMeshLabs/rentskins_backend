@@ -1,16 +1,21 @@
 import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
-import { SkinNotExist } from "./errors/SkinNotExists";
+import { SkinNotExistError } from "./errors/SkinNotExistsError";
+import { Skin } from "@prisma/client";
+
+interface GetSkinManyRequest {
+  skin: Skin;
+}
 
 export class GetSkinUseCase {
   constructor(private getSkinRepository: ISkinsRepository) {}
 
-  async execute(id: string) {
-    const skinId = await this.getSkinRepository.findById(id);
+  async execute(id: string): Promise<GetSkinManyRequest> {
+    const skin = await this.getSkinRepository.findById(id);
 
-    if (!skinId) {
-      throw new SkinNotExist();
+    if (!skin) {
+      throw new SkinNotExistError();
     }
 
-    return skinId;
+    return { skin };
   }
 }

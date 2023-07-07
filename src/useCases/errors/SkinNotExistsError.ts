@@ -1,4 +1,4 @@
-export class SkinNotExist extends Error {
+export class SkinNotExistError extends Error {
   constructor() {
     super("Skin not Exists");
   }
