@@ -1,8 +1,8 @@
 import { FastifyInstance } from "fastify";
 import { getSkinController } from "./getSkinController";
-import { createSkinController } from "./skinsController";
 import { getSkinManyController } from "./getSkinManyController";
 import { getSkinSellerController } from "./getSkinSellerController";
+import { createSkinController } from "./createSkinController";
 
 export async function skinRouter(app: FastifyInstance) {
   app.post("/v1/skin", createSkinController);
