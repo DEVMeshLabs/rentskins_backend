@@ -1,6 +1,6 @@
 import fastify from "fastify";
-import { appRoutes } from "./http/routes";
+import { skinRouter } from "./http/controllers/Skins/routes";
 
 export const app = fastify({ logger: true });
 
-app.register(appRoutes);
+app.register(skinRouter);
