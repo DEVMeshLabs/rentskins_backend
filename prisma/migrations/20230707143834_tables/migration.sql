@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "Skin" (
     "id" VARCHAR(36) NOT NULL,
-    "skin_image" VARCHAR(255),
+    "skin_image" VARCHAR(255) NOT NULL,
     "skin_name" VARCHAR(255) NOT NULL,
     "skin_category" VARCHAR(255) NOT NULL,
     "skin_weapon" VARCHAR(255) NOT NULL,
