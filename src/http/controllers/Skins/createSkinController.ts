@@ -1,3 +1,4 @@
+import { SkinAlreadyExistsError } from "@/useCases/errors/skinAlreadyExistsError";
 import { makeCreateUseCase } from "@/useCases/factories/makeCreateSkinUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
@@ -46,9 +47,11 @@ export async function createSkinController(
       sale_type,
       cartId,
     });
+    return reply.status(201).send();
   } catch (error) {
-    console.log(error);
+    if (error instanceof SkinAlreadyExistsError) {
+      return reply.status(409).send({ error: error.message });
+    }
   }
-
-  return reply.status(201).send();
+  return reply.status(501).send();
 }
