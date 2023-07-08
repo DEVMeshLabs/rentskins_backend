@@ -3,6 +3,14 @@ import { prisma } from "@/lib/prisma";
 import { ISkinsRepository } from "../interface/ISkinsRepository";
 
 export class PrismaSkinRepository implements ISkinsRepository {
+  async findByWeapon(skin_weapon: string) {
+    const findWeapon = await prisma.skin.findMany({
+      where: { skin_weapon },
+    });
+
+    return findWeapon;
+  }
+
   async findBySeller(seller_id: string) {
     const findSeller = await prisma.skin.findUnique({
       where: { seller_id },
