@@ -1,6 +1,6 @@
 import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
-import { SkinNotExistError } from "./errors/SkinNotExistsError";
 import { Skin } from "@prisma/client";
+import { SellerNotExistError } from "./errors/SellerNotExistError";
 
 export class GetSkinSellerUseCase {
   constructor(private skinRepository: ISkinsRepository) {}
@@ -9,7 +9,7 @@ export class GetSkinSellerUseCase {
     const findSeller = await this.skinRepository.findBySeller(seller_id);
 
     if (!findSeller) {
-      throw new SkinNotExistError();
+      throw new SellerNotExistError();
     }
 
     return findSeller;
