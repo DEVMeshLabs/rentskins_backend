@@ -15,12 +15,9 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^8.3.0",
-    "@fastify/swagger": "^8.8.0",
-    "@fastify/swagger-ui": "^1.9.2",
     "@prisma/client": "^4.16.2",
     "dotenv": "^16.3.1",
     "fastify": "^4.19.2",
-    "fastify-openapi-glue": "^4.3.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
