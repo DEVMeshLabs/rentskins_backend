@@ -5,15 +5,15 @@ import { ISkinsRepository } from "../interface/ISkinsRepository";
 export class PrismaSkinRepository implements ISkinsRepository {
   async findByWeapon(skin_weapon: string) {
     const findWeapon = await prisma.skin.findMany({
-      where: { skin_weapon },
+      where: { skin_weapon, deletedAt: null },
     });
 
     return findWeapon;
   }
 
   async findBySeller(seller_id: string) {
-    const findSeller = await prisma.skin.findUnique({
-      where: { seller_id },
+    const findSeller = await prisma.skin.findFirst({
+      where: { seller_id, deletedAt: null },
     });
     return findSeller;
   }
@@ -26,8 +26,8 @@ export class PrismaSkinRepository implements ISkinsRepository {
   }
 
   async findById(id: string) {
-    const skinId = await prisma.skin.findUnique({
-      where: { id },
+    const skinId = await prisma.skin.findFirst({
+      where: { id, deletedAt: null },
     });
 
     return skinId;
