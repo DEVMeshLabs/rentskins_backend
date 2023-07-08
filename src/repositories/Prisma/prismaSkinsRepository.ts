@@ -31,4 +31,13 @@ export class PrismaSkinRepository implements ISkinsRepository {
     });
     return skin;
   }
+
+  async deleteSkin(id: string) {
+    const deleteSkin = await prisma.skin.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+
+    return deleteSkin;
+  }
 }
