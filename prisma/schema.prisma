@@ -22,7 +22,7 @@ model Skin {
   skin_link_game  String         @db.VarChar(255)
   skin_link_steam String         @db.VarChar(255)
   seller_name     String         @db.VarChar(255)
-  seller_id       String         @db.VarChar(255)
+  seller_id       String         @unique @db.VarChar(255)
   buyer_name      String?        @db.VarChar(255)
   buyer_id        String?        @db.VarChar(255)
   status          String         @db.VarChar(255)

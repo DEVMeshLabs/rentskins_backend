@@ -11,11 +11,11 @@ export async function deleteSkinController(
   try {
     const deleteSkinUseCase = makeDeleteSkinUseCase();
     await deleteSkinUseCase.execute(id);
-
-    return reply.status(200).send();
   } catch (error) {
     if (error instanceof SkinNotExistError) {
       return reply.status(404).send({ message: error.message });
     }
+    throw error;
   }
+  return reply.status(200).send();
 }

@@ -16,5 +16,6 @@ export async function getSkinController(
     if (error instanceof SkinNotExistError) {
       return reply.status(404).send({ message: error.message });
     }
+    throw error;
   }
 }
