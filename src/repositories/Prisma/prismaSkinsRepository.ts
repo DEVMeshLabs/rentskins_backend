@@ -3,7 +3,15 @@ import { prisma } from "@/lib/prisma";
 import { ISkinsRepository } from "../interface/ISkinsRepository";
 
 export class PrismaSkinRepository implements ISkinsRepository {
-  async findByWeapon(skin_weapon: string) {
+  async findByManyCategory(skin_category: string) {
+    const findManyCategory = await prisma.skin.findMany({
+      where: { skin_category, deletedAt: null },
+    });
+
+    return findManyCategory;
+  }
+
+  async findByManyWeapon(skin_weapon: string) {
     const findWeapon = await prisma.skin.findMany({
       where: { skin_weapon, deletedAt: null },
     });
