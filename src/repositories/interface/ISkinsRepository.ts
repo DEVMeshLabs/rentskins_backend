@@ -5,4 +5,5 @@ export interface ISkinsRepository {
   findBySeller(seller_id: string): Promise<Skin | null>;
   findByMany(): Promise<Skin[]>;
   create(data: Prisma.SkinUncheckedCreateInput): Promise<Skin>;
+  deleteSkin(id: string): Promise<Skin>;
 }
