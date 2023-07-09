@@ -47,11 +47,11 @@ export async function createSkinController(
       sale_type,
       cartId,
     });
-    return reply.status(201).send();
   } catch (error) {
     if (error instanceof SkinAlreadyExistsError) {
       return reply.status(409).send({ error: error.message });
     }
+    throw error;
   }
-  return reply.status(501).send();
+  return reply.status(201).send();
 }
