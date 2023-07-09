@@ -1,4 +1,4 @@
-import { SkinNotExistError } from "@/useCases/errors/SkinNotExistsError";
+import { SellerNotExistError } from "@/useCases/errors/SellerNotExistError";
 import { makeGetSkinSeller } from "@/useCases/factories/makeGetSkinSellerUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
@@ -13,8 +13,9 @@ export async function getSkinSellerController(
     const findBySeller = await getSkinSellerUseCase.execute(seller_id);
     return reply.status(200).send(findBySeller);
   } catch (error) {
-    if (error instanceof SkinNotExistError) {
+    if (error instanceof SellerNotExistError) {
       return reply.status(404).send({ message: error.message });
     }
+    throw error;
   }
 }
