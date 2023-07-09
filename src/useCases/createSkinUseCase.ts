@@ -22,10 +22,6 @@ interface CreateSkinsUseCaseRequest {
   cartId: string;
 }
 
-interface CreateSkinsUseCaseResponse {
-  skins: Skin;
-}
-
 export class CreateSkinUseCase {
   constructor(private skinsRepository: ISkinsRepository) {}
   async execute({
@@ -46,7 +42,7 @@ export class CreateSkinUseCase {
     status_float,
     sale_type,
     cartId,
-  }: CreateSkinsUseCaseRequest): Promise<CreateSkinsUseCaseResponse> {
+  }: CreateSkinsUseCaseRequest): Promise<Skin> {
     const isSkinAlreadyExist = await this.skinsRepository.findBySeller(
       seller_id
     );
@@ -75,8 +71,6 @@ export class CreateSkinUseCase {
       cartId,
     });
 
-    return {
-      skins,
-    };
+    return skins;
   }
 }
