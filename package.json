@@ -16,9 +16,11 @@
   "dependencies": {
     "@fastify/cors": "^8.3.0",
     "@prisma/client": "^4.16.2",
+    "@types/steamcommunity": "^3.43.2",
     "axios": "^1.4.0",
     "dotenv": "^16.3.1",
     "fastify": "^4.19.2",
+    "steamcommunity": "^3.46.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {
