@@ -33,6 +33,14 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return skinAll;
   }
 
+  async updateById(id: string, data: Prisma.SkinUpdateInput) {
+    const updateId = await prisma.skin.update({
+      where: { id },
+      data: { ...data, updatedAt: new Date() },
+    });
+    return updateId;
+  }
+
   async findById(id: string) {
     const skinId = await prisma.skin.findFirst({
       where: { id, deletedAt: null },
