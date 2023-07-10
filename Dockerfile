@@ -1,8 +1,7 @@
 FROM node:latest
 WORKDIR /src
 COPY package*.json .
-RUN npm install --quiet --no-optional --no-fund --loglevel=error
 COPY . .
-RUN npm run build
+RUN npm ci && npm run build && npx prisma
 EXPOSE 3333
 CMD [ "npm", "run" "start"]
