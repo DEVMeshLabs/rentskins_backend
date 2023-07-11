@@ -1,9 +1,8 @@
-import { error } from "console";
 import { FastifyRequest, FastifyReply } from "fastify";
 import SteamCommunity from "steamcommunity";
 const community = new SteamCommunity();
 
-export async function getInventoryController(
+export function getInventoryController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
@@ -12,16 +11,17 @@ export async function getInventoryController(
     id,
     730,
     2,
-    false,
+    true,
     "english",
-    (response: any) => {
+    (error, response) => {
       console.log(response);
-      if (response === null) {
-        return reply.status(500).send({
+      if (error) {
+        return reply.send({
+          message: "Error",
           error,
         });
       } else {
-        return reply.status(200).send(response);
+        return reply.send(response);
       }
     }
   );
