@@ -14,12 +14,11 @@ interface CreateSkinsUseCaseRequest {
   skin_link_steam: string;
   seller_name: string;
   seller_id: string;
-  buyer_name: string;
-  buyer_id: string;
+  buyer_name?: string;
+  buyer_id?: string;
   status: string;
   status_float: string;
   sale_type: string;
-  cartId: string;
 }
 
 export class CreateSkinUseCase {
@@ -41,7 +40,6 @@ export class CreateSkinUseCase {
     status,
     status_float,
     sale_type,
-    cartId,
   }: CreateSkinsUseCaseRequest): Promise<Skin> {
     const isSkinAlreadyExist = await this.skinsRepository.findBySeller(
       seller_id
@@ -68,7 +66,6 @@ export class CreateSkinUseCase {
       status,
       status_float,
       sale_type,
-      cartId,
     });
 
     return skins;
