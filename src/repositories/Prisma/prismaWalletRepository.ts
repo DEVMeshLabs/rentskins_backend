@@ -10,6 +10,13 @@ export class PrismaWalletRepository implements IWalletRepository {
     return walletAll;
   }
 
+  async findByUser(owner_id: string) {
+    const walletIdUser = await prisma.wallet.findFirst({
+      where: { owner_id, deletedAt: null },
+    });
+    return walletIdUser;
+  }
+
   async findById(id: string) {
     const walletId = await prisma.wallet.findFirst({
       where: { id, deletedAt: null },
