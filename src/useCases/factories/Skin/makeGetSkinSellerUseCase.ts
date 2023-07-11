@@ -1,6 +1,5 @@
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
-
-import { GetSkinSellerUseCase } from "../getSkinSellerUseCase";
+import { GetSkinSellerUseCase } from "@/useCases/Skin/getSkinSellerUseCase";
 
 export function makeGetSkinSeller() {
   const prismaSkinRepository = new PrismaSkinRepository();

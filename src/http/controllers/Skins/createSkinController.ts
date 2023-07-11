@@ -1,5 +1,5 @@
-import { SkinAlreadyExistsError } from "@/useCases/errors/skinAlreadyExistsError";
-import { makeCreateUseCase } from "@/useCases/factories/makeCreateSkinUseCase";
+import { SkinAlreadyExistsError } from "@/useCases/errors/Skin/SkinAlreadyExistsError";
+import { makeCreateUseCase } from "@/useCases/factories/Skin/makeCreateSkinUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function createSkinController(
