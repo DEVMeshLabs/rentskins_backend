@@ -7,6 +7,6 @@ export interface ISkinsRepository {
   findByManyWeapon(skin_weapon: string): Promise<Skin[] | null>;
   findByManyCategory(skin_category: string): Promise<Skin[] | null>;
   updateById(id: string, data: Prisma.SkinUpdateInput): Promise<Skin>;
-  create(data: Prisma.SkinUncheckedCreateInput): Promise<Skin>;
+  create(data: Prisma.SkinCreateInput): Promise<Skin>;
   deleteSkin(id: string): Promise<Skin>;
 }
