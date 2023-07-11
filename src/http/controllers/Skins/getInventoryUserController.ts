@@ -13,15 +13,14 @@ export function getInventoryController(
     2,
     true,
     "english",
-    (error, response) => {
-      console.log(response);
-      if (error) {
+    (err: Error | null, inventory?: any) => {
+      if (err) {
         return reply.send({
           message: "Error",
-          error,
+          err,
         });
       } else {
-        return reply.send(response);
+        return reply.send(inventory);
       }
     }
   );
