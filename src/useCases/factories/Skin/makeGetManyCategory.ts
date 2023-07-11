@@ -1,5 +1,5 @@
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
-import { GetManyCategoryUseCase } from "../getManyCategoryUseCase";
+import { GetManyCategoryUseCase } from "@/useCases/Skin/getManyCategoryUseCase";
 
 export function makeGetManyCategory() {
   const prismaSkinRepository = new PrismaSkinRepository();
