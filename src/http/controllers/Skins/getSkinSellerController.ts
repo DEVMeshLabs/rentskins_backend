@@ -1,5 +1,5 @@
-import { SellerNotExistError } from "@/useCases/errors/SellerNotExistError";
-import { makeGetSkinSeller } from "@/useCases/factories/makeGetSkinSellerUseCase";
+import { SellerNotExistError } from "@/useCases/errors/Skin/SellerNotExistError";
+import { makeGetSkinSeller } from "@/useCases/factories/Skin/makeGetSkinSellerUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getSkinSellerController(

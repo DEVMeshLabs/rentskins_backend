@@ -1,5 +1,5 @@
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
-import { GetSkinManyUseCase } from "../getSkinManyUseCase";
+import { GetSkinManyUseCase } from "@/useCases/Skin/getSkinManyUseCase";
 
 export function makeGetSkinMany() {
   const prismaSkinRepository = new PrismaSkinRepository();

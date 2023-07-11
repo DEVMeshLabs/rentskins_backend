@@ -1,6 +1,6 @@
 import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
 import { Skin } from "@prisma/client";
-import { SellerNotExistError } from "./errors/SellerNotExistError";
+import { SellerNotExistError } from "../errors/Skin/SellerNotExistError";
 
 export class GetSkinSellerUseCase {
   constructor(private skinRepository: ISkinsRepository) {}

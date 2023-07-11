@@ -1,4 +1,4 @@
-import { makeGetSkinMany } from "@/useCases/factories/makeGetSkinManyUseCase";
+import { makeGetSkinMany } from "@/useCases/factories/Skin/makeGetSkinManyUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getSkinManyController(

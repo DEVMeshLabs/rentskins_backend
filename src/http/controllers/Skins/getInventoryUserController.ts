@@ -15,8 +15,9 @@ export async function getInventoryController(
     false,
     "english",
     (response: any) => {
-      if (error) {
-        return reply.send({
+      console.log(response);
+      if (response === null) {
+        return reply.status(500).send({
           error,
         });
       } else {
