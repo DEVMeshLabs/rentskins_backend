@@ -1,6 +1,6 @@
 import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
 import { Skin } from "@prisma/client";
-import { SkinAlreadyExistsError } from "./errors/skinAlreadyExistsError";
+import { SkinAlreadyExistsError } from "../errors/Skin/SkinAlreadyExistsError";
 
 interface CreateSkinsUseCaseRequest {
   skin_image: string;

@@ -1,5 +1,6 @@
 import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
-import { SkinNotExistError } from "./errors/SkinNotExistsError";
+
+import { SkinNotExistError } from "../errors/Skin/SkinNotExistsError";
 import { Skin } from "@prisma/client";
 
 export class DeleteSkinUseCase {

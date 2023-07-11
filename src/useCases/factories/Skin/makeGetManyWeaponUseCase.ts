@@ -1,5 +1,5 @@
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
-import { GetManyWeaponUseCase } from "../getManyWeaponUseCase";
+import { GetManyWeaponUseCase } from "@/useCases/Skin/getManyWeaponUseCase";
 
 export function makeGetManyWeapon() {
   const prismaSkinRepository = new PrismaSkinRepository();
