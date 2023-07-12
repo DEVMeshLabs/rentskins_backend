@@ -9,7 +9,7 @@ import { updateWalletValueController } from "./updateWalletValueController";
 export async function walletRouter(app: FastifyInstance) {
   app.post("/v1/wallet", createWalletController);
   app.delete("/v1/wallet/:id", deleteWalletController);
-  app.put("/v1/wallet/:id", updateWalletValueController);
+  app.put("/v1/wallet/:owner_id", updateWalletValueController);
   app.get("/v1/wallet", getManyWalletController);
   app.get("/v1/wallet/user/:owner_id", getWalletUserController);
   app.get("/v1/wallet/:id", getWalletController);

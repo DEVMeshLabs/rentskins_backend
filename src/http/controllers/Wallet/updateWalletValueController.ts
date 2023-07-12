@@ -7,7 +7,7 @@ export async function updateWalletValueController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { id } = req.params as { id: string };
+  const { owner_id } = req.params as { owner_id: string };
 
   const updateSchema = z.object({
     value: z.string(),
@@ -16,7 +16,7 @@ export async function updateWalletValueController(
   try {
     const updateWalletValue = makeUpdateWalletValueUseCase();
     const { value } = updateSchema.parse(req.body);
-    await updateWalletValue.execute(id, value);
+    await updateWalletValue.execute(owner_id, value);
   } catch (error) {
     if (error instanceof WalletNotExistsError) {
       return reply.status(404).send({ error: error.message });
@@ -27,5 +27,6 @@ export async function updateWalletValueController(
     }
     throw error;
   }
+
   return reply.status(200).send();
 }
