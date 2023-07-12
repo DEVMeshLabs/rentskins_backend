@@ -2,6 +2,7 @@ import { makeCreateConfigurationUseCase } from "@/useCases/factories/Configurati
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createConfigurationSchema } from "./Schemas/createConfigurationSchema";
 import { z } from "zod";
+import { ConfigurationAlreadyExistError } from "@/useCases/errors/Configuration/ConfigurationAlreadyExistError";
 
 export async function createConfigurationController(
   req: FastifyRequest,
@@ -34,6 +35,8 @@ export async function createConfigurationController(
       return reply
         .status(400)
         .send({ message: "Erro de validação", errors: error.errors });
+    } else if (error instanceof ConfigurationAlreadyExistError) {
+      return reply.status(409).send({ errors: error.message });
     }
     throw error;
   }
