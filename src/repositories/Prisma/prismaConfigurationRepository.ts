@@ -17,4 +17,11 @@ export class PrismaConfigurationRepository implements IConfigurationRepository {
 
     return findManyConfig;
   }
+
+  async findById(id: string) {
+    const findId = await prisma.configuration.findFirst({
+      where: { id, deletedAt: null },
+    });
+    return findId;
+  }
 }
