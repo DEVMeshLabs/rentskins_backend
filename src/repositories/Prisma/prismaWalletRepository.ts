@@ -25,9 +25,9 @@ export class PrismaWalletRepository implements IWalletRepository {
     return walletId;
   }
 
-  async updateByIdValor(id: string, value: string) {
-    const updateIdValue = await prisma.wallet.update({
-      where: { id },
+  async updateByUserValue(owner_id: string, value: string) {
+    const updateIdValue = await prisma.wallet.updateMany({
+      where: { owner_id },
       data: { value, updatedAt: new Date() },
     });
     return updateIdValue;
