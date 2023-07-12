@@ -1,3 +1,4 @@
+import { WalletAlreadyExistError } from "@/useCases/errors/Wallet/WalletAlreadyExistsError";
 import { makeCreateWalletUseCase } from "@/useCases/factories/Wallet/makeCreateWalletUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
@@ -20,6 +21,8 @@ export async function createWalletController(
       return reply
         .status(400)
         .send({ message: "Erro de validação", errors: error.errors });
+    } else if (error instanceof WalletAlreadyExistError) {
+      return reply.status(409).send({ errors: error.message });
     }
     return reply.status(500).send({ message: "Erro interno do servidor" });
   }
