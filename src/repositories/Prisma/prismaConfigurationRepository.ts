@@ -3,6 +3,23 @@ import { IConfigurationRepository } from "../interface/IConfigurationRepository"
 import { prisma } from "@/lib/prisma";
 
 export class PrismaConfigurationRepository implements IConfigurationRepository {
+  async delete(id: string) {
+    const deleteId = await prisma.configuration.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+
+    return deleteId;
+  }
+
+  async updateById(id: string, data: Prisma.ConfigurationUpdateInput) {
+    const updateUser = await prisma.configuration.update({
+      where: { id },
+      data: { ...data, updatedAt: new Date() },
+    });
+    return updateUser;
+  }
+
   async create(data: Prisma.ConfigurationCreateInput) {
     const createConfiguration = await prisma.configuration.create({
       data,
