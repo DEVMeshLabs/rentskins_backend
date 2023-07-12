@@ -1,6 +1,7 @@
 import { Prisma, Skin } from "@prisma/client";
 
 export interface ISkinsRepository {
+  findByName(name: string): Promise<Skin[]>;
   findById(id: string): Promise<Skin | null>;
   findBySeller(seller_id: string): Promise<Skin | null>;
   findByMany(): Promise<Skin[]>;

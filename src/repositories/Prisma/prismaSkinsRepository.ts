@@ -3,6 +3,19 @@ import { prisma } from "@/lib/prisma";
 import { ISkinsRepository } from "../interface/ISkinsRepository";
 
 export class PrismaSkinRepository implements ISkinsRepository {
+  async findByName(name: string) {
+    const findName = await prisma.skin.findMany({
+      where: {
+        OR: [
+          { skin_name: { contains: name, mode: "insensitive" } },
+          { skin_category: { contains: name, mode: "insensitive" } },
+          { skin_weapon: { contains: name, mode: "insensitive" } },
+        ],
+      },
+    });
+    return findName;
+  }
+
   async findByManyCategory(skin_category: string) {
     const findManyCategory = await prisma.skin.findMany({
       where: { skin_category, deletedAt: null },
