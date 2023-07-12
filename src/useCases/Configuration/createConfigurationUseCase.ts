@@ -1,5 +1,6 @@
 import { IConfigurationRepository } from "@/repositories/interface/IConfigurationRepository";
 import { Configuration } from "@prisma/client";
+import { ConfigurationAlreadyExistError } from "../errors/Configuration/ConfigurationAlreadyExistError";
 
 interface IConfigurationRepositoryRequest {
   owner_name: string;
@@ -25,6 +26,12 @@ export class CreateConfigurationUseCase {
     agreed_with_emails,
     agreed_with_terms,
   }: IConfigurationRepositoryRequest): Promise<Configuration> {
+    const findUser = await this.configurationRepository.findByUser(owner_id);
+
+    if (findUser) {
+      throw new ConfigurationAlreadyExistError();
+    }
+
     const createConfig = await this.configurationRepository.create({
       owner_id,
       owner_email,
