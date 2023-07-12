@@ -3,11 +3,13 @@ import { skinRouter } from "./http/controllers/Skins/routes";
 import { walletRouter } from "./http/controllers/Wallet/routes";
 import { env } from "process";
 import { ZodError } from "zod";
+import { configurationRouter } from "./http/controllers/Configuration/routes";
 
 export const app = fastify({ logger: true });
 
 app.register(skinRouter);
 app.register(walletRouter);
+app.register(configurationRouter);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
