@@ -6,13 +6,17 @@ export class UpdateWalletValueUseCase {
   constructor(private walletRepository: IWalletRepository) {}
 
   async execute(id: string, value: string): Promise<Wallet> {
-    const getWallet = await this.walletRepository.findById(id);
+    const updateValue = await this.walletRepository.updateByUserValue(
+      id,
+      value
+    );
 
-    if (!getWallet) {
+    console.log(updateValue);
+
+    if (updateValue.count === 0) {
       throw new WalletNotExistsError();
     }
 
-    const updateValue = await this.walletRepository.updateByIdValor(id, value);
     return updateValue;
   }
 }
