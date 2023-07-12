@@ -8,6 +8,7 @@ import { getManyWeaponController } from "./getManyWeaponController";
 import { getManyCategoryController } from "./getManyCategoryController";
 import { getInventoryController } from "./getInventoryUserController";
 import { updateSkinController } from "./updateSkinController";
+import { getManyNameController } from "./getManyNameController";
 
 export async function skinRouter(app: FastifyInstance) {
   app.post("/v1/skins", createSkinController);
@@ -17,6 +18,7 @@ export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins/weapon/:weapon", getManyWeaponController);
   app.get("/v1/skins/category/:category", getManyCategoryController);
   app.get("/v1/skins/inventory/:id", getInventoryController);
+  app.get("/v1/skins/search/:name", getManyNameController);
   app.put("/v1/skins/:id", updateSkinController);
   app.delete("/v1/skins/:id", deleteSkinController);
 }
