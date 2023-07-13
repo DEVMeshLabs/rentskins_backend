@@ -40,4 +40,6 @@ export async function createConfigurationController(
     }
     throw error;
   }
+
+  return reply.status(201).send();
 }
