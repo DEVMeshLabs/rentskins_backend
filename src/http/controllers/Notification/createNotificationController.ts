@@ -24,7 +24,7 @@ export async function createNotificationController(
         .status(400)
         .send({ message: "Erro de validação", error: error.errors });
     } else if (error instanceof NotificationAlreadyExistError) {
-      return reply.status(400).send({ error: error.message });
+      return reply.status(409).send({ error: error.message });
     }
 
     throw error;

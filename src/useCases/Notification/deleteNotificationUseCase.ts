@@ -5,11 +5,13 @@ import { NotificationNotExistError } from "../errors/Notification/NotificationNo
 export class DeleteNotificationUseCase {
   constructor(private notification: INotificationRepository) {}
   async execute(id: string): Promise<Notification> {
-    const deleteId = await this.notification.delete(id);
+    const findId = await this.notification.findById(id);
 
-    if (!deleteId) {
+    if (!findId) {
       throw new NotificationNotExistError();
     }
+
+    const deleteId = await this.notification.delete(id);
 
     return deleteId;
   }
