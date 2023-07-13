@@ -10,9 +10,7 @@ export class DeleteNotificationUseCase {
     if (!findId) {
       throw new NotificationNotExistError();
     }
-
     const deleteId = await this.notification.delete(id);
-
     return deleteId;
   }
 }
