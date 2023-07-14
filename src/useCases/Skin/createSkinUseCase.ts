@@ -1,6 +1,5 @@
 import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
 import { Skin } from "@prisma/client";
-import { SkinAlreadyExistsError } from "../errors/Skin/SkinAlreadyExistsError";
 
 interface CreateSkinsUseCaseRequest {
   skin_image: string;
@@ -41,14 +40,6 @@ export class CreateSkinUseCase {
     status_float,
     sale_type,
   }: CreateSkinsUseCaseRequest): Promise<Skin> {
-    const isSkinAlreadyExist = await this.skinsRepository.findBySeller(
-      seller_id
-    );
-    console.log(isSkinAlreadyExist);
-    if (isSkinAlreadyExist) {
-      throw new SkinAlreadyExistsError();
-    }
-
     const skins = await this.skinsRepository.create({
       skin_image,
       skin_name,
