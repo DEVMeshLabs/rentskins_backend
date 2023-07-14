@@ -43,6 +43,7 @@ export class PrismaNotificationRepository implements INotificationRepository {
   async findByUser(owner_id: string) {
     const findMany = await prisma.notification.findFirst({
       where: { owner_id, deletedAt: null },
+      include: { skin: true },
     });
     return findMany;
   }
