@@ -18,7 +18,7 @@ export async function createCartController(
         errors: error.errors,
       });
     }
-
     throw error;
   }
+  return reply.status(201).send();
 }
