@@ -49,6 +49,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
   async findByMany() {
     const skinAll = await prisma.skin.findMany({
       where: { deletedAt: null },
+      include: { Notification: true },
     });
     return skinAll;
   }
