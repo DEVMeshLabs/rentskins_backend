@@ -6,6 +6,7 @@ import { getNotificationController } from "./getNotificationController";
 import { deleteNotificationController } from "./deleteNotificationController";
 import { updateManyNotificationController } from "./updateManyNotificationController";
 import { getManySkinNotificationController } from "./getManyUserNotificationController";
+// import { verifyJwt } from "@/http/middlewares/verifyJwt";
 
 export async function notificationRouter(app: FastifyInstance) {
   app.post("/v1/notification", createNotificationController);
