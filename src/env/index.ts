@@ -15,6 +15,4 @@ if (_env.success === false) {
 
   throw new Error("Invalid environment variables");
 }
-
-// retorna o valor da variaveis
 export const env = _env.data;
