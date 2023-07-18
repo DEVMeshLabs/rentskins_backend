@@ -3,9 +3,9 @@ import { INotificationRepository } from "../interface/INotificationRepository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaNotificationRepository implements INotificationRepository {
-  async updateNotification() {
+  async updateNotification(owner_id: string) {
     const updateFull = await prisma.notification.updateMany({
-      where: { new: true },
+      where: { owner_id, new: true },
       data: { new: false, updatedAt: new Date() },
     });
     return updateFull;
