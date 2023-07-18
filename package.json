@@ -24,6 +24,7 @@
     "dotenv": "^16.3.1",
     "fastify": "^4.19.2",
     "jsonwebtoken": "^9.0.1",
+    "jwt-decode": "^3.1.2",
     "luxon": "^3.3.0",
     "steamcommunity": "^3.46.1",
     "tsup": "^7.1.0",
@@ -31,6 +32,7 @@
   },
   "devDependencies": {
     "@rocketseat/eslint-config": "^1.2.0",
+    "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.4.0",
     "eslint": "^8.44.0",
     "prisma": "^4.16.2",
