@@ -6,9 +6,11 @@ export async function updateManyNotificationController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
+  const { owner_id } = req.params as { owner_id: string };
+
   try {
-    const makeGetNot = makeUpdateManyNotificationUseCase();
-    await makeGetNot.execute();
+    const makeUpdateNot = makeUpdateManyNotificationUseCase();
+    await makeUpdateNot.execute(owner_id);
   } catch (error) {
     if (error instanceof NotificationNotExistError) {
       return reply.status(404).send({ error: error.message });
