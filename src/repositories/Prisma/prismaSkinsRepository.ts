@@ -3,6 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { ISkinsRepository } from "../interface/ISkinsRepository";
 
 export class PrismaSkinRepository implements ISkinsRepository {
+  async findByManySeller(seller_id: string) {
+    const findSeller = prisma.skin.findMany({
+      where: { seller_id, deletedAt: null },
+    });
+    return findSeller;
+  }
+
   async findByName(name: string) {
     const findName = await prisma.skin.findMany({
       where: {
@@ -42,6 +49,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
   async findByMany() {
     const skinAll = await prisma.skin.findMany({
       where: { deletedAt: null },
+      include: { Notification: true },
     });
     return skinAll;
   }
