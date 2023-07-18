@@ -6,6 +6,7 @@ export class PrismaCartRepository implements ICartRepository {
   async findByMany() {
     const findMany = await prisma.cart.findMany({
       where: { deletedAt: null },
+      include: { buyer_skins: true },
     });
     return findMany;
   }
@@ -18,5 +19,11 @@ export class PrismaCartRepository implements ICartRepository {
     return createCart;
   }
 
-  async;
+  async findById(id: string) {
+    const findId = await prisma.cart.findFirst({
+      include: { buyer_skins: true },
+      where: { id, deletedAt: null },
+    });
+    return findId;
+  }
 }
