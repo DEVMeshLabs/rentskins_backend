@@ -11,11 +11,11 @@ export class GetManySkinNotification {
     const filtrando = {
       tudo: () => getManySkinNotification,
       hoje: () => DataFilter.filterHoje(getManySkinNotification),
-      tree: () => DataFilter.filterGeral(getManySkinNotification, 3),
-      semana: () => DataFilter.filterGeral(getManySkinNotification, 7),
-      mes: () => DataFilter.filterGeral(getManySkinNotification, 30),
-      treemes: () => DataFilter.filterGeral(getManySkinNotification, 90),
-      ano: () => DataFilter.filterGeral(getManySkinNotification, 365),
+      tresDias: () => DataFilter.filterGeral(getManySkinNotification, 3),
+      umaSemana: () => DataFilter.filterGeral(getManySkinNotification, 7),
+      umMes: () => DataFilter.filterGeral(getManySkinNotification, 30),
+      tresMes: () => DataFilter.filterGeral(getManySkinNotification, 90),
+      umAno: () => DataFilter.filterGeral(getManySkinNotification, 365),
     };
 
     return filtrando[tempo]();
