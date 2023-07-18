@@ -1,4 +1,3 @@
-import { SkinAlreadyExistsError } from "@/useCases/errors/Skin/SkinAlreadyExistsError";
 import { makeCreateUseCase } from "@/useCases/factories/Skin/makeCreateSkinUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 import createSkinSchema from "./Schemas/createSkinSchema";
@@ -47,9 +46,7 @@ export async function createSkinController(
       sale_type,
     });
   } catch (error) {
-    if (error instanceof SkinAlreadyExistsError) {
-      return reply.status(409).send({ error: error.message });
-    } else if (error instanceof z.ZodError) {
+    if (error instanceof z.ZodError) {
       return reply
         .status(400)
         .send({ message: "Erro de validação", errors: error.errors });
