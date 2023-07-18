@@ -1,9 +1,16 @@
 import { INotificationRepository } from "@/repositories/interface/INotificationRepository";
+import { NotificationNotExistError } from "../errors/Notification/NotificationNotExistError";
 
 export class UpdateManyNotificationUseCase {
   constructor(private notification: INotificationRepository) {}
-  async execute(): Promise<any> {
-    const updateMany = await this.notification.updateNotification();
+  async execute(owner_id: string): Promise<any> {
+    const getNot = await this.notification.findByUser(owner_id);
+
+    if (!getNot) {
+      throw new NotificationNotExistError();
+    }
+
+    const updateMany = await this.notification.updateNotification(owner_id);
     return updateMany;
   }
 }
