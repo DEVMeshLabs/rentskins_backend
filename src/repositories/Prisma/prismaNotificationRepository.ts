@@ -40,6 +40,9 @@ export class PrismaNotificationRepository implements INotificationRepository {
         owner_id,
         deletedAt: null,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
       include: { skin: true },
     });
     return findManySkin;
