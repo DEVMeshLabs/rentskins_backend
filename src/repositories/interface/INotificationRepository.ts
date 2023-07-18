@@ -5,6 +5,6 @@ export interface INotificationRepository {
   findByMany(): Promise<Notification[]>;
   findByUser(owner_id: string): Promise<Notification | null>;
   findById(id: string): Promise<Notification | null>;
-  updateNotification(): Promise<any>;
+  updateNotification(owner_id: string): Promise<any>;
   delete(id: string): Promise<Notification>;
 }
