@@ -7,7 +7,7 @@ interface IUpdateRequest {
   buyer_name: string;
 }
 
-export class updateByIdUseCase {
+export class UpdateByIdCartUseCase {
   constructor(private cartRepository: ICartRepository) {}
   async execute(
     id: string,
