@@ -6,4 +6,4 @@ RUN npm ci
 RUN npm run build
 RUN npx prisma migrate deploy
 EXPOSE 3333
-CMD [ "npm", "run" "start"]
+CMD [ npm, run start]

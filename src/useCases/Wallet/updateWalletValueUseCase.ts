@@ -11,8 +11,6 @@ export class UpdateWalletValueUseCase {
       value
     );
 
-    console.log(updateValue);
-
     if (updateValue.count === 0) {
       throw new WalletNotExistsError();
     }

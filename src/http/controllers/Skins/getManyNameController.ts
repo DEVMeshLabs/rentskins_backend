@@ -6,7 +6,6 @@ export async function getManyNameController(
   reply: FastifyReply
 ) {
   const { name } = req.params as { name: string };
-  console.log(name);
   try {
     const getManyName = makeGetManyNameUseCase();
 
