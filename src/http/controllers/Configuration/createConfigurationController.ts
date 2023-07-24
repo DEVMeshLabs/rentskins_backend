@@ -38,7 +38,6 @@ export async function createConfigurationController(
     } else if (error instanceof ConfigurationAlreadyExistError) {
       return reply.status(409).send({ errors: error.message });
     }
-    console.log(error);
     throw error;
   }
 

@@ -10,6 +10,6 @@ export async function getManyWalletController(
     const wallet = await getManyWallet.execute();
     return reply.status(201).send(wallet);
   } catch (error) {
-    console.log(error);
+    throw new Error();
   }
 }

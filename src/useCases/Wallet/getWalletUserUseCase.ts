@@ -7,7 +7,6 @@ export class GetWalletUserUseCase {
 
   async execute(owner_id: string): Promise<Wallet> {
     const walletUser = await this.walletRepository.findByUser(owner_id);
-    console.log(walletUser);
     if (!walletUser) {
       throw new WalletNotExistsError();
     }

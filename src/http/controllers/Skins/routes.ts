@@ -10,6 +10,7 @@ import { getInventoryController } from "./getInventoryUserController";
 import { updateSkinController } from "./updateSkinController";
 import { getManyNameController } from "./getManyNameController";
 import { getManyCartController } from "./getManySellerController";
+import { getFloatSkinController } from "./getFloatSkinController";
 
 export async function skinRouter(app: FastifyInstance) {
   app.post("/v1/skins", createSkinController);
@@ -21,6 +22,7 @@ export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins/category/:category", getManyCategoryController);
   app.post("/v1/skins/inventory/:id", getInventoryController);
   app.get("/v1/skins/search/:name", getManyNameController);
+  app.post("/v1/skins/float/:id", getFloatSkinController);
   app.put("/v1/skins/:id", updateSkinController);
   app.delete("/v1/skins/:id", deleteSkinController);
 }
