@@ -15,7 +15,7 @@ export async function getFloatSkinController(
     csgo.on("connectedToGC", () => {
       console.log("Logado!");
       const filteredID = link.split("%D")[1];
-      csgo.inspectItem(id, assetid, filteredID, ({ paintwear }) => {
+      return csgo.inspectItem(id, assetid, filteredID, ({ paintwear }) => {
         console.log(paintwear);
         return reply.status(200).send(paintwear);
       });
