@@ -8,9 +8,9 @@ export async function createCartController(
   reply: FastifyReply
 ) {
   try {
-    const { buyer_id, buyer_name } = createCartSchema.parse(req.body);
+    const { buyer_id, buyer_name, price } = createCartSchema.parse(req.body);
     const makeCreate = makeCreateCartUseCase();
-    await makeCreate.execute({ buyer_id, buyer_name });
+    await makeCreate.execute({ buyer_id, buyer_name, price });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return reply.status(400).send({
