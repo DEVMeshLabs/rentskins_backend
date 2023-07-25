@@ -9,11 +9,11 @@ export async function updateByIdCartController(
   reply: FastifyReply
 ) {
   const { id } = req.params as { id: string };
-  const { buyer_id, buyer_name } = updateByIdCartSchema.parse(req.body);
+  const { buyer_name, price } = updateByIdCartSchema.parse(req.body);
 
   try {
     const makeGet = makeUpdateByIdCartUseCase();
-    const getCart = await makeGet.execute(id, { buyer_id, buyer_name });
+    const getCart = await makeGet.execute(id, { buyer_name, price });
     return reply.status(200).send(getCart);
   } catch (error) {
     if (error instanceof CartNotExistError) {

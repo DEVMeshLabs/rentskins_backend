@@ -41,6 +41,7 @@ model Cart {
   buyer_name  String    @db.VarChar(255)
   buyer_id    String    @db.VarChar(255)
   buyer_skins Skin[]
+  price       String    @default("0") @db.VarChar(255)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime?
   deletedAt   DateTime?
