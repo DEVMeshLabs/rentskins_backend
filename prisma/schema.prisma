@@ -96,3 +96,17 @@ model PerfilInfo {
   updatedAt       DateTime?
   deletedAt       DateTime?
 }
+
+model Transaction {
+  id                 String   @id @default(uuid()) @db.VarChar(36)
+  owner_id           String   @db.VarChar(255)
+  owner_name         String   @db.VarChar(255)
+  owner_email        String   @db.VarChar(255)
+  status             String   @db.VarChar(255)
+  payment_type       String   @db.VarChar(255)
+  installments       String   @db.VarChar(255)
+  total              String   @db.VarChar(255)
+  transaction_id     String   @db.VarChar(255)
+  processor_response String   @db.VarChar(255)
+  createdAt          DateTime @default(now())
+}
