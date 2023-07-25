@@ -42,4 +42,12 @@ export class PrismaCartRepository implements ICartRepository {
     });
     return findBuyer;
   }
+
+  async deleteId(id: string) {
+    const deleteId = await prisma.cart.update({
+      where: { id },
+      data: { deletedAt: new Date() },
+    });
+    return deleteId;
+  }
 }
