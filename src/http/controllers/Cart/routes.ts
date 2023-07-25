@@ -4,8 +4,10 @@ import { getManyCartController } from "./getManyCartController";
 import { getCartController } from "./getCartController";
 import { getCartBuyerController } from "./getCartBuyerController";
 import { updateByIdCartController } from "./updateByIdCartController";
+import { deleteCartController } from "./deleteCartController";
 
 export async function cartRouter(app: FastifyInstance) {
+  app.delete("/v1/cart/:id", deleteCartController);
   app.post("/v1/cart", createCartController);
   app.put("/v1/cart/:id", updateByIdCartController);
   app.get("/v1/cart", getManyCartController);
