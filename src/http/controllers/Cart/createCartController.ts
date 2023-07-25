@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { createCartSchema } from "./Schemas/createCartSchema";
 import { makeCreateCartUseCase } from "@/useCases/factories/Cart/makeCreateCartUseCase";
 import { z } from "zod";
+import { CartAlreadyExistError } from "@/useCases/errors/Cart/CartAlreadyExistError";
 
 export async function createCartController(
   req: FastifyRequest,
@@ -17,6 +18,9 @@ export async function createCartController(
         message: "Erro de validação",
         errors: error.errors,
       });
+    }
+    if (error instanceof CartAlreadyExistError) {
+      return reply.status(409).send({ error: error.message });
     }
     throw error;
   }
