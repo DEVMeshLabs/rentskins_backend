@@ -5,11 +5,12 @@ import { CartNotExistError } from "../errors/Cart/CartNotExistError";
 export class DeleteCartUseCase {
   constructor(private cartRepository: ICartRepository) {}
   async execute(id: string): Promise<Cart> {
-    const deleteId = await this.cartRepository.deleteId(id);
+    const findById = await this.cartRepository.findById(id);
 
-    if (!deleteId) {
+    if (!findById) {
       throw new CartNotExistError();
     }
+    const deleteId = await this.cartRepository.deleteId(id);
 
     return deleteId;
   }
