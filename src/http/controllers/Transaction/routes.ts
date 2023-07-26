@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify";
-import { createTransaction } from "./createTransaction";
+import { createTransactionController } from "./createTransactionController";
 
-export async function skinRouter(app: FastifyInstance) {
-  app.post("/v1/transaction", createTransaction);
+export async function transactionRouter(app: FastifyInstance) {
+  app.post("/v1/transaction", createTransactionController);
 }

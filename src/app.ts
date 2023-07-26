@@ -6,6 +6,7 @@ import { ZodError } from "zod";
 import { configurationRouter } from "./http/controllers/Configuration/routes";
 import { notificationRouter } from "./http/controllers/Notification/routes";
 import { cartRouter } from "./http/controllers/Cart/routes";
+import { transactionRouter } from "./http/controllers/Transaction/routes";
 
 export const app = fastify();
 
@@ -14,6 +15,7 @@ app.register(walletRouter);
 app.register(configurationRouter);
 app.register(notificationRouter);
 app.register(cartRouter);
+app.register(transactionRouter);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
