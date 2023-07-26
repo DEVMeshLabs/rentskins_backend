@@ -98,15 +98,25 @@ model PerfilInfo {
 }
 
 model Transaction {
-  id                 String   @id @default(uuid()) @db.VarChar(36)
-  owner_id           String   @db.VarChar(255)
-  owner_name         String   @db.VarChar(255)
-  owner_email        String   @db.VarChar(255)
-  status             String   @db.VarChar(255)
-  payment_type       String   @db.VarChar(255)
-  installments       String   @db.VarChar(255)
-  total              String   @db.VarChar(255)
-  transaction_id     String   @db.VarChar(255)
-  processor_response String   @db.VarChar(255)
-  createdAt          DateTime @default(now())
+  id                   String    @id @default(uuid()) @db.VarChar(36)
+  owner_id             String    @db.VarChar(255)
+  status               String    @db.VarChar(255)
+  payment_type         String    @db.VarChar(255)
+  installments         Int       @db.Integer()
+  total                String    @db.VarChar(255)
+  transaction_id       String    @db.VarChar(255)
+  processor_response   String    @db.VarChar(255)
+  customer_email       String    @db.VarChar(255)
+  customer_name        String    @db.VarChar(255)
+  customer_mobile      String    @db.VarChar(255)
+  customer_document    String    @db.VarChar(255)
+  billing_address      String    @db.VarChar(255)
+  billing_number       String    @db.VarChar(255)
+  billing_neighborhood String    @db.VarChar(255)
+  billing_city         String    @db.VarChar(255)
+  billing_state        String    @db.VarChar(255)
+  billing_zip_code     String    @db.VarChar(255)
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime?
+  deletedAt            DateTime?
 }
