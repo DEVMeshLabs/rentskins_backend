@@ -8,43 +8,47 @@ export async function createSkinController(
   reply: FastifyReply
 ) {
   try {
-    const {
-      skin_image,
-      skin_name,
-      skin_category,
-      skin_weapon,
-      skin_price,
-      skin_float,
-      skin_color,
-      skin_link_game,
-      skin_link_steam,
-      seller_name,
-      seller_id,
-      buyer_name,
-      buyer_id,
-      status,
-      status_float,
-      sale_type,
-    } = createSkinSchema.parse(req.body);
-    const createUseCase = makeCreateUseCase();
-    await createUseCase.execute({
-      skin_image,
-      skin_name,
-      skin_category,
-      skin_weapon,
-      skin_price,
-      skin_float,
-      skin_color,
-      skin_link_game,
-      skin_link_steam,
-      seller_name,
-      seller_id,
-      buyer_name,
-      buyer_id,
-      status,
-      status_float,
-      sale_type,
-    });
+    const skins = createSkinSchema.parse(req.body);
+    const skinRepository = makeCreateUseCase();
+    skins.map(
+      async ({
+        skin_image,
+        skin_name,
+        skin_category,
+        skin_weapon,
+        skin_price,
+        skin_float,
+        skin_color,
+        skin_link_game,
+        skin_link_steam,
+        seller_name,
+        seller_id,
+        buyer_name,
+        buyer_id,
+        status,
+        status_float,
+        sale_type,
+      }) => {
+        await skinRepository.execute({
+          skin_image,
+          skin_name,
+          skin_category,
+          skin_weapon,
+          skin_price,
+          skin_float,
+          skin_color,
+          skin_link_game,
+          skin_link_steam,
+          seller_name,
+          seller_id,
+          buyer_name,
+          buyer_id,
+          status,
+          status_float,
+          sale_type,
+        });
+      }
+    );
   } catch (error) {
     if (error instanceof z.ZodError) {
       return reply
