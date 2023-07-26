@@ -1,5 +1,5 @@
 import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
-import { Skin } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 
 interface CreateSkinsUseCaseRequest {
   skin_image: string;
@@ -39,7 +39,7 @@ export class CreateSkinUseCase {
     status,
     status_float,
     sale_type,
-  }: CreateSkinsUseCaseRequest): Promise<Skin> {
+  }: CreateSkinsUseCaseRequest): Promise<Prisma.BatchPayload> {
     const skins = await this.skinsRepository.create({
       skin_image,
       skin_name,

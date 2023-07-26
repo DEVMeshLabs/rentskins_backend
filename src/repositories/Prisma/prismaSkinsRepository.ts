@@ -3,6 +3,13 @@ import { prisma } from "@/lib/prisma";
 import { ISkinsRepository } from "../interface/ISkinsRepository";
 
 export class PrismaSkinRepository implements ISkinsRepository {
+  async create(data: Prisma.SkinCreateManyInput) {
+    const skin = await prisma.skin.createMany({
+      data,
+    });
+    return skin;
+  }
+
   async findByManySeller(seller_id: string) {
     const findSeller = prisma.skin.findMany({
       where: { seller_id, deletedAt: null },
@@ -68,13 +75,6 @@ export class PrismaSkinRepository implements ISkinsRepository {
     });
 
     return skinId;
-  }
-
-  async create(data: Prisma.SkinCreateInput) {
-    const skin = await prisma.skin.create({
-      data,
-    });
-    return skin;
   }
 
   async deleteSkin(id: string) {
