@@ -3,10 +3,11 @@ import { cpf } from "cpf-cnpj-validator";
 import { parsePhoneNumber } from "libphonenumber-js";
 
 export const createTransactionSchema = Yup.object({
-  owner_id: Yup.string(),
+  owner_id: Yup.string().required(),
   processor_response: Yup.string(),
   transaction_id: Yup.string(),
   payment_type: Yup.mixed().oneOf(["billet", "credit_card"]).required(),
+  total: Yup.string().required(),
   installments: Yup.number()
     .min(1)
     .when("payment_type", {

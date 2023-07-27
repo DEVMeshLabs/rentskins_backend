@@ -23,8 +23,6 @@
     "@types/steamcommunity": "^3.43.2",
     "axios": "^1.4.0",
     "cpf-cnpj-validator": "^1.0.3",
-    "csgo-float": "^0.2.0",
-    "csgofloat": "^4.0.0",
     "dotenv": "^16.3.1",
     "fastify": "^4.19.2",
     "globaloffensive": "^2.3.0",
@@ -33,9 +31,7 @@
     "libphonenumber-js": "^1.10.38",
     "luxon": "^3.3.0",
     "pagarme": "^4.32.0",
-    "steam-market-pricing": "^2.0.0",
     "steam-user": "^4.28.9",
-    "steamcommunity": "^3.46.1",
     "tsup": "^7.1.0",
     "yup": "^1.2.0",
     "zod": "^3.21.4"

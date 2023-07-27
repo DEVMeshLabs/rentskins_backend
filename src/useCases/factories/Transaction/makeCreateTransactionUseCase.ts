@@ -1,13 +1,13 @@
-import { PrismaCartRepository } from "@/repositories/Prisma/prismaCartRepository";
 import { PrismaTransactionRepository } from "@/repositories/Prisma/prismaTransactionRepository";
+import { PagarMeProvider } from "@/useCases/Transaction/PagarMeProvider";
 import { CreateTransactionUseCase } from "@/useCases/Transaction/createTransactionUseCase";
 
 export function makeCreateTransactionUseCase() {
   const prismaSkinRepository = new PrismaTransactionRepository();
-  const cartRepositoryUseCase = new PrismaCartRepository();
+  const paymentProvider = new PagarMeProvider();
   const createSkinUseCase = new CreateTransactionUseCase(
     prismaSkinRepository,
-    cartRepositoryUseCase
+    paymentProvider
   );
 
   return createSkinUseCase;
