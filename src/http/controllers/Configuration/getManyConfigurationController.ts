@@ -1,4 +1,4 @@
-import { makeGetManyConfigurationUseCase } from "@/useCases/factories/Configuration/makeGetManyConfigurationUseCase";
+import { makeGetManyConfigurationUseCase } from "@/useCases/@factories/Configuration/makeGetManyConfigurationUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getManyConfigurationController(

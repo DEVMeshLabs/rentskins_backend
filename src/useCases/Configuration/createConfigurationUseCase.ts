@@ -1,6 +1,6 @@
 import { IConfigurationRepository } from "@/repositories/interface/IConfigurationRepository";
 import { Configuration } from "@prisma/client";
-import { ConfigurationAlreadyExistError } from "../errors/Configuration/ConfigurationAlreadyExistError";
+import { ConfigurationAlreadyExistError } from "../@errors/Configuration/ConfigurationAlreadyExistError";
 
 interface IConfigurationRepositoryRequest {
   owner_name: string;

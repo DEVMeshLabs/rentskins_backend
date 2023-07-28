@@ -1,5 +1,5 @@
-import { WalletAlreadyExistError } from "@/useCases/errors/Wallet/WalletAlreadyExistsError";
-import { makeCreateWalletUseCase } from "@/useCases/factories/Wallet/makeCreateWalletUseCase";
+import { WalletAlreadyExistError } from "@/useCases/@errors/Wallet/WalletAlreadyExistsError";
+import { makeCreateWalletUseCase } from "@/useCases/@factories/Wallet/makeCreateWalletUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 

@@ -1,4 +1,4 @@
-import { makeGetManyNameUseCase } from "@/useCases/factories/Skin/makeGetManyNameUseCase";
+import { makeGetManyNameUseCase } from "@/useCases/@factories/Skin/makeGetManyNameUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getManyNameController(

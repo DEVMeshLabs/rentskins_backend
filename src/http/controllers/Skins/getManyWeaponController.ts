@@ -1,4 +1,4 @@
-import { makeGetManyWeapon } from "@/useCases/factories/Skin/makeGetManyWeaponUseCase";
+import { makeGetManyWeapon } from "@/useCases/@factories/Skin/makeGetManyWeaponUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getManyWeaponController(

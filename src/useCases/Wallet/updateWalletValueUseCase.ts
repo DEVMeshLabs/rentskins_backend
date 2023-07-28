@@ -1,6 +1,6 @@
 import { Wallet } from "@prisma/client";
 import { IWalletRepository } from "@/repositories/interface/IWalletRepository";
-import { WalletNotExistsError } from "../errors/Wallet/WalletNotExistsError";
+import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 
 export class UpdateWalletValueUseCase {
   constructor(private walletRepository: IWalletRepository) {}

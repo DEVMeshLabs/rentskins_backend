@@ -1,5 +1,5 @@
-import { WalletNotExistsError } from "@/useCases/errors/Wallet/WalletNotExistsError";
-import { makeUpdateWalletValueUseCase } from "@/useCases/factories/Wallet/makeUpdateWalletValueUseCase";
+import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsError";
+import { makeUpdateWalletValueUseCase } from "@/useCases/@factories/Wallet/makeUpdateWalletValueUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 

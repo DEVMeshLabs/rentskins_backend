@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createNotificationSchema } from "./Schemas/createNotificationSchema";
-import { makeCreateNotificationUseCase } from "@/useCases/factories/Notification/makeCreateNotificationUseCase";
+import { makeCreateNotificationUseCase } from "@/useCases/@factories/Notification/makeCreateNotificationUseCase";
 import { z } from "zod";
-import { NotificationAlreadyExistError } from "@/useCases/errors/Notification/NotificationAlreadyExistError";
+import { NotificationAlreadyExistError } from "@/useCases/@errors/Notification/NotificationAlreadyExistError";
 
 export async function createNotificationController(
   req: FastifyRequest,

@@ -1,5 +1,5 @@
-import { SkinNotExistError } from "@/useCases/errors/Skin/SkinNotExistsError";
-import { makeDeleteSkinUseCase } from "@/useCases/factories/Skin/makeDeleteSkinUseCase";
+import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
+import { makeDeleteSkinUseCase } from "@/useCases/@factories/Skin/makeDeleteSkinUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function deleteSkinController(

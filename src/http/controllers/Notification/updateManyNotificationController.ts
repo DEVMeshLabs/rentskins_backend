@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { NotificationNotExistError } from "@/useCases/errors/Notification/NotificationNotExistError";
-import { makeUpdateManyNotificationUseCase } from "@/useCases/factories/Notification/makeUpdateNotificationUseCase";
+import { NotificationNotExistError } from "@/useCases/@errors/Notification/NotificationNotExistError";
+import { makeUpdateManyNotificationUseCase } from "@/useCases/@factories/Notification/makeUpdateNotificationUseCase";
 
 export async function updateManyNotificationController(
   req: FastifyRequest,

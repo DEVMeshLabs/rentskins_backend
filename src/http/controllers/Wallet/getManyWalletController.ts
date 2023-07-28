@@ -1,4 +1,4 @@
-import { makeGetManyWalletUseCase } from "@/useCases/factories/Wallet/makeGetManyWalletUseCase";
+import { makeGetManyWalletUseCase } from "@/useCases/@factories/Wallet/makeGetManyWalletUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getManyWalletController(

@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { makeGetUserNotificationUseCase } from "@/useCases/factories/Notification/makeGetUserNotificationUseCase";
-import { NotificationNotExistError } from "@/useCases/errors/Notification/NotificationNotExistError";
+import { makeGetUserNotificationUseCase } from "@/useCases/@factories/Notification/makeGetUserNotificationUseCase";
+import { NotificationNotExistError } from "@/useCases/@errors/Notification/NotificationNotExistError";
 
 export async function getUserNotificationController(
   req: FastifyRequest,

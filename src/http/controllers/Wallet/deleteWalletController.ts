@@ -1,5 +1,5 @@
-import { WalletNotExistsError } from "@/useCases/errors/Wallet/WalletNotExistsError";
-import { makeDeleteWalletUseCase } from "@/useCases/factories/Wallet/makeDeleteWalletUseCase";
+import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsError";
+import { makeDeleteWalletUseCase } from "@/useCases/@factories/Wallet/makeDeleteWalletUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function deleteWalletController(

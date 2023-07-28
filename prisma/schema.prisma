@@ -103,7 +103,7 @@ model Transaction {
   status               String    @db.VarChar(255)
   payment_type         String    @db.VarChar(255)
   installments         Int       @db.Integer()
-  total                String    @db.VarChar(255)
+  total                Float
   transaction_id       String    @db.VarChar(255)
   processor_response   String    @db.VarChar(255)
   customer_email       String    @db.VarChar(255)

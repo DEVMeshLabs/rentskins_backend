@@ -1,4 +1,4 @@
-import { makeCreateUseCase } from "@/useCases/factories/Skin/makeCreateSkinUseCase";
+import { makeCreateUseCase } from "@/useCases/@factories/Skin/makeCreateSkinUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 import createSkinSchema from "./Schemas/createSkinSchema";
 import { z } from "zod";

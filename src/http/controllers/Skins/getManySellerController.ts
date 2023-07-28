@@ -1,4 +1,4 @@
-import { makeGetManySellerUseCase } from "@/useCases/factories/Skin/makeGetManySellerUseCase";
+import { makeGetManySellerUseCase } from "@/useCases/@factories/Skin/makeGetManySellerUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getManyCartController(

@@ -1,6 +1,6 @@
 import { IConfigurationRepository } from "@/repositories/interface/IConfigurationRepository";
 import { Configuration } from "@prisma/client";
-import { ConfigurationNotExistError } from "../errors/Configuration/ConfigurationNotExistError";
+import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
 
 export class GetConfigurationUseCase {
   constructor(private configuration: IConfigurationRepository) {}

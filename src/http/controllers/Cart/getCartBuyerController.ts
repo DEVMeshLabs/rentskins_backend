@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { makeGetCartBuyerUseCase } from "@/useCases/factories/Cart/makeGetCartBuyerUseCase";
-import { CartNotExistError } from "@/useCases/errors/Cart/CartNotExistError";
+import { makeGetCartBuyerUseCase } from "@/useCases/@factories/Cart/makeGetCartBuyerUseCase";
+import { CartNotExistError } from "@/useCases/@errors/Cart/CartNotExistError";
 
 export async function getCartBuyerController(
   req: FastifyRequest,

@@ -1,5 +1,5 @@
-import { ConfigurationNotExistError } from "@/useCases/errors/Configuration/ConfigurationNotExistError";
-import { makeGetUserConfigurationUseCase } from "@/useCases/factories/Configuration/makeGetUserConfigurationUseCase";
+import { ConfigurationNotExistError } from "@/useCases/@errors/Configuration/ConfigurationNotExistError";
+import { makeGetUserConfigurationUseCase } from "@/useCases/@factories/Configuration/makeGetUserConfigurationUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getUserConfigurationController(

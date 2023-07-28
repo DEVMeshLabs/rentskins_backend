@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { CartNotExistError } from "@/useCases/errors/Cart/CartNotExistError";
-import { makeDeleteCartUseCase } from "@/useCases/factories/Cart/makeDeleteCartUseCase";
+import { CartNotExistError } from "@/useCases/@errors/Cart/CartNotExistError";
+import { makeDeleteCartUseCase } from "@/useCases/@factories/Cart/makeDeleteCartUseCase";
 
 export async function deleteCartController(
   req: FastifyRequest,

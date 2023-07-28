@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { makeGetManySkinNotification } from "@/useCases/factories/Notification/makeGetManySkinNotificationUseCase";
+import { makeGetManySkinNotification } from "@/useCases/@factories/Notification/makeGetManySkinNotificationUseCase";
 import { getManyUserNotificationSchema } from "./Schemas/getManyUserNotificationSchema";
 
 export async function getManySkinNotificationController(

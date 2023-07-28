@@ -1,5 +1,5 @@
-import { WalletNotExistsError } from "@/useCases/errors/Wallet/WalletNotExistsError";
-import { makeGetWalletUserUseCase } from "@/useCases/factories/Wallet/makeGetWalletUserUseCase";
+import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsError";
+import { makeGetWalletUserUseCase } from "@/useCases/@factories/Wallet/makeGetWalletUserUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getWalletUserController(
