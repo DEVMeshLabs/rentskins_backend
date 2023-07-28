@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createTransactionSchema } from "./Schemas/createTransactionSchema";
-import { makeCreateTransactionUseCase } from "@/useCases/factories/Transaction/makeCreateTransactionUseCase";
+import { makeCreateTransactionUseCase } from "@/useCases/@factories/Transaction/makeCreateTransactionUseCase";
 import { parsePhoneNumber } from "libphonenumber-js";
 
 export async function createTransactionController(
