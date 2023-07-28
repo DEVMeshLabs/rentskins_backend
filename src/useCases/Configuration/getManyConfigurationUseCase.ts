@@ -1,4 +1,4 @@
-import { IConfigurationRepository } from "@/repositories/interface/IConfigurationRepository";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { Configuration } from "@prisma/client";
 
 export class GetManyConfigurationUseCase {

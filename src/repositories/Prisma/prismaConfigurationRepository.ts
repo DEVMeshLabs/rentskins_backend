@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { IConfigurationRepository } from "../interface/IConfigurationRepository";
+import { IConfigurationRepository } from "../interfaceRepository/IConfigurationRepository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaConfigurationRepository implements IConfigurationRepository {

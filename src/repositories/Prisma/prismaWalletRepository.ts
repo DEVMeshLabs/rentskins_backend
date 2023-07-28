@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { IWalletRepository } from "../interface/IWalletRepository";
+import { IWalletRepository } from "../interfaceRepository/IWalletRepository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaWalletRepository implements IWalletRepository {

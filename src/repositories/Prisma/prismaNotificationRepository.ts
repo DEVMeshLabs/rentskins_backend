@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { INotificationRepository } from "../interface/INotificationRepository";
+import { INotificationRepository } from "../interfaceRepository/INotificationRepository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaNotificationRepository implements INotificationRepository {

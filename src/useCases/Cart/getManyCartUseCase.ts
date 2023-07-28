@@ -1,4 +1,4 @@
-import { ICartRepository } from "@/repositories/interface/ICartRepository";
+import { ICartRepository } from "@/repositories/interfaceRepository/ICartRepository";
 import { Cart } from "@prisma/client";
 
 export class GetManyCartUseCase {

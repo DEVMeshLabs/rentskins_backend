@@ -1,4 +1,4 @@
-import { ITransactionRepository } from "@/repositories/interface/ITransactionRepository";
+import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { PagarMeProvider } from "./PagarMeProvider";
 import { ValueInvalidError } from "../@errors/Transaction/ValueInvalidError";
 import { ITransactionRepositoryRequest } from "@/@types/ITransactionRepositoryRequest";

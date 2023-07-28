@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { ITransactionRepository } from "../interface/ITransactionRepository";
+import { ITransactionRepository } from "../interfaceRepository/ITransactionRepository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaTransactionRepository implements ITransactionRepository {
