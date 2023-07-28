@@ -1,6 +1,6 @@
 import { IWalletRepository } from "@/repositories/interface/IWalletRepository";
 import { Wallet } from "@prisma/client";
-import { WalletAlreadyExistError } from "../errors/Wallet/WalletAlreadyExistsError";
+import { WalletAlreadyExistError } from "../@errors/Wallet/WalletAlreadyExistsError";
 
 interface createWalletRequest {
   owner_name: string;

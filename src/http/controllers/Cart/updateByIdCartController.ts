@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { makeUpdateByIdCartUseCase } from "@/useCases/factories/Cart/makeUpdateByIdCartUseCase";
+import { makeUpdateByIdCartUseCase } from "@/useCases/@factories/Cart/makeUpdateByIdCartUseCase";
 import { updateByIdCartSchema } from "./Schemas/updateByIdCartSchema";
-import { CartNotExistError } from "@/useCases/errors/Cart/CartNotExistError";
+import { CartNotExistError } from "@/useCases/@errors/Cart/CartNotExistError";
 import { z } from "zod";
 
 export async function updateByIdCartController(

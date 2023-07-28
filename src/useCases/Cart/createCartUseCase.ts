@@ -1,6 +1,6 @@
 import { ICartRepository } from "@/repositories/interface/ICartRepository";
 import { Cart } from "@prisma/client";
-import { CartAlreadyExistError } from "../errors/Cart/CartAlreadyExistError";
+import { CartAlreadyExistError } from "../@errors/Cart/CartAlreadyExistError";
 
 interface createCartRequest {
   buyer_name: string;

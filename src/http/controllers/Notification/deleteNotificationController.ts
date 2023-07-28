@@ -1,6 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { NotificationNotExistError } from "@/useCases/errors/Notification/NotificationNotExistError";
-import { makeDeleteNotificationUseCase } from "@/useCases/factories/Notification/makeDeleteNotificationUseCase";
+import { NotificationNotExistError } from "@/useCases/@errors/Notification/NotificationNotExistError";
+import { makeDeleteNotificationUseCase } from "@/useCases/@factories/Notification/makeDeleteNotificationUseCase";
 
 export async function deleteNotificationController(
   req: FastifyRequest,

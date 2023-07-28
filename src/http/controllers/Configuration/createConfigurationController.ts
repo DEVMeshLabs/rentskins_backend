@@ -1,8 +1,8 @@
-import { makeCreateConfigurationUseCase } from "@/useCases/factories/Configuration/makeCreateConfigurationUseCase";
+import { makeCreateConfigurationUseCase } from "@/useCases/@factories/Configuration/makeCreateConfigurationUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createConfigurationSchema } from "./Schemas/createConfigurationSchema";
 import { z } from "zod";
-import { ConfigurationAlreadyExistError } from "@/useCases/errors/Configuration/ConfigurationAlreadyExistError";
+import { ConfigurationAlreadyExistError } from "@/useCases/@errors/Configuration/ConfigurationAlreadyExistError";
 
 export async function createConfigurationController(
   req: FastifyRequest,

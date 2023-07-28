@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { makeGetManyNotificationUseCase } from "@/useCases/factories/Notification/makeGetManyNotificationUseCase";
+import { makeGetManyNotificationUseCase } from "@/useCases/@factories/Notification/makeGetManyNotificationUseCase";
 
 export async function getManyNotificationController(
   req: FastifyRequest,

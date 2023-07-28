@@ -6,20 +6,23 @@ export async function getFloatSkinController(
   reply: FastifyReply
 ) {
   const { id } = req.params as { id: string };
-  const { link, assetid } = req.body as { link: string; assetid: string };
+  const { assetid, inspectLinks } = req.body as {
+    inspectLinks: string;
+    assetid: string;
+  };
 
-  console.log("Iniciando");
+  console.log("Começando...");
   user.on("loggedOn", () => {
     user.gamesPlayed(730);
-    console.log("Com");
-    csgo.on("connectedToGC", () => {
+    console.log("Entrou");
+    csgo.on("connectedToGC", async () => {
       console.log("Logado!");
-      const filteredID = link.split("%D")[1];
-      return csgo.inspectItem(id, assetid, filteredID, ({ paintwear }) => {
-        console.log(paintwear);
-        return reply.status(200).send(paintwear);
-      });
+      if (csgo.haveGCSession) {
+        const filteredID = inspectLinks.split("%D")[1];
+        csgo.inspectItem(id, assetid, filteredID, ({ paintwear }) =>
+          reply.send(paintwear)
+        );
+      }
     });
   });
-  user.on("error", (error) => console.log(error));
 }

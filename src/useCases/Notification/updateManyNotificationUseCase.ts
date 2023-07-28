@@ -1,5 +1,5 @@
 import { INotificationRepository } from "@/repositories/interface/INotificationRepository";
-import { NotificationNotExistError } from "../errors/Notification/NotificationNotExistError";
+import { NotificationNotExistError } from "../@errors/Notification/NotificationNotExistError";
 
 export class UpdateManyNotificationUseCase {
   constructor(private notification: INotificationRepository) {}

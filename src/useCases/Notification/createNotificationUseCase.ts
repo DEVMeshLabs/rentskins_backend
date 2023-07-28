@@ -1,12 +1,6 @@
+import { NotificationRequest } from "@/@types/INotificationRequest";
 import { INotificationRepository } from "@/repositories/interface/INotificationRepository";
 import { Notification } from "@prisma/client";
-
-interface NotificationRequest {
-  owner_name: string;
-  owner_id: string;
-  description: string;
-  skin_id?: string;
-}
 
 export class CreateNotificationUseCase {
   constructor(private notification: INotificationRepository) {}

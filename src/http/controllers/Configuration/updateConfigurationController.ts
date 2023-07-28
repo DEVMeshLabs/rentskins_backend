@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 import { updateConfigurationSchema } from "./Schemas/updateConfigurationSchema";
-import { makeUpdateConfigurationUseCase } from "@/useCases/factories/Configuration/makeUpdateConfigurationUSeCase";
-import { ConfigurationNotExistError } from "@/useCases/errors/Configuration/ConfigurationNotExistError";
+import { makeUpdateConfigurationUseCase } from "@/useCases/@factories/Configuration/makeUpdateConfigurationUSeCase";
+import { ConfigurationNotExistError } from "@/useCases/@errors/Configuration/ConfigurationNotExistError";
 
 export async function updateConfigurationController(
   req: FastifyRequest,

@@ -7,7 +7,7 @@ export const createTransactionSchema = Yup.object({
   processor_response: Yup.string(),
   transaction_id: Yup.string(),
   payment_type: Yup.mixed().oneOf(["billet", "credit_card"]).required(),
-  total: Yup.string().required(),
+  total: Yup.number().required(),
   installments: Yup.number()
     .min(1)
     .when("payment_type", {

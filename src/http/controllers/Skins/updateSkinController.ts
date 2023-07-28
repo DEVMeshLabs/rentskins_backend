@@ -1,5 +1,5 @@
-import { SkinNotExistError } from "@/useCases/errors/Skin/SkinNotExistsError";
-import { makeUpdateSkinUseCase } from "@/useCases/factories/Skin/makeUpdateSkinUseCase";
+import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
+import { makeUpdateSkinUseCase } from "@/useCases/@factories/Skin/makeUpdateSkinUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export function updateSkinController(req: FastifyRequest, reply: FastifyReply) {

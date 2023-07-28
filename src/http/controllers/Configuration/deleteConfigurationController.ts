@@ -1,5 +1,5 @@
-import { ConfigurationNotExistError } from "@/useCases/errors/Configuration/ConfigurationNotExistError";
-import { makeDeleteConfigurationUseCase } from "@/useCases/factories/Configuration/makeDeleteConfigurationUseCase";
+import { ConfigurationNotExistError } from "@/useCases/@errors/Configuration/ConfigurationNotExistError";
+import { makeDeleteConfigurationUseCase } from "@/useCases/@factories/Configuration/makeDeleteConfigurationUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function deleteConfigurationController(

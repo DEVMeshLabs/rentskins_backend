@@ -1,4 +1,4 @@
-import { makeGetManyCategory } from "@/useCases/factories/Skin/makeGetManyCategory";
+import { makeGetManyCategory } from "@/useCases/@factories/Skin/makeGetManyCategory";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getManyCategoryController(

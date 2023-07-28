@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { makeGetManyCart } from "@/useCases/factories/Cart/makeGetManyCartUseCase";
+import { makeGetManyCart } from "@/useCases/@factories/Cart/makeGetManyCartUseCase";
 
 export async function getManyCartController(
   req: FastifyRequest,

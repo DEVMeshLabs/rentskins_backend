@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createCartSchema } from "./Schemas/createCartSchema";
-import { makeCreateCartUseCase } from "@/useCases/factories/Cart/makeCreateCartUseCase";
+import { makeCreateCartUseCase } from "@/useCases/@factories/Cart/makeCreateCartUseCase";
 import { z } from "zod";
-import { CartAlreadyExistError } from "@/useCases/errors/Cart/CartAlreadyExistError";
+import { CartAlreadyExistError } from "@/useCases/@errors/Cart/CartAlreadyExistError";
 
 export async function createCartController(
   req: FastifyRequest,
