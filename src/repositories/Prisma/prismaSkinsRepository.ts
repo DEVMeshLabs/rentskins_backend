@@ -1,6 +1,6 @@
 import { Prisma } from ".prisma/client";
 import { prisma } from "@/lib/prisma";
-import { ISkinsRepository } from "../interface/ISkinsRepository";
+import { ISkinsRepository } from "../interfaceRepository/ISkinsRepository";
 
 export class PrismaSkinRepository implements ISkinsRepository {
   async create(data: Prisma.SkinCreateManyInput) {

@@ -1,5 +1,5 @@
 import { NotificationRequest } from "@/@types/INotificationRequest";
-import { INotificationRepository } from "@/repositories/interface/INotificationRepository";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { Notification } from "@prisma/client";
 
 export class CreateNotificationUseCase {

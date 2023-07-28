@@ -1,4 +1,4 @@
-import { IWalletRepository } from "@/repositories/interface/IWalletRepository";
+import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { Wallet } from "@prisma/client";
 import { WalletAlreadyExistError } from "../@errors/Wallet/WalletAlreadyExistsError";
 

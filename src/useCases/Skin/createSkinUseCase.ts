@@ -1,5 +1,5 @@
 import { CreateSkinsUseCaseRequest } from "@/@types/ICreateSkinsRequest";
-import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
+import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { Prisma } from "@prisma/client";
 
 export class CreateSkinUseCase {

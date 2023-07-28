@@ -1,4 +1,4 @@
-import { INotificationRepository } from "@/repositories/interface/INotificationRepository";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { DataFilter } from "@/utils/dataFilterDay";
 import { Notification } from "@prisma/client";
 

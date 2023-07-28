@@ -1,4 +1,4 @@
-import { INotificationRepository } from "@/repositories/interface/INotificationRepository";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { NotificationNotExistError } from "../@errors/Notification/NotificationNotExistError";
 
 export class UpdateManyNotificationUseCase {

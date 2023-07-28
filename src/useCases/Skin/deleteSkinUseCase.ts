@@ -1,4 +1,4 @@
-import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
+import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 import { Skin } from "@prisma/client";
