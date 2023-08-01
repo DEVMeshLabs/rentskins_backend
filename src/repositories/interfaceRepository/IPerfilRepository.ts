@@ -1,6 +1,9 @@
-import { PerfilInfo, Prisma } from "@prisma/client";
+import { Perfil, Prisma } from "@prisma/client";
 
-export interface IPerfilInfoRepository {
-  create(data: Prisma.PerfilInfoCreateInput): Promise<PerfilInfo>;
-  findByUser(owner_id: string): Promise<PerfilInfo | null>;
+export interface IPerfilRepository {
+  create(data: Prisma.PerfilCreateInput): Promise<Perfil>;
+  findByUser(owner_id: string): Promise<Perfil | null>;
+  findById(id: string): Promise<Perfil | null>;
+  updateById(id: string, data: Prisma.PerfilUpdateInput): Promise<Perfil>;
+  deletePerfil(id: string): Promise<Perfil>;
 }
