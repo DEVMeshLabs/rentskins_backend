@@ -14,6 +14,8 @@ export async function createPerfilController(
       delivery_fee,
       delivery_time,
       total_exchanges,
+      account_date,
+      steam_level,
     } = createPerfilInfoSchema.parse(req.body);
 
     const makePerfil = makeCreatePerfil();
@@ -23,6 +25,8 @@ export async function createPerfilController(
       delivery_fee,
       delivery_time,
       total_exchanges,
+      account_date,
+      steam_level,
     });
   } catch (error) {
     if (error instanceof PerfilAlreadyExistError) {

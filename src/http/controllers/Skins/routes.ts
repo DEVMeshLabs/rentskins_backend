@@ -14,9 +14,9 @@ import { getFloatSkinController } from "./getFloatSkinController";
 import { verifyJwt } from "@/http/middlewares/verifyJwt";
 
 export async function skinRouter(app: FastifyInstance) {
+  app.addHook("onRequest", verifyJwt);
   app.post("/v1/skins", createSkinController);
   app.post("/v1/skins/inventory/:id", getInventoryController);
-  app.addHook("onRequest", verifyJwt);
   app.delete("/v1/skins/:id", deleteSkinController);
   app.put("/v1/skins/:id", updateSkinController);
   app.post("/v1/skins/float/:id", getFloatSkinController);

@@ -17,6 +17,7 @@ export async function createPerfilDateController(
       delivery_fee,
       delivery_time,
       total_exchanges,
+      steam_level,
     } = createPerfilInfoSchema.parse(req.body);
 
     const response = await axios.get(
@@ -34,6 +35,7 @@ export async function createPerfilDateController(
       delivery_time,
       total_exchanges,
       account_date: accountCreationDate,
+      steam_level,
     });
 
     return reply.status(200).send(createPerfil);
