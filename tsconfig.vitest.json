@@ -1,7 +1,9 @@
 {
   "extends": "./tsconfig.json",
-  "include": [],
-  "exclude": ["vitest/**/*"],
+  "include": [
+    "vitest/**/*"
+  ],
+  "exclude": [],
   "compilerOptions": {
     "composite": true,
     "lib": [],
