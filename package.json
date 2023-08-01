@@ -11,7 +11,7 @@
     "start:test": "tsx watch src/server2.ts",
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
-    "test": "vitest run",
+    "test": "vitest run --dir src/useCases",
     "test:watch": "vitest"
   },
   "keywords": [],
