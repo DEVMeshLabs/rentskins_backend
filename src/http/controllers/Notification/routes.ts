@@ -6,11 +6,12 @@ import { getNotificationController } from "./getNotificationController";
 import { deleteNotificationController } from "./deleteNotificationController";
 import { updateManyNotificationController } from "./updateManyNotificationController";
 import { getManySkinNotificationController } from "./getManyUserNotificationController";
+import { verifyJwt } from "@/http/middlewares/verifyJwt";
 // import { verifyJwt } from "@/http/middlewares/verifyJwt";
 
 export async function notificationRouter(app: FastifyInstance) {
-  // app.addHook("onRequest", verifyJwt);
   app.post("/v1/notification", createNotificationController);
+  app.addHook("onRequest", verifyJwt);
   app.delete("/v1/notification/:id", deleteNotificationController);
   app.put("/v1/notification/:owner_id", updateManyNotificationController);
   app.get("/v1/notification", getManyNotificationController);

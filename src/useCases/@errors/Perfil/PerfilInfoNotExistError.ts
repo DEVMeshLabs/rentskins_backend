@@ -1,4 +1,4 @@
-export class PerfilInfoNotExistError extends Error {
+export class PerfilNotExistError extends Error {
   constructor() {
     super("Perfil not Exists");
   }

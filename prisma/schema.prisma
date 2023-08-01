@@ -85,13 +85,14 @@ model Notification {
   deletedAt   DateTime?
 }
 
-model PerfilInfo {
+model Perfil {
   id              String    @id @default(uuid()) @db.VarChar(36)
   owner_id        String    @db.VarChar(255)
   status_member   String?   @default("Membro novo") @db.VarChar(255)
   delivery_time   String?   @default("Sem informações no momento") @db.VarChar(255)
   delivery_fee    String?   @default("Sem informações no momento") @db.VarChar(255)
   total_exchanges String?   @default("Sem informações no momento") @db.VarChar(255)
+  account_date    DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime?
   deletedAt       DateTime?

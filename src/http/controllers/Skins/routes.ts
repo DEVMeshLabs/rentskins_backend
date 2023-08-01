@@ -11,12 +11,14 @@ import { updateSkinController } from "./updateSkinController";
 import { getManyNameController } from "./getManyNameController";
 import { getManyCartController } from "./getManySellerController";
 import { getFloatSkinController } from "./getFloatSkinController";
+import { verifyJwt } from "@/http/middlewares/verifyJwt";
 
 export async function skinRouter(app: FastifyInstance) {
-  app.delete("/v1/skins/:id", deleteSkinController);
-  app.put("/v1/skins/:id", updateSkinController);
   app.post("/v1/skins", createSkinController);
   app.post("/v1/skins/inventory/:id", getInventoryController);
+  app.addHook("onRequest", verifyJwt);
+  app.delete("/v1/skins/:id", deleteSkinController);
+  app.put("/v1/skins/:id", updateSkinController);
   app.post("/v1/skins/float/:id", getFloatSkinController);
   app.get("/v1/skins", getSkinManyController);
   app.get("/v1/skins/:id", getSkinController);

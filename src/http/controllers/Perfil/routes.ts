@@ -1,8 +1,15 @@
 import { FastifyInstance } from "fastify";
-import { createPerfilInfoController } from "./createPerfilInfoController";
-import { getUserPerfilInfoController } from "./getUserPerfilInfoController";
+import { getUserPerfilController } from "./getUserPerfilController";
+import { updatePerfilController } from "./updatePerfilController";
+import { deletePerfilController } from "./deletePerfilController";
+import { createPerfilDateController } from "../Steam/createPerfilDateSteamUserController";
+import { verifyJwt } from "@/http/middlewares/verifyJwt";
 
 export async function perfilRouter(app: FastifyInstance) {
-  app.post("/v1/perfil", createPerfilInfoController);
-  app.get("/v1/perfil/:owner_id", getUserPerfilInfoController);
+  app.post("/v1/perfil/:id", createPerfilDateController);
+  app.addHook("onRequest", verifyJwt);
+  app.get("/v1/perfil/user/:owner_id", getUserPerfilController);
+  app.get("/v1/perfil/:id", getUserPerfilController);
+  app.put("/v1/perfil/:id", updatePerfilController);
+  app.delete("/v1/perfil/:id", deletePerfilController);
 }
