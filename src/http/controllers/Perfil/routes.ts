@@ -6,7 +6,7 @@ import { createPerfilDateController } from "../Steam/createPerfilDateSteamUserCo
 import { verifyJwt } from "@/http/middlewares/verifyJwt";
 
 export async function perfilRouter(app: FastifyInstance) {
-  app.post("/v1/perfil/:id", createPerfilDateController);
+  app.post("/v1/perfil", createPerfilDateController);
   app.addHook("onRequest", verifyJwt);
   app.get("/v1/perfil/user/:owner_id", getUserPerfilController);
   app.get("/v1/perfil/:id", getUserPerfilController);

@@ -8,8 +8,6 @@ export async function createPerfilDateController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { id } = req.params as { id: string };
-
   try {
     const {
       owner_id,
@@ -21,7 +19,7 @@ export async function createPerfilDateController(
     } = createPerfilInfoSchema.parse(req.body);
 
     const response = await axios.get(
-      `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${id}`
+      `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`
     );
 
     const playerData = response.data.response.players[0];
