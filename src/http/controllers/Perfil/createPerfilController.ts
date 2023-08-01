@@ -1,9 +1,9 @@
-import { makeCreatePerfilInfo } from "@/useCases/@factories/PerfilInfo/makeCreatePerfilInfo";
+import { makeCreatePerfil } from "@/useCases/@factories/Perfil/makeCreatePerfil";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createPerfilInfoSchema } from "./Schemas/createPerfilInfoSchema";
-import { PerfilInfoAlreadyExistError } from "@/useCases/@errors/Perfil/PerfilInfoAlreadyExistError";
+import { PerfilAlreadyExistError } from "@/useCases/@errors/Perfil/PerfilInfoAlreadyExistError";
 
-export async function createPerfilInfoController(
+export async function createPerfilController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
@@ -16,7 +16,7 @@ export async function createPerfilInfoController(
       total_exchanges,
     } = createPerfilInfoSchema.parse(req.body);
 
-    const makePerfil = makeCreatePerfilInfo();
+    const makePerfil = makeCreatePerfil();
     await makePerfil.execute({
       owner_id,
       status_member,
@@ -25,7 +25,7 @@ export async function createPerfilInfoController(
       total_exchanges,
     });
   } catch (error) {
-    if (error instanceof PerfilInfoAlreadyExistError) {
+    if (error instanceof PerfilAlreadyExistError) {
       return reply.status(409).send({ error: error.message });
     }
     throw error;
