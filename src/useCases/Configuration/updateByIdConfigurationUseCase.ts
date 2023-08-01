@@ -18,16 +18,7 @@ export class UpdateByIdUseCase {
 
   async execute(
     id: string,
-    {
-      owner_id,
-      owner_name,
-      owner_email,
-      agreed_with_emails,
-      agreed_with_terms,
-      steam_guard,
-      url_sell,
-      url_trade,
-    }: IConfigurationUseCaseRequest
+    data: IConfigurationUseCaseRequest
   ): Promise<Configuration> {
     const findConfig = await this.configuration.findById(id);
 
@@ -35,16 +26,7 @@ export class UpdateByIdUseCase {
       throw new ConfigurationNotExistError();
     }
 
-    const updateId = await this.configuration.updateById(id, {
-      owner_id,
-      owner_name,
-      owner_email,
-      agreed_with_emails,
-      agreed_with_terms,
-      steam_guard,
-      url_sell,
-      url_trade,
-    });
+    const updateId = await this.configuration.updateById(id, { ...data });
 
     return updateId;
   }
