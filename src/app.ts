@@ -9,6 +9,7 @@ import { cartRouter } from "./http/controllers/Cart/routes";
 import { transactionRouter } from "./http/controllers/Transaction/routes";
 import { steamRouter } from "./http/controllers/Steam/routes";
 import { perfilRouter } from "./http/controllers/Perfil/routes";
+import { tokenRouter } from "./http/controllers/routes";
 
 export const app = fastify();
 
@@ -20,6 +21,7 @@ app.register(cartRouter);
 app.register(transactionRouter);
 app.register(perfilRouter);
 app.register(steamRouter);
+app.register(tokenRouter);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {

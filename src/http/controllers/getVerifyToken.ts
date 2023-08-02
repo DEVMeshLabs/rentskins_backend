@@ -2,7 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import jwt from "jsonwebtoken";
 import { env } from "@/env";
 
-export async function verifyJwt(req: FastifyRequest, reply: FastifyReply) {
+export async function getVerifyToken(req: FastifyRequest, reply: FastifyReply) {
   const bearToken = req.headers.authorization;
 
   if (!bearToken) {
