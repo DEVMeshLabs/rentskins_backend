@@ -1,7 +1,6 @@
 import { makeCreatePerfil } from "@/useCases/@factories/Perfil/makeCreatePerfil";
-import axios from "axios";
+// import axios from "axios";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { env } from "process";
 import { createPerfilInfoSchema } from "../Perfil/Schemas/createPerfilInfoSchema";
 
 export async function createPerfilDateController(
@@ -9,30 +8,19 @@ export async function createPerfilDateController(
   reply: FastifyReply
 ) {
   try {
-    const {
-      owner_id,
-      status_member,
-      delivery_fee,
-      delivery_time,
-      total_exchanges,
-      steam_level,
-    } = createPerfilInfoSchema.parse(req.body);
+    const { owner_id, steam_level } = createPerfilInfoSchema.parse(req.body);
 
-    const response = await axios.get(
-      `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`
-    );
+    // const response = await axios.get(
+    //   `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`
+    // );
 
-    const playerData = response.data.response.players[0];
-    const accountCreationDate = new Date(playerData.timecreated * 1000);
+    // const playerData = response.data.response.players[0];
+    // const accountCreationDate = new Date(playerData.timecreated * 1000);
     const makePerfilRepository = makeCreatePerfil();
 
     const createPerfil = await makePerfilRepository.execute({
       owner_id,
-      status_member,
-      delivery_fee,
-      delivery_time,
-      total_exchanges,
-      account_date: accountCreationDate,
+      account_date: null,
       steam_level,
     });
 
