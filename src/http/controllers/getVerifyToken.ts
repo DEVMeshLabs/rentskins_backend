@@ -6,7 +6,7 @@ export async function getVerifyToken(req: FastifyRequest, reply: FastifyReply) {
   const bearToken = req.headers.authorization;
 
   if (!bearToken) {
-    return reply.redirect(401, "/");
+    return reply.redirect("/");
   }
   const token = bearToken.split("Bearer ")[1];
 
@@ -15,6 +15,6 @@ export async function getVerifyToken(req: FastifyRequest, reply: FastifyReply) {
 
     return decode;
   } catch (error) {
-    return reply.redirect(403, "/");
+    return reply.redirect("/");
   }
 }
