@@ -1,16 +1,16 @@
 import { PerfilNotExistError } from "@/useCases/@errors/Perfil/PerfilInfoNotExistError";
-import { makeGetUserPerfil } from "@/useCases/@factories/Perfil/makeGetUserPerfil";
+import { makeGetPerfil } from "@/useCases/@factories/Perfil/makeGetPerfil";
 
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export async function getUserPerfilController(
+export async function getPerfilController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
   const { id } = req.params as { id: string };
 
   try {
-    const getUserPerfilInfoUserUseCase = makeGetUserPerfil();
+    const getUserPerfilInfoUserUseCase = makeGetPerfil();
     const perfil = await getUserPerfilInfoUserUseCase.execute(id);
     return reply.status(200).send(perfil);
   } catch (error) {

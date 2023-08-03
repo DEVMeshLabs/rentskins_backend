@@ -28,6 +28,7 @@ model Skin {
   status          String         @db.VarChar(255)
   status_float    String         @db.VarChar(255)
   sale_type       String?        @db.VarChar(255)
+  sellerAt        DateTime?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime?
   deletedAt       DateTime?
@@ -88,12 +89,12 @@ model Notification {
 model Perfil {
   id              String    @id @default(uuid()) @db.VarChar(36)
   owner_id        String    @db.VarChar(255)
-  status_member   String    @default("Membro novo") @db.VarChar(255)
-  delivery_time   String    @default("Sem informações no momento") @db.VarChar(255)
-  delivery_fee    String    @default("Sem informações no momento") @db.VarChar(255)
-  total_exchanges String    @default("Sem informações no momento") @db.VarChar(255)
+  status_member   String?   @default("Membro novo") @db.VarChar(255)
+  delivery_time   String?   @default("Sem informações no momento") @db.VarChar(255)
+  delivery_fee    String?   @default("Sem informações no momento") @db.VarChar(255)
+  total_exchanges String?   @default("Sem informações no momento") @db.VarChar(255)
   steam_level     String    @db.VarChar(255)
-  account_date    DateTime
+  account_date    DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime?
   deletedAt       DateTime?
