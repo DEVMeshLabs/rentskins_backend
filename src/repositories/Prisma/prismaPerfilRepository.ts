@@ -32,6 +32,14 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     return updateId;
   }
 
+  async updateLevel(id: string, steam_level: number) {
+    const updateId = await prisma.perfil.update({
+      where: { id },
+      data: { steam_level, updatedAt: new Date() },
+    });
+    return updateId;
+  }
+
   async deletePerfil(id: string) {
     const deletePerfil = await prisma.perfil.update({
       where: { id },

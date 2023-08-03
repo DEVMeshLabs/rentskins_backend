@@ -9,13 +9,8 @@ export async function updatePerfilController(
 ) {
   const { id } = req.params as { id: string };
 
-  const {
-    delivery_fee,
-    delivery_time,
-    owner_id,
-    status_member,
-    total_exchanges,
-  } = updatePerfilInfoSchema.parse(req.body);
+  const { delivery_fee, delivery_time, owner_id, status_member, steam_level } =
+    updatePerfilInfoSchema.parse(req.body);
 
   try {
     const getUserPerfilInfoUserUseCase = makeUpdatePerfil();
@@ -24,7 +19,7 @@ export async function updatePerfilController(
       delivery_time,
       owner_id,
       status_member,
-      total_exchanges,
+      steam_level,
     });
     return reply.status(200).send(perfil);
   } catch (error) {
