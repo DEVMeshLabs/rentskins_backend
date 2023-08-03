@@ -21,8 +21,11 @@ export class GetUserPerfilUseCase {
     }
 
     if (walletUser.steam_level !== steamLevel) {
-      await this.perfilRepository.updateLevel(walletUser.id, steamLevel);
-      return walletUser;
+      const updateLevel = await this.perfilRepository.updateLevel(
+        walletUser.id,
+        steamLevel
+      );
+      return updateLevel;
     }
 
     return walletUser;
