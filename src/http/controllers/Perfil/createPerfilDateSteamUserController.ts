@@ -1,30 +1,34 @@
 import { makeCreatePerfil } from "@/useCases/@factories/Perfil/makeCreatePerfil";
-import axios from "axios";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { createPerfilInfoSchema } from "../Perfil/Schemas/createPerfilInfoSchema";
 import { env } from "process";
+import { getAllData } from "@/utils/getAllResponse";
+
 export async function createPerfilDateController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
   try {
-    const { owner_id, steam_level } = createPerfilInfoSchema.parse(req.body);
+    const { owner_id } = req.body as { owner_id: string };
 
-    const response = await axios.get(
-      `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`
-    );
+    const steamURLs = [
+      `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`,
+      `https://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=${env.STEAM_KEY}&steamid=${owner_id}`,
+    ];
 
-    const playerData = response.data.response.players[0];
-    const accountCreationDate = new Date(playerData.timecreated * 1000);
+    const resp = await getAllData(steamURLs)
+      .then((resp) => resp)
+      .catch((e) => console.log(e));
+
+    const playerData = resp[0].data.response.players;
+    const accountCreationDate = new Date(playerData[0].timecreated * 1000);
     const makePerfilRepository = makeCreatePerfil();
 
-    const createPerfil = await makePerfilRepository.execute({
+    await makePerfilRepository.execute({
       owner_id,
       account_date: accountCreationDate,
-      steam_level,
+      steam_level: resp[1].data.response.player_level,
     });
-
-    return reply.status(200).send(createPerfil);
+    return reply.status(200).send();
   } catch (error) {
     console.error("Erro ao obter a data de criação da conta:", error);
     return reply.status(404).send({ error: error.message });
