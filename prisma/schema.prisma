@@ -92,8 +92,8 @@ model Perfil {
   status_member   String?   @default("Membro novo") @db.VarChar(255)
   delivery_time   String?   @default("Sem informações no momento") @db.VarChar(255)
   delivery_fee    String?   @default("Sem informações no momento") @db.VarChar(255)
-  total_exchanges String?   @default("Sem informações no momento") @db.VarChar(255)
-  steam_level     String    @db.VarChar(255)
+  total_exchanges Int       @default(0) @db.Integer
+  steam_level     Int?      @db.Integer
   account_date    DateTime?
   createdAt       DateTime  @default(now())
   updatedAt       DateTime?
