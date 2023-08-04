@@ -9,6 +9,8 @@ export class CreatePerfilUseCase {
     owner_id,
     steam_level,
     account_date,
+    picture,
+    owner_name,
   }: Prisma.PerfilCreateInput): Promise<Perfil> {
     const getUser = await this.perfilRepository.findByUser(owner_id);
 
@@ -18,6 +20,8 @@ export class CreatePerfilUseCase {
 
     const create = await this.perfilRepository.create({
       owner_id,
+      owner_name,
+      picture,
       steam_level,
       account_date,
     });
