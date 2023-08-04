@@ -15,4 +15,5 @@ export interface CreateSkinsUseCaseRequest {
   status: string;
   status_float: string;
   sale_type: string;
+  cartId: string;
 }

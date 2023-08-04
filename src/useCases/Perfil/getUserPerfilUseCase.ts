@@ -12,7 +12,6 @@ export class GetUserPerfilUseCase {
       `https://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=${env.STEAM_KEY}&steamid=${owner_id}`
     );
     const steamLevel = response.data.response.player_level;
-    console.log(response.data.response.player_level);
 
     const walletUser = await this.perfilRepository.findByUser(owner_id);
 
