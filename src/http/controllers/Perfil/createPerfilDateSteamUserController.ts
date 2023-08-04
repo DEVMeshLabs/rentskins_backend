@@ -2,13 +2,16 @@ import { makeCreatePerfil } from "@/useCases/@factories/Perfil/makeCreatePerfil"
 import { FastifyRequest, FastifyReply } from "fastify";
 import { env } from "process";
 import { getAllData } from "@/utils/getAllResponse";
+import { createPerfilInfoSchema } from "./Schemas/createPerfilInfoSchema";
 
 export async function createPerfilDateController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
   try {
-    const { owner_id } = req.body as { owner_id: string };
+    const { owner_id, owner_name, picture } = createPerfilInfoSchema.parse(
+      req.body
+    );
 
     const steamURLs = [
       `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`,
@@ -27,6 +30,8 @@ export async function createPerfilDateController(
       owner_id,
       account_date: accountCreationDate,
       steam_level: resp[1].data.response.player_level,
+      owner_name,
+      picture,
     });
     return reply.status(200).send();
   } catch (error) {

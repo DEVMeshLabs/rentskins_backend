@@ -29,16 +29,16 @@ export class PrismaCartRepository implements ICartRepository {
 
   async findById(id: string) {
     const findId = await prisma.cart.findFirst({
-      include: { buyer_skins: true },
       where: { id, deletedAt: null },
+      include: { buyer_skins: true },
     });
     return findId;
   }
 
   async findByBuyer(buyer_id: string) {
     const findBuyer = await prisma.cart.findFirst({
-      include: { buyer_skins: true },
       where: { buyer_id, deletedAt: null },
+      include: { buyer_skins: true },
     });
     return findBuyer;
   }
