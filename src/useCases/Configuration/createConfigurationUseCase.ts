@@ -1,7 +1,6 @@
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
-import { Configuration } from "@prisma/client";
+import { Configuration, Prisma } from "@prisma/client";
 import { ConfigurationAlreadyExistError } from "../@errors/Configuration/ConfigurationAlreadyExistError";
-import { IConfigurationRepositoryRequest } from "@/@types/ICreateConfigurationRequest";
 
 export class CreateConfigurationUseCase {
   constructor(private configurationRepository: IConfigurationRepository) {}
@@ -15,7 +14,8 @@ export class CreateConfigurationUseCase {
     steam_guard,
     agreed_with_emails,
     agreed_with_terms,
-  }: IConfigurationRepositoryRequest): Promise<Configuration> {
+    owner_phone,
+  }: Prisma.ConfigurationCreateInput): Promise<Configuration> {
     const findUser = await this.configurationRepository.findByUser(owner_id);
 
     if (findUser) {
@@ -26,6 +26,7 @@ export class CreateConfigurationUseCase {
       owner_id,
       owner_email,
       owner_name,
+      owner_phone,
       url_sell,
       url_trade,
       steam_guard,

@@ -39,10 +39,9 @@ model Skin {
 
 model Cart {
   id          String    @id @default(uuid()) @db.VarChar(36)
-  buyer_name  String    @db.VarChar(255)
   buyer_id    String    @db.VarChar(255)
-  buyer_skins Skin[]
   price       String    @default("0") @db.VarChar(255)
+  buyer_skins Skin[]
   createdAt   DateTime  @default(now())
   updatedAt   DateTime?
   deletedAt   DateTime?
@@ -63,6 +62,7 @@ model Configuration {
   owner_name         String    @db.VarChar(255)
   owner_id           String    @db.VarChar(255)
   owner_email        String    @db.VarChar(255)
+  owner_phone        String    @db.VarChar(255)
   url_trade          String    @db.VarChar(255)
   url_sell           String    @db.VarChar(255)
   agreed_with_emails Boolean?  @default(false)
