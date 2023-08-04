@@ -32,19 +32,28 @@ model Skin {
   createdAt       DateTime       @default(now())
   updatedAt       DateTime?
   deletedAt       DateTime?
-  cartId          String?
-  Cart            Cart?          @relation(fields: [cartId], references: [id])
   Notification    Notification[]
+  SkinToCart      SkinToCart[]
+}
+
+model SkinToCart {
+  id     String @id @default(uuid()) @db.VarChar(36)
+  skinId String @db.VarChar(255)
+  cartId String @db.VarChar(255)
+
+  skin Skin @relation(fields: [skinId], references: [id])
+  cart Cart @relation(fields: [cartId], references: [id])
 }
 
 model Cart {
-  id          String    @id @default(uuid()) @db.VarChar(36)
-  buyer_id    String    @db.VarChar(255)
-  price       String    @default("0") @db.VarChar(255)
-  buyer_skins Skin[]
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime?
-  deletedAt   DateTime?
+  id         String       @id @default(uuid()) @db.VarChar(36)
+  buyer_id   String       @db.VarChar(255)
+  price      String       @default("0") @db.VarChar(255)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?
+  deletedAt  DateTime?
+  skinId     String?      @db.VarChar(36)
+  SkinToCart SkinToCart[]
 }
 
 model Wallet {
@@ -92,8 +101,8 @@ model Perfil {
   owner_name      String    @db.VarChar(255)
   picture         String    @db.VarChar(255)
   status_member   String?   @default("Membro novo") @db.VarChar(255)
-  delivery_time   String?   @default("Sem informações no momento") @db.VarChar(255)
-  delivery_fee    String?   @default("Sem informações no momento") @db.VarChar(255)
+  delivery_time   String?   @default("Sem informações") @db.VarChar(255)
+  delivery_fee    Int       @default(0)
   total_exchanges Int       @default(0) @db.Integer
   steam_level     Int?      @db.Integer
   account_date    DateTime?

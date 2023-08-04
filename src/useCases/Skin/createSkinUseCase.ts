@@ -21,6 +21,7 @@ export class CreateSkinUseCase {
     status,
     status_float,
     sale_type,
+    cartId,
   }: CreateSkinsUseCaseRequest): Promise<Prisma.BatchPayload> {
     const skins = await this.skinsRepository.create({
       skin_image,
@@ -39,6 +40,7 @@ export class CreateSkinUseCase {
       status,
       status_float,
       sale_type,
+      cartId,
     });
 
     return skins;
