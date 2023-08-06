@@ -3,7 +3,7 @@ import { DeleteSkinToCartUseCase } from "@/useCases/SkinToCart/deleteSkinToCartU
 
 export function makeDeleteSkinToCase() {
   const prismaSkinRepository = new PrismaSkinToCartRepository();
-  const createSkinUseCase = new DeleteSkinToCartUseCase(prismaSkinRepository);
+  const deleteSkinToCart = new DeleteSkinToCartUseCase(prismaSkinRepository);
 
-  return createSkinUseCase;
+  return deleteSkinToCart;
 }
