@@ -3,7 +3,7 @@ import { GetSkinToCartUseCase } from "@/useCases/SkinToCart/getSkinToCartUseCase
 
 export function makeGetSkinToCart() {
   const prismaSkinRepository = new PrismaSkinToCartRepository();
-  const createSkinUseCase = new GetSkinToCartUseCase(prismaSkinRepository);
+  const getSkinToCart = new GetSkinToCartUseCase(prismaSkinRepository);
 
-  return createSkinUseCase;
+  return getSkinToCart;
 }
