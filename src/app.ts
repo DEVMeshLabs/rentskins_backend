@@ -32,8 +32,6 @@ app.setErrorHandler((error, _, reply) => {
 
   if (env.NODE_ENV !== "production") {
     console.error(error);
-  } else {
-    // Todo: Aqui a gente utilizaria uma ferramente externa
   }
 
   return reply.status(500).send({ message: "Internal server error" });

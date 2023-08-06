@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { Prisma } from "@prisma/client";
+import { Prisma, SkinToCart } from "@prisma/client";
 import { ISkinToCartRepository } from "../interfaceRepository/ISkinToCartRepository";
 
 export class PrismaSkinToCartRepository implements ISkinToCartRepository {
@@ -8,5 +8,19 @@ export class PrismaSkinToCartRepository implements ISkinToCartRepository {
       data,
     });
     return createSkinToCart;
+  }
+
+  async deleteSkin(id: string) {
+    const deleteSkinToCart = await prisma.skinToCart.delete({
+      where: { id },
+    });
+    return deleteSkinToCart;
+  }
+
+  async findById(id: string): Promise<SkinToCart> {
+    const findSkinToCart = await prisma.skinToCart.findUnique({
+      where: { id },
+    });
+    return findSkinToCart;
   }
 }

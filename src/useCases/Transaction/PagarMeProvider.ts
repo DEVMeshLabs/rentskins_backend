@@ -117,7 +117,6 @@ export class PagarMeProvider {
     const client = await pagarme.client.connect({
       api_key: "asdada",
     });
-    const response = await client.transaction.create(transactionParams);
-    console.log(response);
+    await client.transaction.create(transactionParams);
   }
 }

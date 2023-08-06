@@ -1,9 +1,14 @@
 import { PrismaSkinToCartRepository } from "@/repositories/Prisma/prismaSkinToCartRepository";
-import { CreateSkinToCartUseCase } from "@/useCases/skinToCart/createSkinToCartUseCase";
+import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
+import { CreateSkinToCartUseCase } from "@/useCases/SkinToCart/createSkinToCartUseCase";
 
 export function makeCreateSkinToCart() {
-  const prismaSkinRepository = new PrismaSkinToCartRepository();
-  const createSkinUseCase = new CreateSkinToCartUseCase(prismaSkinRepository);
+  const prismaSkinToCartRepository = new PrismaSkinToCartRepository();
+  const prismaSkinRepository = new PrismaSkinRepository();
+  const createSkinUseCase = new CreateSkinToCartUseCase(
+    prismaSkinToCartRepository,
+    prismaSkinRepository
+  );
 
   return createSkinUseCase;
 }
