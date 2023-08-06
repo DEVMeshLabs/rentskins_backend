@@ -20,7 +20,7 @@ export async function createPerfilDateController(
 
     const resp = await getAllData(steamURLs)
       .then((resp) => resp)
-      .catch((e) => console.log(e));
+      .catch((e) => reply.status(500).send({ error: e.message }));
 
     const playerData = resp[0].data.response.players;
     const accountCreationDate = new Date(playerData[0].timecreated * 1000);

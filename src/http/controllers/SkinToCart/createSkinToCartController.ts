@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { makeCreateSkinToCart } from "@/useCases/@factories/SkinToCart/makeCreateSkinToCart";
+import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
 
 export async function createSkinToCartController(
   req: FastifyRequest,
@@ -10,7 +11,10 @@ export async function createSkinToCartController(
     const createSkinToCart = makeCreateSkinToCart();
     await createSkinToCart.execute({ skinId, cartId });
   } catch (error) {
-    return reply.status(500).send({ error: error.message });
+    if (error instanceof SkinNotExistError) {
+      return reply.status(404).send({ error: error.message });
+    }
+    throw error;
   }
   return reply.status(201).send();
 }
