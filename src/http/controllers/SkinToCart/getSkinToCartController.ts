@@ -1,6 +1,6 @@
-import { FastifyRequest, FastifyReply } from "fastify";
-import { makeGetSkinToCart } from "@/useCases/@factories/SkinToCart/makeGetSkinToCart";
 import { SkinToCartNotExistError } from "@/useCases/@errors/SkinToCart/skinToCartNotError";
+import { makeGetSkinToCart } from "@/useCases/@factories/SkinToCart/makeGetSkinToCart";
+import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getSkinToCartController(
   req: FastifyRequest,

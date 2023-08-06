@@ -1,6 +1,6 @@
-import { FastifyRequest, FastifyReply } from "fastify";
 import { SkinToCartNotExistError } from "@/useCases/@errors/SkinToCart/skinToCartNotError";
 import { makeDeleteSkinToCase } from "@/useCases/@factories/SkinToCart/makeDeleteSkinToCart";
+import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function deleteSkinToCartController(
   req: FastifyRequest,
