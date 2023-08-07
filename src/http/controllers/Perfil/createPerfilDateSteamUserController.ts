@@ -38,7 +38,7 @@ export async function createPerfilDateController(
     if (error instanceof PerfilAlreadyExistError) {
       return reply.status(409).send({ error: error.message });
     }
-
+    console.log(error);
     throw error;
   }
   return reply.status(200).send();
