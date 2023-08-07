@@ -7,7 +7,7 @@ export interface IConfigurationRepository {
   create(data: Prisma.ConfigurationCreateInput): Promise<Configuration>;
   updateById(
     id: string,
-    data: Prisma.ConfigurationUpdateInput
-  ): Promise<Configuration>;
+    data: Prisma.ConfigurationUncheckedUpdateManyInput
+  ): Promise<Prisma.BatchPayload>;
   delete(id: string): Promise<Configuration>;
 }
