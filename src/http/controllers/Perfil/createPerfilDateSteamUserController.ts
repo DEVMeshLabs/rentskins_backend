@@ -3,6 +3,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { env } from "process";
 import { getAllData } from "@/utils/getAllResponse";
 import { createPerfilInfoSchema } from "./Schemas/createPerfilInfoSchema";
+import { PerfilAlreadyExistError } from "@/useCases/@errors/Perfil/PerfilInfoAlreadyExistError";
 
 export async function createPerfilDateController(
   req: FastifyRequest,
@@ -33,9 +34,12 @@ export async function createPerfilDateController(
       owner_name,
       picture,
     });
-    return reply.status(200).send();
   } catch (error) {
-    console.error("Erro ao obter a data de criação da conta:", error);
-    return reply.status(404).send({ error: error.message });
+    if (error instanceof PerfilAlreadyExistError) {
+      return reply.status(409).send({ error: error.message });
+    }
+
+    throw error;
   }
+  return reply.status(200).send();
 }
