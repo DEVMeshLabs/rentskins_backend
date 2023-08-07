@@ -1,5 +1,5 @@
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
-import { Configuration, Prisma } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
 
 // interface IConfigurationUseCaseRequest {
@@ -18,16 +18,16 @@ export class UpdateByIdUseCase {
   constructor(private configuration: IConfigurationRepository) {}
 
   async execute(
-    id: string,
+    owner_id: string,
     data: Prisma.ConfigurationUpdateInput
-  ): Promise<Configuration> {
-    const findConfig = await this.configuration.findById(id);
+  ): Promise<Prisma.BatchPayload> {
+    const findConfig = await this.configuration.findByUser(owner_id);
 
     if (!findConfig) {
       throw new ConfigurationNotExistError();
     }
 
-    const updateId = await this.configuration.updateById(id, { ...data });
+    const updateId = await this.configuration.updateById(owner_id, { ...data });
 
     return updateId;
   }

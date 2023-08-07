@@ -6,7 +6,7 @@ export interface IConfigurationRepository {
   findByMany(): Promise<Configuration[]>;
   create(data: Prisma.ConfigurationCreateInput): Promise<Configuration>;
   updateById(
-    id: string,
+    owner_id: string,
     data: Prisma.ConfigurationUncheckedUpdateManyInput
   ): Promise<Prisma.BatchPayload>;
   delete(id: string): Promise<Configuration>;
