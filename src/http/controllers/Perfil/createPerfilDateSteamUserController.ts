@@ -38,8 +38,7 @@ export async function createPerfilDateController(
     if (error instanceof PerfilAlreadyExistError) {
       return reply.status(409).send({ error: error.message });
     }
-    console.error("Erro ao obter a data de criação da conta:", error);
-    return reply.status(500).send({ error: error.message });
+    throw error;
   }
   return reply.status(201).send();
 }

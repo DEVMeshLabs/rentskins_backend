@@ -20,9 +20,10 @@ export async function updateConfigurationController(
       steam_guard,
       agreed_with_emails,
       agreed_with_terms,
+      owner_phone,
     } = updateConfigurationSchema.parse(req.body);
-    const createConfig = makeUpdateConfigurationUseCase();
-    await createConfig.execute(id, {
+    const updateConfig = makeUpdateConfigurationUseCase();
+    await updateConfig.execute(id, {
       owner_id,
       owner_email,
       owner_name,
@@ -31,6 +32,7 @@ export async function updateConfigurationController(
       steam_guard,
       agreed_with_emails,
       agreed_with_terms,
+      owner_phone,
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
