@@ -102,8 +102,8 @@ model Perfil {
   picture         String    @db.VarChar(255)
   status_member   String?   @default("Membro novo") @db.VarChar(255)
   delivery_time   String?   @default("Sem informações") @db.VarChar(255)
-  delivery_fee    Int       @default(0)
-  total_exchanges Int       @default(0) @db.Integer
+  delivery_fee    Int?      @default(0)
+  total_exchanges Int?      @default(0) @db.Integer
   steam_level     Int?      @db.Integer
   account_date    DateTime?
   createdAt       DateTime  @default(now())
