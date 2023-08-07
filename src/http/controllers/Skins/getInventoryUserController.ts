@@ -1,5 +1,4 @@
 import { DataPagination } from "@/utils/dataPagination";
-import FloatParser from "@/utils/floatParser";
 import { FastifyRequest, FastifyReply } from "fastify";
 import SteamCommunity from "steamcommunity";
 import { z } from "zod";
@@ -46,14 +45,9 @@ export function getInventoryController(
             return true;
           });
           if (filterType.length === 0) {
-            return reply.send({
-              float: [FloatParser.execute(filterInventory, id, reply)],
-              inventory: DataPagination.execute(
-                page,
-                itemsPerPage,
-                filterInventory
-              ),
-            });
+            return reply.send(
+              DataPagination.execute(page, itemsPerPage, filterInventory)
+            );
           } else {
             const filter = filterInventory.filter((item) => {
               if (!filterType.includes(item.tags[0].name)) {
