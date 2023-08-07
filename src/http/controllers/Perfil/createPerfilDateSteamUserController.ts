@@ -41,5 +41,5 @@ export async function createPerfilDateController(
     console.error("Erro ao obter a data de criação da conta:", error);
     return reply.status(500).send({ error: error.message });
   }
-  return reply.status(200).send();
+  return reply.status(201).send();
 }
