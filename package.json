@@ -36,6 +36,7 @@
     "pagarme": "^4.32.0",
     "steam-user": "^4.28.9",
     "steamcommunity": "^3.46.1",
+    "ts-node": "^10.9.1",
     "tsup": "^7.1.0",
     "yup": "^1.2.0",
     "zod": "^3.21.4"
