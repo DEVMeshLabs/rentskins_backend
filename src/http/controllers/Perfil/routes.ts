@@ -7,8 +7,10 @@ import { getPerfilController } from "./getPerfilController";
 import { createPerfilDateController } from "./createPerfilDateSteamUserController";
 import { dateController } from "./dateController";
 import { getManyPerfilController } from "./getManyPerfilController";
+import { getManyTypeUserController } from "./getManyTypeUserController";
 
 export async function perfilRouter(app: FastifyInstance) {
+  app.get("/v1/perfil/user", getManyTypeUserController);
   app.get("/v1/perfil/user/:owner_id", getUserPerfilController);
   app.get("/v1/perfil/:id", getPerfilController);
   app.get("/v1/perfil", getManyPerfilController);
