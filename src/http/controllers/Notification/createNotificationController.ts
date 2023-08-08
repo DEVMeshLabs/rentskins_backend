@@ -3,6 +3,7 @@ import { createNotificationSchema } from "./Schemas/createNotificationSchema";
 import { makeCreateNotificationUseCase } from "@/useCases/@factories/Notification/makeCreateNotificationUseCase";
 import { z } from "zod";
 import { NotificationAlreadyExistError } from "@/useCases/@errors/Notification/NotificationAlreadyExistError";
+import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
 
 export async function createNotificationController(
   req: FastifyRequest,
@@ -25,6 +26,8 @@ export async function createNotificationController(
         .send({ message: "Erro de validação", error: error.errors });
     } else if (error instanceof NotificationAlreadyExistError) {
       return reply.status(409).send({ error: error.message });
+    } else if (error instanceof SkinNotExistError) {
+      return reply.status(404).send({ error: error.message });
     }
 
     throw error;
