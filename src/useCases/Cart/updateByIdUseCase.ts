@@ -1,18 +1,10 @@
 import { ICartRepository } from "@/repositories/interfaceRepository/ICartRepository";
-import { Cart } from "@prisma/client";
+import { Cart, Prisma } from "@prisma/client";
 import { CartNotExistError } from "../@errors/Cart/CartNotExistError";
-
-interface IUpdateRequest {
-  buyer_name: string;
-  price: string;
-}
 
 export class UpdateByIdCartUseCase {
   constructor(private cartRepository: ICartRepository) {}
-  async execute(
-    id: string,
-    { buyer_name, price }: IUpdateRequest
-  ): Promise<Cart> {
+  async execute(id: string, { price }: Prisma.CartUpdateInput): Promise<Cart> {
     const getCart = await this.cartRepository.findById(id);
 
     if (!getCart) {
@@ -20,7 +12,6 @@ export class UpdateByIdCartUseCase {
     }
 
     const updateId = await this.cartRepository.updateById(id, {
-      buyer_name,
       price,
     });
     return updateId;
