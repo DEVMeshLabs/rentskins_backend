@@ -9,15 +9,22 @@ export async function updatePerfilController(
 ) {
   const { id } = req.params as { id: string };
 
-  const { delivery_fee, delivery_time, owner_id, status_member, steam_level } =
-    updatePerfilInfoSchema.parse(req.body);
+  const {
+    delivery_fee,
+    delivery_time,
+    owner_id,
+    status_member,
+    steam_level,
+    owner_type,
+  } = updatePerfilInfoSchema.parse(req.body);
 
   try {
     const getUserPerfilInfoUserUseCase = makeUpdatePerfil();
     const perfil = await getUserPerfilInfoUserUseCase.execute(id, {
+      owner_id,
+      owner_type,
       delivery_fee,
       delivery_time,
-      owner_id,
       status_member,
       steam_level,
     });
