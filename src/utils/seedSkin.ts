@@ -1,0 +1,95 @@
+export const seedSkin = [
+  {
+    skin_image:
+      "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJegJL_9C3moS0kfv7IbrdqWdY781lxLiSpd_w3wKw-xJrZDihJYCRIwI4MF-BqAC7kLzu0cXt6pyYmic2vHI8pSGKyuyQkBc",
+    skin_name: "AK-47 | Wild Lotus",
+    skin_category: "Rifle",
+    skin_weapon: "AK-47",
+    skin_price: "1000",
+    skin_float: "0,10072",
+    seller_name: "AK-47 | Wild Lotus (Factory New)",
+    seller_id: "54269984",
+    skin_color: "D2D2D2",
+    status: "Pending",
+    sale_type: "Covert Rifle",
+    status_float: "Bem desgastada",
+    skin_link_game:
+      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20S%owner_steamid%A%assetid%D16744955894659066229",
+    skin_link_steam: "/",
+  },
+  {
+    skin_image:
+      "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot7HxfDhjxszJegJK6d2yq5ODmOPLO7TdmVRd4cJ5nqfF8dWi0FfjrRFlYGyhI9DEJAc8Z13TrALswey508S-v8_JmyAw73Uk-z-DyPm3Zsr8",
+    skin_name: "StatTrak™ AK-47 | Head Shot",
+    skin_category: "Rifle",
+    skin_weapon: "AK-47",
+    skin_price: "550",
+    skin_float: "0,20072",
+    seller_name: "StatTrak™ AK-47 | Head Shot (Factory New)",
+    seller_id: "54269984",
+    skin_color: "CF6A32",
+    status: "Pending",
+    sale_type: "Caçadora",
+    status_float: "Muito usada",
+    skin_link_game:
+      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M%listingid%A%assetid%D5189316852568057297",
+    skin_link_steam: "/",
+  },
+
+  {
+    skin_image:
+      "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposLOzLhRlxfbGTj5X09q_goWYkuHxPYTEhGlQ5vp5i_PA54jKhF2zowdyZ2z1LYCTJgQ9NwmG-1G9xb3qhMS0vZ7Jm3UyvSAg7HuMyRW_hhhOaPsv26Lv8Ntyjw",
+    skin_name: "StatTrak™ Five-SeveN | Urban Hazard",
+    skin_category: "Pistol",
+    skin_weapon: "Five-SeveN",
+    skin_price: "250",
+    skin_float: "0,30172",
+    seller_name: "StatTrak™ Five-SeveN | Urban Hazard (Factory New)",
+    seller_id: "522269984",
+    skin_color: "CF6A32",
+    status: "Pending",
+    sale_type: "Caçadora",
+    status_float: "Muito usada",
+    skin_link_game:
+      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M%listingid%A%assetid%D11874867041708458711",
+    skin_link_steam: "/",
+  },
+
+  {
+    skin_image:
+      "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou6r8FAZu7OHNdQJO5du-gM7bwqb2MeuClTsCv8Ek2LiZ9t2giwa28hVlZGD0doSUIANqYV_U_gC2366x0j0WoURS",
+    skin_name: "Souvenir MP9 | Hot Rod",
+    skin_category: "SMG",
+    skin_weapon: "MP9",
+    skin_price: "1600",
+    skin_float: "0,25172",
+    seller_name: "Souvenir MP9 | Hot Rod (Factory New)",
+    seller_id: "53269984",
+    skin_color: "FFD700",
+    status: "Pending",
+    sale_type: "Caçadora",
+    status_float: "Nova de Fábrica",
+    skin_link_game:
+      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M%listingid%A%assetid%D6963847357978421468",
+    skin_link_steam: "/",
+  },
+
+  {
+    skin_image:
+      "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf3qr3czxb49KzgL-KmsjmJrnIqWZQ-sd9j-Db8IjKhF2zowdyYzjyLIGSIAA8YguCqVK9lOa-1JW5vprBz3EyviB07SveyhfkhklNP_sv26JLM0iiyQ",
+    skin_name: "★ StatTrak™ M9 Bayonet | Doppler",
+    skin_category: "Knife",
+    skin_weapon: "MP9",
+    skin_price: "2000",
+    skin_float: "0,25172",
+    seller_name: "★ StatTrak™ M9 Bayonet | Doppler (Factory New)",
+    seller_id: "54119984",
+    skin_color: "8650AC",
+    status: "Pending",
+    sale_type: "Caçadora",
+    status_float: "Pouco usada",
+    skin_link_game:
+      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M%listingid%A%assetid%D14854042335630554542",
+    skin_link_steam: "/",
+  },
+];
