@@ -6,10 +6,12 @@ import { verifyJwt } from "@/http/middlewares/verifyJwt";
 import { getPerfilController } from "./getPerfilController";
 import { createPerfilDateController } from "./createPerfilDateSteamUserController";
 import { dateController } from "./dateController";
+import { getManyPerfilController } from "./getManyPerfilController";
 
 export async function perfilRouter(app: FastifyInstance) {
   app.get("/v1/perfil/user/:owner_id", getUserPerfilController);
   app.get("/v1/perfil/:id", getPerfilController);
+  app.get("/v1/perfil", getManyPerfilController);
 
   app.post("/v1/perfil", { onRequest: verifyJwt }, createPerfilDateController);
   app.post(

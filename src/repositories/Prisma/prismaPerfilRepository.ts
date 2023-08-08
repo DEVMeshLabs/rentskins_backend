@@ -24,6 +24,13 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     return perfilId;
   }
 
+  async findByMany() {
+    const perfilId = await prisma.perfil.findMany({
+      where: { deletedAt: null },
+    });
+    return perfilId;
+  }
+
   async updateById(id: string, date: Prisma.PerfilUpdateInput) {
     const updateId = await prisma.perfil.update({
       where: { id },
