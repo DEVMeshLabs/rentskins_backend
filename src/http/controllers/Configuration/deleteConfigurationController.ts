@@ -18,5 +18,5 @@ export async function deleteConfigurationController(
 
     throw error;
   }
-  return reply.status(200).send();
+  return reply.status(204).send();
 }

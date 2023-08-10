@@ -9,9 +9,9 @@ export async function getCartBuyerController(
   const { buyer_id } = req.params as { buyer_id: string };
 
   try {
-    const makeGet = makeGetCartBuyerUseCase();
-    const getCart = await makeGet.execute(buyer_id);
-    return reply.status(200).send(getCart);
+    const makeGetCartBuyer = makeGetCartBuyerUseCase();
+    const response = await makeGetCartBuyer.execute(buyer_id);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof CartNotExistError) {
       return reply.status(404).send({ error: error.message });

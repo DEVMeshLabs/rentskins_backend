@@ -7,8 +7,8 @@ export async function getManyNotificationController(
 ) {
   try {
     const makeCreateNot = makeGetManyNotificationUseCase();
-    const all = await makeCreateNot.execute();
-    return reply.status(200).send(all);
+    const response = await makeCreateNot.execute();
+    return reply.status(200).send(response);
   } catch (error) {
     throw new Error();
   }

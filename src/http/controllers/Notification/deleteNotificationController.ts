@@ -10,12 +10,13 @@ export async function deleteNotificationController(
 
   try {
     const makeDelete = makeDeleteNotificationUseCase();
-    const deleteId = await makeDelete.execute(id);
-    return reply.status(200).send(deleteId);
+    await makeDelete.execute(id);
   } catch (error) {
     if (error instanceof NotificationNotExistError) {
       return reply.status(404).send({ error: error.message });
     }
     throw error;
   }
+
+  return reply.status(204).send();
 }

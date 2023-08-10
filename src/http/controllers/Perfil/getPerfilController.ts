@@ -11,8 +11,8 @@ export async function getPerfilController(
 
   try {
     const getUserPerfilInfoUserUseCase = makeGetPerfil();
-    const perfil = await getUserPerfilInfoUserUseCase.execute(id);
-    return reply.status(200).send(perfil);
+    const response = await getUserPerfilInfoUserUseCase.execute(id);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof PerfilNotExistError) {
       return reply.status(404).send({ error: error.message });

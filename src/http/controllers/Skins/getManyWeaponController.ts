@@ -10,8 +10,9 @@ export async function getManyWeaponController(
   try {
     const getManyWeapon = makeGetManyWeapon();
 
-    const findAll = await getManyWeapon.execute(weapon);
-    return reply.status(200).send(findAll);
+    const response = await getManyWeapon.execute(weapon);
+
+    return reply.status(200).send(response);
   } catch (error) {
     throw new Error();
   }

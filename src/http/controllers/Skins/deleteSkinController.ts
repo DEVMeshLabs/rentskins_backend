@@ -17,5 +17,5 @@ export async function deleteSkinController(
     }
     throw error;
   }
-  return reply.status(200).send();
+  return reply.status(204).send();
 }

@@ -10,8 +10,8 @@ export async function getSkinSellerController(
 
   try {
     const getSkinSellerUseCase = makeGetSkinSeller();
-    const findBySeller = await getSkinSellerUseCase.execute(seller_id);
-    return reply.status(200).send(findBySeller);
+    const response = await getSkinSellerUseCase.execute(seller_id);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof SellerNotExistError) {
       return reply.status(404).send({ message: error.message });

@@ -10,8 +10,8 @@ export async function getManySkinNotificationController(
   const { tempo } = getManyUserNotificationSchema.parse(req.body);
   try {
     const makeCreateNot = makeGetManySkinNotification();
-    const all = await makeCreateNot.execute(owner_id, tempo);
-    return reply.status(200).send(all);
+    const response = await makeCreateNot.execute(owner_id, tempo);
+    return reply.status(200).send(response);
   } catch (error) {
     throw new Error();
   }

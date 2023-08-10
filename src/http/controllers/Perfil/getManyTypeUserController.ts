@@ -10,8 +10,8 @@ export async function getManyTypeUserController(
     const { owner_type } = req.query as { owner_type: string };
 
     const getManyPerfilInfoUserUseCase = makeGetManyTypeUser();
-    const perfilType = await getManyPerfilInfoUserUseCase.execute(owner_type);
-    return reply.status(200).send(perfilType);
+    const response = await getManyPerfilInfoUserUseCase.execute(owner_type);
+    return reply.status(200).send(response);
   } catch (error) {
     return reply.status(500).send(error.message);
   }

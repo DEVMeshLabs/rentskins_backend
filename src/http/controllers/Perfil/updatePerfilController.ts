@@ -20,7 +20,7 @@ export async function updatePerfilController(
 
   try {
     const getUserPerfilInfoUserUseCase = makeUpdatePerfil();
-    const perfil = await getUserPerfilInfoUserUseCase.execute(id, {
+    await getUserPerfilInfoUserUseCase.execute(id, {
       owner_id,
       owner_type,
       delivery_fee,
@@ -28,11 +28,12 @@ export async function updatePerfilController(
       status_member,
       steam_level,
     });
-    return reply.status(200).send(perfil);
   } catch (error) {
     if (error instanceof PerfilNotExistError) {
       return reply.status(404).send({ error: error.message });
     }
     throw error;
   }
+
+  return reply.status(204).send();
 }
