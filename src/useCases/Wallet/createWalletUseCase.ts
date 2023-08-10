@@ -1,12 +1,7 @@
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
-import { Wallet } from "@prisma/client";
+import { Prisma, Wallet } from "@prisma/client";
 import { WalletAlreadyExistError } from "../@errors/Wallet/WalletAlreadyExistsError";
 import { ICartRepository } from "@/repositories/interfaceRepository/ICartRepository";
-
-interface createWalletRequest {
-  owner_name: string;
-  owner_id: string;
-}
 
 export class CreateWalletUseCase {
   constructor(
@@ -17,7 +12,7 @@ export class CreateWalletUseCase {
   async execute({
     owner_id,
     owner_name,
-  }: createWalletRequest): Promise<Wallet> {
+  }: Prisma.WalletCreateInput): Promise<Wallet> {
     const isAlreadyExists = await this.walletRepository.findByUser(owner_id);
 
     if (isAlreadyExists) {
