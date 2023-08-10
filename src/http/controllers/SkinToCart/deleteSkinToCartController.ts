@@ -8,13 +8,13 @@ export async function deleteSkinToCartController(
 ) {
   try {
     const { id } = req.params as { id: string };
-    const getSkinToCart = makeDeleteSkinToCase();
-    await getSkinToCart.execute(id);
+    const deleteSkinToCase = makeDeleteSkinToCase();
+    await deleteSkinToCase.execute(id);
   } catch (error) {
     if (error instanceof SkinToCartNotExistError) {
       return reply.status(404).send({ error: error.message });
     }
     throw error;
   }
-  return reply.status(200).send();
+  return reply.status(204).send();
 }

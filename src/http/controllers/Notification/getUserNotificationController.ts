@@ -10,8 +10,8 @@ export async function getUserNotificationController(
 
   try {
     const makeUserNot = makeGetUserNotificationUseCase();
-    const findUser = await makeUserNot.execute(owner_id);
-    return reply.status(200).send(findUser);
+    const response = await makeUserNot.execute(owner_id);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof NotificationNotExistError) {
       return reply.status(404).send({ error: error.message });

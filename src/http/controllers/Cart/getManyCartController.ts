@@ -7,8 +7,8 @@ export async function getManyCartController(
 ) {
   try {
     const makeGetMany = makeGetManyCart();
-    const getMany = await makeGetMany.execute();
-    return reply.status(200).send(getMany);
+    const response = await makeGetMany.execute();
+    return reply.status(200).send(response);
   } catch (error) {
     throw new Error();
   }

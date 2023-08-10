@@ -7,7 +7,7 @@ export async function getManyConfigurationController(
 ) {
   try {
     const makeGetMany = makeGetManyConfigurationUseCase();
-    const all = await makeGetMany.execute();
-    return reply.status(200).send(all);
+    const response = await makeGetMany.execute();
+    return reply.status(200).send(response);
   } catch (error) {}
 }

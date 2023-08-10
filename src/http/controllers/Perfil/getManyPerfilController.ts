@@ -8,8 +8,8 @@ export async function getManyPerfilController(
 ) {
   try {
     const getManyPerfilInfoUserUseCase = makeGetManyPerfil();
-    const perfil = await getManyPerfilInfoUserUseCase.execute();
-    return reply.status(200).send(perfil);
+    const response = await getManyPerfilInfoUserUseCase.execute();
+    return reply.status(200).send(response);
   } catch (error) {
     throw new Error();
   }

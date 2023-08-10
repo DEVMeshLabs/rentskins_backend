@@ -9,12 +9,11 @@ export async function updateByIdCartController(
   reply: FastifyReply
 ) {
   const { id } = req.params as { id: string };
-  const { buyer_name, price } = updateByIdCartSchema.parse(req.body);
+  const { price } = updateByIdCartSchema.parse(req.body);
 
   try {
-    const makeGet = makeUpdateByIdCartUseCase();
-    const getCart = await makeGet.execute(id, { buyer_name, price });
-    return reply.status(200).send(getCart);
+    const makeUpdateByIdUseCase = makeUpdateByIdCartUseCase();
+    await makeUpdateByIdUseCase.execute(id, { price });
   } catch (error) {
     if (error instanceof CartNotExistError) {
       return reply.status(404).send({ error: error.message });
@@ -25,4 +24,6 @@ export async function updateByIdCartController(
     }
     throw new Error();
   }
+
+  return reply.status(204).send();
 }

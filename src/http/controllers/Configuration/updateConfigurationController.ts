@@ -44,4 +44,6 @@ export async function updateConfigurationController(
     }
     throw error;
   }
+
+  return reply.status(204).send();
 }

@@ -9,9 +9,9 @@ export async function getManyNameController(
   try {
     const getManyName = makeGetManyNameUseCase();
 
-    const getMany = await getManyName.execute(name);
+    const response = await getManyName.execute(name);
 
-    return reply.status(200).send(getMany);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof Error) {
       return reply.status(404).send({ error: error.message });

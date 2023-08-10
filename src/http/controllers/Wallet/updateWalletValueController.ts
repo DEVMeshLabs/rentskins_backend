@@ -3,7 +3,7 @@ import { makeUpdateWalletValueUseCase } from "@/useCases/@factories/Wallet/makeU
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 
-export async function updateWalletValueController(
+export async function updateWalletUserValueController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
@@ -28,5 +28,5 @@ export async function updateWalletValueController(
     throw error;
   }
 
-  return reply.status(200).send();
+  return reply.status(204).send();
 }

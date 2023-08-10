@@ -10,8 +10,8 @@ export async function getConfigurationController(
 
   try {
     const makeGetConfiguration = makeGetConfigurationUseCase();
-    const findConfig = await makeGetConfiguration.execute(id);
-    return reply.status(200).send(findConfig);
+    const response = await makeGetConfiguration.execute(id);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof ConfigurationNotExistError) {
       return reply.status(404).send({ error: error.message });

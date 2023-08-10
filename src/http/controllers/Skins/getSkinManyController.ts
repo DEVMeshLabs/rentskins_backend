@@ -7,9 +7,9 @@ export async function getSkinManyController(
 ) {
   try {
     const getSkinMany = makeGetSkinMany();
+    const response = await getSkinMany.execute();
 
-    const findAll = await getSkinMany.execute();
-    return reply.status(200).send(findAll);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof Error) {
       return reply.status(404).send({ error: error.message });

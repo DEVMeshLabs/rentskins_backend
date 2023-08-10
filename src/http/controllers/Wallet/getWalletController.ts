@@ -10,8 +10,8 @@ export async function getWalletController(
 
   try {
     const getWalletUseCase = makeGetWalletUseCase();
-    const wallet = await getWalletUseCase.execute(id);
-    return reply.status(200).send(wallet);
+    const response = await getWalletUseCase.execute(id);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof WalletNotExistsError) {
       return reply.status(404).send({ error: error.message });

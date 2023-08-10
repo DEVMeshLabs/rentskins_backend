@@ -10,8 +10,8 @@ export async function getNotificationController(
 
   try {
     const makeGetNot = makeGetNotificationUseCase();
-    const findId = await makeGetNot.execute(id);
-    return reply.status(200).send(findId);
+    const response = await makeGetNot.execute(id);
+    return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof NotificationNotExistError) {
       return reply.status(404).send({ error: error.message });

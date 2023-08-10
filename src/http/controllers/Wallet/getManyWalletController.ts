@@ -7,8 +7,8 @@ export async function getManyWalletController(
 ) {
   try {
     const getManyWallet = makeGetManyWalletUseCase();
-    const wallet = await getManyWallet.execute();
-    return reply.status(201).send(wallet);
+    const response = await getManyWallet.execute();
+    return reply.status(200).send(response);
   } catch (error) {
     throw new Error();
   }
