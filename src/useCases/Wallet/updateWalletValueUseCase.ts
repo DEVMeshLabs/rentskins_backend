@@ -5,9 +5,10 @@ import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 export class UpdateWalletValueUseCase {
   constructor(private walletRepository: IWalletRepository) {}
 
-  async execute(id: string, value: string): Promise<Wallet> {
+  async execute(id: string, type: string, value: number): Promise<Wallet> {
     const updateValue = await this.walletRepository.updateByUserValue(
       id,
+      type,
       value
     );
 

@@ -60,7 +60,7 @@ model Wallet {
   id         String    @id @default(uuid()) @db.VarChar(36)
   owner_name String    @db.VarChar(255)
   owner_id   String    @db.VarChar(255)
-  value      String    @default("0") @db.VarChar(255)
+  value      Float     @default(0)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime?
   deletedAt  DateTime?

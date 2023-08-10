@@ -6,10 +6,11 @@ import { getWalletUserController } from "./getWalletUserController";
 import { deleteWalletController } from "./deleteWalletController";
 import { updateWalletUserValueController } from "./updateWalletValueController";
 import { verifyJwt } from "@/http/middlewares/verifyJwt";
+import { updateWalletsValueUsersController } from "./updateWalletsValueUsersController";
 
 export async function walletRouter(app: FastifyInstance) {
   app.post("/v1/wallet", createWalletController);
-
+  app.put("/v1/wallet/users", updateWalletsValueUsersController);
   app.addHook("onRequest", verifyJwt);
   app.patch("/v1/wallet/:owner_id", updateWalletUserValueController);
   app.delete("/v1/wallet/:id", deleteWalletController);
