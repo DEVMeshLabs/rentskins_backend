@@ -5,7 +5,7 @@ import { PerfilAlreadyExistError } from "../@errors/Perfil/PerfilInfoAlreadyExis
 export class CreatePerfilUseCase {
   constructor(private perfilRepository: IPerfilRepository) {}
 
-  async execute(data: Prisma.PerfilCreateInput): Promise<Perfil> {
+  async execute(data: Prisma.PerfilUncheckedCreateInput): Promise<Perfil> {
     const getUser = await this.perfilRepository.findByUser(data.owner_id);
 
     if (getUser) {

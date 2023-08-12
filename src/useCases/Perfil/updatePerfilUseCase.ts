@@ -5,7 +5,10 @@ import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 export class UpdatePerfilUseCase {
   constructor(private perfilRepository: IPerfilRepository) {}
 
-  async execute(id: string, date: Prisma.PerfilUpdateInput): Promise<Perfil> {
+  async execute(
+    id: string,
+    date: Prisma.PerfilUncheckedUpdateManyInput
+  ): Promise<Perfil> {
     const findId = await this.perfilRepository.findById(id);
 
     if (!findId) {

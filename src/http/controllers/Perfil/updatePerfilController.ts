@@ -16,6 +16,8 @@ export async function updatePerfilController(
     status_member,
     steam_level,
     owner_type,
+    configurationId,
+    status_atividade,
   } = updatePerfilInfoSchema.parse(req.body);
 
   try {
@@ -27,6 +29,8 @@ export async function updatePerfilController(
       delivery_time,
       status_member,
       steam_level,
+      configurationId,
+      status_atividade,
     });
   } catch (error) {
     if (error instanceof PerfilNotExistError) {
