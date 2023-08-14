@@ -3,7 +3,7 @@ import { IPerfilRepository } from "../interfaceRepository/IPerfilRepository";
 import { Prisma } from "@prisma/client";
 
 export class PrismaPerfilRepository implements IPerfilRepository {
-  async create(data: Prisma.PerfilCreateInput) {
+  async create(data: Prisma.PerfilUncheckedCreateInput) {
     const createPerfil = prisma.perfil.create({
       data,
     });

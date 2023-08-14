@@ -58,8 +58,8 @@ model Cart {
 
 model Wallet {
   id         String    @id @default(uuid()) @db.VarChar(36)
+  owner_id   String    @unique @db.VarChar(255)
   owner_name String    @db.VarChar(255)
-  owner_id   String    @db.VarChar(255)
   value      Float     @default(0)
   createdAt  DateTime  @default(now())
   updatedAt  DateTime?
@@ -68,8 +68,8 @@ model Wallet {
 
 model Notification {
   id          String    @id @default(uuid()) @db.VarChar(36)
+  owner_id    String    @unique @db.VarChar(255)
   owner_name  String    @db.VarChar(255)
-  owner_id    String    @db.VarChar(255)
   description String?   @db.VarChar(255)
   new         Boolean?  @default(true)
   skin        Skin?     @relation(fields: [skin_id], references: [id])
@@ -81,8 +81,8 @@ model Notification {
 
 model Configuration {
   id                 String    @id @default(uuid()) @db.VarChar(36)
+  owner_id           String    @unique @db.VarChar(255)
   owner_name         String    @db.VarChar(255)
-  owner_id           String    @db.VarChar(255)
   owner_email        String    @db.VarChar(255)
   owner_phone        String    @db.VarChar(255)
   url_trade          String    @db.VarChar(255)
@@ -98,11 +98,11 @@ model Configuration {
 
 model Perfil {
   id               String         @id @default(uuid()) @db.VarChar(36)
-  owner_id         String         @db.VarChar(255)
+  owner_id         String         @unique @db.VarChar(255)
   owner_name       String         @db.VarChar(255)
   owner_type       String         @default("Usuario") @db.VarChar(255)
   owner_country    String         @db.VarChar(5)
-  status_atividade String         @db.VarChar(20)
+  status_atividade String         @default("Ativo") @db.VarChar(20)
   steam_url        String         @db.VarChar(255)
   picture          String         @db.VarChar(255)
   status_member    String?        @default("Membro novo") @db.VarChar(255)
@@ -110,7 +110,7 @@ model Perfil {
   delivery_fee     Int            @default(0)
   total_exchanges  Int            @default(0) @db.Integer
   steam_level      Int            @db.Integer
-  configuration    Configuration? @relation(fields: [configurationId], references: [id])
+  configuration    Configuration? @relation(fields: [configurationId], references: [owner_id])
   configurationId  String?        @db.VarChar(36)
   account_date     DateTime
   createdAt        DateTime       @default(now())
@@ -120,7 +120,7 @@ model Perfil {
 
 model Transaction {
   id                   String    @id @default(uuid()) @db.VarChar(36)
-  owner_id             String    @db.VarChar(255)
+  owner_id             String    @unique @db.VarChar(255)
   status               String    @db.VarChar(255)
   payment_type         String    @db.VarChar(255)
   installments         Int       @db.Integer()
