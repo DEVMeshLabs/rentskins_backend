@@ -11,11 +11,11 @@ export class CreatePerfilUseCase {
 
   async execute(
     date1: Prisma.ConfigurationCreateInput,
-    data: Prisma.PerfilUncheckedCreateInput
+    data1: Prisma.PerfilUncheckedCreateInput
   ): Promise<Perfil> {
     const response = await Promise.all([
       await this.configurationRespository.create({ ...date1 }),
-      await this.perfilRepository.findByUser(data.owner_id),
+      await this.perfilRepository.findByUser(data1.owner_id),
     ]);
 
     if (response[1]) {
@@ -23,8 +23,8 @@ export class CreatePerfilUseCase {
     }
 
     const create = await this.perfilRepository.create({
-      ...data,
-      configurationId: data.owner_id,
+      ...data1,
+      configurationId: data1.owner_id,
     });
     return create;
   }
