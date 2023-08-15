@@ -1,3 +1,4 @@
+import { PerfilAlreadyExistError } from "@/useCases/@errors/Perfil/PerfilInfoAlreadyExistError";
 import { makeGetManyPerfil } from "@/useCases/@factories/Perfil/makeGetManyPerfil";
 
 import { FastifyRequest, FastifyReply } from "fastify";
@@ -11,6 +12,9 @@ export async function getManyPerfilController(
     const response = await getManyPerfilInfoUserUseCase.execute();
     return reply.status(200).send(response);
   } catch (error) {
+    if (error instanceof PerfilAlreadyExistError) {
+      return reply.status(404).send({ error: error.message });
+    }
     throw new Error();
   }
 }

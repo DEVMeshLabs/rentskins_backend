@@ -7,6 +7,7 @@ export class GetPerfilUseCase {
 
   async execute(id: string): Promise<Perfil> {
     const perfilId = await this.perfilInfoRepository.findById(id);
+
     if (!perfilId) {
       throw new PerfilNotExistError();
     }

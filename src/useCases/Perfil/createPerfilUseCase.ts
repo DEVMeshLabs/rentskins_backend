@@ -10,22 +10,25 @@ export class CreatePerfilUseCase {
   ) {}
 
   async execute(
-    date1: Prisma.ConfigurationCreateInput,
+    date: Prisma.ConfigurationCreateInput,
     data1: Prisma.PerfilUncheckedCreateInput
   ): Promise<Perfil> {
-    const response = await Promise.all([
-      await this.configurationRespository.create({ ...date1 }),
-      await this.perfilRepository.findByUser(data1.owner_id),
-    ]);
+    const findIdUser = await this.perfilRepository.findByUser(data1.owner_id);
 
-    if (response[1]) {
+    if (findIdUser) {
       throw new PerfilAlreadyExistError();
     }
+
+    await Promise.all([
+      await this.configurationRespository.create({ ...date }),
+      await this.perfilRepository.findByUser(data1.owner_id),
+    ]);
 
     const create = await this.perfilRepository.create({
       ...data1,
       configurationId: data1.owner_id,
     });
+
     return create;
   }
 }
