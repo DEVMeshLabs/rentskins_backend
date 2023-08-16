@@ -5,7 +5,7 @@ import { CartAlreadyExistError } from "../@errors/Cart/CartAlreadyExistError";
 interface createCartRequest {
   buyer_name: string;
   buyer_id: string;
-  price: string;
+  price: number;
   seller_id: string;
   seller_name: string;
 }

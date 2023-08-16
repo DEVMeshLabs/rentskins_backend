@@ -44,7 +44,7 @@ export async function createPerfilDateController(
         owner_id,
         owner_name,
         owner_country,
-        account_date: accountCreationDate,
+        steam_created_date: accountCreationDate,
         steam_level: resp[1].data.response.player_level,
         picture,
         steam_url,
