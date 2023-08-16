@@ -1,5 +1,5 @@
 import { PrismaConfigurationRepository } from "@/repositories/Prisma/prismaConfigurationRepository";
-import { UpdateByIdUseCase } from "@/useCases/Configuration/updateByIdConfigurationUseCase";
+import { UpdateByIdUseCase } from "@/useCases/Configuration/updateByUserConfigurationUseCase";
 
 export function makeUpdateConfigurationUseCase() {
   const prismaConfigurationRepository = new PrismaConfigurationRepository();

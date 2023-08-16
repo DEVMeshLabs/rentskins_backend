@@ -48,7 +48,7 @@ model SkinToCart {
 model Cart {
   id         String       @id @default(uuid()) @db.VarChar(36)
   buyer_id   String       @db.VarChar(255)
-  price      String       @default("0") @db.VarChar(255)
+  price      Float        @default(0)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime?
   deletedAt  DateTime?
@@ -72,11 +72,11 @@ model Notification {
   owner_name  String    @db.VarChar(255)
   description String?   @db.VarChar(255)
   new         Boolean?  @default(true)
-  skin        Skin?     @relation(fields: [skin_id], references: [id])
-  skin_id     String?   @db.VarChar(36)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime?
   deletedAt   DateTime?
+  skin        Skin?     @relation(fields: [skin_id], references: [id])
+  skin_id     String?   @db.VarChar(36)
 }
 
 model Configuration {
@@ -97,25 +97,25 @@ model Configuration {
 }
 
 model Perfil {
-  id               String         @id @default(uuid()) @db.VarChar(36)
-  owner_id         String         @unique @db.VarChar(255)
-  owner_name       String         @db.VarChar(255)
-  owner_type       String         @default("Usuario") @db.VarChar(255)
-  owner_country    String         @db.VarChar(5)
-  status_atividade String         @default("Ativo") @db.VarChar(20)
-  steam_url        String         @db.VarChar(255)
-  picture          String         @db.VarChar(255)
-  status_member    String?        @default("Membro novo") @db.VarChar(255)
-  delivery_time    String?        @default("Sem informações") @db.VarChar(255)
-  delivery_fee     Int            @default(0)
-  total_exchanges  Int            @default(0) @db.Integer
-  steam_level      Int            @db.Integer
-  configuration    Configuration? @relation(fields: [configurationId], references: [owner_id])
-  configurationId  String?        @db.VarChar(36)
-  account_date     DateTime
-  createdAt        DateTime       @default(now())
-  updatedAt        DateTime?
-  deletedAt        DateTime?
+  id                 String         @id @default(uuid()) @db.VarChar(36)
+  owner_id           String         @unique @db.VarChar(255)
+  owner_name         String         @db.VarChar(255)
+  owner_type         String         @default("Usuario") @db.VarChar(255)
+  owner_country      String?        @db.VarChar(5)
+  account_status     String         @default("Ativo") @db.VarChar(20)
+  status_member      String?        @default("Membro novo") @db.VarChar(255)
+  steam_level        Int            @db.Integer
+  steam_url          String         @db.VarChar(255)
+  steam_created_date DateTime
+  picture            String         @db.VarChar(255)
+  delivery_time      String?        @default("Sem informações") @db.VarChar(255)
+  delivery_fee       Int            @default(0)
+  total_exchanges    Int            @default(0) @db.Integer
+  createdAt          DateTime       @default(now())
+  updatedAt          DateTime?
+  deletedAt          DateTime?
+  configurationId    String?        @db.VarChar(36)
+  configuration      Configuration? @relation(fields: [configurationId], references: [owner_id])
 }
 
 model Transaction {
