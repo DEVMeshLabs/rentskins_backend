@@ -4,10 +4,10 @@ import { updatePerfilController } from "./updatePerfilController";
 import { deletePerfilController } from "./deletePerfilController";
 import { verifyJwt } from "@/http/middlewares/verifyJwt";
 import { getPerfilController } from "./getPerfilController";
-import { createPerfilDateController } from "./createPerfilDateSteamUserController";
 import { dateController } from "./dateController";
 import { getManyPerfilController } from "./getManyPerfilController";
 import { getManyTypeUserController } from "./getManyTypeUserController";
+import { createPerfilDateController } from "./createPerfilController";
 
 export async function perfilRouter(app: FastifyInstance) {
   app.get("/v1/perfil/user", getManyTypeUserController);

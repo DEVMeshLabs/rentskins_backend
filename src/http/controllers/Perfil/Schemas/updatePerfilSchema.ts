@@ -8,6 +8,6 @@ export const updatePerfilInfoSchema = z.object({
   total_exchanges: z.string().optional(),
   steam_level: z.number().optional(),
   owner_type: z.enum(["Usuario", "Administrador"]).optional(),
-  status_atividade: z.enum(["Ativo", "Suspenso"]).optional(),
+  account_status: z.enum(["Ativo", "Suspenso"]).optional(),
   configurationId: z.string().optional(),
 });

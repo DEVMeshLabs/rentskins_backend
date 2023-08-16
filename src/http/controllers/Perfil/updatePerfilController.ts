@@ -1,5 +1,5 @@
 import { PerfilNotExistError } from "@/useCases/@errors/Perfil/PerfilInfoNotExistError";
-import { makeUpdatePerfil } from "@/useCases/@factories/Perfil/makeUpdatePerfil";
+import { makeUpdateUserPerfil } from "@/useCases/@factories/Perfil/makeUpdatePerfil";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { updatePerfilInfoSchema } from "./Schemas/updatePerfilSchema";
 
@@ -17,11 +17,11 @@ export async function updatePerfilController(
     steam_level,
     owner_type,
     configurationId,
-    status_atividade,
+    account_status,
   } = updatePerfilInfoSchema.parse(req.body);
 
   try {
-    const getUserPerfilInfoUserUseCase = makeUpdatePerfil();
+    const getUserPerfilInfoUserUseCase = makeUpdateUserPerfil();
     await getUserPerfilInfoUserUseCase.execute(id, {
       owner_id,
       owner_type,
@@ -30,7 +30,7 @@ export async function updatePerfilController(
       status_member,
       steam_level,
       configurationId,
-      status_atividade,
+      account_status,
     });
   } catch (error) {
     if (error instanceof PerfilNotExistError) {
