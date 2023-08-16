@@ -10,27 +10,33 @@ export async function updatePerfilController(
   const { id } = req.params as { id: string };
 
   const {
+    owner_name,
+    owner_type,
+    owner_country,
     delivery_fee,
     delivery_time,
-    owner_id,
     status_member,
-    steam_level,
-    owner_type,
-    configurationId,
     account_status,
+    configurationId,
+    total_exchanges,
+    picture,
+    steam_url,
   } = updatePerfilInfoSchema.parse(req.body);
 
   try {
     const getUserPerfilInfoUserUseCase = makeUpdateUserPerfil();
     await getUserPerfilInfoUserUseCase.execute(id, {
-      owner_id,
       owner_type,
+      owner_name,
+      owner_country,
       delivery_fee,
       delivery_time,
       status_member,
-      steam_level,
       configurationId,
       account_status,
+      total_exchanges,
+      picture,
+      steam_url,
     });
   } catch (error) {
     if (error instanceof PerfilNotExistError) {
