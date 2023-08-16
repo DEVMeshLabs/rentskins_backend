@@ -81,7 +81,7 @@ model Notification {
 
 model Configuration {
   id                 String    @id @default(uuid()) @db.VarChar(36)
-  owner_id           String    @unique @db.VarChar(255)
+  owner_id           String    @db.VarChar(255)
   owner_name         String    @db.VarChar(255)
   owner_email        String    @db.VarChar(255)
   owner_phone        String    @db.VarChar(255)
@@ -98,7 +98,7 @@ model Configuration {
 
 model Perfil {
   id                 String         @id @default(uuid()) @db.VarChar(36)
-  owner_id           String         @unique @db.VarChar(255)
+  owner_id           String         @db.VarChar(255)
   owner_name         String         @db.VarChar(255)
   owner_type         String         @default("Usuario") @db.VarChar(255)
   owner_country      String?        @db.VarChar(5)
@@ -115,7 +115,7 @@ model Perfil {
   updatedAt          DateTime?
   deletedAt          DateTime?
   configurationId    String?        @db.VarChar(36)
-  configuration      Configuration? @relation(fields: [configurationId], references: [owner_id])
+  configuration      Configuration? @relation(fields: [configurationId], references: [id])
 }
 
 model Transaction {

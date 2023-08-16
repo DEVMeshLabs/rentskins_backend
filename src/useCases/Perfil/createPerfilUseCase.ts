@@ -19,14 +19,11 @@ export class CreatePerfilUseCase {
       throw new PerfilAlreadyExistError();
     }
 
-    await Promise.all([
-      await this.configurationRespository.create({ ...date }),
-      await this.perfilRepository.findByUser(data1.owner_id),
-    ]);
+    const result = await this.configurationRespository.create({ ...date });
 
     const create = await this.perfilRepository.create({
       ...data1,
-      configurationId: data1.owner_id,
+      configurationId: result.id,
     });
 
     return create;
