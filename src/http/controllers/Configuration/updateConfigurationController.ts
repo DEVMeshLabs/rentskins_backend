@@ -11,29 +11,9 @@ export async function updateConfigurationController(
   const { id } = req.params as { id: string };
 
   try {
-    const {
-      owner_id,
-      owner_email,
-      owner_name,
-      url_sell,
-      url_trade,
-      steam_guard,
-      agreed_with_emails,
-      agreed_with_terms,
-      owner_phone,
-    } = updateConfigurationSchema.parse(req.body);
+    const data = updateConfigurationSchema.parse(req.body);
     const updateConfig = makeUpdateConfigurationUseCase();
-    await updateConfig.execute(id, {
-      owner_id,
-      owner_email,
-      owner_name,
-      url_sell,
-      url_trade,
-      steam_guard,
-      agreed_with_emails,
-      agreed_with_terms,
-      owner_phone,
-    });
+    await updateConfig.execute(id, { ...data });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return reply

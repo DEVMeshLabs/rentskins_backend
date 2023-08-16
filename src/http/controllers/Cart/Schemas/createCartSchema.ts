@@ -5,5 +5,5 @@ export const createCartSchema = z.object({
   buyer_id: z.string(),
   seller_id: z.string(),
   seller_name: z.string(),
-  price: z.string(),
+  price: z.number(),
 });
