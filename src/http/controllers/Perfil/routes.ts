@@ -15,7 +15,7 @@ export async function perfilRouter(app: FastifyInstance) {
   app.get("/v1/perfil/user/:owner_id", getUserPerfilController);
   app.get("/v1/perfil/:id", getPerfilController);
   app.get("/v1/perfil", getManyPerfilController);
-  app.get("/v1/perfil/status/:id", getStatusPerfilController);
+  app.get("/v1/perfil/status/:owner_id", getStatusPerfilController);
 
   app.post("/v1/perfil", { onRequest: verifyJwt }, createPerfilDateController);
   app.post(
