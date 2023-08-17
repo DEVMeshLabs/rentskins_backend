@@ -4,8 +4,8 @@ import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 export class GetStatusPerfilUseCase {
   constructor(private perfilInfoRepository: IPerfilRepository) {}
 
-  async execute(id: string): Promise<any> {
-    const perfilId = await this.perfilInfoRepository.findById(id);
+  async execute(owner_id: string): Promise<any> {
+    const perfilId = await this.perfilInfoRepository.findByUser(owner_id);
 
     if (!perfilId) {
       throw new PerfilNotExistError();
