@@ -9,8 +9,8 @@ export async function updateWalletsValueUsersController(
   reply: FastifyReply
 ) {
   const updateSchema = z.object({
+    id: z.string().uuid(),
     value: z.number(),
-    id: z.string(),
     other_id: z.string().uuid(),
   });
 
