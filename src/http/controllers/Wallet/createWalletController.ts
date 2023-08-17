@@ -8,7 +8,7 @@ export async function createWalletController(
   reply: FastifyReply
 ) {
   const createWalletSchema = z.object({
-    owner_id: z.string(),
+    owner_id: z.string().max(17),
     owner_name: z.string(),
   });
 
