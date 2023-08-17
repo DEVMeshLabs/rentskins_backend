@@ -7,11 +7,11 @@ export async function getStatusPerfilController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { id } = req.params as { id: string };
+  const { owner_id } = req.params as { owner_id: string };
 
   try {
     const getUserPerfilInfoUserUseCase = makeGetStatusPerfil();
-    const response = await getUserPerfilInfoUserUseCase.execute(id);
+    const response = await getUserPerfilInfoUserUseCase.execute(owner_id);
     return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof PerfilNotExistError) {
