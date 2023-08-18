@@ -13,8 +13,10 @@ export function getFloatSkinController(
   if (csgo.haveGCSession) {
     console.log("Entrou");
     const filteredID = inspectLinks.split("%D")[1];
-    return csgo.inspectItem(id, assetid, filteredID, (item) => {
-      return reply.send(item);
-    });
+    setTimeout(() => {
+      return csgo.inspectItem(id, assetid, filteredID, (item) => {
+        return reply.send(item);
+      });
+    }, 1000);
   }
 }
