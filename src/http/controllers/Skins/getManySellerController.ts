@@ -5,12 +5,12 @@ export async function getManyCartController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { seller } = req.params as { seller: string };
+  const { seller_id } = req.params as { seller_id: string };
 
   try {
     const getManySeller = makeGetManySellerUseCase();
 
-    const response = await getManySeller.execute(seller);
+    const response = await getManySeller.execute(seller_id);
 
     return reply.status(200).send(response);
   } catch (error) {

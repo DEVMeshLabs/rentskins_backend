@@ -3,6 +3,22 @@ import { prisma } from "@/lib/prisma";
 import { ISkinsRepository } from "../interfaceRepository/ISkinsRepository";
 
 export class PrismaSkinRepository implements ISkinsRepository {
+  async findHistoricId(seller_id: string) {
+    const findHistoricId = await prisma.skin.findMany({
+      where: { seller_id, sellerAt: { not: null } },
+      select: {
+        seller_id: true,
+        seller_name: true,
+        buyer_id: true,
+        buyer_name: true,
+        sellerAt: true,
+        skin_price: true,
+      },
+    });
+
+    return findHistoricId;
+  }
+
   async create(data: Prisma.SkinCreateManyInput) {
     const skin = await prisma.skin.createMany({
       data,

@@ -12,15 +12,17 @@ import { getManyNameController } from "./getManyNameController";
 import { getManyCartController } from "./getManySellerController";
 import { getFloatSkinController } from "./getFloatSkinController";
 import { verifyJwt } from "@/http/middlewares/verifyJwt";
+import { getHistoricSellerController } from "./getHistoricSellerController";
 
 export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins", getSkinManyController);
   app.get("/v1/skins/:id", getSkinController);
   app.get("/v1/skins/seller/:seller_id", getSkinSellerController);
-  app.get("/v1/skins/seller/user/:seller", getManyCartController);
+  app.get("/v1/skins/seller/user/:seller_id", getManyCartController);
   app.get("/v1/skins/weapon/:weapon", getManyWeaponController);
   app.get("/v1/skins/category/:category", getManyCategoryController);
   app.get("/v1/skins/search/:name", getManyNameController);
+  app.get("/v1/skins/historic/:seller_id", getHistoricSellerController);
 
   app.post("/v1/skins", { onRequest: verifyJwt }, createSkinController);
   app.post(
