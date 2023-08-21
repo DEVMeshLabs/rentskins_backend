@@ -12,8 +12,8 @@ import { Client, CreatePlanRequest, PlansController } from "pagarmeapisdklib";
 const client = new Client({
   serviceRefererName: "ServiceRefererName",
   timeout: 0,
-  basicAuthUserName: "sk_zNkj7XrsNc2aPOxd",
-  basicAuthPassword: "",
+  basicAuthUserName: "pk_EGZ4Nw9fZbFNxv5V",
+  basicAuthPassword: "Drk3101!",
 });
 
 const plansController = new PlansController(client);
