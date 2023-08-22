@@ -20,6 +20,7 @@ export async function updatePerfilController(
     total_exchanges,
     picture,
     steam_url,
+    cart_id,
   } = updatePerfilInfoSchema.parse(req.body);
 
   try {
@@ -35,6 +36,7 @@ export async function updatePerfilController(
       total_exchanges,
       picture,
       steam_url,
+      cart_id,
     });
   } catch (error) {
     if (error instanceof PerfilNotExistError) {

@@ -1,3 +1,4 @@
+import { PerfilNotExistError } from "@/useCases/@errors/Perfil/PerfilInfoNotExistError";
 import { WalletAlreadyExistError } from "@/useCases/@errors/Wallet/WalletAlreadyExistsError";
 import { makeCreateWalletUseCase } from "@/useCases/@factories/Wallet/makeCreateWalletUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
@@ -23,6 +24,8 @@ export async function createWalletController(
         .send({ message: "Erro de validação", errors: error.errors });
     } else if (error instanceof WalletAlreadyExistError) {
       return reply.status(409).send({ errors: error.message });
+    } else if (error instanceof PerfilNotExistError) {
+      return reply.status(404).send({ errors: error.message });
     }
     return reply.status(500).send({ message: "Erro interno do servidor" });
   }

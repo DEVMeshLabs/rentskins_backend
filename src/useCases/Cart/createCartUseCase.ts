@@ -12,6 +12,7 @@ interface createCartRequest {
 
 export class CreateCartUseCase {
   constructor(private cartRepository: ICartRepository) {}
+
   async execute({ buyer_id }: createCartRequest): Promise<Cart> {
     const getBuyer = await this.cartRepository.findByBuyer(buyer_id);
 
@@ -22,6 +23,7 @@ export class CreateCartUseCase {
     const createCart = await this.cartRepository.create({
       buyer_id,
     });
+
     return createCart;
   }
 }

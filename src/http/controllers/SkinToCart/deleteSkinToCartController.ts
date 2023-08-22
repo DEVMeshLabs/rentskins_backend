@@ -7,7 +7,7 @@ export async function deleteSkinToCartController(
   reply: FastifyReply
 ) {
   try {
-    const { id } = req.body as { id: string };
+    const { id } = req.params as { id: string };
     const deleteSkinToCase = makeDeleteSkinToCase();
     await deleteSkinToCase.execute(id);
   } catch (error) {
