@@ -4,8 +4,8 @@ import { ISkinToCartRepository } from "@/repositories/interfaceRepository/ISkinT
 export class DeleteSkinToCartUseCase {
   constructor(private skinToCart: ISkinToCartRepository) {}
 
-  async execute(ids: string[]): Promise<SkinToCart> {
-    const deleteSkin = await this.skinToCart.deleteSkin(ids);
+  async execute(id: string): Promise<SkinToCart> {
+    const deleteSkin = await this.skinToCart.deleteSkin(id);
     return deleteSkin;
   }
 }

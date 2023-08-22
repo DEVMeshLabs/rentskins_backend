@@ -7,9 +7,9 @@ export async function deleteSkinToCartController(
   reply: FastifyReply
 ) {
   try {
-    const { ids } = req.body as { ids: string[] };
+    const { id } = req.body as { id: string };
     const deleteSkinToCase = makeDeleteSkinToCase();
-    await deleteSkinToCase.execute(ids);
+    await deleteSkinToCase.execute(id);
   } catch (error) {
     if (error instanceof SkinToCartNotExistError) {
       return reply.status(404).send({ error: error.message });
