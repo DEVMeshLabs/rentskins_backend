@@ -5,6 +5,7 @@ export const createConfigurationSchema = z.object({
   owner_email: z.string().email(),
   owner_name: z.string().min(3),
   owner_phone: z.string(),
+  owner_cpf: z.string(),
   url_sell: z.string(),
   url_trade: z
     .string()
