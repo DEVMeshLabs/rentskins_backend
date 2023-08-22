@@ -86,6 +86,7 @@ model Configuration {
   owner_name         String    @db.VarChar(255)
   owner_email        String    @db.VarChar(255)
   owner_phone        String    @db.VarChar(255)
+  owner_cpf          String    @db.VarChar(14)
   url_trade          String    @db.VarChar(255)
   url_sell           String    @db.VarChar(255)
   agreed_with_emails Boolean?  @default(false)
