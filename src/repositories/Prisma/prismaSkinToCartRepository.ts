@@ -10,9 +10,9 @@ export class PrismaSkinToCartRepository implements ISkinToCartRepository {
     return createSkinToCart;
   }
 
-  async deleteSkin(ids: string[]) {
-    const deleteSkinToCart = await prisma.skinToCart.deleteMany({
-      where: { id: { in: ids } },
+  async deleteSkin(id: string) {
+    const deleteSkinToCart = await prisma.skinToCart.delete({
+      where: { id },
     });
     return deleteSkinToCart;
   }
