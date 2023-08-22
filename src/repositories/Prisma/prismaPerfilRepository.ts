@@ -13,7 +13,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findByUser(owner_id: string) {
     const perfilUser = await prisma.perfil.findFirst({
       where: { owner_id, deletedAt: null },
-      include: { configuration: true },
+      include: { configuration: true, cart: true },
     });
     return perfilUser;
   }
@@ -29,7 +29,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findById(id: string) {
     const perfilId = await prisma.perfil.findFirst({
       where: { id, deletedAt: null },
-      include: { configuration: true },
+      include: { configuration: true, cart: true },
     });
     return perfilId;
   }
@@ -37,7 +37,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findByMany() {
     const perfilId = await prisma.perfil.findMany({
       where: { deletedAt: null },
-      include: { configuration: true },
+      include: { configuration: true, cart: true },
     });
     return perfilId;
   }
@@ -48,7 +48,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
         owner_type,
         deletedAt: null,
       },
-      include: { configuration: true },
+      include: { configuration: true, cart: true },
     });
     return perfilTypeUser;
   }
@@ -59,6 +59,14 @@ export class PrismaPerfilRepository implements IPerfilRepository {
       data: { ...date, updatedAt: new Date() },
     });
     return updateId;
+  }
+
+  async updateByCart(owner_id: string, cart: string) {
+    const updateCart = await prisma.perfil.updateMany({
+      where: { owner_id },
+      data: { cart_id: cart, updatedAt: new Date() },
+    });
+    return updateCart;
   }
 
   async updateLevel(id: string, steam_level: number) {

@@ -7,7 +7,11 @@ export interface IPerfilRepository {
   findManyTypeUser(owner_type: string): Promise<Perfil[]>;
   findByMany(): Promise<Perfil[]>;
   findByStatus(id: string): Promise<any>;
-  updateById(id: string, data: Prisma.PerfilUpdateInput): Promise<Perfil>;
+  updateById(
+    id: string,
+    data: Prisma.PerfilUncheckedCreateInput
+  ): Promise<Perfil>;
+  updateByCart(owner_id: string, cart: string): Promise<any>;
   updateLevel(id: string, steam_level: number): Promise<Perfil>;
   deletePerfil(id: string): Promise<Perfil>;
 }
