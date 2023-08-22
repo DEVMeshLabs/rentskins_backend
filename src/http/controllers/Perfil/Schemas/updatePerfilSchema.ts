@@ -20,5 +20,6 @@ export const updatePerfilInfoSchema = z.object({
     .optional(),
   account_status: z.enum(["Ativo", "Suspenso"]).optional(),
   picture: z.string().optional(),
+  owner_cpf: z.string().optional(),
   cart_id: z.string().optional(),
 });

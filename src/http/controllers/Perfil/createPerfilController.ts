@@ -34,6 +34,7 @@ export async function createPerfilDateController(
         owner_name,
         owner_email: "",
         owner_phone: "",
+        owner_cpf: "",
         url_sell: "",
         url_trade: "",
         agreed_with_emails: false,
