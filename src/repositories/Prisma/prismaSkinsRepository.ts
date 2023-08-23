@@ -69,14 +69,19 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return findSeller;
   }
 
-  async findByMany(page: number) {
+  async findByMany(page: number, pageSize: number) {
     const skinAll = await prisma.skin.findMany({
       where: { deletedAt: null },
-      take: 5,
-      skip: (page - 1) * 5,
+      take: pageSize,
+      skip: (page - 1) * pageSize,
       include: { Notification: true },
     });
     return skinAll;
+  }
+
+  async findByCount() {
+    const countSkins = await prisma.skin.count();
+    return countSkins;
   }
 
   async updateById(id: string, data: Prisma.SkinUpdateInput) {
