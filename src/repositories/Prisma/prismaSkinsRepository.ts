@@ -33,17 +33,29 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return findSeller;
   }
 
-  async findByName(name: string) {
+  async findBySearch(search: string, page: number, pageSize: number) {
     const findName = await prisma.skin.findMany({
       where: {
         OR: [
-          { skin_name: { contains: name, mode: "insensitive" } },
-          { skin_category: { contains: name, mode: "insensitive" } },
-          { skin_weapon: { contains: name, mode: "insensitive" } },
+          { skin_name: { contains: search, mode: "insensitive" } },
+          { skin_category: { contains: search, mode: "insensitive" } },
+          { skin_weapon: { contains: search, mode: "insensitive" } },
         ],
       },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
     });
     return findName;
+  }
+
+  async findByMany(page: number, pageSize: number) {
+    const skinAll = await prisma.skin.findMany({
+      where: { deletedAt: null },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
+      include: { Notification: true },
+    });
+    return skinAll;
   }
 
   async findByManyCategory(skin_category: string) {
@@ -67,16 +79,6 @@ export class PrismaSkinRepository implements ISkinsRepository {
       where: { seller_id, deletedAt: null },
     });
     return findSeller;
-  }
-
-  async findByMany(page: number, pageSize: number) {
-    const skinAll = await prisma.skin.findMany({
-      where: { deletedAt: null },
-      take: pageSize,
-      skip: (page - 1) * pageSize,
-      include: { Notification: true },
-    });
-    return skinAll;
   }
 
   async findByCount() {
