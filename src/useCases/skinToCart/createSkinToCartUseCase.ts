@@ -4,6 +4,7 @@ import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepos
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 import { ICartRepository } from "@/repositories/interfaceRepository/ICartRepository";
 import { CartNotExistError } from "../@errors/Cart/CartNotExistError";
+import { SkinAlreadyExistsError } from "../@errors/Skin/SkinAlreadyExistsError";
 
 export class CreateSkinToCartUseCase {
   constructor(
@@ -18,6 +19,11 @@ export class CreateSkinToCartUseCase {
   }: Prisma.SkinToCartCreateManyInput): Promise<SkinToCart> {
     const verifySkin = await this.skinRepository.findById(skinId);
     const isNotExistCart = await this.cartRepository.findById(cartId);
+    const isAlreadyExist = await this.skinToCart.findBySkin(skinId);
+
+    if (isAlreadyExist) {
+      throw new SkinAlreadyExistsError();
+    }
 
     if (!verifySkin) {
       throw new SkinNotExistError();
