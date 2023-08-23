@@ -9,12 +9,13 @@ export async function getSkinManyController(
   try {
     const searchGymsQuerySchema = z.object({
       page: z.coerce.number().min(1).default(1),
+      pageSize: z.coerce.number().min(1).default(20),
     });
 
-    const { page } = searchGymsQuerySchema.parse(req.query);
+    const { page, pageSize } = searchGymsQuerySchema.parse(req.query);
 
     const getSkinMany = makeGetSkinMany();
-    const response = await getSkinMany.execute(page);
+    const response = await getSkinMany.execute(page, pageSize);
 
     return reply.status(200).send(response);
   } catch (error) {
