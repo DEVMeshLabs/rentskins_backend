@@ -11,7 +11,7 @@ export async function getManySearchController(
   try {
     const searchGymsQuerySchema = z.object({
       page: z.coerce.number().min(1).default(1),
-      pageSize: z.coerce.number().min(1).default(2),
+      pageSize: z.coerce.number().min(1).default(20),
     });
 
     const { page, pageSize } = searchGymsQuerySchema.parse(req.query);
