@@ -1,6 +1,5 @@
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { Notification } from "@prisma/client";
-import { NotificationNotExistError } from "../@errors/Notification/NotificationNotExistError";
 
 export class GetUserNotificationUseCase {
   constructor(private notification: INotificationRepository) {}
@@ -8,7 +7,7 @@ export class GetUserNotificationUseCase {
     const getUser = await this.notification.findByUser(owner_id);
 
     if (!getUser) {
-      throw new NotificationNotExistError();
+      return null;
     }
 
     return getUser;

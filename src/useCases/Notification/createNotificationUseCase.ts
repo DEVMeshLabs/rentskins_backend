@@ -17,7 +17,7 @@ export class CreateNotificationUseCase {
   }: Prisma.NotificationCreateManyInput): Promise<Notification> {
     const findSkin = await this.skinsRepository.findById(skin_id);
 
-    if (findSkin) {
+    if (!findSkin) {
       throw new SkinNotExistError();
     }
 
