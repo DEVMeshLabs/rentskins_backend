@@ -17,20 +17,18 @@ export class CreateSkinToCartUseCase {
     cartId,
     skinId,
   }: Prisma.SkinToCartCreateManyInput): Promise<SkinToCart> {
-    const verifySkin = await this.skinRepository.findById(skinId);
-    const isNotExistCart = await this.cartRepository.findById(cartId);
-    const isAlreadyExist = await this.skinToCart.findBySkin(skinId);
+    const [skin, cart, existingSkinToCart] = await Promise.all([
+      await this.skinRepository.findById(skinId),
+      await this.cartRepository.findById(cartId),
+      await this.skinToCart.findBySkin(skinId),
+    ]);
 
-    if (isAlreadyExist) {
-      throw new SkinAlreadyExistsError();
-    }
-
-    if (!verifySkin) {
+    if (!skin) {
       throw new SkinNotExistError();
-    }
-
-    if (!isNotExistCart) {
+    } else if (!cart) {
       throw new CartNotExistError();
+    } else if (existingSkinToCart) {
+      throw new SkinAlreadyExistsError();
     }
 
     const create = await this.skinToCart.create({
