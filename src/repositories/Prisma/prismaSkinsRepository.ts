@@ -26,9 +26,11 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return skin;
   }
 
-  async findByManySeller(seller_id: string) {
+  async findByManySeller(seller_id: string, page: number, pageSize: number) {
     const findSeller = prisma.skin.findMany({
       where: { seller_id, deletedAt: null },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
     });
     return findSeller;
   }
@@ -58,6 +60,13 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return skinAll;
   }
 
+  async findBySeller(seller_id: string) {
+    const findSeller = await prisma.skin.findFirst({
+      where: { seller_id, deletedAt: null },
+    });
+    return findSeller;
+  }
+
   async findByManyCategory(skin_category: string) {
     const findManyCategory = await prisma.skin.findMany({
       where: { skin_category, deletedAt: null },
@@ -72,13 +81,6 @@ export class PrismaSkinRepository implements ISkinsRepository {
     });
 
     return findWeapon;
-  }
-
-  async findBySeller(seller_id: string) {
-    const findSeller = await prisma.skin.findFirst({
-      where: { seller_id, deletedAt: null },
-    });
-    return findSeller;
   }
 
   async findByCount() {
