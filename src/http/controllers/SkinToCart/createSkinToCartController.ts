@@ -1,4 +1,5 @@
 import { CartNotExistError } from "@/useCases/@errors/Cart/CartNotExistError";
+import { SkinAlreadyExistsError } from "@/useCases/@errors/Skin/SkinAlreadyExistsError";
 import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
 import { makeCreateSkinToCart } from "@/useCases/@factories/SkinToCart/makeCreateSkinToCart";
 import { FastifyRequest, FastifyReply } from "fastify";
@@ -16,6 +17,8 @@ export async function createSkinToCartController(
       return reply.status(404).send({ error: error.message });
     } else if (error instanceof CartNotExistError) {
       return reply.status(404).send({ error: error.message });
+    } else if (error instanceof SkinAlreadyExistsError) {
+      return reply.status(409).send({ error: error.message });
     }
     throw error;
   }

@@ -23,4 +23,11 @@ export class PrismaSkinToCartRepository implements ISkinToCartRepository {
     });
     return findSkinToCart;
   }
+
+  async findBySkin(id: string): Promise<SkinToCart> {
+    const findSkinToCart = await prisma.skinToCart.findFirst({
+      where: { skinId: id },
+    });
+    return findSkinToCart;
+  }
 }
