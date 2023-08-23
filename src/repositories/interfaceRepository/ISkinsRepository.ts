@@ -7,7 +7,11 @@ export interface ISkinsRepository {
   findByMany(page: number, pageSize: number): Promise<Skin[]>;
   findByManyWeapon(skin_weapon: string): Promise<Skin[] | null>;
   findByManyCategory(skin_category: string): Promise<Skin[] | null>;
-  findByManySeller(seller_id: string): Promise<Skin[]>;
+  findByManySeller(
+    seller_id: string,
+    page: number,
+    pageSize: number
+  ): Promise<Skin[]>;
   findHistoricId(seller_id: string): Promise<any>;
   findByCount(): Promise<number>;
   updateById(id: string, data: Prisma.SkinUpdateInput): Promise<Skin>;

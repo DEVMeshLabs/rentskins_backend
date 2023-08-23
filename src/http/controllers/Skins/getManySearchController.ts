@@ -1,6 +1,7 @@
 import { makeGetManySearchUseCase } from "@/useCases/@factories/Skin/makeGetManySearchUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { ZodError, z } from "zod";
+import { ZodError } from "zod";
+import { paginationSkinsSchema } from "./Schemas/paginationSkinsSchema";
 
 export async function getManySearchController(
   req: FastifyRequest,
@@ -9,12 +10,7 @@ export async function getManySearchController(
   const { name } = req.params as { name: string };
 
   try {
-    const searchGymsQuerySchema = z.object({
-      page: z.coerce.number().min(1).default(1),
-      pageSize: z.coerce.number().min(1).default(20),
-    });
-
-    const { page, pageSize } = searchGymsQuerySchema.parse(req.query);
+    const { page, pageSize } = paginationSkinsSchema.parse(req.query);
 
     const getManyName = makeGetManySearchUseCase();
 

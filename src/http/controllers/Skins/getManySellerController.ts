@@ -1,5 +1,6 @@
 import { makeGetManySellerUseCase } from "@/useCases/@factories/Skin/makeGetManySellerUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
+import { paginationSkinsSchema } from "./Schemas/paginationSkinsSchema";
 
 export async function getManyCartController(
   req: FastifyRequest,
@@ -9,8 +10,9 @@ export async function getManyCartController(
 
   try {
     const getManySeller = makeGetManySellerUseCase();
+    const { page, pageSize } = paginationSkinsSchema.parse(req.query);
 
-    const response = await getManySeller.execute(seller_id);
+    const response = await getManySeller.execute(seller_id, page, pageSize);
 
     return reply.status(200).send(response);
   } catch (error) {

@@ -1,20 +1,16 @@
 import { makeGetSkinMany } from "@/useCases/@factories/Skin/makeGetSkinManyUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { ZodError, z } from "zod";
+import { ZodError } from "zod";
+import { paginationSkinsSchema } from "./Schemas/paginationSkinsSchema";
 
 export async function getSkinManyController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
   try {
-    const searchGymsQuerySchema = z.object({
-      page: z.coerce.number().min(1).default(1),
-      pageSize: z.coerce.number().min(1).default(20),
-    });
-
-    const { page, pageSize } = searchGymsQuerySchema.parse(req.query);
-
+    const { page, pageSize } = paginationSkinsSchema.parse(req.query);
     const getSkinMany = makeGetSkinMany();
+
     const response = await getSkinMany.execute(page, pageSize);
 
     return reply.status(200).send(response);
