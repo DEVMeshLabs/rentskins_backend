@@ -4,7 +4,7 @@ import { Skin } from "@prisma/client";
 interface GetManySellerUseCaseResponse {
   totalPages: number;
   totalItens: number;
-  skinsSeller: Skin[];
+  skins: Skin[];
 }
 
 export class GetManySellerUseCase {
@@ -18,7 +18,7 @@ export class GetManySellerUseCase {
     const countSkins = await this.skinRepository.findByCountSellers(seller_id);
     const totalPages = Math.ceil(countSkins / pageSize);
 
-    const skinsSeller = await this.skinRepository.findByManySeller(
+    const skins = await this.skinRepository.findByManySeller(
       seller_id,
       page,
       pageSize
@@ -27,7 +27,7 @@ export class GetManySellerUseCase {
     return {
       totalPages,
       totalItens: countSkins,
-      skinsSeller,
+      skins,
     };
   }
 }
