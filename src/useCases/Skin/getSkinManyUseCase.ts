@@ -14,7 +14,7 @@ export class GetSkinManyUseCase {
     page: number,
     pageSize: number
   ): Promise<GetSkinManyUseCaseResponse> {
-    const countSkins = await this.skinRepository.findByCount();
+    const countSkins = await this.skinRepository.findByCountSkins();
 
     const totalPages = Math.ceil(countSkins / pageSize);
 
