@@ -7,8 +7,8 @@
     "node": "18"
   },
   "prisma": {
-    "seed": "ts-node prisma/seed.ts",
-    "unseed": "ts-node prisma/unseed.ts"
+    "unseed": "ts-node prisma/unseed.ts",
+    "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
     "start:dev": "tsx watch src/server.ts",
