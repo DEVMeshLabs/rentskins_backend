@@ -15,13 +15,14 @@ export class GetManySearchUseCase {
     page: number,
     pageSize: number
   ): Promise<GetManySearchUseCaseResponse> {
+    const countSkins = await this.skinRepository.findByCountSearch(search);
+
     const skins = await this.skinRepository.findBySearch(
       search,
       page,
       pageSize
     );
 
-    const countSkins = skins.length;
     const totalPages = Math.ceil(countSkins / pageSize);
 
     return {
