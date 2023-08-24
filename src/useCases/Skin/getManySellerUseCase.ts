@@ -15,15 +15,14 @@ export class GetManySellerUseCase {
     page: number,
     pageSize: number
   ): Promise<GetManySellerUseCaseResponse> {
+    const countSkins = await this.skinRepository.findByCountSellers(seller_id);
+    const totalPages = Math.ceil(countSkins / pageSize);
+
     const skinsSeller = await this.skinRepository.findByManySeller(
       seller_id,
       page,
       pageSize
     );
-
-    const countSkins = skinsSeller.length;
-
-    const totalPages = Math.ceil(countSkins / pageSize);
 
     return {
       totalPages,

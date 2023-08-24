@@ -13,7 +13,8 @@ export interface ISkinsRepository {
     pageSize: number
   ): Promise<Skin[]>;
   findHistoricId(seller_id: string): Promise<any>;
-  findByCount(): Promise<number>;
+  findByCountSkins(): Promise<number>;
+  findByCountSellers(seller_id: string): Promise<number>;
   updateById(id: string, data: Prisma.SkinUpdateInput): Promise<Skin>;
   create(data: Prisma.SkinCreateManyInput): Promise<Prisma.BatchPayload>;
   deleteSkin(id: string): Promise<Skin>;

@@ -32,6 +32,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
       take: pageSize,
       skip: (page - 1) * pageSize,
     });
+
     return findSeller;
   }
 
@@ -83,8 +84,15 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return findWeapon;
   }
 
-  async findByCount() {
+  async findByCountSkins() {
     const countSkins = await prisma.skin.count();
+    return countSkins;
+  }
+
+  async findByCountSellers(seller_id: string) {
+    const countSkins = await prisma.skin.count({
+      where: { seller_id },
+    });
     return countSkins;
   }
 
