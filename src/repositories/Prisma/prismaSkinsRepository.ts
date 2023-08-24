@@ -96,6 +96,19 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return countSkins;
   }
 
+  async findByCountSearch(search: string) {
+    const findSearch = await prisma.skin.count({
+      where: {
+        OR: [
+          { skin_name: { contains: search, mode: "insensitive" } },
+          { skin_category: { contains: search, mode: "insensitive" } },
+          { skin_weapon: { contains: search, mode: "insensitive" } },
+        ],
+      },
+    });
+    return findSearch;
+  }
+
   async updateById(id: string, data: Prisma.SkinUpdateInput) {
     const updateId = await prisma.skin.update({
       where: { id },
