@@ -4,7 +4,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function getManyConfigurationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const makeGetMany = makeGetManyConfigurationUseCase();
     const response = await makeGetMany.execute();

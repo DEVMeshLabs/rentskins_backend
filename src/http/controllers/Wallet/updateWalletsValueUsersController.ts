@@ -7,7 +7,7 @@ import { ZodError, z } from "zod";
 export async function updateWalletsValueUsersController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const updateSchema = z.object({
     id: z.string().uuid(),
     value: z.number(),

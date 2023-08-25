@@ -5,7 +5,7 @@ import { makeUpdateManyNotificationUseCase } from "@/useCases/@factories/Notific
 export async function updateManyNotificationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { owner_id } = req.params as { owner_id: string };
 
   try {

@@ -6,7 +6,7 @@ import { paginationSkinsSchema } from "./Schemas/paginationSkinsSchema";
 export async function getManySearchController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { name } = req.params as { name: string };
 
   try {

@@ -7,7 +7,7 @@ import { z } from "zod";
 export async function createWalletController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const createWalletSchema = z.object({
     owner_id: z.string().max(17),
     owner_name: z.string(),

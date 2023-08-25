@@ -6,7 +6,7 @@ import { z } from "zod";
 export async function createSkinController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const skins = createSkinSchema.parse(req.body);
     const skinRepository = makeCreateUseCase();

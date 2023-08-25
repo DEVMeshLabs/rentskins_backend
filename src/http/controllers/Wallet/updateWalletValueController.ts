@@ -5,7 +5,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function updateWalletUserValueController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { owner_id } = req.params as { owner_id: string };
   const { type } = req.query as { type: string };
   const { value } = req.body as { value: number };

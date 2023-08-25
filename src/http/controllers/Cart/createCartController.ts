@@ -7,7 +7,7 @@ import { CartAlreadyExistError } from "@/useCases/@errors/Cart/CartAlreadyExistE
 export async function createCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const { buyer_id, buyer_name, price, seller_id, seller_name } =
       createCartSchema.parse(req.body);

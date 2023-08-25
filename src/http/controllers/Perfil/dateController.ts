@@ -3,7 +3,10 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import axios from "axios";
 import { env } from "process";
 
-export async function dateController(req: FastifyRequest, reply: FastifyReply) {
+export async function dateController(
+  req: FastifyRequest,
+  reply: FastifyReply
+): Promise<FastifyReply | void> {
   const { owner_id } = req.params as { owner_id: string };
 
   try {

@@ -7,7 +7,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function createSkinToCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const { skinId, cartId } = req.body as { skinId: string; cartId: string };
     const createSkinToCart = makeCreateSkinToCart();

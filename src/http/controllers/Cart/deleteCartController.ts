@@ -5,7 +5,7 @@ import { makeDeleteCartUseCase } from "@/useCases/@factories/Cart/makeDeleteCart
 export async function deleteCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
 
   try {

@@ -7,7 +7,7 @@ import { ConfigurationAlreadyExistError } from "@/useCases/@errors/Configuration
 export async function createConfigurationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const {
       owner_id,

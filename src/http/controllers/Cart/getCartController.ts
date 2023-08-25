@@ -5,7 +5,7 @@ import { CartNotExistError } from "@/useCases/@errors/Cart/CartNotExistError";
 export async function getCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
 
   try {

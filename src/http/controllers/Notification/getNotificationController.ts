@@ -5,7 +5,7 @@ import { makeGetNotificationUseCase } from "@/useCases/@factories/Notification/m
 export async function getNotificationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
 
   try {

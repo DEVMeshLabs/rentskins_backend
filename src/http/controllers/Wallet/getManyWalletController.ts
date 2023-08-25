@@ -4,7 +4,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function getManyWalletController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const getManyWallet = makeGetManyWalletUseCase();
     const response = await getManyWallet.execute();

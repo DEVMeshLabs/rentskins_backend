@@ -5,7 +5,7 @@ import { getManyUserNotificationSchema } from "./Schemas/getManyUserNotification
 export async function getManySkinNotificationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { owner_id } = req.params as { owner_id: string };
   const { tempo } = getManyUserNotificationSchema.parse(req.body);
   try {

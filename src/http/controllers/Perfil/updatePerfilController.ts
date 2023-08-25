@@ -6,7 +6,7 @@ import { updatePerfilInfoSchema } from "./Schemas/updatePerfilSchema";
 export async function updatePerfilController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
 
   const {

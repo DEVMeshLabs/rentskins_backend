@@ -8,7 +8,7 @@ import { PerfilAlreadyExistError } from "@/useCases/@errors/Perfil/PerfilInfoAlr
 export async function createPerfilDateController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const { owner_id, owner_name, picture, owner_country, steam_url } =
       createPerfilInfoSchema.parse(req.body);

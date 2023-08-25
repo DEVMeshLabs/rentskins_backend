@@ -8,7 +8,7 @@ import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
 export async function createNotificationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const { owner_id, description, owner_name, skin_id } =
       createNotificationSchema.parse(req.body);
