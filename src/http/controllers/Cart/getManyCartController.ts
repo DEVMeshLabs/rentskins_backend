@@ -4,7 +4,7 @@ import { makeGetManyCart } from "@/useCases/@factories/Cart/makeGetManyCartUseCa
 export async function getManyCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const makeGetMany = makeGetManyCart();
     const response = await makeGetMany.execute();

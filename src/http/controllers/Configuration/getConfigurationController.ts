@@ -5,7 +5,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function getConfigurationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
 
   try {

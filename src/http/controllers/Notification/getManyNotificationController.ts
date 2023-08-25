@@ -4,7 +4,7 @@ import { makeGetManyNotificationUseCase } from "@/useCases/@factories/Notificati
 export async function getManyNotificationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const makeCreateNot = makeGetManyNotificationUseCase();
     const response = await makeCreateNot.execute();

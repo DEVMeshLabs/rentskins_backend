@@ -5,7 +5,7 @@ import { paginationSkinsSchema } from "./Schemas/paginationSkinsSchema";
 export async function getManyCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { seller_id } = req.params as { seller_id: string };
 
   try {

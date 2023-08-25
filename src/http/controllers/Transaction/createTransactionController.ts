@@ -7,7 +7,7 @@ import { CreatePlanRequest } from "pagarmeapisdklib";
 export async function createTransactionController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   // owner_id,
   //     owner_name,
   //     owner_email,

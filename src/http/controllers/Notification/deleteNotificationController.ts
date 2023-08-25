@@ -5,7 +5,7 @@ import { makeDeleteNotificationUseCase } from "@/useCases/@factories/Notificatio
 export async function deleteNotificationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
 
   try {

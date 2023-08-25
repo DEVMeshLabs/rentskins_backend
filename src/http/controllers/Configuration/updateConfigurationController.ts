@@ -7,7 +7,7 @@ import { ConfigurationNotExistError } from "@/useCases/@errors/Configuration/Con
 export async function updateConfigurationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
 
   try {

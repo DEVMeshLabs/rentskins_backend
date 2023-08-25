@@ -4,7 +4,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function getManyCategoryController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { category } = req.params as { category: string };
 
   try {

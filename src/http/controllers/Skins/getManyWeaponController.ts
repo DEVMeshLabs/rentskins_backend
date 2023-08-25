@@ -4,7 +4,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function getManyWeaponController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { weapon } = req.params as { weapon: string };
 
   try {

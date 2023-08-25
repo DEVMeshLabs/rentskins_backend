@@ -5,7 +5,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function deleteSkinToCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const { id } = req.params as { id: string };
     const deleteSkinToCase = makeDeleteSkinToCase();

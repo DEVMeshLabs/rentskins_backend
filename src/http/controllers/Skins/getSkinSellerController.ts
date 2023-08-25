@@ -5,7 +5,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function getSkinSellerController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { seller_id } = req.params as { seller_id: string };
 
   try {

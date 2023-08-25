@@ -6,7 +6,7 @@ import { paginationSkinsSchema } from "./Schemas/paginationSkinsSchema";
 export async function getSkinManyController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const { page, pageSize } = paginationSkinsSchema.parse(req.query);
     const getSkinMany = makeGetSkinMany();

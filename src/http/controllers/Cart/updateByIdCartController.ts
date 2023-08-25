@@ -7,9 +7,10 @@ import { z } from "zod";
 export async function updateByIdCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
-  const { price } = updateByIdCartSchema.parse(req.body);
+  const response = updateByIdCartSchema.parse(req.body);
+  const price = Number(response.price);
 
   try {
     const makeUpdateByIdUseCase = makeUpdateByIdCartUseCase();
