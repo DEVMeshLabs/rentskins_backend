@@ -91,7 +91,6 @@ model Configuration {
   url_sell           String    @db.VarChar(255)
   agreed_with_emails Boolean?  @default(false)
   agreed_with_terms  Boolean?  @default(false)
-  steam_guard        Boolean?  @default(false)
   createdAt          DateTime  @default(now())
   updatedAt          DateTime?
   deletedAt          DateTime?
