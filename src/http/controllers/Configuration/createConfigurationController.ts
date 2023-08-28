@@ -17,7 +17,6 @@ export async function createConfigurationController(
       owner_cpf,
       url_sell,
       url_trade,
-      steam_guard,
       agreed_with_emails,
       agreed_with_terms,
     } = createConfigurationSchema.parse(req.body);
@@ -30,7 +29,6 @@ export async function createConfigurationController(
       owner_cpf,
       url_sell,
       url_trade,
-      steam_guard,
       agreed_with_emails,
       agreed_with_terms,
     });
