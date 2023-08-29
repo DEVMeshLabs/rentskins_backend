@@ -39,7 +39,6 @@ export async function createPerfilDateController(
         url_trade: "",
         agreed_with_emails: false,
         agreed_with_terms: false,
-        steam_guard: false,
       },
       {
         owner_id,
