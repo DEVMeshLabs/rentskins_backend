@@ -13,7 +13,6 @@ export const updateConfigurationSchema = z.object({
       message: "Não é um link válido da Steam.",
     })
     .optional(),
-  steam_guard: z.boolean().optional(),
   agreed_with_emails: z.boolean().optional(),
   agreed_with_terms: z.boolean().optional(),
 });
