@@ -1,7 +1,6 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import SteamCommunity from "steamcommunity";
+import { community } from "@/server";
 import { z } from "zod";
-const community = new SteamCommunity();
 
 export function getInventoryUserController(
   req: FastifyRequest,

@@ -10,6 +10,7 @@ export function getFloatSkinController(
     inspectLinks: string;
     assetid: string;
   };
+
   if (csgo.haveGCSession) {
     console.log("Entrou");
     const filteredID = inspectLinks.split("%D")[1];

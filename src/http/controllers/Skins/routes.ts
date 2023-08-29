@@ -14,6 +14,7 @@ import { getHistoricSellerController } from "./getHistoricSellerController";
 import { getManySearchController } from "./getManySearchController";
 import { getInventoryManyUserController } from "./getInventoryManyUserController";
 import { getInventoryUserController } from "./getInventoryUserController";
+import { getAlreadyExistSkinInventory } from "./getAlreadyExistSkinInventory";
 
 export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins", getSkinManyController);
@@ -25,6 +26,7 @@ export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins/search/:name", getManySearchController);
   app.get("/v1/skins/historic/:seller_id", getHistoricSellerController);
   app.get("/v1/skins/inventory/:id", getInventoryUserController);
+  app.post("/v1/skins/availability/:id", getAlreadyExistSkinInventory);
 
   app.post("/v1/skins", { onRequest: verifyJwt }, createSkinController);
   app.post(
