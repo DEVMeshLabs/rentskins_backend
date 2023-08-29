@@ -1,7 +1,6 @@
+import { makeCreateTransactionUseCase } from "@/useCases/@factories/Transaction/makeCreateTransactionUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 // import { createTransactionSchema } from "./Schemas/createTransactionSchema";
-import { makeCreateTransactionUseCase } from "@/useCases/@factories/Transaction/makeCreateTransactionUseCase";
-import { CreatePlanRequest } from "pagarmeapisdklib";
 // import { parsePhoneNumber } from "libphonenumber-js";
 
 export async function createTransactionController(
@@ -80,38 +79,36 @@ export async function createTransactionController(
   //   return reply.status(404).send({ error: error.message });
   // }
 
-  const body: CreatePlanRequest = {
-    name: "name6",
-    description: "description4",
-    statementDescriptor: "statement_descriptor6",
-    items: [
-      {
-        name: "name3",
-        pricingScheme: {
-          schemeType: "scheme_type5",
-        },
-        id: "id3",
-        description: "description3",
-      },
-    ],
-    shippable: false,
-    paymentMethods: ["payment_methods9"],
-    installments: [207],
-    currency: "currency6",
-    interval: "interval6",
-    intervalCount: 170,
-    billingDays: [201, 200],
-    billingType: "billing_type0",
-    pricingScheme: {
-      schemeType: "scheme_type2",
-    },
-    metadata: {
-      key0: "metadata7",
-      key1: "metadata8",
-    },
-  };
-
-  const transactionUseCase = makeCreateTransactionUseCase();
-  const createTransaction = await transactionUseCase.execute(body);
-  return reply.send(createTransaction);
+  // const body: CreatePlanRequest = {
+  //   name: "name6",
+  //   description: "description4",
+  //   statementDescriptor: "statement_descriptor6",
+  //   items: [
+  //     {
+  //       name: "name3",
+  //       pricingScheme: {
+  //         schemeType: "scheme_type5",
+  //       },
+  //       id: "id3",
+  //       description: "description3",
+  //     },
+  //   ],
+  //   shippable: false,
+  //   paymentMethods: ["payment_methods9"],
+  //   installments: [207],
+  //   currency: "currency6",
+  //   interval: "interval6",
+  //   intervalCount: 170,
+  //   billingDays: [201, 200],
+  //   billingType: "billing_type0",
+  //   pricingScheme: {
+  //     schemeType: "scheme_type2",
+  //   },
+  //   metadata: {
+  //     key0: "metadata7",
+  //     key1: "metadata8",
+  //   },
+  // };
+  const response = makeCreateTransactionUseCase();
+  return reply.send(response.process);
 }
