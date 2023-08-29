@@ -218,6 +218,4 @@ export const seedSkin = [
       "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M%listingid%A%assetid%D2352713544642898672",
     skin_link_steam: "/",
   },
-
-  // ---------------------DUPLICADO------------------------------------------
 ];
