@@ -12,6 +12,7 @@ datasource db {
 
 model Skin {
   id              String         @id @default(uuid()) @db.VarChar(36)
+  assent_id       String         @unique @db.VarChar(255)
   skin_image      String         @db.VarChar(255)
   skin_name       String         @db.VarChar(255)
   skin_category   String         @db.VarChar(255)
