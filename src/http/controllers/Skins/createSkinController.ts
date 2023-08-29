@@ -23,6 +23,7 @@ export async function createSkinController(
         skin_link_steam,
         seller_name,
         seller_id,
+        assent_id,
         buyer_name,
         buyer_id,
         status,
@@ -46,6 +47,7 @@ export async function createSkinController(
           status,
           status_float,
           sale_type,
+          assent_id,
         });
       }
     );
