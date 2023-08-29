@@ -1,8 +1,7 @@
+import { community } from "@/server";
 import { DataPagination } from "@/utils/dataPagination";
 import { FastifyRequest, FastifyReply } from "fastify";
-import SteamCommunity from "steamcommunity";
 import { z } from "zod";
-const community = new SteamCommunity();
 
 export function getInventoryManyUserController(
   req: FastifyRequest,

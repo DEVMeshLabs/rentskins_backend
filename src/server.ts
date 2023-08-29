@@ -1,10 +1,12 @@
 import GlobalOffensive from "globaloffensive";
 import cors from "@fastify/cors";
 import SteamUser from "steam-user";
+import SteamCommunity from "steamcommunity";
 import { app } from "./app";
 import { env } from "./env";
 export const user = new SteamUser();
 export const csgo = new GlobalOffensive(user);
+export const community = new SteamCommunity();
 
 app.register(cors, {
   origin: true,
