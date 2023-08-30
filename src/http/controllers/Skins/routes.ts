@@ -39,6 +39,6 @@ export async function skinRouter(app: FastifyInstance) {
     { onRequest: verifyJwt },
     getFloatSkinController
   );
-  app.delete("/v1/skins/:id", { onRequest: verifyJwt }, deleteSkinController);
+  app.delete("/v1/skins/:id", deleteSkinController);
   app.put("/v1/skins/:id", { onRequest: verifyJwt }, updateSkinController);
 }
