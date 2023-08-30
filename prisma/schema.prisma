@@ -12,7 +12,7 @@ datasource db {
 
 model Skin {
   id              String         @id @default(uuid()) @db.VarChar(36)
-  assent_id       String         @unique @db.VarChar(255)
+  asset_id        String         @unique @db.VarChar(255)
   skin_image      String         @db.VarChar(255)
   skin_name       String         @db.VarChar(255)
   skin_category   String         @db.VarChar(255)
@@ -42,8 +42,8 @@ model SkinToCart {
   skinId String @db.VarChar(255)
   cartId String @db.VarChar(255)
 
-  skin Skin @relation(fields: [skinId], references: [id])
-  cart Cart @relation(fields: [cartId], references: [id])
+  skin Skin @relation(fields: [skinId], references: [id], onDelete: Cascade)
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
 }
 
 model Cart {

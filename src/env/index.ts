@@ -10,6 +10,8 @@ const envSchema = z.object({
   STEAM_USERNAME: z.string(),
   STEAM_PASSWORD: z.string(),
   STEAM_KEY: z.string(),
+  STRIPE_PUBLIC_KEY: z.string(),
+  STRIPE_SECRET_KEY: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

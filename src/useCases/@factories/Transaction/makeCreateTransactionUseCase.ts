@@ -1,7 +1,6 @@
-import { PagarMeProvider } from "@/useCases/Transaction/PagarMeProvider";
+import { TransactionUseCase } from "@/useCases/Transaction/transactionUseCase";
 
 export function makeCreateTransactionUseCase() {
-  const createSkinUseCase = new PagarMeProvider();
-
+  const createSkinUseCase = new TransactionUseCase();
   return createSkinUseCase;
 }
