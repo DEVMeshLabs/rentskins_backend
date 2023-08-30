@@ -42,7 +42,6 @@
     "ts-node": "^10.9.1",
     "tslib": "^2.6.1",
     "tsup": "^7.1.0",
-    "yup": "^1.2.0",
     "zod": "^3.21.4"
   },
   "devDependencies": {
@@ -51,6 +50,7 @@
     "@types/jsonwebtoken": "^9.0.2",
     "@types/node": "^20.4.0",
     "@types/steam-user": "^4.26.4",
+    "@types/stripe": "^8.0.417",
     "eslint": "^8.44.0",
     "prisma": "^4.16.2",
     "tsx": "^3.12.7",
