@@ -24,9 +24,5 @@ export async function perfilRouter(app: FastifyInstance) {
     dateController
   );
   app.put("/v1/perfil/:id", { onRequest: verifyJwt }, updatePerfilController);
-  app.delete(
-    "/v1/perfil/:id",
-    { onRequest: verifyJwt },
-    deletePerfilController
-  );
+  app.delete("/v1/perfil/:id", deletePerfilController);
 }
