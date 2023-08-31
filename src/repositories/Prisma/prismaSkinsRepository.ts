@@ -85,13 +85,15 @@ export class PrismaSkinRepository implements ISkinsRepository {
   }
 
   async findByCountSkins() {
-    const countSkins = await prisma.skin.count();
+    const countSkins = await prisma.skin.count({
+      where: { deletedAt: null },
+    });
     return countSkins;
   }
 
   async findByCountSellers(seller_id: string) {
     const countSkins = await prisma.skin.count({
-      where: { seller_id },
+      where: { seller_id, deletedAt: null },
     });
     return countSkins;
   }
@@ -104,6 +106,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
           { skin_category: { contains: search, mode: "insensitive" } },
           { skin_weapon: { contains: search, mode: "insensitive" } },
         ],
+        deletedAt: null,
       },
     });
     return findSearch;
