@@ -34,7 +34,7 @@ model Skin {
   updatedAt       DateTime?
   deletedAt       DateTime?
   Notification    Notification[]
-  SkinToCart      SkinToCart[]
+  skinToCart      SkinToCart[]
 }
 
 model SkinToCart {
@@ -42,8 +42,8 @@ model SkinToCart {
   skinId String @db.VarChar(255)
   cartId String @db.VarChar(255)
 
-  skin Skin @relation(fields: [skinId], references: [id], onDelete: Cascade)
-  cart Cart @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  skin Skin @relation(fields: [skinId], references: [id], onDelete: NoAction)
+  cart Cart @relation(fields: [cartId], references: [id], onDelete: NoAction)
 }
 
 model Cart {
