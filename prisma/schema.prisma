@@ -42,8 +42,8 @@ model SkinToCart {
   skinId String @db.VarChar(255)
   cartId String @db.VarChar(255)
 
-  skin Skin @relation(fields: [skinId], references: [id], onDelete: NoAction)
-  cart Cart @relation(fields: [cartId], references: [id], onDelete: NoAction)
+  skin Skin @relation(fields: [skinId], references: [id])
+  cart Cart @relation(fields: [cartId], references: [id])
 }
 
 model Cart {
@@ -117,8 +117,8 @@ model Perfil {
   updatedAt          DateTime?
   deletedAt          DateTime?
   configurationId    String?        @db.VarChar(36)
-  configuration      Configuration? @relation(fields: [configurationId], references: [id])
   cart_id            String?
+  configuration      Configuration? @relation(fields: [configurationId], references: [id])
   cart               Cart?          @relation(fields: [cart_id], references: [id])
 }
 
