@@ -1,10 +1,16 @@
+import { ICart } from "@/@types/ICart";
 import { ICartRepository } from "@/repositories/interfaceRepository/ICartRepository";
-import { Cart } from "@prisma/client";
 
 export class GetManyCartUseCase {
   constructor(private cartRepository: ICartRepository) {}
-  async execute(): Promise<Cart[]> {
+  async execute(): Promise<ICart[]> {
     const getMany = await this.cartRepository.findByMany();
-    return getMany;
+
+    const response = getMany.map((item) => {
+      const { skinId, ...result } = item;
+      return result;
+    });
+
+    return response;
   }
 }
