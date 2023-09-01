@@ -54,6 +54,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
   async findByMany(page: number, pageSize: number) {
     const skinAll = await prisma.skin.findMany({
       where: { deletedAt: null },
+      orderBy: { createdAt: "desc" },
       take: pageSize,
       skip: (page - 1) * pageSize,
       include: { Notification: true },
