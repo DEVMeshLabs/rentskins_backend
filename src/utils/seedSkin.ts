@@ -61,26 +61,6 @@ export const seedSkin = [
 
   {
     skin_image:
-      "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpoor-mcjhjxszcdD4b0963mYKEmMj4OrzZgiUDvMEp07GX9tikjgfg_xdkMGimLYeTdVc3Yl2D_QO3werogJHqtJic1zI97SuSa_L0",
-    skin_name: "StatTrak™ Tec-9 | Bamboozle",
-    skin_category: "Pistol",
-    skin_weapon: "Tec-9",
-    skin_price: "212",
-    skin_float: "0,10072",
-    seller_name: "Italo",
-    seller_id: "76561199205585878",
-    skin_color: "CF6A32",
-    asset_id: "31682114616",
-    status: "Pending",
-    sale_type: "Covert Rifle",
-    status_float: "Novo de fábrica",
-    skin_link_game:
-      "steam://rungame/730/76561202255233023/+csgo_econ_action_preview%20M%listingid%A%assetid%D11999956581369992090",
-    skin_link_steam: "/",
-  },
-
-  {
-    skin_image:
       "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXA6Q1NL4kmrAlOA0_FVPCi2t_fUkRxNztUoreaLw521uH3ZzxQ5d24gILFz66tYrmCkjICvsEiiLuUotvw0ADmr0NrY2r7d9WddAU2YFjU_AO5l_Cv28EW3mYYFQ",
     skin_name: "Cmdr. Frank 'Wet Sox' Baroud | SEAL Frogman",
     skin_category: "Agent",
