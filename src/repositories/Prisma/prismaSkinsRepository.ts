@@ -129,7 +129,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
   }
 
   async deleteSkin(id: string) {
-    await prisma.notification.deleteMany({
+    const deleteNotification = await prisma.notification.deleteMany({
       where: {
         skin: {
           id,
@@ -137,7 +137,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
       },
     });
 
-    await prisma.skinToCart.deleteMany({
+    const deleteSkinToCart = await prisma.skinToCart.deleteMany({
       where: {
         skin: {
           id,
@@ -152,6 +152,12 @@ export class PrismaSkinRepository implements ISkinsRepository {
       },
     });
 
-    return deleteSkin;
+    const response = await Promise.all([
+      deleteNotification,
+      deleteSkinToCart,
+      deleteSkin,
+    ]);
+
+    return response[2];
   }
 }
