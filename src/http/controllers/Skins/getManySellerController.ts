@@ -10,9 +10,16 @@ export async function getManyCartController(
 
   try {
     const getManySeller = makeGetManySellerUseCase();
-    const { page, pageSize } = paginationSkinsSchema.parse(req.query);
+    const { page, pageSize, deletedAt } = paginationSkinsSchema.parse(
+      req.query
+    );
 
-    const response = await getManySeller.execute(seller_id, page, pageSize);
+    const response = await getManySeller.execute(
+      seller_id,
+      page,
+      pageSize,
+      deletedAt
+    );
 
     return reply.status(200).send(response);
   } catch (error) {
