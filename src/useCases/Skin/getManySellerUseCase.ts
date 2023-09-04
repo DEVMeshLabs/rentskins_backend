@@ -13,7 +13,8 @@ export class GetManySellerUseCase {
   async execute(
     seller_id: string,
     page: number,
-    pageSize: number
+    pageSize: number,
+    deletedAt: string
   ): Promise<GetManySellerUseCaseResponse> {
     const countSkins = await this.skinRepository.findByCountSellers(seller_id);
     const totalPages = Math.ceil(countSkins / pageSize);
@@ -21,7 +22,8 @@ export class GetManySellerUseCase {
     const skins = await this.skinRepository.findByManySeller(
       seller_id,
       page,
-      pageSize
+      pageSize,
+      deletedAt
     );
 
     return {
