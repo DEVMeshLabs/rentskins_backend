@@ -130,33 +130,27 @@ export class PrismaSkinRepository implements ISkinsRepository {
   }
 
   async deleteSkin(id: string) {
-    const deleteNotification = await prisma.notification.deleteMany({
-      where: {
-        skin: {
-          id,
-        },
-      },
-    });
-
-    const deleteSkinToCart = await prisma.skinToCart.deleteMany({
-      where: {
-        skin: {
-          id,
-        },
-      },
-    });
-
-    const deleteSkin = await prisma.skin.update({
-      where: { id },
-      data: {
-        deletedAt: new Date(),
-      },
-    });
-
     const response = await Promise.all([
-      deleteNotification,
-      deleteSkinToCart,
-      deleteSkin,
+      await prisma.notification.deleteMany({
+        where: {
+          skin: {
+            id,
+          },
+        },
+      }),
+      await prisma.skinToCart.deleteMany({
+        where: {
+          skin: {
+            id,
+          },
+        },
+      }),
+      await prisma.skin.update({
+        where: { id },
+        data: {
+          deletedAt: new Date(),
+        },
+      }),
     ]);
 
     return response[2];
