@@ -10,7 +10,8 @@ export interface ISkinsRepository {
   findByManySeller(
     seller_id: string,
     page: number,
-    pageSize: number
+    pageSize: number,
+    deletedAt: string
   ): Promise<Skin[]>;
   findHistoricId(seller_id: string): Promise<any>;
   findByCountSkins(): Promise<number>;

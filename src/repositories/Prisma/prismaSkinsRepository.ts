@@ -26,9 +26,15 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return skin;
   }
 
-  async findByManySeller(seller_id: string, page: number, pageSize: number) {
+  async findByManySeller(
+    seller_id: string,
+    page: number,
+    pageSize: number,
+    deletedAt: string
+  ) {
     const findSeller = prisma.skin.findMany({
-      where: { seller_id, deletedAt: null },
+      where:
+        deletedAt === "false" ? { seller_id, deletedAt: null } : { seller_id },
       take: pageSize,
       skip: (page - 1) * pageSize,
     });
