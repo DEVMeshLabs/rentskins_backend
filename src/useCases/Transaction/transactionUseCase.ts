@@ -1,49 +1,48 @@
 import { env } from "@/env";
 
-const stripe = require("stripe")(env.STRIPE_SECRET_KEY);
+const { checkout } = require("stripe")(env.STRIPE_SECRET_KEY);
 
-// interface ICartao {
-//   object: string;
-//   number: string;
-//   exp_month: number;
-//   exp_year: number;
-//   cvc: string;
-// }
+interface IPayment {
+  owner_id: string;
+}
 
 export class TransactionUseCase {
-  async process(amount: number) {
-    const customer = await stripe.customers.create({
+  async process({ owner_id }: IPayment) {
+    // const customer = await customers.create({
+    //   metadata: {
+    //     owner_id: "teste_01",
+    //   },
+    // });
+
+    const session = await checkout.sessions.create({
+      success_url: `https://rentskins-testing.vercel.app?sucess`,
+      line_items: [{ price: "price_1NkcAUDc1nUAjpNxbLL0BD0K", quantity: 1 }],
       metadata: {
-        owner_id: "teste_01",
+        owner_id,
       },
-    });
-    const ephemeralKey = await stripe.ephemeralKeys.create(
-      {
-        customer: customer.id,
-      },
-      { apiVersion: "2022-08-01" }
-    );
-
-    const paymentIntent = await stripe.paymentIntents.create({
-      amount: amount * 100,
-      currency: "brl",
-      customer: customer.id,
-      payment_method_types: ["card"],
+      mode: "payment",
     });
 
-    console.log({
-      paymentIntent: paymentIntent.client_secret,
-      ephemeralKey: ephemeralKey.secret,
-      customer: customer.id,
-      publishableKey:
-        "pk_test_51MtcTFDc1nUAjpNxkGLHFtTtO2kifE7jXp5bTEmIxPtdhdclw0DBDD6MnCh5FKCMgHn0qpR6KahPEGJOvdsREtUz00Ra0tvyFK",
-    });
+    return session;
+    // const ephemeralKey = await ephemeralKeys.create(
+    //   {
+    //     customer: customer.id,
+    //   },
+    //   { apiVersion: "2022-08-01" }
+    // );
 
-    return {
-      paymentIntent: paymentIntent.client_secret,
-      ephemeralKey: ephemeralKey.secret,
-      customer: customer.id,
-      publishableKey: env.STRIPE_PUBLIC_KEY,
-    };
+    // const paymentIntent = await paymentIntents.create({
+    //   amount: amount * 100,
+    //   currency: "brl",
+    //   customer: customer.id,
+    //   payment_method_types: ["card"],
+    // });
+
+    // return {
+    //   paymentIntent: paymentIntent.client_secret,
+    //   ephemeralKey: ephemeralKey.secret,
+    //   customer: customer.id,
+    //   publishableKey: env.STRIPE_PUBLIC_KEY,
+    // };
   }
 }
