@@ -7,10 +7,10 @@ export async function createTransactionController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { owner_id } = createTransactionSchema.parse(req.body);
+    const { owner_id, amount } = createTransactionSchema.parse(req.body);
     const makeTransaction = makeCreateTransactionUseCase();
 
-    const response = await makeTransaction.process({ owner_id });
+    const response = await makeTransaction.process({ owner_id, amount });
     return reply.status(200).send(response);
   } catch (error) {
     console.log(error);
