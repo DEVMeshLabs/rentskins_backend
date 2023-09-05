@@ -7,6 +7,7 @@ export interface ISkinsRepository {
   findByMany(page: number, pageSize: number): Promise<Skin[]>;
   findByManyWeapon(skin_weapon: string): Promise<Skin[] | null>;
   findByManyCategory(skin_category: string): Promise<Skin[] | null>;
+  findManyAssent(): Promise<Skin[]>;
   findByManySeller(
     seller_id: string,
     page: number,

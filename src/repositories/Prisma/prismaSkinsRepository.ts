@@ -68,6 +68,13 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return skinAll;
   }
 
+  async findManyAssent() {
+    const skinAllAssent = await prisma.skin.findMany({
+      where: { deletedAt: null },
+    });
+    return skinAllAssent;
+  }
+
   async findBySeller(seller_id: string) {
     const findSeller = await prisma.skin.findFirst({
       where: { seller_id, deletedAt: null },
