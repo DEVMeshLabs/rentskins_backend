@@ -4,4 +4,6 @@ export const createTransactionSchema = z.object({
   owner_id: z.string(),
   success_url: z.string(),
   cancel_url: z.string(),
+  amount: z.number().min(5),
+  payment_method: z.enum(["card", "boleto"]),
 });

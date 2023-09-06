@@ -8,13 +8,14 @@ export async function createTransactionController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { owner_id, cancel_url, success_url } = createTransactionSchema.parse(
-      req.body
-    );
+    const { owner_id, cancel_url, success_url, amount, payment_method } =
+      createTransactionSchema.parse(req.body);
     const makeTransaction = makeCreateTransactionUseCase();
 
     const response = await makeTransaction.process({
       owner_id,
+      payment_method,
+      amount,
       cancel_url,
       success_url,
     });

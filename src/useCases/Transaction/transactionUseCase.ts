@@ -1,23 +1,40 @@
 import { env } from "@/env";
-
 const { checkout } = require("stripe")(env.STRIPE_SECRET_KEY);
 
 interface IPayment {
   owner_id: string;
+  amount: number;
+  payment_method: string;
   success_url: string;
   cancel_url: string;
 }
 
 export class TransactionUseCase {
-  async process({ owner_id, success_url, cancel_url }: IPayment) {
+  async process({
+    owner_id,
+    amount,
+    payment_method,
+    success_url,
+    cancel_url,
+  }: IPayment) {
     const session = await checkout.sessions.create({
-      success_url: `${success_url}/sucesso`,
-      cancel_url: `${cancel_url}/cancelado`,
-      line_items: [{ price: "price_1NkcAUDc1nUAjpNxbLL0BD0K", quantity: 1 }],
+      line_items: [
+        {
+          price_data: {
+            unit_amount: amount * 100,
+            currency: "brl",
+            product: "prod_OXhZUN8oYYERyj",
+          },
+          quantity: 1,
+        },
+      ],
       metadata: {
         owner_id,
       },
-      payment_method_types: ["card", "boleto"],
+      billing_address_collection: "required",
+      payment_method_types: [payment_method],
+      success_url: `${success_url}/sucesso?id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${cancel_url}/cancelado`,
       mode: "payment",
     });
 
