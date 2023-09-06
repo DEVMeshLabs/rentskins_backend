@@ -33,7 +33,7 @@ export class TransactionUseCase {
       },
       billing_address_collection: "required",
       payment_method_types: [payment_method],
-      success_url: `${success_url}/sucesso?id={CHECKOUT_SESSION_ID}`,
+      success_url: `${success_url}/processo?id={CHECKOUT_SESSION_ID}`,
       cancel_url: `${cancel_url}/cancelado`,
       mode: "payment",
     });
