@@ -1,6 +1,7 @@
 import { makeCreateTransactionUseCase } from "@/useCases/@factories/Transaction/makeCreateTransactionUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createTransactionSchema } from "./Schemas/createTransactionSchema";
+import { ZodError } from "zod";
 
 export async function createTransactionController(
   req: FastifyRequest,
@@ -20,6 +21,9 @@ export async function createTransactionController(
 
     return reply.status(200).send({ url: response });
   } catch (error) {
-    console.log(error);
+    if (error instanceof ZodError) {
+      return reply.status(400).send({ error: error.message });
+    }
+    throw error;
   }
 }
