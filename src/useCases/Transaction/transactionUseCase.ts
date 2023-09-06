@@ -3,6 +3,7 @@ const { checkout } = require("stripe")(env.STRIPE_SECRET_KEY);
 
 interface IPayment {
   owner_id: string;
+  email: string;
   amount: number;
   payment_method: string;
   success_url: string;
@@ -12,6 +13,7 @@ interface IPayment {
 export class TransactionUseCase {
   async process({
     owner_id,
+    email,
     amount,
     payment_method,
     success_url,
@@ -31,6 +33,8 @@ export class TransactionUseCase {
       metadata: {
         owner_id,
       },
+      customer_email: email,
+      phone_number_collection: { enabled: true },
       billing_address_collection: "required",
       payment_method_types: [payment_method],
       success_url: `${success_url}/processo?id={CHECKOUT_SESSION_ID}`,
@@ -39,25 +43,5 @@ export class TransactionUseCase {
     });
 
     return session.url;
-    // const ephemeralKey = await ephemeralKeys.create(
-    //   {
-    //     customer: customer.id,
-    //   },
-    //   { apiVersion: "2022-08-01" }
-    // );
-
-    // const paymentIntent = await paymentIntents.create({
-    //   amount: amount * 100,
-    //   currency: "brl",
-    //   customer: customer.id,
-    //   payment_method_types: ["card"],
-    // });
-
-    // return {
-    //   paymentIntent: paymentIntent.client_secret,
-    //   ephemeralKey: ephemeralKey.secret,
-    //   customer: customer.id,
-    //   publishableKey: env.STRIPE_PUBLIC_KEY,
-    // };
   }
 }
