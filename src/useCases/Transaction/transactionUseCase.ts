@@ -4,11 +4,10 @@ const { checkout } = require("stripe")(env.STRIPE_SECRET_KEY);
 
 interface IPayment {
   owner_id: string;
-  amount: number;
 }
 
 export class TransactionUseCase {
-  async process({ owner_id, amount }: IPayment) {
+  async process({ owner_id }: IPayment) {
     // const customer = await customers.create({
     //   metadata: {
     //     owner_id: "teste_01",
