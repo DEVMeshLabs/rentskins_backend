@@ -11,7 +11,7 @@ export class CreateSkinUseCase {
       (item) => item.asset_id === data.asset_id
     );
 
-    if (verify) {
+    if (verify.length > 0) {
       throw new SkinAlreadyExistsError(`${verify[0].skin_name}`);
     }
 
