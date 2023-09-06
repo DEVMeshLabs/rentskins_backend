@@ -59,8 +59,9 @@ export async function createSkinController(
       return reply.status(409).send({ error: error.message });
     } else if (error instanceof ZodError) {
       return reply.status(400).send({ error: error.message });
+    } else if (error instanceof Error) {
+      return reply.status(500).send({ error: error.message });
     }
-    throw error;
   }
 
   return reply.status(201).send();
