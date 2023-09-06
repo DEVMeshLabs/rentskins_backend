@@ -18,7 +18,7 @@ export async function createTransactionController(
       success_url,
     });
 
-    return reply.status(200).send(response);
+    return reply.status(200).send({ url: response });
   } catch (error) {
     console.log(error);
   }
