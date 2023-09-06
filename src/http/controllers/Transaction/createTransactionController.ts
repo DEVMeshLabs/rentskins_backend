@@ -17,8 +17,8 @@ export async function createTransactionController(
       cancel_url,
       success_url,
     });
-    const url = response.url;
-    return reply.redirect(url);
+
+    return reply.status(200).send(response);
   } catch (error) {
     console.log(error);
   }
