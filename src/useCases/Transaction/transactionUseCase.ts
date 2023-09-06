@@ -10,12 +10,6 @@ interface IPayment {
 
 export class TransactionUseCase {
   async process({ owner_id, success_url, cancel_url }: IPayment) {
-    // const customer = await customers.create({
-    //   metadata: {
-    //     owner_id: "teste_01",
-    //   },
-    // });
-
     const session = await checkout.sessions.create({
       success_url: `${success_url}/sucesso`,
       cancel_url: `${cancel_url}/cancelado`,
@@ -27,7 +21,7 @@ export class TransactionUseCase {
       mode: "payment",
     });
 
-    return session;
+    return session.url;
     // const ephemeralKey = await ephemeralKeys.create(
     //   {
     //     customer: customer.id,
