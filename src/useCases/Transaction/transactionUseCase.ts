@@ -4,10 +4,12 @@ const { checkout } = require("stripe")(env.STRIPE_SECRET_KEY);
 
 interface IPayment {
   owner_id: string;
+  success_url: string;
+  cancel_url: string;
 }
 
 export class TransactionUseCase {
-  async process({ owner_id }: IPayment) {
+  async process({ owner_id, success_url, cancel_url }: IPayment) {
     // const customer = await customers.create({
     //   metadata: {
     //     owner_id: "teste_01",
@@ -15,7 +17,8 @@ export class TransactionUseCase {
     // });
 
     const session = await checkout.sessions.create({
-      success_url: `https://rentskins-testing.vercel.app?sucess`,
+      success_url: `${success_url}/sucesso`,
+      cancel_url: `${cancel_url}/cancelado`,
       line_items: [{ price: "price_1NkcAUDc1nUAjpNxbLL0BD0K", quantity: 1 }],
       metadata: {
         owner_id,
