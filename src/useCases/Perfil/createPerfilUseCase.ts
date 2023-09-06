@@ -18,7 +18,6 @@ export class CreatePerfilUseCase {
     if (findIdUser) {
       throw new PerfilAlreadyExistError();
     }
-
     const result = await this.configurationRespository.create({ ...date });
 
     const create = await this.perfilRepository.create({

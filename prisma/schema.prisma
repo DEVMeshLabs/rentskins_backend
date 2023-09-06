@@ -118,8 +118,8 @@ model Perfil {
   deletedAt          DateTime?
   configurationId    String?        @db.VarChar(36)
   cart_id            String?
-  configuration      Configuration? @relation(fields: [configurationId], references: [id])
-  cart               Cart?          @relation(fields: [cart_id], references: [id])
+  configuration      Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
+  cart               Cart?          @relation(fields: [cart_id], references: [id], onDelete: Cascade)
 }
 
 model Transaction {

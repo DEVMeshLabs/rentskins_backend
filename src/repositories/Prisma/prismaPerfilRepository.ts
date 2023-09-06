@@ -85,4 +85,12 @@ export class PrismaPerfilRepository implements IPerfilRepository {
 
     return deletePerfil;
   }
+
+  async deletePerfilBanco(id: string) {
+    const deletePerfil = await prisma.perfil.delete({
+      where: { id },
+    });
+
+    return deletePerfil;
+  }
 }
