@@ -53,7 +53,7 @@ export async function createSkinController(
         })
     );
 
-    await Promise.all([response]);
+    await Promise.all([...response]);
   } catch (error) {
     if (error instanceof SkinAlreadyExistsError) {
       return reply.status(409).send({ error: error.message });
