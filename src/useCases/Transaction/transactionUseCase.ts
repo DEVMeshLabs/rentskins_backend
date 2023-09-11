@@ -39,7 +39,10 @@ export class TransactionUseCase {
           quantity: 1,
         },
       ],
-      customer: customer.id,
+      metadata: {
+        owner_id,
+      },
+      customer_email: email,
       phone_number_collection: { enabled: true },
       billing_address_collection: "required",
       payment_method_types: [payment_method],

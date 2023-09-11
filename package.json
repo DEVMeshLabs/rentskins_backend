@@ -23,6 +23,7 @@
   "license": "ISC",
   "dependencies": {
     "@fastify/cors": "^8.3.0",
+    "@fastify/formbody": "^7.4.0",
     "@pagarme/sdk": "^5.8.1",
     "@prisma/client": "^4.16.2",
     "@types/steamcommunity": "^3.43.2",
@@ -30,6 +31,8 @@
     "cpf-cnpj-validator": "^1.0.3",
     "dotenv": "^16.3.1",
     "fastify": "^4.19.2",
+    "fastify-plugin": "^4.5.1",
+    "fastify-raw-body": "^4.2.2",
     "globaloffensive": "^2.3.0",
     "jsonwebtoken": "^9.0.1",
     "jwt-decode": "^3.1.2",
