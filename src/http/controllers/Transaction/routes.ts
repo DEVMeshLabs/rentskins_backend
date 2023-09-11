@@ -2,7 +2,7 @@ import { FastifyInstance } from "fastify";
 import { createTransactionController } from "./createTransactionController";
 import { getRetriveTransactionController } from "./getRetriveTransactionController";
 import { verifyJwt } from "@/http/middlewares/verifyJwt";
-import { checkout, webhooks } from "@/server";
+import { webhooks } from "@/server";
 import { env } from "@/env";
 import console from "console";
 // app.register(require('@fastify/formbody'))
@@ -31,7 +31,7 @@ export async function transactionRouter(app: FastifyInstance) {
       // console.log(sig);
       // console.log(request.body);
       // const rawBody = request.rawBody;
-      console.log(request.rawBody);
+
       try {
         event = webhooks.constructEvent(
           request.rawBody,
@@ -50,18 +50,9 @@ export async function transactionRouter(app: FastifyInstance) {
         case "payment_intent.succeeded":
           // eslint-disable-next-line no-case-declarations
           const paymentIntentSucceeded = event.data.object;
-          console.log(
-            "AQUIIIIIIIIIIIIIIIIIIIIIIII",
-            paymentIntentSucceeded.data.object.id
-          );
+          console.log(paymentIntentSucceeded);
 
           // eslint-disable-next-line no-case-declarations
-          const sessions = checkout.sessions.list({
-            payment_intent: paymentIntentSucceeded.data.object.id,
-          });
-
-          console.log(sessions);
-
           return reply.status(200).send(paymentIntentSucceeded);
 
         // ... handle other event types
