@@ -1,5 +1,4 @@
-import { env } from "@/env";
-const { checkout } = require("stripe")(env.STRIPE_SECRET_KEY);
+import { checkout } from "@/server";
 
 export class GetRetriveTransactionUseCase {
   async process(id: string) {

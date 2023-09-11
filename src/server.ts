@@ -7,6 +7,9 @@ import { env } from "./env";
 export const user = new SteamUser();
 export const csgo = new GlobalOffensive(user);
 export const community = new SteamCommunity();
+export const { checkout, webhooks, customers } = require("stripe")(
+  env.STRIPE_SECRET_KEY
+);
 
 app.register(cors, {
   origin: true,
