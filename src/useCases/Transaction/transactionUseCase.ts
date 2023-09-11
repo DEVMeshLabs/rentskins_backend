@@ -1,5 +1,4 @@
-import { env } from "@/env";
-const { checkout } = require("stripe")(env.STRIPE_SECRET_KEY);
+import { checkout, customers } from "@/server";
 
 interface IPayment {
   owner_id: string;
@@ -19,6 +18,16 @@ export class TransactionUseCase {
     success_url,
     cancel_url,
   }: IPayment) {
+    const customer = await customers.create({
+      email, // Substitua pelo e-mail do usuário
+      metadata: {
+        owner_id, // Exemplo de metadata com o ID do usuário
+        // Outros dados de metadata
+      },
+    });
+
+    console.log(customer.id);
+
     const session = await checkout.sessions.create({
       line_items: [
         {
@@ -30,10 +39,7 @@ export class TransactionUseCase {
           quantity: 1,
         },
       ],
-      metadata: {
-        owner_id,
-      },
-      customer_email: email,
+      customer: customer.id,
       phone_number_collection: { enabled: true },
       billing_address_collection: "required",
       payment_method_types: [payment_method],
