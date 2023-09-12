@@ -101,7 +101,6 @@ model Configuration {
 model Perfil {
   id                 String         @id @default(uuid()) @db.VarChar(36)
   owner_id           String         @db.VarChar(255)
-  stripe_id          String?        @db.VarChar(255)
   owner_name         String         @db.VarChar(255)
   owner_type         String         @default("Usuario") @db.VarChar(255)
   owner_country      String?        @db.VarChar(5)
