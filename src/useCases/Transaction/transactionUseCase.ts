@@ -42,7 +42,7 @@ export class TransactionUseCase {
       metadata: {
         owner_id,
       },
-      customer_email: email,
+      customer: customer.id,
       phone_number_collection: { enabled: true },
       billing_address_collection: "required",
       payment_method_types: [payment_method],
