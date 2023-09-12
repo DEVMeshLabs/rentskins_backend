@@ -104,6 +104,7 @@ model Perfil {
   owner_name         String         @db.VarChar(255)
   owner_type         String         @default("Usuario") @db.VarChar(255)
   owner_country      String?        @db.VarChar(5)
+  stripe_id          String?        @db.VarChar(255)
   account_status     String         @default("Ativo") @db.VarChar(20)
   status_member      String?        @default("Membro novo") @db.VarChar(255)
   steam_level        Int            @db.Integer
