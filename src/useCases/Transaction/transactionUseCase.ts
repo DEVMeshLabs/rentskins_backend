@@ -19,14 +19,11 @@ export class TransactionUseCase {
     cancel_url,
   }: IPayment) {
     const customer = await customers.create({
-      email, // Substitua pelo e-mail do usuário
+      email,
       metadata: {
-        owner_id, // Exemplo de metadata com o ID do usuário
-        // Outros dados de metadata
+        owner_id,
       },
     });
-
-    console.log(customer.id);
 
     const session = await checkout.sessions.create({
       line_items: [
