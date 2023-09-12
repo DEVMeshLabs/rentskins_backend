@@ -36,9 +36,10 @@ export class TransactionUseCase {
       });
 
       customer_id = customer.id;
+    } else {
+      customer_id = perfilUser.stripe_id;
     }
 
-    customer_id = perfilUser.stripe_id;
     const session = await checkout.sessions.create({
       line_items: [
         {
