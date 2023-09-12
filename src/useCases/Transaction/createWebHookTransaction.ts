@@ -1,9 +1,14 @@
 /* eslint-disable no-case-declarations */
+import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { customers } from "@/server";
 
 export class CreateWebHookTransactionUseCase {
-  constructor(private walletRepository: IWalletRepository) {}
+  constructor(
+    private walletRepository: IWalletRepository,
+    private perfilRepository: IPerfilRepository
+  ) {}
+
   async process(event: any) {
     switch (event.type) {
       case "payment_intent.succeeded":
@@ -14,13 +19,14 @@ export class CreateWebHookTransactionUseCase {
           paymentIntentSucceeded.customer
         );
 
-        // Atualizando a wallet
-        await this.walletRepository.updateByUserValue(
-          customer.metadata.owner_id,
-          "increment",
-          paymentIntentSucceeded.amount / 100
-        );
-
+        // Atualizando a wallet e Perfil
+        await Promise.all([
+          this.walletRepository.updateByUserValue(
+            customer.metadata.owner_id,
+            "increment",
+            paymentIntentSucceeded.amount / 100
+          ),
+        ]);
         return paymentIntentSucceeded;
 
       case "payment_intent.payment_failed":

@@ -1,3 +1,4 @@
+import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { checkout, customers } from "@/server";
 
 interface IPayment {
@@ -10,6 +11,7 @@ interface IPayment {
 }
 
 export class TransactionUseCase {
+  constructor(private perfilRepostiory: IPerfilRepository) {}
   async process({
     owner_id,
     email,
@@ -18,13 +20,25 @@ export class TransactionUseCase {
     success_url,
     cancel_url,
   }: IPayment) {
-    const customer = await customers.create({
-      email,
-      metadata: {
-        owner_id,
-      },
-    });
+    const perfilUser = await this.perfilRepostiory.findByUser(owner_id);
+    let customer_id;
 
+    if (perfilUser.stripe_id === null) {
+      const customer = await customers.create({
+        email,
+        metadata: {
+          owner_id,
+        },
+      });
+
+      await this.perfilRepostiory.updateByIdUser(customer.metadata.owner_id, {
+        stripe_id: customer.id,
+      });
+
+      customer_id = customer.id;
+    }
+
+    customer_id = perfilUser.stripe_id;
     const session = await checkout.sessions.create({
       line_items: [
         {
@@ -39,7 +53,7 @@ export class TransactionUseCase {
       metadata: {
         owner_id,
       },
-      customer: customer.id,
+      customer: customer_id,
       phone_number_collection: { enabled: true },
       billing_address_collection: "required",
       payment_method_types: [payment_method],

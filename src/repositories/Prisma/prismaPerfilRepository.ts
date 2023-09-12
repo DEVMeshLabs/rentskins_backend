@@ -61,6 +61,14 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     return updateId;
   }
 
+  async updateByIdUser(owner_id: string, date: any) {
+    const updateUser = await prisma.perfil.updateMany({
+      where: { owner_id },
+      data: { ...date, updatedAt: new Date() },
+    });
+    return updateUser;
+  }
+
   async updateByCart(owner_id: string, cart: string) {
     const updateCart = await prisma.perfil.updateMany({
       where: { owner_id },
