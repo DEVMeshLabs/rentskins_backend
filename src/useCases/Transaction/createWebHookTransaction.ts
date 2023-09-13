@@ -1,12 +1,12 @@
 /* eslint-disable no-case-declarations */
-import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { customers } from "@/server";
 
 export class CreateWebHookTransactionUseCase {
   constructor(
     private walletRepository: IWalletRepository,
-    private perfilRepository: IPerfilRepository
+    private notificationRepository: INotificationRepository
   ) {}
 
   async process(event: any) {
@@ -26,11 +26,28 @@ export class CreateWebHookTransactionUseCase {
             "increment",
             paymentIntentSucceeded.amount / 100
           ),
+
+          await this.notificationRepository.create({
+            owner_id: customer.metadata.owner_id,
+            description: `O pagamento foi realizado com sucesso, O pagamento foi realizado com sucesso! ${(
+              paymentIntentSucceeded.amount / 100
+            ).toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+              minimumFractionDigits: 2,
+            })} foram adicionados a sua conta.`,
+          }),
         ]);
+
         return paymentIntentSucceeded;
 
       case "payment_intent.payment_failed":
         const paymentIntentFailed = event.data.object;
+
+        await this.notificationRepository.create({
+          owner_id: customer.metadata.owner_id,
+          description: `O pagamento falhou. Tente novamente mais tarde.`,
+        });
         return paymentIntentFailed;
 
       default:

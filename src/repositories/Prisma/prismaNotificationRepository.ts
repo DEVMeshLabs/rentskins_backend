@@ -29,6 +29,7 @@ export class PrismaNotificationRepository implements INotificationRepository {
   async findByMany() {
     const findMany = await prisma.notification.findMany({
       where: { deletedAt: null },
+      orderBy: { createdAt: "desc" },
       include: { skin: true },
     });
     return findMany;
