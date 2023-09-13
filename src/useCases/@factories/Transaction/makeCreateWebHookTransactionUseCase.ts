@@ -1,13 +1,13 @@
-import { PrismaPerfilRepository } from "@/repositories/Prisma/prismaPerfilRepository";
+import { PrismaNotificationRepository } from "@/repositories/Prisma/prismaNotificationRepository";
 import { PrismaWalletRepository } from "@/repositories/Prisma/prismaWalletRepository";
 import { CreateWebHookTransactionUseCase } from "@/useCases/Transaction/createWebHookTransaction";
 
 export function makeCreateWebHookTransactionUseCase() {
-  const perfilRepository = new PrismaPerfilRepository();
+  const notificationRepository = new PrismaNotificationRepository();
   const walletRepository = new PrismaWalletRepository();
   const createSkinUseCase = new CreateWebHookTransactionUseCase(
     walletRepository,
-    perfilRepository
+    notificationRepository
   );
   return createSkinUseCase;
 }
