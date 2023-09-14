@@ -24,13 +24,16 @@ export class CreateWalletUseCase {
     if (isAlreadyWallet) throw new WalletAlreadyExistError();
     if (!isNotExist) throw new PerfilNotExistError();
 
-    const cartResponse = await this.cartRepository.create({
-      buyer_id: owner_id,
-    });
-    const walletResponse = await this.walletRepository.create({
-      owner_id,
-      owner_name,
-    });
+    const [cartResponse, walletResponse] = await Promise.all([
+      this.cartRepository.create({
+        buyer_id: owner_id,
+      }),
+      this.walletRepository.create({
+        owner_id,
+        owner_name,
+      }),
+    ]);
+
     await this.perfilRepository.updateByCart(owner_id, cartResponse.id);
     return walletResponse;
   }
