@@ -4,6 +4,7 @@ import { env } from "process";
 import { getAllData } from "@/utils/getAllResponse";
 import { createPerfilInfoSchema } from "./Schemas/createPerfilInfoSchema";
 import { PerfilAlreadyExistError } from "@/useCases/@errors/Perfil/PerfilInfoAlreadyExistError";
+import { VerifyAccountVacBanError } from "@/useCases/@errors/Perfil/VerifyAccountVacBanError";
 
 export async function createPerfilDateController(
   req: FastifyRequest,
@@ -18,14 +19,18 @@ export async function createPerfilDateController(
       `https://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=${env.STEAM_KEY}&steamid=${owner_id}`,
     ];
 
-    const resp = await getAllData(steamURLs).then((resp) => resp);
+    const [playerData, steamLevelData] = await getAllData(steamURLs).then(
+      (resp) => resp
+    );
 
-    if (resp[0].sucess === false || resp[1].sucess === false) {
+    if (!playerData.success || !steamLevelData.success) {
       return reply.status(400).send({ error: "Failed request, check steamId" });
     }
 
-    const playerData = resp[0].data.response.players;
-    const accountCreationDate = new Date(playerData[0].timecreated * 1000);
+    const accountCreationDate = new Date(
+      playerData.data.response.players[0].timecreated * 1000
+    );
+
     const makePerfilRepository = makeCreatePerfil();
 
     await makePerfilRepository.execute(
@@ -45,7 +50,7 @@ export async function createPerfilDateController(
         owner_name,
         owner_country,
         steam_created_date: accountCreationDate,
-        steam_level: resp[1].data.response.player_level,
+        steam_level: steamLevelData.data.response.player_level,
         picture,
         steam_url,
       }
@@ -53,6 +58,8 @@ export async function createPerfilDateController(
   } catch (error) {
     if (error instanceof PerfilAlreadyExistError) {
       return reply.status(409).send({ error: error.message });
+    } else if (error instanceof VerifyAccountVacBanError) {
+      return reply.status(401).send({ error: error.message });
     }
     if (error instanceof Error) {
       return reply.status(500).send({ error: error.message });

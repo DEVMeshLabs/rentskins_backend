@@ -16,7 +16,6 @@ export function getInventoryManyUserController(
   });
 
   const { filterType, itemsPerPage, page } = inventorySchema.parse(req.body);
-
   try {
     return community.getUserInventoryContents(
       id,
