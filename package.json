@@ -24,7 +24,6 @@
   "dependencies": {
     "@fastify/cors": "^8.3.0",
     "@fastify/formbody": "^7.4.0",
-    "@pagarme/sdk": "^5.8.1",
     "@prisma/client": "^4.16.2",
     "@types/steamcommunity": "^3.43.2",
     "axios": "^1.4.0",
@@ -38,7 +37,6 @@
     "jwt-decode": "^3.1.2",
     "libphonenumber-js": "^1.10.38",
     "luxon": "^3.3.0",
-    "pagarmeapisdklib": "github:pagarme/pagarme-nodejs-sdk",
     "steam-user": "^4.28.9",
     "steamcommunity": "^3.46.1",
     "stripe": "^13.3.0",
