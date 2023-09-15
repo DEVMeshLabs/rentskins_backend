@@ -19,8 +19,6 @@ export async function createWebHookTransactionController(
     const webHook = makeCreateWebHookTransactionUseCase();
     const response = await webHook.process(event);
 
-    console.log(response);
-
     return reply.status(200).send(response);
   } catch (error) {
     return reply.status(500).send({ error: error.message });

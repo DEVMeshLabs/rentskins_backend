@@ -9,4 +9,38 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     });
     return create;
   }
+
+  async findByMany() {
+    const transactionAll = await prisma.transaction.findMany({
+      where: { deletedAt: null },
+    });
+    return transactionAll;
+  }
+
+  async findById(id: string) {
+    const findTransaction = await prisma.transaction.findFirst({
+      where: { id, deletedAt: null },
+    });
+    return findTransaction;
+  }
+
+  async findByUser(id: string, query: string) {
+    const userTransaction = await prisma.transaction.findFirst({
+      where:
+        query === "buyer"
+          ? { buyer_id: id, deletedAt: null }
+          : { seller_id: id, deletedAt: null },
+      include: { skin: true },
+    });
+    return userTransaction;
+  }
+
+  async updateConfirm(id: string, query: string) {
+    const confirmField = query === "buyer" ? "buyer_confirm" : "seller_confirm";
+    const transactionAll = await prisma.transaction.update({
+      where: { id },
+      data: { [confirmField]: true, updatedAt: new Date() },
+    });
+    return transactionAll;
+  }
 }

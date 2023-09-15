@@ -1,8 +1,16 @@
 import { PrismaPerfilRepository } from "@/repositories/Prisma/prismaPerfilRepository";
-import { TransactionUseCase } from "@/useCases/Transaction/transactionUseCase";
+import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
+import { PrismaTransactionRepository } from "@/repositories/Prisma/prismaTransactionRepository";
+import { CreateTransactionUseCase } from "@/useCases/Transaction/createTransactionUseCase";
 
 export function makeCreateTransactionUseCase() {
   const perfilRepository = new PrismaPerfilRepository();
-  const createSkinUseCase = new TransactionUseCase(perfilRepository);
-  return createSkinUseCase;
+  const transactionRepository = new PrismaTransactionRepository();
+  const skinRepository = new PrismaSkinRepository();
+  const createTransaction = new CreateTransactionUseCase(
+    transactionRepository,
+    perfilRepository,
+    skinRepository
+  );
+  return createTransaction;
 }

@@ -35,6 +35,7 @@ model Skin {
   deletedAt       DateTime?
   Notification    Notification[]
   skinToCart      SkinToCart[]
+  Transaction     Transaction[]
 }
 
 model SkinToCart {
@@ -123,25 +124,39 @@ model Perfil {
 }
 
 model Transaction {
-  id                   String    @id @default(uuid()) @db.VarChar(36)
-  owner_id             String    @unique @db.VarChar(255)
-  status               String    @db.VarChar(255)
-  payment_type         String    @db.VarChar(255)
-  installments         Int       @db.Integer()
-  total                Float
-  transaction_id       String    @db.VarChar(255)
-  processor_response   String    @db.VarChar(255)
-  customer_email       String    @db.VarChar(255)
-  customer_name        String    @db.VarChar(255)
-  customer_mobile      String    @db.VarChar(255)
-  customer_document    String    @db.VarChar(255)
-  billing_address      String    @db.VarChar(255)
-  billing_number       String    @db.VarChar(255)
-  billing_neighborhood String    @db.VarChar(255)
-  billing_city         String    @db.VarChar(255)
-  billing_state        String    @db.VarChar(255)
-  billing_zip_code     String    @db.VarChar(255)
-  createdAt            DateTime  @default(now())
-  updatedAt            DateTime?
-  deletedAt            DateTime?
+  id             String    @id @default(uuid()) @db.VarChar(36)
+  skin_id        String    @db.VarChar(255)
+  buyer_id       String    @db.VarChar(255)
+  seller_id      String    @db.VarChar(255)
+  seller_confirm Boolean   @default(false)
+  buyer_confirm  Boolean   @default(false)
+  balance        String    @db.VarChar(20)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime?
+  deletedAt      DateTime?
+  skin           Skin?     @relation(fields: [skin_id], references: [id])
 }
+
+// model Transaction {
+//   id                   String    @id @default(uuid()) @db.VarChar(36)
+//   owner_id             String    @unique @db.VarChar(255)
+//   status               String    @db.VarChar(255)
+//   payment_type         String    @db.VarChar(255)
+//   installments         Int       @db.Integer()
+//   total                Float
+//   transaction_id       String    @db.VarChar(255)
+//   processor_response   String    @db.VarChar(255)
+//   customer_email       String    @db.VarChar(255)
+//   customer_name        String    @db.VarChar(255)
+//   customer_mobile      String    @db.VarChar(255)
+//   customer_document    String    @db.VarChar(255)
+//   billing_address      String    @db.VarChar(255)
+//   billing_number       String    @db.VarChar(255)
+//   billing_neighborhood String    @db.VarChar(255)
+//   billing_city         String    @db.VarChar(255)
+//   billing_state        String    @db.VarChar(255)
+//   billing_zip_code     String    @db.VarChar(255)
+//   createdAt            DateTime  @default(now())
+//   updatedAt            DateTime?
+//   deletedAt            DateTime?
+// }

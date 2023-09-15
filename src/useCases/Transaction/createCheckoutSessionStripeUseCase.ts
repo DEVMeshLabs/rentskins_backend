@@ -10,7 +10,7 @@ interface IPayment {
   cancel_url: string;
 }
 
-export class TransactionUseCase {
+export class CreateCheckoutSessionStripeUseCase {
   constructor(private perfilRepostiory: IPerfilRepository) {}
   async process({
     owner_id,
