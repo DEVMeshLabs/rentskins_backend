@@ -1,14 +1,14 @@
 import fastify from "fastify";
 import { skinRouter } from "./http/controllers/Skins/routes";
 import { walletRouter } from "./http/controllers/Wallet/routes";
-import { env } from "process";
-import { ZodError } from "zod";
 import { configurationRouter } from "./http/controllers/Configuration/routes";
 import { notificationRouter } from "./http/controllers/Notification/routes";
 import { cartRouter } from "./http/controllers/Cart/routes";
 import { transactionRouter } from "./http/controllers/Transaction/routes";
 import { perfilRouter } from "./http/controllers/Perfil/routes";
 import { skinToCartRouter } from "./http/controllers/SkinToCart/routes";
+import { env } from "process";
+import { ZodError } from "zod";
 
 export const app = fastify();
 

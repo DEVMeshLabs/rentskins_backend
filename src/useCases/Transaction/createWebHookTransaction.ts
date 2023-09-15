@@ -29,7 +29,7 @@ export class CreateWebHookTransactionUseCase {
 
           await this.notificationRepository.create({
             owner_id: customer.metadata.owner_id,
-            description: `O pagamento foi realizado com sucesso, O pagamento foi realizado com sucesso! ${(
+            description: `O pagamento foi realizado com sucesso! ${(
               paymentIntentSucceeded.amount / 100
             ).toLocaleString("pt-BR", {
               style: "currency",

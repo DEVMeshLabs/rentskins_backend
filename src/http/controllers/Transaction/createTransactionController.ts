@@ -1,31 +1,36 @@
-import { makeCreateTransactionUseCase } from "@/useCases/@factories/Transaction/makeCreateTransactionUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
-import { createTransactionSchema } from "./Schemas/createTransactionSchema";
-import { ZodError } from "zod";
+import { makeCreateTransactionUseCase } from "@/useCases/@factories/Transaction/makeCreateTransactionUseCase";
+import { SameUsersError } from "@/useCases/@errors/Skin/SameUsersError";
+import { PerfilNotExistError } from "@/useCases/@errors/Perfil/PerfilInfoNotExistError";
+import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
 
 export async function createTransactionController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { owner_id, cancel_url, success_url, amount, payment_method, email } =
-      createTransactionSchema.parse(req.body);
-    const makeTransaction = makeCreateTransactionUseCase();
+    const { skin_id, buyer_id, seller_id } = req.body as {
+      skin_id: string;
+      buyer_id: string;
+      seller_id: string;
+    };
 
-    const response = await makeTransaction.process({
-      owner_id,
-      payment_method,
-      amount,
-      email,
-      cancel_url,
-      success_url,
+    const createTransaction = makeCreateTransactionUseCase();
+    const response = await createTransaction.execute({
+      skin_id,
+      buyer_id,
+      seller_id,
     });
 
-    return reply.status(200).send({ url: response });
+    return reply.status(201).send(response);
   } catch (error) {
-    if (error instanceof ZodError) {
-      return reply.status(400).send({ error: error.message });
+    if (error instanceof SameUsersError) {
+      return reply.status(409).send({ error: error.message });
+    } else if (error instanceof PerfilNotExistError) {
+      return reply.status(404).send({ error: error.message });
+    } else if (error instanceof SkinNotExistError) {
+      return reply.status(404).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

@@ -1,5 +1,9 @@
 import { Prisma, Transaction } from "@prisma/client";
 
 export interface ITransactionRepository {
-  create(data: Prisma.TransactionCreateInput): Promise<Transaction>;
+  create(data: Prisma.TransactionUncheckedCreateInput): Promise<Transaction>;
+  findByMany(): Promise<Transaction[]>;
+  findByUser(id: string, type: string): Promise<Transaction | null>;
+  findById(id: string): Promise<Transaction | null>;
+  updateConfirm(id: string, query: string): Promise<Transaction>;
 }
