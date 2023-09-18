@@ -109,7 +109,6 @@ model Perfil {
   status_member      String?        @default("Membro novo") @db.VarChar(255)
   steam_level        Int            @db.Integer
   steam_url          String         @db.VarChar(255)
-  steam_created_date DateTime
   picture            String         @db.VarChar(255)
   delivery_time      String?        @default("Sem informações") @db.VarChar(255)
   delivery_fee       Int            @default(0)
@@ -117,6 +116,7 @@ model Perfil {
   createdAt          DateTime       @default(now())
   updatedAt          DateTime?
   deletedAt          DateTime?
+  steam_created_date DateTime
   configurationId    String?        @db.VarChar(36)
   cart_id            String?
   configuration      Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
@@ -131,6 +131,7 @@ model Transaction {
   seller_confirm Boolean   @default(false)
   buyer_confirm  Boolean   @default(false)
   balance        String    @db.VarChar(20)
+  status         String?   @default("Em andamento") @db.VarChar(255)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime?
   deletedAt      DateTime?

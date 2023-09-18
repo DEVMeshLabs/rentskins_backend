@@ -10,13 +10,13 @@ export async function createNotificationController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { owner_id, description, owner_name, skin_id } =
-      createNotificationSchema.parse(req.body);
+    const { owner_id, description, skin_id } = createNotificationSchema.parse(
+      req.body
+    );
     const makeCreateNot = makeCreateNotificationUseCase();
     await makeCreateNot.execute({
       owner_id,
       description,
-      owner_name,
       skin_id,
     });
   } catch (error) {
