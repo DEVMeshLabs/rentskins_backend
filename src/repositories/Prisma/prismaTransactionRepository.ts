@@ -35,11 +35,11 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return userTransaction;
   }
 
-  async updateConfirm(id: string, query: string) {
+  async updateConfirm(id: string, status: string, query: string) {
     const confirmField = query === "buyer" ? "buyer_confirm" : "seller_confirm";
     const transactionAll = await prisma.transaction.update({
       where: { id },
-      data: { [confirmField]: true, updatedAt: new Date() },
+      data: { [confirmField]: status, updatedAt: new Date() },
     });
     return transactionAll;
   }

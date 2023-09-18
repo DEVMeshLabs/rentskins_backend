@@ -7,6 +7,7 @@ import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepos
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -19,7 +20,8 @@ export class CreateTransactionUseCase {
     private transactionRepository: ITransactionRepository,
     private perfilRepository: IPerfilRepository,
     private skinRepository: ISkinsRepository,
-    private walletRepository: IWalletRepository
+    private walletRepository: IWalletRepository,
+    private notificationsRepository: INotificationRepository
   ) {}
 
   async execute({ seller_id, buyer_id, skin_id }: ITransactionRequest) {
@@ -32,28 +34,38 @@ export class CreateTransactionUseCase {
       ]
     );
 
-    if (!perfilBuyer || !perfilSeller) {
-      throw new PerfilNotExistError();
-    } else if (perfilBuyer === perfilSeller) {
-      throw new SameUsersError();
-    } else if (!findSkin) {
-      throw new SkinNotExistError();
-    } else if (findWallet.value >= findSkin.skin_price) {
+    if (!perfilBuyer || !perfilSeller) throw new PerfilNotExistError();
+    else if (perfilBuyer === perfilSeller) throw new SameUsersError();
+    else if (!findSkin) throw new SkinNotExistError();
+    else if (findWallet.value < findSkin.skin_price)
       throw new InsufficientFundsError();
-    }
 
-    await this.walletRepository.updateByUserValue(
-      buyer_id,
-      "decrement",
-      findSkin.skin_price
-    );
+    const [createTransaction] = await Promise.all([
+      this.transactionRepository.create({
+        skin_id,
+        seller_id,
+        buyer_id,
+        balance: findSkin.skin_price,
+      }),
 
-    const createTransaction = await this.transactionRepository.create({
-      skin_id,
-      seller_id,
-      buyer_id,
-      balance: findSkin.skin_price,
-    });
+      this.notificationsRepository.create({
+        owner_id: seller_id,
+        description: `Você vendeu ${findSkin.skin_name}, por ${findSkin.skin_price}, você tem 12h para realizar a troca`,
+        skin_id: findSkin.id,
+      }),
+
+      this.notificationsRepository.create({
+        owner_id: buyer_id,
+        description: `Você comprou ${findSkin.skin_name}, por ${findSkin.skin_price} só aguardar o vendedor realizar a troca`,
+        skin_id: findSkin.id,
+      }),
+
+      this.walletRepository.updateByUserValue(
+        buyer_id,
+        "decrement",
+        findSkin.skin_price
+      ),
+    ]);
 
     return createTransaction;
   }

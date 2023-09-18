@@ -126,8 +126,8 @@ model Transaction {
   skin_id        String    @db.VarChar(255)
   buyer_id       String    @db.VarChar(255)
   seller_id      String    @db.VarChar(255)
-  seller_confirm Boolean   @default(false)
-  buyer_confirm  Boolean   @default(false)
+  seller_confirm String?   @default("Pendente") @db.VarChar(255)
+  buyer_confirm  String?   @default("Pendente") @db.VarChar(255)
   balance        Float
   status         String?   @default("Em andamento") @db.VarChar(255)
   createdAt      DateTime  @default(now())

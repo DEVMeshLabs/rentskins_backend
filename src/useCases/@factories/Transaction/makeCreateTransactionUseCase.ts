@@ -1,3 +1,4 @@
+import { PrismaNotificationRepository } from "@/repositories/Prisma/prismaNotificationRepository";
 import { PrismaPerfilRepository } from "@/repositories/Prisma/prismaPerfilRepository";
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
 import { PrismaTransactionRepository } from "@/repositories/Prisma/prismaTransactionRepository";
@@ -9,11 +10,13 @@ export function makeCreateTransactionUseCase() {
   const transactionRepository = new PrismaTransactionRepository();
   const skinRepository = new PrismaSkinRepository();
   const walletRepository = new PrismaWalletRepository();
+  const notificationsRepository = new PrismaNotificationRepository();
   const createTransaction = new CreateTransactionUseCase(
     transactionRepository,
     perfilRepository,
     skinRepository,
-    walletRepository
+    walletRepository,
+    notificationsRepository
   );
   return createTransaction;
 }

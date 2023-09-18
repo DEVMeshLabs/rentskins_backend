@@ -5,5 +5,9 @@ export interface ITransactionRepository {
   findByMany(): Promise<Transaction[]>;
   findByUser(id: string, type: string): Promise<Transaction | null>;
   findById(id: string): Promise<Transaction | null>;
-  updateConfirm(id: string, query: string): Promise<Transaction>;
+  updateConfirm(
+    id: string,
+    status: string,
+    query: string
+  ): Promise<Transaction>;
 }
