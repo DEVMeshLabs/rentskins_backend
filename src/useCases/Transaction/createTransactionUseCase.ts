@@ -38,9 +38,15 @@ export class CreateTransactionUseCase {
       throw new SameUsersError();
     } else if (!findSkin) {
       throw new SkinNotExistError();
-    } else if (findWallet.value >= Number(findSkin.skin_price)) {
+    } else if (findWallet.value >= findSkin.skin_price) {
       throw new InsufficientFundsError();
     }
+
+    await this.walletRepository.updateByUserValue(
+      buyer_id,
+      "decrement",
+      findSkin.skin_price
+    );
 
     const createTransaction = await this.transactionRepository.create({
       skin_id,

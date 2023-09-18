@@ -17,15 +17,13 @@ model Skin {
   skin_name       String         @db.VarChar(255)
   skin_category   String         @db.VarChar(255)
   skin_weapon     String         @db.VarChar(255)
-  skin_price      String         @db.VarChar(255)
+  skin_price      Float
   skin_float      String         @db.VarChar(255)
   skin_color      String         @db.VarChar(255)
   skin_link_game  String         @db.VarChar(255)
   skin_link_steam String         @db.VarChar(255)
   seller_name     String         @db.VarChar(255)
   seller_id       String         @db.VarChar(255)
-  buyer_name      String?        @db.VarChar(255)
-  buyer_id        String?        @db.VarChar(255)
   status          String         @db.VarChar(255)
   status_float    String         @db.VarChar(255)
   sale_type       String?        @db.VarChar(255)
@@ -130,7 +128,7 @@ model Transaction {
   seller_id      String    @db.VarChar(255)
   seller_confirm Boolean   @default(false)
   buyer_confirm  Boolean   @default(false)
-  balance        String    @db.VarChar(20)
+  balance        Float
   status         String?   @default("Em andamento") @db.VarChar(255)
   createdAt      DateTime  @default(now())
   updatedAt      DateTime?

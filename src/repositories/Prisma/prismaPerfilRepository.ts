@@ -53,9 +53,20 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     return perfilTypeUser;
   }
 
-  async updateById(id: string, date: Prisma.PerfilUpdateInput) {
+  async updateById(id: string, date: Prisma.PerfilUncheckedCreateInput) {
     const updateId = await prisma.perfil.update({
       where: { id },
+      data: { ...date, updatedAt: new Date() },
+    });
+    return updateId;
+  }
+
+  async updateByUser(
+    owner_id: string,
+    date: Prisma.PerfilUncheckedCreateInput
+  ) {
+    const updateId = await prisma.perfil.update({
+      where: { owner_id },
       data: { ...date, updatedAt: new Date() },
     });
     return updateId;
