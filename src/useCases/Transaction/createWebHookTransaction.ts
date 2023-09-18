@@ -48,6 +48,7 @@ export class CreateWebHookTransactionUseCase {
           owner_id: customer.metadata.owner_id,
           description: `O pagamento falhou. Tente novamente mais tarde.`,
         });
+
         return paymentIntentFailed;
 
       default:
