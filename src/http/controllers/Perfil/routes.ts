@@ -9,6 +9,7 @@ import { getManyPerfilController } from "./getManyPerfilController";
 import { getManyTypeUserController } from "./getManyTypeUserController";
 import { createPerfilDateController } from "./createPerfilController";
 import { getStatusPerfilController } from "./getStatusPerfilController";
+import { updateByUserPerfilController } from "./updateByUserPerfilController";
 
 export async function perfilRouter(app: FastifyInstance) {
   app.get("/v1/perfil/user", getManyTypeUserController);
@@ -24,5 +25,10 @@ export async function perfilRouter(app: FastifyInstance) {
     dateController
   );
   app.put("/v1/perfil/:id", { onRequest: verifyJwt }, updatePerfilController);
+  app.put(
+    "/v1/perfil/user/:id",
+    { onRequest: verifyJwt },
+    updateByUserPerfilController
+  );
   app.delete("/v1/perfil/:id", deletePerfilController);
 }
