@@ -6,13 +6,13 @@ export class UpdateSkinUseCase {
   constructor(private skinRepository: ISkinsRepository) {}
 
   async execute(id: string, data: Prisma.SkinUpdateInput): Promise<Skin> {
-    const skinId = await this.skinRepository.findById(id);
+    const foundSkin = await this.skinRepository.findById(id);
 
-    if (!skinId) {
+    if (!foundSkin) {
       throw new SkinNotExistError();
     }
 
-    const updateId = await this.skinRepository.updateById(id, data);
-    return updateId;
+    const updatedSkin = await this.skinRepository.updateById(id, data);
+    return updatedSkin;
   }
 }

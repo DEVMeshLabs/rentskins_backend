@@ -11,23 +11,25 @@ export class GetManySearchUseCase {
   constructor(private skinRepository: ISkinsRepository) {}
 
   async execute(
-    search: string,
-    page: number,
-    pageSize: number
+    searchString: string,
+    pageNumber: number,
+    itemsPerPage: number
   ): Promise<GetManySearchUseCaseResponse> {
-    const countSkins = await this.skinRepository.findByCountSearch(search);
-
-    const skins = await this.skinRepository.findBySearch(
-      search,
-      page,
-      pageSize
+    const totalSkinsFound = await this.skinRepository.findByCountSearch(
+      searchString
     );
 
-    const totalPages = Math.ceil(countSkins / pageSize);
+    const skins = await this.skinRepository.findBySearch(
+      searchString,
+      pageNumber,
+      itemsPerPage
+    );
+
+    const totalPages = Math.ceil(totalSkinsFound / itemsPerPage);
 
     return {
       totalPages,
-      totalItens: countSkins,
+      totalItens: totalSkinsFound,
       skins,
     };
   }
