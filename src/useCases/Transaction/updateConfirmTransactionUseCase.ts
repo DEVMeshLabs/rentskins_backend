@@ -11,7 +11,9 @@ export class UpdateConfirmTransactionUseCase {
   async execute(id: string, status: string, query: string) {
     const findTransaction = await this.transactionRepository.findById(id);
 
-    if (!findTransaction) throw new TransactionNotExistError();
+    if (!findTransaction) {
+      throw new TransactionNotExistError();
+    }
 
     const updateConfirm = await this.transactionRepository.updateConfirm(
       id,

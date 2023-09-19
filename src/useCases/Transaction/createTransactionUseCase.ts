@@ -34,11 +34,15 @@ export class CreateTransactionUseCase {
       ]
     );
 
-    if (!perfilBuyer || !perfilSeller) throw new PerfilNotExistError();
-    else if (perfilBuyer === perfilSeller) throw new SameUsersError();
-    else if (!findSkin) throw new SkinNotExistError();
-    else if (findWallet.value < findSkin.skin_price)
+    if (!perfilBuyer || !perfilSeller) {
+      throw new PerfilNotExistError();
+    } else if (perfilBuyer === perfilSeller) {
+      throw new SameUsersError();
+    } else if (!findSkin) {
+      throw new SkinNotExistError();
+    } else if (findWallet.value < findSkin.skin_price) {
       throw new InsufficientFundsError();
+    }
 
     const [createTransaction] = await Promise.all([
       this.transactionRepository.create({

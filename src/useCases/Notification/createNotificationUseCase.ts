@@ -13,6 +13,7 @@ export class CreateNotificationUseCase {
     owner_id,
     description,
     skin_id,
+    type,
   }: Prisma.NotificationCreateManyInput): Promise<Notification> {
     const findSkin = await this.skinsRepository.findById(skin_id);
 
@@ -21,6 +22,7 @@ export class CreateNotificationUseCase {
     const createNot = await this.notification.create({
       owner_id,
       description,
+      type,
       skin_id,
     });
     return createNot;
