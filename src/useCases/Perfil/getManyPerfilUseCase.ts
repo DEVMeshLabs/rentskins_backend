@@ -5,7 +5,7 @@ export class GetManyPerfilUseCase {
   constructor(private perfilInfoRepository: IPerfilRepository) {}
 
   async execute(): Promise<Perfil[]> {
-    const perfilId = await this.perfilInfoRepository.findByMany();
-    return perfilId;
+    const foundProfiles = await this.perfilInfoRepository.findByMany();
+    return foundProfiles;
   }
 }

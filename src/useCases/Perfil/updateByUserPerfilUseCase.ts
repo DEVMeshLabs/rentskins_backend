@@ -6,16 +6,16 @@ export class UpdateByUserPerfilUseCase {
   constructor(private perfilRepository: IPerfilRepository) {}
 
   async execute(owner_id: string, date: any): Promise<Perfil> {
-    const findId = await this.perfilRepository.findByUser(owner_id);
+    const foundUserProfile = await this.perfilRepository.findByUser(owner_id);
 
-    if (!findId) {
+    if (!foundUserProfile) {
       throw new PerfilNotExistError();
     }
 
-    const updatePerfil = await this.perfilRepository.updateByUser(owner_id, {
+    const updatedPerfil = await this.perfilRepository.updateByUser(owner_id, {
       ...date,
     });
 
-    return updatePerfil;
+    return updatedPerfil;
   }
 }
