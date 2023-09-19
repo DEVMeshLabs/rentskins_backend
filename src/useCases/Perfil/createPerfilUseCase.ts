@@ -3,11 +3,13 @@ import { Perfil, Prisma } from "@prisma/client";
 import { PerfilAlreadyExistError } from "../@errors/Perfil/PerfilInfoAlreadyExistError";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { VerifyAccountVacBanError } from "../@errors/Perfil/VerifyAccountVacBanError";
+import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 
 export class CreatePerfilUseCase {
   constructor(
     private perfilRepository: IPerfilRepository,
-    private configurationRespository: IConfigurationRepository
+    private configurationRespository: IConfigurationRepository,
+    private transactionRespository: ITransactionRepository
   ) {}
 
   async execute(
