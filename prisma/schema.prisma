@@ -72,6 +72,7 @@ model Notification {
   owner_id    String    @db.VarChar(255)
   description String?   @db.VarChar(255)
   new         Boolean?  @default(true)
+  type        String?   @db.VarChar(255)
   createdAt   DateTime  @default(now())
   updatedAt   DateTime?
   deletedAt   DateTime?
