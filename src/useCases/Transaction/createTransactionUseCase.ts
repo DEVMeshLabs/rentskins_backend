@@ -51,12 +51,14 @@ export class CreateTransactionUseCase {
       this.notificationsRepository.create({
         owner_id: seller_id,
         description: `Você vendeu ${findSkin.skin_name}, por ${findSkin.skin_price}, você tem 12h para realizar a troca`,
+        type: "Input",
         skin_id: findSkin.id,
       }),
 
       this.notificationsRepository.create({
         owner_id: buyer_id,
         description: `Você comprou ${findSkin.skin_name}, por ${findSkin.skin_price} só aguardar o vendedor realizar a troca`,
+        type: "Input",
         skin_id: findSkin.id,
       }),
 
