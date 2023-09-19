@@ -2,6 +2,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import { makeUpdateConfirmTransactionUseCase } from "@/useCases/@factories/Transaction/makeUpdateConfirmTransactionUseCase";
 import { TransactionNotExistError } from "@/useCases/@errors/Transaction/TransactionNotExistError";
 import { z } from "zod";
+import { NotUpdateTransaction } from "@/useCases/@errors/Transaction/NotUpdateTransaction";
 
 export async function updateConfirmTransactionController(
   req: FastifyRequest,
@@ -24,6 +25,8 @@ export async function updateConfirmTransactionController(
   } catch (error) {
     if (error instanceof TransactionNotExistError) {
       return reply.status(404).send({ error: error.message });
+    } else if (error instanceof NotUpdateTransaction) {
+      return reply.status(400).send({ error: error.message });
     }
     throw error;
   }

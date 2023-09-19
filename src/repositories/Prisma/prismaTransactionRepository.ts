@@ -35,6 +35,15 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return userTransaction;
   }
 
+  async transactionCountAll(seller_id: string) {
+    const count = await prisma.transaction.count({
+      where: {
+        seller_id,
+      },
+    });
+    return count;
+  }
+
   async updateConfirm(id: string, status: string, query: string) {
     const confirmField = query === "buyer" ? "buyer_confirm" : "seller_confirm";
     const transactionAll = await prisma.transaction.update({
