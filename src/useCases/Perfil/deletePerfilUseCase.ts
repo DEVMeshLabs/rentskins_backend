@@ -5,23 +5,23 @@ import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 export class DeletePerfilUseCase {
   constructor(private perfilInfoRepository: IPerfilRepository) {}
 
-  async execute(id: string, force: string): Promise<Perfil> {
-    const perfilId = await this.perfilInfoRepository.findById(id);
+  async execute(id: string, isForceDeletion: string): Promise<Perfil> {
+    const foundPerfil = await this.perfilInfoRepository.findById(id);
 
-    if (!perfilId) {
+    if (!foundPerfil) {
       throw new PerfilNotExistError();
     }
 
-    if (force === "true") {
+    if (isForceDeletion === "true") {
       const response = await this.perfilInfoRepository.deletePerfilBanco(id);
       return response;
     }
 
-    const deletePerfil = await this.perfilInfoRepository.deletePerfil(
+    const perfilToDelete = await this.perfilInfoRepository.deletePerfil(
       id,
-      force
+      isForceDeletion
     );
 
-    return deletePerfil;
+    return perfilToDelete;
   }
 }

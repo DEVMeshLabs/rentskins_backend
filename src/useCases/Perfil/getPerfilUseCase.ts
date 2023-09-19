@@ -6,13 +6,13 @@ export class GetPerfilUseCase {
   constructor(private perfilInfoRepository: IPerfilRepository) {}
 
   async execute(id: string): Promise<IGetProfileInterface> {
-    const perfilId = await this.perfilInfoRepository.findById(id);
+    const foundProfile = await this.perfilInfoRepository.findById(id);
 
-    if (!perfilId) {
+    if (!foundProfile) {
       throw new PerfilNotExistError();
     }
 
-    const { configurationId, ...perfilWithoutConfigId } = perfilId;
+    const { configurationId, ...perfilWithoutConfigId } = foundProfile;
 
     return perfilWithoutConfigId;
   }

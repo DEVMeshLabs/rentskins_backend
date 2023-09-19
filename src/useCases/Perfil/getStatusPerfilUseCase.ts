@@ -5,14 +5,14 @@ export class GetStatusPerfilUseCase {
   constructor(private perfilInfoRepository: IPerfilRepository) {}
 
   async execute(owner_id: string): Promise<any> {
-    const perfilId = await this.perfilInfoRepository.findByUser(owner_id);
+    const foundProfile = await this.perfilInfoRepository.findByUser(owner_id);
 
-    if (!perfilId) {
+    if (!foundProfile) {
       throw new PerfilNotExistError();
     }
 
     return {
-      status: perfilId.account_status,
+      status: foundProfile.account_status,
     };
   }
 }

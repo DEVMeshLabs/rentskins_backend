@@ -11,14 +11,14 @@ export async function deletePerfilController(
   const { id } = req.params as { id: string };
 
   const deleteSchema = z.object({
-    force: z.string().default("false"),
+    isForceDeletion: z.string().default("false"),
   });
 
-  const { force } = deleteSchema.parse(req.query);
-  console.log(force);
+  const { isForceDeletion } = deleteSchema.parse(req.query);
+
   try {
     const getUserPerfilInfoUserUseCase = makeDeletePerfil();
-    await getUserPerfilInfoUserUseCase.execute(id, force);
+    await getUserPerfilInfoUserUseCase.execute(id, isForceDeletion);
   } catch (error) {
     if (error instanceof PerfilNotExistError) {
       return reply.status(404).send({ error: error.message });
