@@ -5,13 +5,13 @@ export class GetHistoricSellerUseCase {
   constructor(private skinRepository: ISkinsRepository) {}
 
   async execute(seller_id: string): Promise<any> {
-    const findSellerId = this.skinRepository.findBySeller(seller_id);
+    const foundSeller = this.skinRepository.findBySeller(seller_id);
 
-    if (!findSellerId) {
+    if (!foundSeller) {
       throw new SellerNotExistError();
     }
 
-    const findHistoricId = await this.skinRepository.findHistoricId(seller_id);
-    return findHistoricId;
+    const sellerHistoric = await this.skinRepository.findHistoricId(seller_id);
+    return sellerHistoric;
   }
 }

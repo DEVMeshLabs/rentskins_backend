@@ -11,24 +11,26 @@ export class GetManySellerUseCase {
   constructor(private skinRepository: ISkinsRepository) {}
 
   async execute(
-    seller_id: string,
-    page: number,
-    pageSize: number,
-    deletedAt: string
+    sellerId: string,
+    pageNumber: number,
+    itemsPerPage: number,
+    deletedAtFilter: string
   ): Promise<GetManySellerUseCaseResponse> {
-    const countSkins = await this.skinRepository.findByCountSellers(seller_id);
-    const totalPages = Math.ceil(countSkins / pageSize);
+    const totalSkinsFound = await this.skinRepository.findByCountSellers(
+      sellerId
+    );
+    const totalPages = Math.ceil(totalSkinsFound / itemsPerPage);
 
     const skins = await this.skinRepository.findByManySeller(
-      seller_id,
-      page,
-      pageSize,
-      deletedAt
+      sellerId,
+      pageNumber,
+      itemsPerPage,
+      deletedAtFilter
     );
 
     return {
       totalPages,
-      totalItens: countSkins,
+      totalItens: totalSkinsFound,
       skins,
     };
   }

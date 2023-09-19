@@ -11,18 +11,21 @@ export class GetSkinManyUseCase {
   constructor(private skinRepository: ISkinsRepository) {}
 
   async execute(
-    page: number,
-    pageSize: number
+    pageNumber: number,
+    itemsPerPage: number
   ): Promise<GetSkinManyUseCaseResponse> {
-    const countSkins = await this.skinRepository.findByCountSkins();
+    const totalSkinsFound = await this.skinRepository.findByCountSkins();
 
-    const totalPages = Math.ceil(countSkins / pageSize);
+    const totalPages = Math.ceil(totalSkinsFound / itemsPerPage);
 
-    const skins = await this.skinRepository.findByMany(page, pageSize);
+    const skins = await this.skinRepository.findByMany(
+      pageNumber,
+      itemsPerPage
+    );
 
     return {
       totalPages,
-      totalItens: countSkins,
+      totalItens: totalSkinsFound,
       skins,
     };
   }

@@ -16,17 +16,16 @@ export class DeleteSkinUseCase {
       throw new SkinNotExistError();
     }
 
-    const deleteSkin = await this.skinRepository.deleteSkin(id);
+    const deletedSkin = await this.skinRepository.deleteSkin(id);
 
-    if (deleteSkin.deletedAt !== null) {
+    if (deletedSkin.deletedAt !== null) {
       await this.notificationRepository.create({
-        owner_id: deleteSkin.seller_id,
-        owner_name: deleteSkin.seller_name,
+        owner_id: deletedSkin.seller_id,
         description: "Skin deleted successfully",
-        skin_id: deleteSkin.id,
+        skin_id: deletedSkin.id,
       });
     }
 
-    return deleteSkin;
+    return deletedSkin;
   }
 }
