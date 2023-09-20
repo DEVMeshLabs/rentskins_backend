@@ -14,7 +14,6 @@ export interface ISkinsRepository {
     pageSize: number,
     deletedAt: string
   ): Promise<Skin[]>;
-  findHistoricId(seller_id: string): Promise<any>;
   findByCountSkins(): Promise<number>;
   findByCountSellers(seller_id: string): Promise<number>;
   findByCountSearch(search: string): Promise<number>;

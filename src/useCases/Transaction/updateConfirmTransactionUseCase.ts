@@ -47,6 +47,8 @@ export class UpdateConfirmTransactionUseCase {
         this.perfilRepository.updateByUser(updateConfirm.seller_id, {
           total_exchanges: findPerfil.total_exchanges + 1,
         }),
+
+        this.transactionRepository.updateId(id, { salesAt: new Date() }),
       ]);
     }
     return updateConfirm;
