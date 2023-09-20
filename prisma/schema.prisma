@@ -132,6 +132,7 @@ model Transaction {
   balance        Float
   status         String?   @default("Em andamento") @db.VarChar(255)
   createdAt      DateTime  @default(now())
+  salesAt        DateTime?
   updatedAt      DateTime?
   deletedAt      DateTime?
   skin           Skin?     @relation(fields: [skin_id], references: [id])

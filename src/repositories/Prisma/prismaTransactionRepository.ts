@@ -24,7 +24,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return findTransaction;
   }
 
-  async findByUser(id: string, query: string) {
+  async findByUser(id: string, query?: string) {
     const userTransaction = await prisma.transaction.findFirst({
       where:
         query === "buyer"
@@ -33,6 +33,25 @@ export class PrismaTransactionRepository implements ITransactionRepository {
       include: { skin: true },
     });
     return userTransaction;
+  }
+
+  async lastSalesUser(seller_id: string) {
+    const lastSales = await prisma.transaction.findMany({
+      where: {
+        seller_id,
+        buyer_confirm: "Aceito",
+        seller_confirm: "Aceito",
+        salesAt: {
+          not: {
+            equals: null,
+          },
+        },
+      },
+      orderBy: {
+        salesAt: "desc",
+      },
+    });
+    return lastSales;
   }
 
   async transactionCountAll(seller_id: string) {
@@ -51,5 +70,13 @@ export class PrismaTransactionRepository implements ITransactionRepository {
       data: { [confirmField]: status, updatedAt: new Date() },
     });
     return transactionAll;
+  }
+
+  async updateId(id: string, data: Prisma.TransactionUpdateInput) {
+    const updateId = await prisma.transaction.update({
+      where: { id },
+      data: { ...data },
+    });
+    return updateId;
   }
 }
