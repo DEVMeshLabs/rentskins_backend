@@ -1,9 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { makeCreateTransactionUseCase } from "@/useCases/@factories/Transaction/makeCreateTransactionUseCase";
-import { SameUsersError } from "@/useCases/@errors/Skin/SameUsersError";
-import { PerfilNotExistError } from "@/useCases/@errors/Perfil/PerfilInfoNotExistError";
-import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
-import { InsufficientFundsError } from "@/useCases/@errors/Wallet/InsufficientFundsError";
 
 export async function createTransactionController(
   req: FastifyRequest,
@@ -25,15 +21,15 @@ export async function createTransactionController(
 
     return reply.status(201).send(response);
   } catch (error) {
-    if (error instanceof SameUsersError) {
-      return reply.status(409).send({ error: error.message });
-    } else if (error instanceof PerfilNotExistError) {
-      return reply.status(404).send({ error: error.message });
-    } else if (error instanceof SkinNotExistError) {
-      return reply.status(404).send({ error: error.message });
-    } else if (error instanceof InsufficientFundsError) {
-      return reply.status(400).send({ error: error.message });
-    }
-    return reply.status(500).send({ error: error.message });
+    const errorMappings = {
+      SameUsersError: 409,
+      PerfilNotExistError: 404,
+      SkinNotExistError: 404,
+      InsufficientFundsError: 400,
+      CannotAdvertiseSkinNotYour: 400,
+    };
+
+    const status = errorMappings[error.constructor.name] || 500;
+    return reply.status(status).send({ error: error.message });
   }
 }

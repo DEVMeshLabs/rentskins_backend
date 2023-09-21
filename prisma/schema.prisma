@@ -22,6 +22,7 @@ model Skin {
   skin_color      String         @db.VarChar(255)
   skin_link_game  String         @db.VarChar(255)
   skin_link_steam String         @db.VarChar(255)
+  median_price    Float
   seller_name     String         @db.VarChar(255)
   seller_id       String         @db.VarChar(255)
   status          String         @db.VarChar(255)

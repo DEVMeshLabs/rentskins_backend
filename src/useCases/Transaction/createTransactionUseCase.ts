@@ -8,6 +8,7 @@ import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
+import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdvertiseSkinNotYour";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -42,6 +43,8 @@ export class CreateTransactionUseCase {
       throw new SkinNotExistError();
     } else if (findWallet.value < findSkin.skin_price) {
       throw new InsufficientFundsError();
+    } else if (findSkin.seller_id !== seller_id) {
+      throw new CannotAdvertiseSkinNotYour();
     }
 
     const [createTransaction] = await Promise.all([
