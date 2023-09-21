@@ -1,6 +1,5 @@
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
-
 import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 import { SameUsersError } from "../@errors/Skin/SameUsersError";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
@@ -9,6 +8,7 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdvertiseSkinNotYour";
+import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlreadyBeenSoldError";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -26,14 +26,19 @@ export class CreateTransactionUseCase {
   ) {}
 
   async execute({ seller_id, buyer_id, skin_id }: ITransactionRequest) {
-    const [perfilBuyer, perfilSeller, findSkin, findWallet] = await Promise.all(
-      [
-        this.perfilRepository.findByUser(buyer_id),
-        this.perfilRepository.findByUser(seller_id),
-        this.skinRepository.findById(skin_id),
-        this.walletRepository.findByUser(buyer_id),
-      ]
-    );
+    const [
+      perfilBuyer,
+      perfilSeller,
+      findSkin,
+      findWallet,
+      findSkinTransaction,
+    ] = await Promise.all([
+      this.perfilRepository.findByUser(buyer_id),
+      this.perfilRepository.findByUser(seller_id),
+      this.skinRepository.findById(skin_id),
+      this.walletRepository.findByUser(buyer_id),
+      this.transactionRepository.findBySkinTransaction(skin_id),
+    ]);
 
     if (!perfilBuyer || !perfilSeller) {
       throw new PerfilNotExistError();
@@ -45,6 +50,8 @@ export class CreateTransactionUseCase {
       throw new InsufficientFundsError();
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
+    } else if (findSkinTransaction) {
+      throw new SkinHasAlreadyBeenSoldError();
     }
 
     const [createTransaction] = await Promise.all([

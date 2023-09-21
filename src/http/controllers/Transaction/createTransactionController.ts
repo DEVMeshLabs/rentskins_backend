@@ -27,6 +27,7 @@ export async function createTransactionController(
       SkinNotExistError: 404,
       InsufficientFundsError: 400,
       CannotAdvertiseSkinNotYour: 400,
+      SkinHasAlreadyBeenSoldError: 409,
     };
 
     const status = errorMappings[error.constructor.name] || 500;
