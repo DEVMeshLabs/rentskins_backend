@@ -5,6 +5,7 @@ export interface ITransactionRepository {
   findByMany(): Promise<Transaction[]>;
   findByUser(id: string, query?: string): Promise<Transaction | null>;
   findById(id: string): Promise<Transaction | null>;
+  findBySkinTransaction(skin_id: string): Promise<Transaction | null>;
   transactionCountAll(seller_id: string): Promise<number>;
   lastSalesUser(seller_id: string): Promise<Transaction[]>;
   updateConfirm(
@@ -14,6 +15,6 @@ export interface ITransactionRepository {
   ): Promise<Transaction>;
   updateId(
     id: string,
-    data: Prisma.TransactionUpdateInput
+    data: Prisma.TransactionUncheckedUpdateInput
   ): Promise<Transaction>;
 }

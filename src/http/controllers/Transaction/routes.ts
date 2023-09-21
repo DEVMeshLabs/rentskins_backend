@@ -15,8 +15,16 @@ export async function transactionRouter(app: FastifyInstance) {
   app.get("/v1/transaction", getManyTransactionController);
   app.get("/v1/verify/vac/:id", isVacBanController);
   app.get("/v1/transaction/last/sales/:seller_id", getManyLastSalesUserUseCase);
-  app.patch("/v1/transaction/:id", updateConfirmTransactionController);
-  app.post("/v1/transaction", createTransactionController);
+  app.patch(
+    "/v1/transaction/:id",
+    { onRequest: verifyJwt },
+    updateConfirmTransactionController
+  );
+  app.post(
+    "/v1/transaction",
+    { onRequest: verifyJwt },
+    createTransactionController
+  );
 
   app.post(
     "/v1/transaction/checkout",
@@ -33,7 +41,7 @@ export async function transactionRouter(app: FastifyInstance) {
 
   app.post(
     "/v1/transaction/webhook",
-    { config: { rawBody: true } },
+    { onRequest: verifyJwt, config: { rawBody: true } },
     createWebHookTransactionController
   );
 }

@@ -19,9 +19,9 @@ export async function updateConfirmTransactionController(
     const { status } = bodySchema.parse(req.body);
 
     const getUser = makeUpdateConfirmTransactionUseCase();
-    const response = await getUser.execute(id, status, query);
+    await getUser.execute(id, status, query);
 
-    return reply.status(200).send(response);
+    return reply.status(200).send();
   } catch (error) {
     if (error instanceof TransactionNotExistError) {
       return reply.status(404).send({ error: error.message });
