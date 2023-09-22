@@ -1,6 +1,5 @@
 import { PerfilAlreadyExistError } from "@/useCases/@errors/Perfil/PerfilInfoAlreadyExistError";
 import { makeGetManyPerfil } from "@/useCases/@factories/Perfil/makeGetManyPerfil";
-
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getManyPerfilController(
