@@ -7,9 +7,7 @@ export class GetMedianPriceUseCase {
 
     const response = await market
       .getItemsPrices(730, names, currency)
-      .then((items: any) =>
-        names.map((name) => `${name}: ${items[name].median_price}`)
-      );
+      .then((items: any) => names.map((name) => items[name].median_price));
     return response;
   }
 }
