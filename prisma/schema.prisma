@@ -112,7 +112,7 @@ model Perfil {
   picture                   String         @db.VarChar(255)
   delivery_time             String         @default("Sem informações") @db.VarChar(255)
   total_exchanges           Int            @default(0) @db.Integer
-  total_exchanges_completed Int            @default(0)
+  total_exchanges_completed Int            @default(0) @db.Integer
   createdAt                 DateTime       @default(now())
   updatedAt                 DateTime?
   deletedAt                 DateTime?
@@ -138,27 +138,3 @@ model Transaction {
   deletedAt      DateTime?
   skin           Skin?     @relation(fields: [skin_id], references: [id])
 }
-
-// model Transaction {
-//   id                   String    @id @default(uuid()) @db.VarChar(36)
-//   owner_id             String    @unique @db.VarChar(255)
-//   status               String    @db.VarChar(255)
-//   payment_type         String    @db.VarChar(255)
-//   installments         Int       @db.Integer()
-//   total                Float
-//   transaction_id       String    @db.VarChar(255)
-//   processor_response   String    @db.VarChar(255)
-//   customer_email       String    @db.VarChar(255)
-//   customer_name        String    @db.VarChar(255)
-//   customer_mobile      String    @db.VarChar(255)
-//   customer_document    String    @db.VarChar(255)
-//   billing_address      String    @db.VarChar(255)
-//   billing_number       String    @db.VarChar(255)
-//   billing_neighborhood String    @db.VarChar(255)
-//   billing_city         String    @db.VarChar(255)
-//   billing_state        String    @db.VarChar(255)
-//   billing_zip_code     String    @db.VarChar(255)
-//   createdAt            DateTime  @default(now())
-//   updatedAt            DateTime?
-//   deletedAt            DateTime?
-// }
