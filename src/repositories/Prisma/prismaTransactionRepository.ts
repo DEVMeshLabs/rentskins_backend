@@ -17,6 +17,13 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return transactionAll;
   }
 
+  async findByManyUser(seller_id: string) {
+    const transactionAllUser = await prisma.transaction.findMany({
+      where: { seller_id, deletedAt: null },
+    });
+    return transactionAllUser;
+  }
+
   async findById(id: string) {
     const findTransaction = await prisma.transaction.findFirst({
       where: { id, deletedAt: null },

@@ -85,9 +85,11 @@ export class UpdateConfirmTransactionUseCase {
           "increment",
           updateConfirm.balance
         ),
+
         this.perfilRepository.updateByUser(updateConfirm.seller_id, {
-          total_exchanges: findPerfil.total_exchanges + 1,
+          total_exchanges_completed: findPerfil.total_exchanges_completed + 1,
         }),
+
         this.transactionRepository.updateId(id, { salesAt: new Date() }),
       ]);
     }

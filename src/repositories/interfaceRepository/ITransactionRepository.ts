@@ -7,6 +7,7 @@ export interface ITransactionRepository {
   findById(id: string): Promise<Transaction | null>;
   findBySkinTransaction(skin_id: string): Promise<Transaction | null>;
   transactionCountAll(seller_id: string): Promise<number>;
+  findByManyUser(seller_id: string): Promise<Transaction[]>;
   lastSalesUser(seller_id: string): Promise<Transaction[]>;
   updateConfirm(
     id: string,

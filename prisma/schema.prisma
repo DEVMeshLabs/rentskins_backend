@@ -99,28 +99,28 @@ model Configuration {
 }
 
 model Perfil {
-  id                 String         @id @default(uuid()) @db.VarChar(36)
-  owner_id           String         @unique @db.VarChar(255)
-  owner_name         String         @db.VarChar(255)
-  owner_type         String         @default("Usuario") @db.VarChar(255)
-  owner_country      String?        @db.VarChar(5)
-  stripe_id          String?        @db.VarChar(255)
-  account_status     String         @default("Ativo") @db.VarChar(20)
-  status_member      String?        @default("Membro novo") @db.VarChar(255)
-  steam_level        Int            @db.Integer
-  steam_url          String         @db.VarChar(255)
-  picture            String         @db.VarChar(255)
-  delivery_time      String?        @default("Sem informações") @db.VarChar(255)
-  delivery_fee       Int            @default(0)
-  total_exchanges    Int            @default(0) @db.Integer
-  createdAt          DateTime       @default(now())
-  updatedAt          DateTime?
-  deletedAt          DateTime?
-  steam_created_date DateTime
-  configurationId    String?        @db.VarChar(36)
-  cart_id            String?
-  configuration      Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
-  cart               Cart?          @relation(fields: [cart_id], references: [id], onDelete: Cascade)
+  id                        String         @id @default(uuid()) @db.VarChar(36)
+  owner_id                  String         @unique @db.VarChar(255)
+  owner_name                String         @db.VarChar(255)
+  owner_type                String         @default("Usuario") @db.VarChar(255)
+  owner_country             String?        @db.VarChar(5)
+  stripe_id                 String?        @db.VarChar(255)
+  account_status            String         @default("Ativo") @db.VarChar(20)
+  status_member             String?        @default("Membro novo") @db.VarChar(255)
+  steam_level               Int            @db.Integer
+  steam_url                 String         @db.VarChar(255)
+  picture                   String         @db.VarChar(255)
+  delivery_time             String         @default("Sem informações") @db.VarChar(255)
+  total_exchanges           Int            @default(0) @db.Integer
+  total_exchanges_completed Int            @default(0)
+  createdAt                 DateTime       @default(now())
+  updatedAt                 DateTime?
+  deletedAt                 DateTime?
+  steam_created_date        DateTime
+  configurationId           String?        @db.VarChar(36)
+  cart_id                   String?
+  configuration             Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
+  cart                      Cart?          @relation(fields: [cart_id], references: [id], onDelete: Cascade)
 }
 
 model Transaction {
