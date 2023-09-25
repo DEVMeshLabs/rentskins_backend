@@ -74,11 +74,24 @@ export class UpdateConfirmTransactionUseCase {
 
   private async handleCompletedTransaction(id: string, updateConfirm: any) {
     const findTransaction = await this.findTransactionById(id);
+    const findAllDateTransactions =
+      await this.transactionRepository.findByManyUser(
+        findTransaction.seller_id
+      );
+
+    const teste = findAllDateTransactions
+      .filter((item) => {
+        return item.salesAt !== null;
+      })
+      .map((dates) => dates.salesAt);
+
+    const mediaDate = await this.calcularMediaDeDatas(teste);
 
     if (findTransaction.status === "Concluído") {
       const findPerfil = await this.perfilRepository.findByUser(
         findTransaction.seller_id
       );
+
       await Promise.all([
         this.walletRepository.updateByUserValue(
           updateConfirm.seller_id,
@@ -91,7 +104,28 @@ export class UpdateConfirmTransactionUseCase {
         }),
 
         this.transactionRepository.updateId(id, { salesAt: new Date() }),
+        this.perfilRepository.updateByUser(updateConfirm.seller_id, {
+          delivery_time: mediaDate,
+        }),
       ]);
     }
+  }
+
+  private async calcularMediaDeDatas(arrayDeDatas: Date[]) {
+    if (arrayDeDatas.length === 0) {
+      return null;
+    }
+
+    const totalMilissegundos = arrayDeDatas.reduce(
+      (total, data) => total + data.getTime(),
+      0
+    );
+    const mediaMilissegundos = totalMilissegundos / arrayDeDatas.length;
+    const mediaDate = new Date(mediaMilissegundos);
+
+    const horasMedia = mediaDate.getHours();
+    const minutosMedia = mediaDate.getMinutes();
+
+    return `${horasMedia}:${minutosMedia}`;
   }
 }
