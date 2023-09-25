@@ -81,6 +81,10 @@ export class CreateTransactionUseCase {
         "decrement",
         findSkin.skin_price
       ),
+
+      this.perfilRepository.updateByUser(seller_id, {
+        total_exchanges: perfilSeller.total_exchanges + 1,
+      }),
     ]);
 
     return createTransaction;
