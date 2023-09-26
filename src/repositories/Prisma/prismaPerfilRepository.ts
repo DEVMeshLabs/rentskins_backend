@@ -18,6 +18,13 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     return perfilUser;
   }
 
+  async findByUserNotDeleteAt(owner_id: string) {
+    const perfilUser = await prisma.perfil.findFirst({
+      where: { owner_id },
+    });
+    return perfilUser;
+  }
+
   async findByStatus(owner_id: string) {
     const perfilId = await prisma.perfil.findFirst({
       where: { owner_id, deletedAt: null },

@@ -7,6 +7,7 @@ export interface IPerfilRepository {
   findManyTypeUser(owner_type: string): Promise<Perfil[]>;
   findByMany(): Promise<Perfil[]>;
   findByStatus(id: string): Promise<any>;
+  findByUserNotDeleteAt(owner_id: string): Promise<Perfil>;
   updateById(
     id: string,
     data: Prisma.PerfilUncheckedCreateInput
