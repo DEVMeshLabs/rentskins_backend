@@ -4,6 +4,7 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { NotUpdateTransaction } from "../@errors/Transaction/NotUpdateTransaction";
 import { Transaction } from "@prisma/client";
+import { MediaDates } from "@/utils/mediaDates";
 
 export class UpdateConfirmTransactionUseCase {
   constructor(
@@ -23,6 +24,15 @@ export class UpdateConfirmTransactionUseCase {
     );
 
     const validStatus = this.determineStatus(updateConfirm);
+
+    if (validStatus !== "Em andamento") {
+      const reliability = await this.calculateReliability(
+        findTransaction.seller_id
+      );
+      await this.perfilRepository.updateByUser(findTransaction.seller_id, {
+        reliability,
+      });
+    }
 
     await this.transactionRepository.updateId(id, { status: validStatus });
 
@@ -72,20 +82,22 @@ export class UpdateConfirmTransactionUseCase {
     );
   }
 
-  private async handleCompletedTransaction(id: string, updateConfirm: any) {
+  async handleCompletedTransaction(
+    id: string,
+    updateConfirm: any
+  ): Promise<void> {
     const findTransaction = await this.findTransactionById(id);
     const findAllDateTransactions =
       await this.transactionRepository.findByManyUser(
         findTransaction.seller_id
       );
 
-    const teste = findAllDateTransactions
-      .filter((item) => {
-        return item.salesAt !== null;
-      })
-      .map((dates) => dates.salesAt);
+    const teste = findAllDateTransactions.filter((item) => {
+      return item.salesAt !== null;
+    });
 
-    const mediaDate = await this.calcularMediaDeDatas(teste);
+    const calc = new MediaDates();
+    const mediaDate = await calc.calcularDiferenciaDates(teste);
 
     if (findTransaction.status === "Concluído") {
       const findPerfil = await this.perfilRepository.findByUser(
@@ -111,21 +123,31 @@ export class UpdateConfirmTransactionUseCase {
     }
   }
 
-  private async calcularMediaDeDatas(arrayDeDatas: Date[]) {
-    if (arrayDeDatas.length === 0) {
-      return null;
+  private async calculateReliability(seller_id: string) {
+    const user = await this.perfilRepository.findByUser(seller_id);
+
+    const [hora, minutos, segundos] = user.delivery_time.split(":");
+
+    const totalSegundos =
+      Number(hora) * 3600 + Number(minutos) * 60 + Number(segundos);
+
+    let hoursDifference = Math.ceil((86400 - totalSegundos) / 3600);
+
+    if (hoursDifference < 0) {
+      hoursDifference = 0;
     }
 
-    const totalMilissegundos = arrayDeDatas.reduce(
-      (total, data) => total + data.getTime(),
-      0
-    );
-    const mediaMilissegundos = totalMilissegundos / arrayDeDatas.length;
-    const mediaDate = new Date(mediaMilissegundos);
+    const timePercentage = ((hoursDifference / 24) * 100).toFixed(2);
 
-    const horasMedia = mediaDate.getHours();
-    const minutosMedia = mediaDate.getMinutes();
+    const deliveryPercentage = (
+      (user.total_exchanges_completed / user.total_exchanges) *
+      100
+    ).toFixed(2);
+    const reliabilityPercentage = (
+      Number(deliveryPercentage) * (3 / 4) +
+      Number(timePercentage) * (1 / 4)
+    ).toFixed(2);
 
-    return `${horasMedia}:${minutosMedia}`;
+    return reliabilityPercentage;
   }
 }

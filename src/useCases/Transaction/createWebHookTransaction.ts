@@ -43,7 +43,7 @@ export class CreateWebHookTransactionUseCase {
 
       case "payment_intent.payment_failed":
         const paymentIntentFailed = event.data.object;
-
+        console.log(paymentIntentFailed);
         await this.notificationRepository.create({
           owner_id: customer.metadata.owner_id,
           description: `O pagamento falhou. Tente novamente mais tarde.`,

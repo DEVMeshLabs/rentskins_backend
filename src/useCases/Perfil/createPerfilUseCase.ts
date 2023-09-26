@@ -18,6 +18,15 @@ export class CreatePerfilUseCase {
       perfilDate.owner_id
     );
 
+    const foundUserProfileDeleAt =
+      await this.perfilRepository.findByUserNotDeleteAt(perfilDate.owner_id);
+
+    if (foundUserProfileDeleAt.deletedAt !== null) {
+      return this.perfilRepository.updateByIdUser(perfilDate.owner_id, {
+        deletedAt: null,
+      });
+    }
+
     const isVacBan = await fetch(
       `http://api.steampowered.com/ISteamUser/GetPlayerBans/v1?key=0B98876BF7EBF6720920F4F00CD20FA3&steamids=${perfilDate.owner_id}`
     ).then((response) => response.json());
