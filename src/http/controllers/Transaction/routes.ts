@@ -41,7 +41,7 @@ export async function transactionRouter(app: FastifyInstance) {
 
   app.post(
     "/v1/transaction/webhook",
-    { onRequest: verifyJwt, config: { rawBody: true } },
+    { config: { rawBody: true } },
     createWebHookTransactionController
   );
 }
