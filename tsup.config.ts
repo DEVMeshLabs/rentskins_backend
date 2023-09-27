@@ -1,8 +1,3 @@
 import { defineConfig } from "tsup";
 
-export default defineConfig({
-  clean: true,
-  dts: true,
-  format: ["cjs", "esm"],
-  entry: ["src", "!src/**/*.{test, spec}.*"],
-});
+export default defineConfig({ entry: ["src", "!src/**/*.spec.*"] });
