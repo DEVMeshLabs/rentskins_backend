@@ -37,7 +37,6 @@
     "jwt-decode": "^3.1.2",
     "libphonenumber-js": "^1.10.38",
     "luxon": "^3.3.0",
-    "moment": "^2.29.4",
     "steam-market-pricing": "^2.0.0",
     "steam-user": "^4.28.9",
     "steamcommunity": "^3.46.1",
