@@ -5,6 +5,6 @@ export default defineConfig({
   plugins: [tsconfigPaths()],
   test: {
     ...configDefaults.exclude,
-    exclude: ["./src/useCases/*.spec.ts"],
+    exclude: ["./src/useCases/**/*.{spec}.{ts}"],
   },
 });
