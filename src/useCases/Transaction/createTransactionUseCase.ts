@@ -64,14 +64,14 @@ export class CreateTransactionUseCase {
 
       this.notificationsRepository.create({
         owner_id: seller_id,
-        description: `Você vendeu ${findSkin.skin_name}, por R$: ${findSkin.skin_price}, você tem 12h para realizar a troca`,
+        description: `Venda do item ${findSkin.skin_name}, realizada por R$: ${findSkin.skin_price}`,
         type: "Input",
         skin_id: findSkin.id,
       }),
-
+      // Compra do item ${item} realizada por ${valor.toLocaleString(…)}.
       this.notificationsRepository.create({
         owner_id: buyer_id,
-        description: `Você comprou ${findSkin.skin_name}, por R$: ${findSkin.skin_price} só aguardar o vendedor realizar a troca`,
+        description: `Compra do item ${findSkin.skin_name} realizada por R$: ${findSkin.skin_price}`,
         type: "Input",
         skin_id: findSkin.id,
       }),

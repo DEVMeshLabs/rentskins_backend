@@ -13,6 +13,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   async findByMany() {
     const transactionAll = await prisma.transaction.findMany({
       where: { deletedAt: null },
+      orderBy: { createdAt: "desc" },
     });
     return transactionAll;
   }

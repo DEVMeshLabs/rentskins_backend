@@ -1,6 +1,6 @@
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { Notification } from "@prisma/client";
-import { NotificationNotExistError } from "../@errors/Notification/NotificationNotExistError";
+import { NotificationNotExistError } from "../../@errors/Notification/NotificationNotExistError";
 
 export class GetNotificationUseCase {
   constructor(private notification: INotificationRepository) {}
