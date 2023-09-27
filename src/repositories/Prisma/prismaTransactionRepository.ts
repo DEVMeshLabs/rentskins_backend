@@ -32,11 +32,14 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   }
 
   async findByUser(id: string, query?: string) {
-    const userTransaction = await prisma.transaction.findFirst({
-      where:
-        query === "buyer"
-          ? { buyer_id: id, deletedAt: null }
-          : { seller_id: id, deletedAt: null },
+    const whereCondition = query
+      ? query === "buyer"
+        ? { buyer_id: id }
+        : { seller_id: id }
+      : { OR: [{ buyer_id: id }, { seller_id: id }] };
+
+    const userTransaction = await prisma.transaction.findMany({
+      where: whereCondition,
       include: { skin: true },
     });
     return userTransaction;

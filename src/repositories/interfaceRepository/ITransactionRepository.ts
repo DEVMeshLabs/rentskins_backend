@@ -3,7 +3,7 @@ import { Prisma, Transaction } from "@prisma/client";
 export interface ITransactionRepository {
   create(data: Prisma.TransactionUncheckedCreateInput): Promise<Transaction>;
   findByMany(): Promise<Transaction[]>;
-  findByUser(id: string, query?: string): Promise<Transaction | null>;
+  findByUser(id: string, query?: string): Promise<Transaction[]>;
   findById(id: string): Promise<Transaction | null>;
   findBySkinTransaction(skin_id: string): Promise<Transaction | null>;
   transactionCountAll(seller_id: string): Promise<number>;
