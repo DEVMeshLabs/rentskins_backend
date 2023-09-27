@@ -1,7 +1,7 @@
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { Notification, Prisma } from "@prisma/client";
-import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
+import { SkinNotExistError } from "../../@errors/Skin/SkinNotExistsError";
 
 export class CreateNotificationUseCase {
   constructor(

@@ -1,6 +1,6 @@
 import { PrismaNotificationRepository } from "@/repositories/Prisma/prismaNotificationRepository";
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
-import { CreateNotificationUseCase } from "@/useCases/Notification/createNotificationUseCase";
+import { CreateNotificationUseCase } from "@/useCases/Configuration/Notification/createNotificationUseCase";
 
 export function makeCreateNotificationUseCase() {
   const prismaNotificationRepository = new PrismaNotificationRepository();

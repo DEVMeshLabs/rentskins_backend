@@ -1,5 +1,5 @@
 import { PrismaNotificationRepository } from "@/repositories/Prisma/prismaNotificationRepository";
-import { DeleteNotificationUseCase } from "@/useCases/Notification/deleteNotificationUseCase";
+import { DeleteNotificationUseCase } from "@/useCases/Configuration/Notification/deleteNotificationUseCase";
 
 export function makeDeleteNotificationUseCase() {
   const prismaNotificationRepository = new PrismaNotificationRepository();
