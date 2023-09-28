@@ -21,6 +21,7 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "resolveJsonModule": true,
-    
-  }
+
+  },
+  "exclude": ["**/*.spec.ts"]
 }
