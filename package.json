@@ -12,7 +12,7 @@
   "scripts": {
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
-    "build": "tsup src --out-dir build --tsconfig tsconfig.build.json",
+    "build": "tsup --config ./tsup.config.ts",
     "test": "vitest run --dir src/tests",
     "test:watch": "vitest",
     "unseed": "ts-node prisma/unseed.ts"
