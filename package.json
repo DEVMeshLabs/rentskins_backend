@@ -13,7 +13,7 @@
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
-    "test": "vitest run --dir src/useCases",
+    "test": "vitest run --dir src/tests",
     "test:watch": "vitest",
     "unseed": "ts-node prisma/unseed.ts"
   },
