@@ -13,7 +13,7 @@
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
     "build": "tsup src --out-dir build",
-    "build:test": "tsc --project tsconfig.build.json",
+    "build:test": "tsup src --out-dir build --tsconfig tsconfig.build.json",
     "test": "vitest run --dir src/tests",
     "test:watch": "vitest",
     "unseed": "ts-node prisma/unseed.ts"
