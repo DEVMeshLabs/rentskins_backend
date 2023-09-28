@@ -1,4 +1,4 @@
 node_modules
 .env
 build
-./src/useCases/tests
+src/useCases/tests
