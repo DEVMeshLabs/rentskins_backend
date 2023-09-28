@@ -1,4 +1,4 @@
 node_modules
 .env
 build
-**/*.spec.ts
+./src/useCases/**/*.spec.ts
