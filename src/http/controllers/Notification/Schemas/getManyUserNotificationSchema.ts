@@ -11,5 +11,5 @@ export const getManyUserNotificationSchema = z.object({
     "umAno",
   ]),
   page: z.number().default(1),
-  pageSize: z.number().default(2),
+  pageSize: z.number().default(5),
 });
