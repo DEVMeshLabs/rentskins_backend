@@ -35,7 +35,15 @@ export class PrismaNotificationRepository implements INotificationRepository {
     return findMany;
   }
 
-  async findManySkinNotifications(owner_id: string) {
+  // take: pageSize,
+  // orderBy: { createdAt: "desc" },
+  // skip: (page - 1) * pageSize,
+
+  async findManyUserNotifications(
+    owner_id: string,
+    page: number,
+    pageSize: number
+  ) {
     const findManySkin = await prisma.notification.findMany({
       where: {
         owner_id,
@@ -44,6 +52,8 @@ export class PrismaNotificationRepository implements INotificationRepository {
       orderBy: {
         createdAt: "desc",
       },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
       include: { skin: true },
     });
     return findManySkin;

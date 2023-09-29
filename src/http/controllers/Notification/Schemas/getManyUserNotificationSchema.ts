@@ -10,4 +10,6 @@ export const getManyUserNotificationSchema = z.object({
     "tresMes",
     "umAno",
   ]),
+  page: z.number().default(1),
+  pageSize: z.number().default(2),
 });
