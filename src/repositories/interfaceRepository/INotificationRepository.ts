@@ -5,7 +5,11 @@ export interface INotificationRepository {
   findByMany(): Promise<Notification[]>;
   findByUser(owner_id: string): Promise<Notification | null>;
   findById(id: string): Promise<Notification | null>;
+  findManyUserNotifications(
+    owner_id: string,
+    page: number,
+    pageSize: number
+  ): Promise<Notification[]>;
   updateNotification(owner_id: string): Promise<any>;
-  findManySkinNotifications(owner_id: string): Promise<Notification[]>;
   delete(id: string): Promise<Notification>;
 }
