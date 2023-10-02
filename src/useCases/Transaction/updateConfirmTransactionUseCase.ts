@@ -105,7 +105,6 @@ export class UpdateConfirmTransactionUseCase {
     const mediaDate = await calc.calcularDiferenciaDates(teste);
 
     if (findTransaction.status === "Concluído") {
-      console.log("CONCLUIDOOOOOOOOOOOOOOOO");
       const findPerfil = await this.perfilRepository.findByUser(
         findTransaction.seller_id
       );
@@ -138,12 +137,10 @@ export class UpdateConfirmTransactionUseCase {
       ]);
     }
     if (findTransaction.status === "Falhou") {
-      console.info("AQUIIIIIIIIIIIIIIIII ---------   DIFERENTEEEE");
       if (
         findTransaction.buyer_confirm === "Recusado" ||
         findTransaction.seller_confirm === "Recusado"
       ) {
-        console.log("AQUIIIIIIIIIIIIIIIII ---------   Caiu aqui");
         await Promise.all([
           this.notificationsRepository.create({
             owner_id: updateConfirm.buyer_id,
@@ -180,10 +177,15 @@ export class UpdateConfirmTransactionUseCase {
       (user.total_exchanges_completed / user.total_exchanges) *
       100
     ).toFixed(2);
+
     const reliabilityPercentage = (
       Number(deliveryPercentage) * (3 / 4) +
       Number(timePercentage) * (1 / 4)
     ).toFixed(2);
+
+    if (reliabilityPercentage === "NaN") {
+      return "Sem informações";
+    }
 
     return reliabilityPercentage;
   }

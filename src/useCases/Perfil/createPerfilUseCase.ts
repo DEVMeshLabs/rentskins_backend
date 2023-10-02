@@ -21,10 +21,12 @@ export class CreatePerfilUseCase {
     const foundUserProfileDeleAt =
       await this.perfilRepository.findByUserNotDeleteAt(perfilDate.owner_id);
 
-    if (foundUserProfileDeleAt.deletedAt !== null) {
-      return this.perfilRepository.updateByIdUser(perfilDate.owner_id, {
-        deletedAt: null,
-      });
+    if (foundUserProfileDeleAt) {
+      if (foundUserProfileDeleAt.deletedAt !== null) {
+        return this.perfilRepository.updateByIdUser(perfilDate.owner_id, {
+          deletedAt: null,
+        });
+      }
     }
 
     const isVacBan = await fetch(
