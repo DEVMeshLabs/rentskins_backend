@@ -1,10 +1,9 @@
 import { z } from "zod";
 
-export const createTransactionSchema = z.object({
-  owner_id: z.string(),
-  email: z.string().email(),
-  amount: z.number().min(5),
-  payment_method: z.enum(["card", "boleto"]),
-  success_url: z.string(),
-  cancel_url: z.string(),
-});
+export const createTransactionSchema = z.array(
+  z.object({
+    skin_id: z.string(),
+    seller_id: z.string(),
+    buyer_id: z.string(),
+  })
+);

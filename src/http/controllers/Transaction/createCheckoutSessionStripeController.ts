@@ -1,7 +1,7 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { createTransactionSchema } from "./Schemas/createTransactionSchema";
 import { ZodError } from "zod";
 import { makeCreateCheckoutSessionStripe } from "@/useCases/@factories/Transaction/makeCreateCheckoutSessionStripe";
+import { createCheckoutSessionSchema } from "./Schemas/createCheckoutSessionSchema";
 
 export async function createCheckoutSessionStripeController(
   req: FastifyRequest,
@@ -9,7 +9,7 @@ export async function createCheckoutSessionStripeController(
 ): Promise<FastifyReply | void> {
   try {
     const { owner_id, cancel_url, success_url, amount, payment_method, email } =
-      createTransactionSchema.parse(req.body);
+      createCheckoutSessionSchema.parse(req.body);
     const makeTransaction = makeCreateCheckoutSessionStripe();
 
     const response = await makeTransaction.process({

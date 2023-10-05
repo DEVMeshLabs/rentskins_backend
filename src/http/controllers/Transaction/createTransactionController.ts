@@ -1,23 +1,21 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { makeCreateTransactionUseCase } from "@/useCases/@factories/Transaction/makeCreateTransactionUseCase";
+import { createTransactionSchema } from "./Schemas/createTransactionSchema";
 
 export async function createTransactionController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { skin_id, buyer_id, seller_id } = req.body as {
-      skin_id: string;
-      buyer_id: string;
-      seller_id: string;
-    };
+    const transactions = createTransactionSchema.parse(req.body);
+    const makeCreateTransactions = makeCreateTransactionUseCase();
 
-    const createTransaction = makeCreateTransactionUseCase();
-    const response = await createTransaction.execute({
-      skin_id,
-      buyer_id,
-      seller_id,
-    });
+    const createManyTransaction = transactions.map(
+      async ({ skin_id, buyer_id, seller_id }) =>
+        await makeCreateTransactions.execute({ skin_id, buyer_id, seller_id })
+    );
+
+    const response = await Promise.all([...createManyTransaction]);
 
     return reply.status(201).send(response);
   } catch (error) {

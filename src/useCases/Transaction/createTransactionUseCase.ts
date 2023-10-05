@@ -64,14 +64,26 @@ export class CreateTransactionUseCase {
 
       this.notificationsRepository.create({
         owner_id: seller_id,
-        description: `Venda do item ${findSkin.skin_name}, realizada por R$: ${findSkin.skin_price}`,
+        description: `Venda do item ${
+          findSkin.skin_name
+        }, realizada por ${findSkin.skin_price.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+          minimumFractionDigits: 2,
+        })}`,
         type: "Input",
         skin_id: findSkin.id,
       }),
       // Compra do item ${item} realizada por ${valor.toLocaleString(…)}.
       this.notificationsRepository.create({
         owner_id: buyer_id,
-        description: `Compra do item ${findSkin.skin_name} realizada por R$: ${findSkin.skin_price}`,
+        description: `Compra do item ${
+          findSkin.skin_name
+        } realizada por ${findSkin.skin_price.toLocaleString("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+          minimumFractionDigits: 2,
+        })}`,
         type: "Input",
         skin_id: findSkin.id,
       }),
