@@ -126,7 +126,16 @@ export class UpdateConfirmTransactionUseCase {
         }),
         this.notificationsRepository.create({
           owner_id: updateConfirm.seller_id,
-          description: `A venda do item ${skinId.skin_name} foi realizada com sucesso! seus créditos foram carregados em R$: ${findTransaction.balance}.`,
+          description: `A venda do item ${
+            skinId.skin_name
+          } foi realizada com sucesso! seus créditos foram carregados em ${findTransaction.balance.toLocaleString(
+            "pt-BR",
+            {
+              style: "currency",
+              currency: "BRL",
+              minimumFractionDigits: 2,
+            }
+          )}.`,
           skin_id: findTransaction.skin_id,
         }),
         this.notificationsRepository.create({
@@ -154,7 +163,13 @@ export class UpdateConfirmTransactionUseCase {
         await Promise.all([
           this.notificationsRepository.create({
             owner_id: updateConfirm.buyer_id,
-            description: `A compra do item ${skinId.skin_name} foi cancelada R$: ${findTransaction.balance} foram restaurados em seus créditos.`,
+            description: `A compra do item ${
+              skinId.skin_name
+            } foi cancelada ${findTransaction.balance.toLocaleString("pt-BR", {
+              style: "currency",
+              currency: "BRL",
+              minimumFractionDigits: 2,
+            })} foram restaurados em seus créditos.`,
             skin_id: findTransaction.skin_id,
           }),
           this.notificationsRepository.create({

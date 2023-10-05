@@ -3,8 +3,8 @@ import { ITransactionRepository } from "../interfaceRepository/ITransactionRepos
 import { prisma } from "@/lib/prisma";
 
 export class PrismaTransactionRepository implements ITransactionRepository {
-  async create(data: Prisma.TransactionCreateInput) {
-    const create = await prisma.transaction.create({
+  async create(data: Prisma.TransactionCreateManyInput) {
+    const create = await prisma.transaction.createMany({
       data,
     });
     return create;
