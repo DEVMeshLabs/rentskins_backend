@@ -140,7 +140,7 @@ export class UpdateConfirmTransactionUseCase {
         }),
         this.notificationsRepository.create({
           owner_id: updateConfirm.buyer_id,
-          description: `A compra do item ${skinId.skin_name} foi realizada com sucesso! Corra para testar em jogo`,
+          description: `A compra do item ${skinId.skin_name} foi realizada com sucesso! Corra para testar em jogo.`,
           skin_id: findTransaction.skin_id,
         }),
       ]);

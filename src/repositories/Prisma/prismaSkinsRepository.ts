@@ -49,7 +49,6 @@ export class PrismaSkinRepository implements ISkinsRepository {
       orderBy: { createdAt: "desc" },
       take: pageSize,
       skip: (page - 1) * pageSize,
-      include: { Notification: true },
     });
     return skinAll;
   }

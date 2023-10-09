@@ -15,9 +15,7 @@ export async function createTransactionController(
         await makeCreateTransactions.execute({ skin_id, buyer_id, seller_id })
     );
 
-    const response = await Promise.all([...createManyTransaction]);
-
-    return reply.status(201).send(response);
+    await Promise.all([...createManyTransaction]);
   } catch (error) {
     const errorMappings = {
       SameUsersError: 409,
@@ -31,4 +29,6 @@ export async function createTransactionController(
     const status = errorMappings[error.constructor.name] || 500;
     return reply.status(status).send({ error: error.message });
   }
+
+  return reply.status(201).send();
 }

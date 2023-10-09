@@ -70,11 +70,11 @@ export class CreateTransactionUseCase {
           style: "currency",
           currency: "BRL",
           minimumFractionDigits: 2,
-        })}`,
+        })}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
-      // Compra do item ${item} realizada por ${valor.toLocaleString(…)}.
+
       this.notificationsRepository.create({
         owner_id: buyer_id,
         description: `Compra do item ${
@@ -83,7 +83,7 @@ export class CreateTransactionUseCase {
           style: "currency",
           currency: "BRL",
           minimumFractionDigits: 2,
-        })}`,
+        })}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
