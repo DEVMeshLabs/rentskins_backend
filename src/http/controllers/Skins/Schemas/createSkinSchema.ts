@@ -8,7 +8,7 @@ const createSkinSchema = z.array(
     skin_weapon: z.string(),
     skin_price: z.number(),
     skin_float: z.string(),
-    skin_color: z.string(),
+    skin_rarity: z.string(),
     skin_link_game: z.string(),
     skin_link_steam: z.string(),
     median_price: z.number(),
