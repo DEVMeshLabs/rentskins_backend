@@ -128,7 +128,7 @@ export class UpdateConfirmTransactionUseCase {
           owner_id: updateConfirm.seller_id,
           description: `A venda do item ${
             skinId.skin_name
-          } foi realizada com sucesso! seus créditos foram carregados em ${findTransaction.balance.toLocaleString(
+          } foi realizada com sucesso! Seus créditos foram carregados em ${findTransaction.balance.toLocaleString(
             "pt-BR",
             {
               style: "currency",
@@ -140,7 +140,7 @@ export class UpdateConfirmTransactionUseCase {
         }),
         this.notificationsRepository.create({
           owner_id: updateConfirm.buyer_id,
-          description: `A compra do item ${skinId.skin_name} foi realizada com sucesso! Corra para testar em jogo.`,
+          description: `A compra do item ${skinId.skin_name} foi realizada com sucesso! Verifique o item em seu inventário.`,
           skin_id: findTransaction.skin_id,
         }),
       ]);
@@ -165,7 +165,7 @@ export class UpdateConfirmTransactionUseCase {
             owner_id: updateConfirm.buyer_id,
             description: `A compra do item ${
               skinId.skin_name
-            } foi cancelada ${findTransaction.balance.toLocaleString("pt-BR", {
+            } foi cancelada. ${findTransaction.balance.toLocaleString("pt-BR", {
               style: "currency",
               currency: "BRL",
               minimumFractionDigits: 2,
@@ -174,7 +174,7 @@ export class UpdateConfirmTransactionUseCase {
           }),
           this.notificationsRepository.create({
             owner_id: updateConfirm.seller_id,
-            description: `A venda do item ${skinId.skin_name} foi cancelada. Conclua as trocas com confiabilidade ou este comportamento resultará em uma punição.`,
+            description: `A venda do item ${skinId.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
             skin_id: findTransaction.skin_id,
           }),
         ]);
