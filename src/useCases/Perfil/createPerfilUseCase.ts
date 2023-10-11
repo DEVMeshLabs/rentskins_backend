@@ -14,19 +14,15 @@ export class CreatePerfilUseCase {
     configurationDate: Prisma.ConfigurationCreateInput,
     perfilDate: Prisma.PerfilUncheckedCreateInput
   ): Promise<Perfil> {
-    const foundUserProfile = await this.perfilRepository.findByUser(
-      perfilDate.owner_id
-    );
+    const [foundUserProfile, foundUserProfileDeleAt] = await Promise.all([
+      this.perfilRepository.findByUser(perfilDate.owner_id),
+      this.perfilRepository.findByUserNotDeleteAt(perfilDate.owner_id),
+    ]);
 
-    const foundUserProfileDeleAt =
-      await this.perfilRepository.findByUserNotDeleteAt(perfilDate.owner_id);
-
-    if (foundUserProfileDeleAt) {
-      if (foundUserProfileDeleAt.deletedAt !== null) {
-        return this.perfilRepository.updateByIdUser(perfilDate.owner_id, {
-          deletedAt: null,
-        });
-      }
+    if (foundUserProfileDeleAt && foundUserProfileDeleAt.deletedAt !== null) {
+      return this.perfilRepository.updateByIdUser(perfilDate.owner_id, {
+        deletedAt: null,
+      });
     }
 
     const isVacBan = await fetch(
