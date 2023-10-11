@@ -177,6 +177,11 @@ export class UpdateConfirmTransactionUseCase {
             description: `A venda do item ${skinId.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
             skin_id: findTransaction.skin_id,
           }),
+          this.walletRepository.updateByUserValue(
+            findTransaction.buyer_id,
+            "increment",
+            findTransaction.balance
+          ),
         ]);
       }
     }
