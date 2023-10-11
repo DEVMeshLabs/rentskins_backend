@@ -51,7 +51,7 @@ export class CreateTransactionUseCase {
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
     } else if (findSkinTransaction) {
-      throw new SkinHasAlreadyBeenSoldError();
+      throw new SkinHasAlreadyBeenSoldError(findSkin.skin_name);
     }
 
     const [createTransaction] = await Promise.all([
