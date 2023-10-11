@@ -12,7 +12,6 @@ export const seedSkin = [
     skin_rarity: "CF6A32",
     median_price: 500,
     asset_id: "31682401181",
-    status: "Pending",
     sale_type: "Covert Rifle",
     status_float: "Bem desgastada",
     skin_link_game:
@@ -33,7 +32,6 @@ export const seedSkin = [
     seller_id: "76561199205585878",
     skin_rarity: "D2D2D2",
     asset_id: "31682278532",
-    status: "Pending",
     sale_type: "Covert Rifle",
     status_float: "Novo de fábrica",
     skin_link_game:
@@ -54,7 +52,6 @@ export const seedSkin = [
     median_price: 300,
     skin_rarity: "CF6A32",
     asset_id: "31682139984",
-    status: "Pending",
     sale_type: "Covert Rifle",
     status_float: "Novo de fábrica",
     skin_link_game:
@@ -75,7 +72,6 @@ export const seedSkin = [
     skin_rarity: "D2D2D2",
     median_price: 621,
     asset_id: "31558742538",
-    status: "Pending",
     sale_type: "Covert Rifle",
     status_float: "Novo de fábrica",
     skin_link_game:
@@ -96,7 +92,6 @@ export const seedSkin = [
     seller_name: "drkkk",
     seller_id: "76561198862407248",
     asset_id: "31456964500",
-    status: "Pending",
     sale_type: "Covert Rifle",
     status_float: "Bem desgastada",
     skin_link_game:
@@ -117,7 +112,6 @@ export const seedSkin = [
     seller_id: "76561199205585878",
     skin_rarity: "D2D2D2",
     asset_id: "30442657422",
-    status: "Pending",
     sale_type: "Covert Rifle",
     status_float: "Bem desgastada",
     skin_link_game:
@@ -138,7 +132,6 @@ export const seedSkin = [
     skin_rarity: "8650AC",
     median_price: 341,
     asset_id: "16604988228",
-    status: "Pending",
     sale_type: "Covert Knife",
     status_float: "Testado em campo",
     skin_link_game:
@@ -159,7 +152,6 @@ export const seedSkin = [
     skin_rarity: "8650AC",
     median_price: 3000,
     asset_id: "15930893767",
-    status: "Pending",
     sale_type: "Covert Knife",
     status_float: "Testado em campo",
     skin_link_game:
@@ -180,7 +172,6 @@ export const seedSkin = [
     skin_rarity: "FFD700",
     median_price: 550,
     asset_id: "30494485950",
-    status: "Pending",
     sale_type: "Covert Knife",
     status_float: "Bem usado",
     skin_link_game:
@@ -201,7 +192,6 @@ export const seedSkin = [
     skin_rarity: "FFD700",
     median_price: 680,
     asset_id: "30442654348",
-    status: "Pending",
     sale_type: "Covert Knife",
     status_float: "Bem usado",
     skin_link_game:
@@ -222,7 +212,6 @@ export const seedSkin = [
     skin_rarity: "D2D2D2",
     median_price: 125,
     asset_id: "29507892509",
-    status: "Pending",
     sale_type: "Covert Knife",
     status_float: "Bem usado",
     skin_link_game:

@@ -27,7 +27,6 @@ export async function createSkinController(
         seller_name,
         seller_id,
         asset_id,
-        status,
         status_float,
         sale_type,
       }) =>
@@ -44,7 +43,6 @@ export async function createSkinController(
           skin_link_steam,
           seller_name,
           seller_id,
-          status,
           status_float,
           sale_type,
           asset_id,

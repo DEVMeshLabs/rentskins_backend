@@ -99,6 +99,10 @@ export class CreateTransactionUseCase {
       }),
     ]);
 
+    await this.skinRepository.updateById(skin_id, {
+      status: "Em andamento",
+    });
+
     return createTransaction;
   }
 }
