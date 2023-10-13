@@ -18,10 +18,14 @@ export class GetSkinManyUseCase {
 
     const totalPages = Math.ceil(totalSkinsFound / itemsPerPage);
 
-    const skins = await this.skinRepository.findByMany(
+    const SkinsAll = await this.skinRepository.findByMany(
       pageNumber,
       itemsPerPage
     );
+
+    const skins = SkinsAll.filter((skin) => {
+      return skin.status === null;
+    });
 
     return {
       totalPages,
