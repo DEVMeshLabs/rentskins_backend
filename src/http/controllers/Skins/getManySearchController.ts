@@ -8,13 +8,14 @@ export async function getManySearchController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   const { name } = req.params as { name: string };
+  const { type } = req.query as { type: string };
 
   try {
     const { page, pageSize } = paginationSkinsSchema.parse(req.query);
 
     const getManyName = makeGetManySearchUseCase();
 
-    const response = await getManyName.execute(name, page, pageSize);
+    const response = await getManyName.execute(name, type, page, pageSize);
 
     return reply.status(200).send(response);
   } catch (error) {

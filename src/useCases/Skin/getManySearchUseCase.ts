@@ -12,6 +12,7 @@ export class GetManySearchUseCase {
 
   async execute(
     searchString: string,
+    type: string,
     pageNumber: number,
     itemsPerPage: number
   ): Promise<GetManySearchUseCaseResponse> {
@@ -21,6 +22,7 @@ export class GetManySearchUseCase {
 
     const skins = await this.skinRepository.findBySearch(
       searchString,
+      type,
       pageNumber,
       itemsPerPage
     );

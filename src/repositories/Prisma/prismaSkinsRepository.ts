@@ -29,16 +29,30 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return findSeller;
   }
 
-  async findBySearch(search: string, page: number, pageSize: number) {
+  async findBySearch(
+    search: string,
+    type: string,
+    page: number,
+    pageSize: number
+  ) {
+    let whereCondition;
+    if (type === "name") {
+      whereCondition = { skin_name: { contains: search, mode: "insensitive" } };
+    } else if (type === "category") {
+      whereCondition = {
+        skin_category: { contains: search, mode: "insensitive" },
+      };
+    } else if (type === "weapon") {
+      whereCondition = {
+        skin_weapon: { contains: search, mode: "insensitive" },
+      };
+    }
+
     const findName = await prisma.skin.findMany({
       where: {
-        OR: [
-          { skin_name: { contains: search, mode: "insensitive" } },
-          { skin_category: { contains: search, mode: "insensitive" } },
-          { skin_weapon: { contains: search, mode: "insensitive" } },
-        ],
-        deletedAt: null,
+        ...whereCondition,
         status: null,
+        deletedAt: null,
       },
       orderBy: { createdAt: "desc" },
       take: pageSize,
