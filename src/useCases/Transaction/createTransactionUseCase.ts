@@ -54,6 +54,12 @@ export class CreateTransactionUseCase {
       throw new SkinHasAlreadyBeenSoldError(findSkin.skin_name);
     }
 
+    const formattedBalance = findSkin.skin_price.toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    });
+
     const [createTransaction] = await Promise.all([
       this.transactionRepository.create({
         skin_id,
@@ -64,26 +70,14 @@ export class CreateTransactionUseCase {
 
       this.notificationsRepository.create({
         owner_id: seller_id,
-        description: `Venda do item ${
-          findSkin.skin_name
-        }, realizada por ${findSkin.skin_price.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-          minimumFractionDigits: 2,
-        })}.`,
+        description: `Venda do item ${findSkin.skin_name}, realizada por ${formattedBalance}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
 
       this.notificationsRepository.create({
         owner_id: buyer_id,
-        description: `Compra do item ${
-          findSkin.skin_name
-        } realizada por ${findSkin.skin_price.toLocaleString("pt-BR", {
-          style: "currency",
-          currency: "BRL",
-          minimumFractionDigits: 2,
-        })}.`,
+        description: `Compra do item ${findSkin.skin_name} realizada por ${formattedBalance}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
