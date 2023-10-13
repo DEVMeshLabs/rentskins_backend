@@ -1,7 +1,12 @@
 import { Prisma, Skin } from "@prisma/client";
 
 export interface ISkinsRepository {
-  findBySearch(search: string, page: number, pageSize: number): Promise<Skin[]>;
+  findBySearch(
+    search: string,
+    type: string,
+    page: number,
+    pageSize: number
+  ): any;
   findById(id: string): Promise<Skin | null>;
   findBySeller(seller_id: string): Promise<Skin | null>;
   findByMany(page: number, pageSize: number): Promise<Skin[]>;
