@@ -28,6 +28,6 @@ export async function updateConfirmTransactionController(
     } else if (error instanceof NotUpdateTransaction) {
       return reply.status(400).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

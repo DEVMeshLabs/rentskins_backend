@@ -48,24 +48,15 @@ export class UpdateConfirmTransactionUseCase {
   }
 
   private validateTransaction(transaction: Transaction) {
-    if (
-      transaction.seller_confirm === "Aceito" &&
-      transaction.buyer_confirm === "Aceito"
-    ) {
+    if (transaction.status === "Concluído") {
       throw new NotUpdateTransaction();
     }
   }
 
   private determineStatus(updateConfirm: any) {
-    if (
-      updateConfirm.buyer_confirm === "Aceito" &&
-      updateConfirm.seller_confirm === "Aceito"
-    ) {
+    if (updateConfirm.buyer_confirm === "Aceito") {
       return "Concluído";
-    } else if (
-      ["Recusado"].includes(updateConfirm.buyer_confirm) ||
-      ["Recusado"].includes(updateConfirm.seller_confirm)
-    ) {
+    } else if (["Recusado"].includes(updateConfirm.buyer_confirm)) {
       return "Falhou";
     }
     return "Em andamento";
@@ -83,10 +74,12 @@ export class UpdateConfirmTransactionUseCase {
     updateConfirm: any
   ): Promise<void> {
     const findTransaction = await this.findTransactionById(id);
+
     const findAllDateTransactions =
       await this.transactionRepository.findByManyUser(
         findTransaction.seller_id
       );
+
     const skinId = await this.skinRepository.findById(findTransaction.skin_id);
 
     const filteredTransactions = findAllDateTransactions.filter((item) => {
