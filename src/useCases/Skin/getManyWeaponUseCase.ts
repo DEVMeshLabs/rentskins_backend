@@ -8,6 +8,7 @@ export class GetManyWeaponUseCase {
     const skinsToWeapon = await this.skinRepository.findByManyWeapon(
       skin_weapon
     );
+
     return skinsToWeapon;
   }
 }
