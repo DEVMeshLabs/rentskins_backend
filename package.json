@@ -39,7 +39,6 @@
     "steam-user": "^4.28.9",
     "steamcommunity": "^3.46.1",
     "stripe": "^13.3.0",
-    "ts-node": "^10.9.1",
     "tslib": "^2.6.1",
     "tsup": "^7.1.0",
     "zod": "^3.21.4"
