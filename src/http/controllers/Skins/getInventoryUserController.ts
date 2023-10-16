@@ -22,7 +22,19 @@ export function getInventoryUserController(
             err,
           });
         }
-        return reply.status(200).send(inventory);
+        const filterInventory = inventory.filter((item: any) => {
+          if (
+            item.tags[0].name === "Container" ||
+            item.tags[0].name === "Graffiti" ||
+            item.tags[0].name === "Collectible" ||
+            item.tags[0].name === "Pass" ||
+            item.tags[0].name === "Patch"
+          ) {
+            return false;
+          }
+          return true;
+        });
+        return reply.status(200).send(filterInventory);
       }
     );
   } catch (error) {
