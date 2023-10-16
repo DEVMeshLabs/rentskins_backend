@@ -1,5 +1,5 @@
 import { PrismaConfigurationRepository } from "@/repositories/Prisma/prismaConfigurationRepository";
-import { GetUserConfigurationUseCase } from "@/useCases/Configuration/getUserConfigurationUSeCase";
+import { GetUserConfigurationUseCase } from "@/useCases/Configuration/getUserConfigurationUseCase";
 
 export function makeGetUserConfigurationUseCase() {
   const prismaConfigurationRepository = new PrismaConfigurationRepository();

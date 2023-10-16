@@ -3,7 +3,7 @@ import { PrismaPerfilRepository } from "@/repositories/Prisma/prismaPerfilReposi
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
 import { PrismaTransactionRepository } from "@/repositories/Prisma/prismaTransactionRepository";
 import { PrismaWalletRepository } from "@/repositories/Prisma/prismaWalletRepository";
-import { UpdateConfirmTransactionUseCase } from "@/useCases/Transaction/UpdateConfirmTransactionUseCase";
+import { UpdateConfirmTransactionUseCase } from "@/useCases/Transaction/updateConfirmTransactionUseCase";
 
 export function makeUpdateConfirmTransactionUseCase() {
   const transactionRepository = new PrismaTransactionRepository();
