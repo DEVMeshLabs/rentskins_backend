@@ -6,16 +6,13 @@
   "engines": {
     "node": "18"
   },
-  "prisma": {
-    "seed": "ts-node prisma/seed.ts"
-  },
+
   "scripts": {
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
     "build": "tsup --config ./tsup.config.ts",
     "test": "vitest run --dir src/tests",
-    "test:watch": "vitest",
-    "unseed": "ts-node prisma/unseed.ts"
+    "test:watch": "vitest"
   },
   "keywords": [],
   "author": "",
@@ -39,6 +36,7 @@
     "steam-user": "^4.28.9",
     "steamcommunity": "^3.46.1",
     "stripe": "^13.3.0",
+    "ts-node": "^10.9.1",
     "tslib": "^2.6.1",
     "tsup": "^7.1.0",
     "zod": "^3.21.4"
