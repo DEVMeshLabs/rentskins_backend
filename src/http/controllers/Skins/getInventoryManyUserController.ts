@@ -16,6 +16,7 @@ export function getInventoryManyUserController(
   });
 
   const { filterType, itemsPerPage, page } = inventorySchema.parse(req.body);
+
   try {
     return community.getUserInventoryContents(
       id,
@@ -30,23 +31,12 @@ export function getInventoryManyUserController(
             err,
           });
         } else {
-          const filterInventory = inventory.filter((item: any) => {
-            if (
-              item.tags[0].name === "Container" ||
-              item.tags[0].name === "Collectible" ||
-              item.tags[0].name === "Pass" ||
-              item.tags[0].name === "Patch"
-            ) {
-              return false;
-            }
-            return true;
-          });
-          if (filterType.length === 0) {
+          if (inventory.length === 0) {
             return reply.send(
-              DataPagination.execute(page, itemsPerPage, filterInventory)
+              DataPagination.execute(page, itemsPerPage, inventory)
             );
           } else {
-            const filter = filterInventory.filter((item) => {
+            const filter = inventory.filter((item) => {
               if (!filterType.includes(item.tags[0].name)) {
                 return false;
               }
