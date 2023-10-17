@@ -7,7 +7,7 @@ export async function createPixTransactionController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { owner_id, amount, description } = createPixTransactionSchema.parse(
+    const { owner_id, amount, cpf, email } = createPixTransactionSchema.parse(
       req.body
     );
     const makeCreatePixTransactions = makeCreatePixTransactionUseCase();
@@ -15,21 +15,12 @@ export async function createPixTransactionController(
     const response = await makeCreatePixTransactions.execute(
       owner_id,
       amount,
-      description
+      cpf,
+      email
     );
     console.log(response);
     return reply.status(200).send(response);
   } catch (error) {
-    const errorMappings = {
-      SameUsersError: 409,
-      PerfilNotExistError: 404,
-      SkinNotExistError: 404,
-      InsufficientFundsError: 400,
-      CannotAdvertiseSkinNotYour: 400,
-      SkinHasAlreadyBeenSoldError: 409,
-    };
-
-    const status = errorMappings[error.constructor.name] || 500;
-    return reply.status(status).send({ error: error.message });
+    return reply.status(500).send({ error: error.message });
   }
 }
