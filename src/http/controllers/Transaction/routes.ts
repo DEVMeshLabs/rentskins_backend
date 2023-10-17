@@ -9,6 +9,7 @@ import { getUserTransactionController } from "./getUserTransactionController";
 import { updateConfirmTransactionController } from "./updateConfirmTransactionController";
 import { isVacBanController } from "./isVacBanController";
 import { getManyLastSalesUserUseCase } from "./getManyLastSalesUserUseCase";
+import { createPixTransactionController } from "./createPixTransactionController";
 
 export async function transactionRouter(app: FastifyInstance) {
   app.get("/v1/transaction/:id", getUserTransactionController);
@@ -44,4 +45,6 @@ export async function transactionRouter(app: FastifyInstance) {
     { config: { rawBody: true } },
     createWebHookTransactionController
   );
+
+  app.post("/v1/transaction/pix", createPixTransactionController);
 }
