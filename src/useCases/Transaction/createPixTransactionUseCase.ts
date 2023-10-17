@@ -10,6 +10,7 @@ export class CreatePixTransactionUseCase {
           description: "Adicionando fundos na conta",
           external_reference: "MP0001",
           installments: 1,
+
           metadata: {
             id: owner_id,
           },
