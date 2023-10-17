@@ -31,6 +31,7 @@
     "jwt-decode": "^3.1.2",
     "libphonenumber-js": "^1.10.38",
     "luxon": "^3.3.0",
+    "mercadopago": "^2.0.1",
     "steam-market-pricing": "^2.0.0",
     "steam-totp": "^2.1.2",
     "steam-user": "^4.28.9",
