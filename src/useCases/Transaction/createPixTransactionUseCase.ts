@@ -2,61 +2,24 @@ import { env } from "@/env";
 import axios from "axios";
 
 export class CreatePixTransactionUseCase {
-  async execute(owner_id: string, amount: number, description: string) {
-    // const items = [
-    //   {
-    //     id: owner_id,
-    //     title: "Cash",
-    //     description: "Adicionando fundos na carteira",
-    //     picture_url:
-    //       "https://http2.mlstatic.com/resources/frontend/statics/growth-sellers-landings/device-mlb-point-i_medium2x.png",
-    //     category_id: "electronics",
-    //     quantity: 1,
-    //     unit_price: amount,
-    //     type: "electronics",
-    //     event_date: new Date(),
-    //     category_descriptor: {
-    //       passenger: {},
-    //       route: {},
-    //     },
-    //   },
-    // ];
-
-    // const payer = {
-    //   first_name: "Test",
-    //   last_name: "Test",
-    //   phone: {
-    //     area_code: 11,
-    //     number: "987654321",
-    //   },
-    //   address: {},
-    // };
-
-    // const shipments = {
-    //   receiver_address: {
-    //     zip_code: "12312-123",
-    //     state_name: "Rio de Janeiro",
-    //     city_name: "Buzios",
-    //     street_name: "Av das Nacoes Unidas",
-    //     street_number: 3003,
-    //   },
-    // };
-
+  async execute(owner_id: string, amount: number, cpf: string, email: string) {
     const response = axios
       .post(
         "https://api.mercadopago.com/v1/payments",
         {
-          description: "Payment for product",
+          description: "Adicionando fundos na conta",
           external_reference: "MP0001",
           installments: 1,
-          metadata: {},
+          metadata: {
+            id: owner_id,
+          },
           payer: {
             entity_type: "individual",
             type: "customer",
-            email: "italovital21@gmail.com",
+            email,
             identification: {
               type: "CPF",
-              number: "71495354458",
+              number: cpf,
             },
           },
           payment_method_id: "pix",
