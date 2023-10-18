@@ -1,7 +1,7 @@
 import { env } from "@/env";
 // import axios from "axios";
 
-import { MercadoPagoConfig, Preference } from "MercadoPago";
+import { MercadoPagoConfig, Preference } from "mercadoPago";
 // Adicione as credenciais
 const client = new MercadoPagoConfig({ accessToken: env.MERCADO_SECRET_KEY });
 
