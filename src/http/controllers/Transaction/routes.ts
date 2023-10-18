@@ -47,4 +47,10 @@ export async function transactionRouter(app: FastifyInstance) {
   );
 
   app.post("/v1/transaction/pix", createPixTransactionController);
+
+  app.post("/v1/transaction/webhook/pix", (req, reply) => {
+    console.log("Aqui");
+    console.log(req.body);
+    return reply.status(200).send("Ok");
+  });
 }
