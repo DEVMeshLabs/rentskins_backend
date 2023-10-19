@@ -64,6 +64,7 @@ export async function transactionRouter(app: FastifyInstance) {
           if (req.body.action === "payment.updated") {
             console.log("Entrou ");
             const id = req.body.data.id;
+            console.log(id);
 
             const getPayment = await axios.get(
               `https://api.mercadopago.com/v1/payments/${id}`,
