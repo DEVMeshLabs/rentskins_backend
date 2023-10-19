@@ -62,6 +62,7 @@ export async function transactionRouter(app: FastifyInstance) {
             console.log("Pix create");
           }
           if (req.body.action === "payment.updated") {
+            console.log("Entrou ");
             const id = req.body.data.id;
 
             const getPayment = await axios.get(
@@ -74,6 +75,7 @@ export async function transactionRouter(app: FastifyInstance) {
             );
             console.log(getPayment);
           }
+          break;
         }
       }
     }
