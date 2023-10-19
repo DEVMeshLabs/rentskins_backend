@@ -1,5 +1,5 @@
 /* eslint-disable no-case-declarations */
-import { FastifyInstance } from "fastify";
+import { FastifyInstance, FastifyReply } from "fastify";
 import { verifyJwt } from "@/http/middlewares/verifyJwt";
 import { createWebHookTransactionController } from "./createWebHookTransactionController";
 import { createCheckoutSessionStripeController } from "./createCheckoutSessionStripeController";
@@ -66,14 +66,17 @@ export async function transactionRouter(app: FastifyInstance) {
             const id = req.body.data.id;
             console.log(id);
 
-            const getPayment = await axios.get(
-              `https://api.mercadopago.com/v1/payments/${id}`,
-              {
+            const getPayment = await axios
+              .get(`https://api.mercadopago.com/v1/payments/${id}`, {
                 headers: {
                   Authorization: `Bearer ${env.MERCADO_SECRET_KEY}`,
                 },
-              }
-            );
+              })
+              .then((res) => res)
+              .catch((err) => {
+                console.log(err);
+              });
+
             console.log(getPayment);
           }
           break;
@@ -83,4 +86,27 @@ export async function transactionRouter(app: FastifyInstance) {
 
     return reply.status(200).send("Ok");
   });
+
+  app.get(
+    "/v1/transaction/webhook/pix/:id",
+    async (req: any, reply: FastifyReply) => {
+      const { id } = req.params;
+      console.log(id);
+      const getPayment = await axios
+        .get(`https://api.mercadopago.com/v1/payments/${id}`, {
+          headers: {
+            Authorization: `Bearer ${env.MERCADO_SECRET_KEY}`,
+          },
+        })
+        .then((res) => res)
+        .catch((err) => {
+          console.log(err);
+          return err;
+        });
+
+      console.log(getPayment);
+
+      return reply.status(200).send(getPayment.data);
+    }
+  );
 }
