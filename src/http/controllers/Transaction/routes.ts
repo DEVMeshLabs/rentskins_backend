@@ -10,6 +10,8 @@ import { updateConfirmTransactionController } from "./updateConfirmTransactionCo
 import { isVacBanController } from "./isVacBanController";
 import { getManyLastSalesUserUseCase } from "./getManyLastSalesUserUseCase";
 import { createPixTransactionController } from "./createPixTransactionController";
+import axios from "axios";
+import { env } from "process";
 
 export async function transactionRouter(app: FastifyInstance) {
   app.get("/v1/transaction/:id", getUserTransactionController);
@@ -48,7 +50,7 @@ export async function transactionRouter(app: FastifyInstance) {
 
   app.post("/v1/transaction/pix", createPixTransactionController);
 
-  app.post("/v1/transaction/webhook/pix", (req: any, reply) => {
+  app.post("/v1/transaction/webhook/pix", async (req: any, reply) => {
     console.log("Aqui");
 
     if (req.body) {
@@ -60,7 +62,17 @@ export async function transactionRouter(app: FastifyInstance) {
             console.log("Pix create");
           }
           if (req.body.action === "payment.updated") {
-            console.log("Pix Atualizado");
+            const id = req.body.data.id;
+
+            const getPayment = await axios.get(
+              `https://api.mercadopago.com/v1/payments/${id}`,
+              {
+                headers: {
+                  Authorization: `Bearer ${env.MERCADO_SECRET_KEY}`,
+                },
+              }
+            );
+            console.log(getPayment);
           }
         }
       }
