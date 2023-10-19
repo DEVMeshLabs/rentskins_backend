@@ -52,7 +52,7 @@ export async function transactionRouter(app: FastifyInstance) {
     console.log("Aqui");
 
     if (req.body) {
-      console.log(req.body.action);
+      console.log(req.body);
       switch (req.body.type) {
         case "payment": {
           console.log("Tipo: pagamento");
