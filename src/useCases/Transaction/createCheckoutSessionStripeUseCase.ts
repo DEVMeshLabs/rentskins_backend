@@ -1,11 +1,14 @@
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { checkout, customers } from "@/server";
+import axios from "axios";
+import { env } from "process";
 
 interface IPayment {
   owner_id: string;
   email: string;
   amount: number;
   payment_method: string;
+  cpf: string;
   success_url: string;
   cancel_url: string;
 }
@@ -16,6 +19,7 @@ export class CreateCheckoutSessionStripeUseCase {
     owner_id,
     email,
     amount,
+    cpf,
     payment_method,
     success_url,
     cancel_url,
@@ -38,6 +42,48 @@ export class CreateCheckoutSessionStripeUseCase {
       customer_id = customer.id;
     } else {
       customer_id = perfilUser.stripe_id;
+    }
+
+    if (payment_method === "pix") {
+      const response = axios
+        .post(
+          "https://api.mercadopago.com/v1/payments",
+          {
+            description: "Adicionando fundos na conta",
+            external_reference: "MP0001",
+            installments: 1,
+
+            metadata: {
+              id: owner_id,
+            },
+            payer: {
+              entity_type: "individual",
+              type: "customer",
+              email,
+              identification: {
+                type: "CPF",
+                number: cpf,
+              },
+            },
+            payment_method_id: "pix",
+            notification_url:
+              "https://api-rentskin-backend-on.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
+            transaction_amount: amount,
+          },
+
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${env.MERCADO_SECRET_KEY}`,
+            },
+          }
+        )
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+          console.log(err.response.data.cause);
+        });
+      return response;
     }
 
     const session = await checkout.sessions.create({

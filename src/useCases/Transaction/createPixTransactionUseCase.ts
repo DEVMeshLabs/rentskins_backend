@@ -43,25 +43,6 @@ export class CreatePixTransactionUseCase {
         console.log(err.response.data.cause);
       });
 
-    // const preference = new Preference(client);
-    // const index = 0;
-    // const response = preference
-    //   .create({
-    //     body: {
-    //       items: [
-    //         {
-    //           id: `${index + 1}`,
-    //           title: "Meu produto",
-    //           quantity: 1,
-    //           currency_id: "BRL",
-    //           unit_price: 100,
-    //         },
-    //       ],
-    //     },
-    //   })
-    //   .then((result) => console.log(result))
-    //   .catch((error) => console.log(error));
-
     return response;
   }
 }
