@@ -10,6 +10,7 @@ export async function createPixTransactionController(
     const { owner_id, amount, cpf, email } = createPixTransactionSchema.parse(
       req.body
     );
+
     const makeCreatePixTransactions = makeCreatePixTransactionUseCase();
 
     const response = await makeCreatePixTransactions.execute(

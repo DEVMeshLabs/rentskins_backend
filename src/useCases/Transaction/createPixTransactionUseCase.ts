@@ -25,6 +25,8 @@ export class CreatePixTransactionUseCase {
             },
           },
           payment_method_id: "pix",
+          notification_url:
+            "https://api-rentskin-backend-on.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
           transaction_amount: amount,
         },
 
