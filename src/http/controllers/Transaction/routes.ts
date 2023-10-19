@@ -48,9 +48,24 @@ export async function transactionRouter(app: FastifyInstance) {
 
   app.post("/v1/transaction/pix", createPixTransactionController);
 
-  app.post("/v1/transaction/webhook/pix", (req, reply) => {
+  app.post("/v1/transaction/webhook/pix", (req: any, reply) => {
     console.log("Aqui");
-    console.log(req.body);
+
+    if (req.body) {
+      console.log(req.body.action);
+      switch (req.body.type) {
+        case "payment": {
+          console.log("Tipo: pagamento");
+          if (req.body.action === "payment.created") {
+            console.log("Pix create");
+          }
+          if (req.body.action === "payment.updated") {
+            console.log("Pix Atualizado");
+          }
+        }
+      }
+    }
+
     return reply.status(200).send("Ok");
   });
 }
