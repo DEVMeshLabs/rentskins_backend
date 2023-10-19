@@ -26,6 +26,7 @@ export class CreateCheckoutSessionStripeUseCase {
   }: IPayment) {
     const perfilUser = await this.perfilRepostiory.findByUser(owner_id);
     let customer_id;
+    const referencia = 1;
 
     if (perfilUser.stripe_id === null) {
       const customer = await customers.create({
@@ -45,14 +46,13 @@ export class CreateCheckoutSessionStripeUseCase {
     }
 
     if (payment_method === "pix") {
-      const response = axios
+      const response: any = axios
         .post(
           "https://api.mercadopago.com/v1/payments",
           {
-            description: "Adicionando fundos na conta",
-            external_reference: "MP0001",
+            description: "Adicionando fundos na conta.",
+            external_reference: `MP${referencia}`,
             installments: 1,
-
             metadata: {
               id: owner_id,
             },
@@ -83,7 +83,9 @@ export class CreateCheckoutSessionStripeUseCase {
           console.log(err);
           console.log(err.response.data.cause);
         });
-      return response;
+      const link = await response;
+      const ticket = link.point_of_interaction.transaction_data.ticket_url;
+      return ticket;
     }
 
     const session = await checkout.sessions.create({
