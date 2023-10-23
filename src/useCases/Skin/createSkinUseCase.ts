@@ -8,7 +8,7 @@ export class CreateSkinUseCase {
     const existingSkins = await this.skinsRepository.findManyAssent();
 
     const duplicateSkins = existingSkins.filter(
-      (item) => item.asset_id === data.asset_id
+      (item) => item.asset_id === data.asset_id && item.status !== "Falhou"
     );
 
     if (duplicateSkins.length > 0) {
@@ -16,6 +16,7 @@ export class CreateSkinUseCase {
     }
 
     const createdSkins = await this.skinsRepository.create({ ...data });
+
     return createdSkins;
   }
 }

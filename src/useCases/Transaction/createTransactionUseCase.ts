@@ -9,6 +9,7 @@ import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdvertiseSkinNotYour";
 import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlreadyBeenSoldError";
+// import cron from "node-cron";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -97,11 +98,27 @@ export class CreateTransactionUseCase {
       status: "Em andamento",
     });
 
-    // S, M, H, D, M, DS
-    // cron.schedule("30 * * * * *", async () => {
-    //   const findTransaction = await this.transactionRepository.findById(createTransaction.)
-    //   console.log("Finalizando cron");
-    // });
+    // console.log("Bateu Aqui");
+    // cron.schedule(
+    //   "5 * * * * *",
+    //   async () => {
+    //     console.log("Iniciou");
+
+    //     const findTransaction = await this.transactionRepository.findById(
+    //       createTransaction.id
+    //     );
+
+    //     if (findTransaction.status === "Em andamento") {
+    //       console.log("Enviando notificação");
+    //     }
+
+    //     console.log("Finalizando cron");
+    //     console.log("Teste 1");
+    //   },
+    //   { name: `${createTransaction.id}` }
+    // );
+
+    // cron.getTasks().get("Qualquer coisa").stop();
 
     return createTransaction;
   }
