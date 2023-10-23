@@ -4,7 +4,7 @@ import { SkinAlreadyExistsError } from "../@errors/Skin/SkinAlreadyExistsError";
 
 export class CreateSkinUseCase {
   constructor(private skinsRepository: ISkinsRepository) {}
-  async execute(data: Prisma.SkinCreateInput): Promise<Prisma.BatchPayload> {
+  async execute(data: Prisma.SkinCreateInput): Promise<any> {
     const existingSkins = await this.skinsRepository.findManyAssent();
 
     const duplicateSkins = existingSkins.filter(

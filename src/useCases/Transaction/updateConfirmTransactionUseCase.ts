@@ -57,7 +57,7 @@ export class UpdateConfirmTransactionUseCase {
   private determineStatus(updateConfirm: any) {
     if (updateConfirm.buyer_confirm === "Aceito") {
       return "Concluído";
-    } else if (["Recusado"].includes(updateConfirm.buyer_confirm)) {
+    } else if (updateConfirm.buyer_confirm === "Recusado") {
       return "Falhou";
     }
     return "Em andamento";
