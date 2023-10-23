@@ -97,6 +97,12 @@ export class CreateTransactionUseCase {
       status: "Em andamento",
     });
 
+    // S, M, H, D, M, DS
+    // cron.schedule("30 * * * * *", async () => {
+    //   const findTransaction = await this.transactionRepository.findById(createTransaction.)
+    //   console.log("Finalizando cron");
+    // });
+
     return createTransaction;
   }
 }

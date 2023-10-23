@@ -8,6 +8,7 @@ import { MediaDates } from "@/utils/mediaDates";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { calculateReliability } from "@/utils/calculateReliability";
+import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 
 export class UpdateConfirmTransactionUseCase {
   constructor(
@@ -89,10 +90,26 @@ export class UpdateConfirmTransactionUseCase {
     const calc = new MediaDates();
     const mediaDate = await calc.calcularDiferenciaDates(filteredTransactions);
 
+    // ----------------------------------------- REFATORAR --------------------------------------------------------------------------
+    if (findTransaction.seller_confirm === "Aceito") {
+      const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
+      await this.notificationsRepository.create({
+        owner_id: updateConfirm.buyer_id,
+        description: `O usuário ${findPerfil.owner_name} confirmou o envio do item ${skinId.skin_name}.`,
+        skin_id: findTransaction.skin_id,
+      });
+    } else if (findTransaction.seller_confirm === "Recusado") {
+      const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
+      await this.notificationsRepository.create({
+        owner_id: updateConfirm.buyer_id,
+        description: `O usuário ${findPerfil.owner_name} recusou o envio do item ${skinId.skin_name}.`,
+        skin_id: findTransaction.skin_id,
+      });
+    }
+    // -----------------------------------------REFATORAR --------------------------------------------------------------------------
+
     if (findTransaction.status === "Concluído") {
-      const findPerfil = await this.perfilRepository.findByUser(
-        findTransaction.seller_id
-      );
+      const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
 
       const formattedBalance = findTransaction.balance.toLocaleString("pt-BR", {
         style: "currency",
@@ -178,5 +195,15 @@ export class UpdateConfirmTransactionUseCase {
         }),
       ]);
     }
+  }
+
+  async findPerfilByUser(owner_id: string) {
+    const findPerfil = await this.perfilRepository.findByUser(owner_id);
+
+    if (!findPerfil) {
+      throw new PerfilNotExistError();
+    }
+
+    return findPerfil;
   }
 }

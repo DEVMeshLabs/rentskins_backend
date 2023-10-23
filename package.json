@@ -19,6 +19,7 @@
   "dependencies": {
     "@fastify/cors": "^8.3.0",
     "@prisma/client": "^4.16.2",
+    "@types/node-cron": "^3.0.10",
     "@types/steamcommunity": "^3.43.2",
     "axios": "^1.4.0",
     "cpf-cnpj-validator": "^1.0.3",
@@ -32,6 +33,7 @@
     "libphonenumber-js": "^1.10.38",
     "luxon": "^3.3.0",
     "mercadopago": "^2.0.1",
+    "node-cron": "^3.0.2",
     "steam-market-pricing": "^2.0.0",
     "steam-totp": "^2.1.2",
     "steam-user": "^4.28.9",

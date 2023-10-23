@@ -3,11 +3,18 @@ import { ITransactionRepository } from "../interfaceRepository/ITransactionRepos
 import { prisma } from "@/lib/prisma";
 
 export class PrismaTransactionRepository implements ITransactionRepository {
-  async create(data: Prisma.TransactionCreateManyInput) {
-    const create = await prisma.transaction.createMany({
+  async create(data: any) {
+    const create = await prisma.transaction.create({
       data,
     });
+
     return create;
+    // const create = data.map((trasaction) => {
+    //   return prisma.transaction.create({
+    //     data: trasaction,
+    //   });
+    // });
+    // return create;
   }
 
   async findByMany() {
