@@ -1,7 +1,7 @@
 import { Prisma, Transaction } from "@prisma/client";
 
 export interface ITransactionRepository {
-  create(data: Prisma.TransactionCreateManyInput): Promise<Prisma.BatchPayload>;
+  create(data: any): Promise<any>;
   findByMany(): Promise<Transaction[]>;
   findByUser(id: string, query?: string): Promise<Transaction[]>;
   findById(id: string): Promise<Transaction | null>;

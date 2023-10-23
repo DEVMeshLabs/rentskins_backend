@@ -35,7 +35,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
     page: number,
     pageSize: number
   ) {
-    let whereCondition;
+    let whereCondition: Object;
     if (type === "name") {
       whereCondition = { skin_name: { contains: search, mode: "insensitive" } };
     } else if (type === "category") {
