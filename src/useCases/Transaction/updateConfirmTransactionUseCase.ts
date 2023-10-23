@@ -191,7 +191,7 @@ export class UpdateConfirmTransactionUseCase {
           findTransaction.balance
         ),
         this.skinRepository.updateById(findTransaction.skin_id, {
-          status: null,
+          status: "Falhou",
         }),
       ]);
     }

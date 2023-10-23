@@ -3,18 +3,11 @@ import { ITransactionRepository } from "../interfaceRepository/ITransactionRepos
 import { prisma } from "@/lib/prisma";
 
 export class PrismaTransactionRepository implements ITransactionRepository {
-  async create(data: any) {
+  async create(data: Prisma.TransactionUncheckedCreateInput) {
     const create = await prisma.transaction.create({
       data,
     });
-
     return create;
-    // const create = data.map((trasaction) => {
-    //   return prisma.transaction.create({
-    //     data: trasaction,
-    //   });
-    // });
-    // return create;
   }
 
   async findByMany() {
@@ -74,7 +67,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
         },
       },
       orderBy: {
-        salesAt: "desc",
+        createdAt: "desc",
       },
     });
     return lastSales;
