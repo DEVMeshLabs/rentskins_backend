@@ -1,9 +1,9 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Skin } from "@prisma/client";
 import { ISkinsRepository } from "../interfaceRepository/ISkinsRepository";
 import { randomUUID } from "crypto";
 
 export class InMemorySkinRepository implements ISkinsRepository {
-  public skins = [];
+  public skins: Skin[] = [];
 
   private notImplemented(): Promise<any> {
     return Promise.resolve(null);
@@ -13,8 +13,9 @@ export class InMemorySkinRepository implements ISkinsRepository {
     return this.notImplemented();
   }
 
-  findById(id: string): Promise<any> {
-    return this.notImplemented();
+  async findById(id: string): Promise<any> {
+    const getSkin = this.skins.find((item) => item.id === id);
+    return getSkin;
   }
 
   findBySeller(seller_id: string): Promise<any> {
@@ -62,8 +63,17 @@ export class InMemorySkinRepository implements ISkinsRepository {
     return this.notImplemented();
   }
 
-  updateById(id: string, data: Prisma.SkinUpdateInput): Promise<any> {
-    return this.notImplemented();
+  async updateById(id: string, data: any) {
+    const skinsIndex = this.skins.findIndex((item) => item.id === id);
+
+    if (skinsIndex !== -1) {
+      this.skins[skinsIndex] = {
+        ...this.skins[skinsIndex],
+        ...data,
+      };
+    }
+
+    return this.skins[skinsIndex];
   }
 
   async create(data: Prisma.SkinCreateManyInput) {
@@ -81,6 +91,7 @@ export class InMemorySkinRepository implements ISkinsRepository {
       seller_id: data.seller_id,
       skin_rarity: data.skin_rarity,
       status: null,
+      saledAt: null,
       sale_type: data.sale_type,
       status_float: data.status_float,
       skin_link_game: "/",

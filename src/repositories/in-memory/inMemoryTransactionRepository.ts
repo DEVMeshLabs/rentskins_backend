@@ -1,9 +1,9 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, Transaction } from "@prisma/client";
 import { ITransactionRepository } from "../interfaceRepository/ITransactionRepository";
 import { randomUUID } from "crypto";
 
-export class inMemoryTransactionRepository implements ITransactionRepository {
-  public transactions = [];
+export class InMemoryTransactionRepository implements ITransactionRepository {
+  public transactions: Transaction[] = [];
   private notImplemented(): Promise<any> {
     return this.notImplemented();
   }
@@ -14,10 +14,16 @@ export class inMemoryTransactionRepository implements ITransactionRepository {
       skin_id: data.skin_id,
       seller_id: data.seller_id,
       buyer_id: data.buyer_id,
+      seller_confirm: "Pending",
+      buyer_confirm: "Pending",
+      balance: data.balance,
+      status: "Em andamento",
+      salesAt: null,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
     };
+
     this.transactions.push(transaction);
     return transaction;
   }
@@ -30,12 +36,19 @@ export class inMemoryTransactionRepository implements ITransactionRepository {
     return this.notImplemented();
   }
 
-  findById(id: string) {
-    return this.notImplemented();
+  async findById(id: string) {
+    const getTransaction = this.transactions.find((transaction) => {
+      return transaction.id === id;
+    });
+
+    return getTransaction;
   }
 
-  findBySkinTransaction(skin_id: string) {
-    return this.notImplemented();
+  async findBySkinTransaction(skin_id: string) {
+    const getSkinTransaction = this.transactions.find(
+      (item) => item.skin_id === skin_id
+    );
+    return getSkinTransaction;
   }
 
   transactionCountAll(seller_id: string): Promise<number> {
