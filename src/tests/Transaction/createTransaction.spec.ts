@@ -85,9 +85,9 @@ describe("Transaction Use Case", () => {
     });
 
     const [getUser, buyerWallet, getTransaction] = await Promise.all([
-      await perfilRepository.findByUser(vendedor.owner_id),
-      await walletRepository.findByUser(comprador.owner_id),
-      await transactionRepository.findById(createTransaction.id),
+      perfilRepository.findByUser(vendedor.owner_id),
+      walletRepository.findByUser(comprador.owner_id),
+      transactionRepository.findById(createTransaction.id),
     ]);
 
     expect(skin.id).toEqual(expect.any(String));
