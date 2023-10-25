@@ -9,6 +9,7 @@ import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdvertiseSkinNotYour";
 import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlreadyBeenSoldError";
+import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 // import cron from "node-cron";
 
 interface ITransactionRequest {
@@ -40,13 +41,15 @@ export class CreateTransactionUseCase {
       this.walletRepository.findByUser(buyer_id),
       this.transactionRepository.findBySkinTransaction(skin_id),
     ]);
-
+    // findWallet.value < findSkin.skin_price
     if (!perfilBuyer || !perfilSeller) {
       throw new PerfilNotExistError();
     } else if (perfilBuyer === perfilSeller) {
       throw new SameUsersError();
     } else if (!findSkin) {
       throw new SkinNotExistError();
+    } else if (!findWallet) {
+      throw new WalletNotExistsError();
     } else if (findWallet.value < findSkin.skin_price) {
       throw new InsufficientFundsError();
     } else if (findSkin.seller_id !== seller_id) {

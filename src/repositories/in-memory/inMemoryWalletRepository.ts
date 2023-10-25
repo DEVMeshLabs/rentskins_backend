@@ -25,7 +25,6 @@ export class InMemoryWalletRepository implements IWalletRepository {
     return this.notImplemented();
   }
 
-  // updateByUserValue
   async updateByUserValue(owner_id: string, type: string, valor: number) {
     const userWalletIndex = this.wallet.findIndex(
       (item) => item.owner_id === owner_id
@@ -43,7 +42,7 @@ export class InMemoryWalletRepository implements IWalletRepository {
         };
       }
     }
-    console.log(this.wallet[userWalletIndex]);
+
     return this.wallet[userWalletIndex];
   }
 
@@ -56,7 +55,7 @@ export class InMemoryWalletRepository implements IWalletRepository {
       id: data.id ?? randomUUID(),
       owner_name: data.owner_name,
       owner_id: data.owner_id,
-      value: 5000,
+      value: data.value,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
