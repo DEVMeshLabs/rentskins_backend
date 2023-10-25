@@ -67,10 +67,11 @@ describe("Transaction Use Case", () => {
   });
 
   it("Deve ser capaz de criar uma transação", async () => {
-    const skin = await createSampleSkin();
-
-    await createSampleProfile("76561199205585878", "Italo araújo");
-    await createSampleProfile("76561198195920183", "Araujo");
+    const [skin] = await Promise.all([
+      createSampleSkin(),
+      createSampleProfile("76561199205585878", "Italo araújo"),
+      createSampleProfile("76561198195920183", "Araujo"),
+    ]);
 
     const vendedor = await walletRepository.create({
       owner_name: "Italo",
@@ -114,8 +115,10 @@ describe("Transaction Use Case", () => {
   });
 
   it("Verificando a Existência da Skin", async () => {
-    await createSampleProfile("76561199205585878", "Italo araújo");
-    await createSampleProfile("76561198195920183", "Araujo");
+    await Promise.all([
+      createSampleProfile("76561199205585878", "Italo araújo"),
+      createSampleProfile("76561198195920183", "Araujo"),
+    ]);
 
     await expect(() =>
       sut.execute({
@@ -127,10 +130,11 @@ describe("Transaction Use Case", () => {
   });
 
   it("Verificando a Existência da Carteira", async () => {
-    const skin = await createSampleSkin();
-
-    await createSampleProfile("76561199205585878", "Italo araújo");
-    await createSampleProfile("76561198195920183", "Araujo");
+    const [skin] = await Promise.all([
+      createSampleSkin(),
+      createSampleProfile("76561199205585878", "Italo araújo"),
+      createSampleProfile("76561198195920183", "Araujo"),
+    ]);
 
     await expect(() =>
       sut.execute({
@@ -142,21 +146,21 @@ describe("Transaction Use Case", () => {
   });
 
   it("Verificando Saldo Insuficiente", async () => {
-    const skin = await createSampleSkin();
+    const [skin] = await Promise.all([
+      createSampleSkin(),
+      createSampleProfile("76561199205585878", "Italo araújo"),
+      createSampleProfile("76561198195920183", "Araujo"),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
 
-    await createSampleProfile("76561199205585878", "Italo araújo");
-    await createSampleProfile("76561198195920183", "Araujo");
-
-    await walletRepository.create({
-      owner_name: "Italo",
-      owner_id: "76561199205585878",
-    });
-
-    await walletRepository.create({
-      owner_name: "Araujo",
-      owner_id: "76561198195920183",
-      value: 0,
-    });
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 0,
+      }),
+    ]);
 
     await expect(() =>
       sut.execute({
