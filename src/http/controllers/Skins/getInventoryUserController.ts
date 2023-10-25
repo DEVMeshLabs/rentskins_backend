@@ -1,6 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { community } from "@/server";
-import { z } from "zod";
 
 export function getInventoryUserController(
   req: FastifyRequest,
@@ -27,11 +26,9 @@ export function getInventoryUserController(
       }
     );
   } catch (error) {
-    if (error instanceof z.ZodError) {
-      return reply
-        .status(400)
-        .send({ message: "Erro de validação", errors: error.errors });
-    }
-    throw error;
+    return reply.status(500).send({
+      message: "Error",
+      err: error,
+    });
   }
 }
