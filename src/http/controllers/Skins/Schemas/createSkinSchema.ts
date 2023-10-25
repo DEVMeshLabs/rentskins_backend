@@ -6,7 +6,7 @@ const createSkinSchema = z.array(
     skin_name: z.string(),
     skin_category: z.string(),
     skin_weapon: z.string(),
-    skin_price: z.number(),
+    skin_price: z.number().min(10),
     skin_float: z.string(),
     skin_rarity: z.string(),
     skin_link_game: z.string(),
