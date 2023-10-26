@@ -28,13 +28,17 @@ export function getInventoryManyUserController(
           });
         } else {
           if (filterType.length === 0) {
-            return reply.send(inventory);
+            const filterInventory = inventory.filter(
+              (item) => item.tags[0].name !== "Graffiti"
+            );
+            return reply.send(filterInventory);
           } else {
             const filter = inventory.filter((item) => {
               if (!filterType.includes(item.tags[0].name)) {
                 return false;
               }
-              return true;
+
+              return item.tags[0].name !== "Graffiti";
             });
             return reply.send(filter);
           }
