@@ -1,5 +1,4 @@
 import { community } from "@/server";
-import { DataPagination } from "@/utils/dataPagination";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 
@@ -11,11 +10,9 @@ export function getInventoryManyUserController(
 
   const inventorySchema = z.object({
     filterType: z.string().array(),
-    page: z.number(),
-    itemsPerPage: z.number(),
   });
 
-  const { filterType, itemsPerPage, page } = inventorySchema.parse(req.body);
+  const { filterType } = inventorySchema.parse(req.body);
   try {
     return community.getUserInventoryContents(
       id,
@@ -31,9 +28,7 @@ export function getInventoryManyUserController(
           });
         } else {
           if (filterType.length === 0) {
-            return reply.send(
-              DataPagination.execute(page, itemsPerPage, inventory)
-            );
+            return reply.send(inventory);
           } else {
             const filter = inventory.filter((item) => {
               if (!filterType.includes(item.tags[0].name)) {
@@ -41,9 +36,7 @@ export function getInventoryManyUserController(
               }
               return true;
             });
-            return reply.send(
-              DataPagination.execute(page, itemsPerPage, filter)
-            );
+            return reply.send(filter);
           }
         }
       }
