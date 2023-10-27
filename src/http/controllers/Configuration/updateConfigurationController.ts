@@ -3,6 +3,7 @@ import { z } from "zod";
 import { updateConfigurationSchema } from "./Schemas/updateConfigurationSchema";
 import { makeUpdateConfigurationUseCase } from "@/useCases/@factories/Configuration/makeUpdateConfigurationUSeCase";
 import { ConfigurationNotExistError } from "@/useCases/@errors/Configuration/ConfigurationNotExistError";
+import { ConfigurationAlreadyExistCpfError } from "@/useCases/@errors/Configuration/ConfigurationAlreadyExistCpfError";
 
 export async function updateConfigurationController(
   req: FastifyRequest,
@@ -21,6 +22,8 @@ export async function updateConfigurationController(
         .send({ message: "Erro de validação", errors: error.errors });
     } else if (error instanceof ConfigurationNotExistError) {
       return reply.status(404).send({ errors: error.message });
+    } else if (error instanceof ConfigurationAlreadyExistCpfError) {
+      return reply.status(409).send({ errors: error.message });
     }
     throw error;
   }

@@ -1,7 +1,6 @@
 import { z } from "zod";
 
 export const updateConfigurationSchema = z.object({
-  owner_id: z.string().optional(),
   owner_email: z.string().email().optional(),
   owner_name: z.string().min(3).optional(),
   owner_phone: z.string().optional(),

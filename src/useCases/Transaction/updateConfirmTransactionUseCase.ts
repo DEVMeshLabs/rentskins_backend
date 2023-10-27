@@ -1,14 +1,14 @@
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
-import { TransactionNotExistError } from "../@errors/Transaction/TransactionNotExistError";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
+import { TransactionNotExistError } from "../@errors/Transaction/TransactionNotExistError";
 import { NotUpdateTransaction } from "../@errors/Transaction/NotUpdateTransaction";
+import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 import { Transaction } from "@prisma/client";
 import { MediaDates } from "@/utils/mediaDates";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { calculateReliability } from "@/utils/calculateReliability";
-import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 
 export class UpdateConfirmTransactionUseCase {
   constructor(

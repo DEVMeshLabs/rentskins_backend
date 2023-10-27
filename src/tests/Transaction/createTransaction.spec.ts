@@ -5,49 +5,21 @@ import { InMemoryTransactionRepository } from "@/repositories/in-memory/inMemory
 import { InMemoryWalletRepository } from "@/repositories/in-memory/inMemoryWalletRepository";
 import { PerfilNotExistError } from "@/useCases/@errors/Perfil/PerfilInfoNotExistError";
 import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
+import { CannotAdvertiseSkinNotYour } from "@/useCases/@errors/Transaction/CannotAdvertiseSkinNotYour";
+import { SkinHasAlreadyBeenSoldError } from "@/useCases/@errors/Transaction/SkinHasAlreadyBeenSoldError";
 import { InsufficientFundsError } from "@/useCases/@errors/Wallet/InsufficientFundsError";
 import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsError";
 import { CreateTransactionUseCase } from "@/useCases/Transaction/createTransactionUseCase";
 import { expect, describe, beforeEach, it } from "vitest";
+import { MockFunctions } from "../utils/mockFunctions";
 
 let transactionRepository: InMemoryTransactionRepository;
 let perfilRepository: InMemoryPerfilRepository;
 let skinRepository: InMemorySkinRepository;
 let walletRepository: InMemoryWalletRepository;
 let notificationsRepository: InMemoryNotificationRepository;
+let mockFunction: MockFunctions;
 let sut: CreateTransactionUseCase;
-
-async function createSampleSkin() {
-  return await skinRepository.create({
-    asset_id: "10828437704",
-    skin_image: "https://bit.ly/3Jn6aqn",
-    skin_name: "exlucida | Trigger Disciplineeeee",
-    skin_category: "NovaSkins",
-    skin_weapon: "Test skin exlucidaaaa",
-    skin_price: 500,
-    skin_float: "0,10072",
-    median_price: 253,
-    seller_name: "Caçadora de demonios",
-    seller_id: "76561199205585878",
-    skin_rarity: "8650AC",
-    status: "Pending",
-    sale_type: "Caçadora",
-    status_float: "Muito usada",
-    skin_link_game: "/",
-    skin_link_steam: "/",
-  });
-}
-
-async function createSampleProfile(owner_id: string, owner_name: string) {
-  return await perfilRepository.create({
-    owner_id,
-    owner_name,
-    picture: "asdadasdasd",
-    steam_url: "https://steamcommunity.com/profiles/76561198195920183",
-    steam_level: 0,
-    steam_created_date: "your_value_here",
-  });
-}
 
 describe("Transaction Use Case", () => {
   beforeEach(async () => {
@@ -56,6 +28,7 @@ describe("Transaction Use Case", () => {
     skinRepository = new InMemorySkinRepository();
     walletRepository = new InMemoryWalletRepository();
     notificationsRepository = new InMemoryNotificationRepository();
+    mockFunction = new MockFunctions(skinRepository, perfilRepository);
 
     sut = new CreateTransactionUseCase(
       transactionRepository,
@@ -68,9 +41,9 @@ describe("Transaction Use Case", () => {
 
   it("Deve ser capaz de criar uma transação", async () => {
     const [skin] = await Promise.all([
-      createSampleSkin(),
-      createSampleProfile("76561199205585878", "Italo araújo"),
-      createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleSkin("76561199205585878"),
+      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
+      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
     ]);
 
     const vendedor = await walletRepository.create({
@@ -116,8 +89,8 @@ describe("Transaction Use Case", () => {
 
   it("Verificando a Existência da Skin", async () => {
     await Promise.all([
-      createSampleProfile("76561199205585878", "Italo araújo"),
-      createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
+      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
     ]);
 
     await expect(() =>
@@ -131,9 +104,9 @@ describe("Transaction Use Case", () => {
 
   it("Verificando a Existência da Carteira", async () => {
     const [skin] = await Promise.all([
-      createSampleSkin(),
-      createSampleProfile("76561199205585878", "Italo araújo"),
-      createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleSkin("76561199205585878"),
+      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
+      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
     ]);
 
     await expect(() =>
@@ -147,9 +120,9 @@ describe("Transaction Use Case", () => {
 
   it("Verificando Saldo Insuficiente", async () => {
     const [skin] = await Promise.all([
-      createSampleSkin(),
-      createSampleProfile("76561199205585878", "Italo araújo"),
-      createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleSkin("76561199205585878"),
+      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
+      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
@@ -170,4 +143,64 @@ describe("Transaction Use Case", () => {
       })
     ).rejects.toBeInstanceOf(InsufficientFundsError);
   });
+
+  it("Verificando se consigo vender skins que não são minhas", async () => {
+    const [skin] = await Promise.all([
+      mockFunction.createSampleSkin("76561199205585878"),
+      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
+      mockFunction.createSampleProfile("76561199205585877", "Tiago"),
+      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
+
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 1000,
+      }),
+    ]);
+
+    await expect(() =>
+      sut.execute({
+        skin_id: skin.id,
+        seller_id: "76561199205585877",
+        buyer_id: "76561198195920183",
+      })
+    ).rejects.toBeInstanceOf(CannotAdvertiseSkinNotYour);
+  });
+});
+
+it("Verificando a duplicação de anúncios da mesma skin", async () => {
+  const [skin] = await Promise.all([
+    mockFunction.createSampleSkin("76561199205585878"),
+    mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
+    mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+    walletRepository.create({
+      owner_name: "Italo",
+      owner_id: "76561199205585878",
+    }),
+
+    walletRepository.create({
+      owner_name: "Araujo",
+      owner_id: "76561198195920183",
+      value: 1000,
+    }),
+  ]);
+  // Tenta criar o anúncio pela primeira vez
+  await sut.execute({
+    skin_id: skin.id,
+    seller_id: "76561199205585878",
+    buyer_id: "76561198195920183",
+  });
+
+  // Tenta criar o anúncio pela segunda vez e espera que seja rejeitado com a exceção apropriada
+  await expect(() =>
+    sut.execute({
+      skin_id: skin.id,
+      seller_id: "76561199205585878",
+      buyer_id: "76561198195920183",
+    })
+  ).rejects.toBeInstanceOf(SkinHasAlreadyBeenSoldError);
 });
