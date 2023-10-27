@@ -7,7 +7,6 @@ const envSchema = z.object({
   NODE_ENV: z.enum(["dev", "test", "production"]).default("dev"),
   PORT: z.coerce.number().default(3333),
   JWT_SECRET: z.string(),
-  URL_SITE: z.string(),
   STEAM_USERNAME: z.string(),
   STEAM_PASSWORD: z.string(),
   STEAM_KEY: z.string(),
