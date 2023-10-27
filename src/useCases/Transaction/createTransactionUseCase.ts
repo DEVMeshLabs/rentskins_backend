@@ -12,7 +12,6 @@ import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlrea
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import cron from "node-cron";
 import axios from "axios";
-import { env } from "@/env";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -44,7 +43,7 @@ export class CreateTransactionUseCase {
       this.transactionRepository.findBySkinTransaction(skin_id),
     ]);
     const isValidEnv =
-      env.NODE_ENV === "production"
+      process.env.NODE_ENV === "production"
         ? "https://api-rentskin-backend-on.onrender.com"
         : "http://localhost:3333";
 
