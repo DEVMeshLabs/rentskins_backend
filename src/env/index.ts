@@ -16,7 +16,6 @@ const envSchema = z.object({
   STRIPE_SECRET_WEBHOOK_KEY: z.string(),
   MERCADO_SECRET_KEY: z.string(),
 });
-
 const _env = envSchema.safeParse(process.env);
 
 if (_env.success === false) {
