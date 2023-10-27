@@ -55,19 +55,55 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     return this.notImplemented();
   }
 
-  findByManyUser(seller_id: string) {
-    return this.notImplemented();
+  async findByManyUser(seller_id: string) {
+    const filter = this.transactions.filter((transaction) => {
+      return transaction.seller_id === seller_id;
+    });
+    return filter;
   }
 
   lastSalesUser(seller_id: string) {
     return this.notImplemented();
   }
 
-  updateConfirm(id: string, status: string, query: string) {
-    return this.notImplemented();
+  async updateConfirm(id: string, status: string, query?: string) {
+    const confirmField = query === "buyer" ? "buyer_confirm" : "seller_confirm";
+    const getTransaction = this.transactions.find((transaction) => {
+      return transaction.id === id;
+    });
+
+    getTransaction[confirmField] = status;
+
+    return getTransaction;
   }
 
-  updateId(id: string, data: Prisma.TransactionUncheckedUpdateInput) {
-    return this.notImplemented();
+  // async updateConfirm(id: string, status: string, query: string) {
+  //   const confirmField = query === "buyer" ? "buyer_confirm" : "seller_confirm";
+  //   const transactionAll = await prisma.transaction.update({
+  //     where: { id },
+  //     data: { [confirmField]: status, updatedAt: new Date() },
+  //   });
+  //   return transactionAll;
+  // }
+
+  async updateId(id: string, data: any) {
+    const index = this.transactions.findIndex(
+      (transaction) => transaction.id === id
+    );
+
+    if (index !== -1) {
+      this.transactions[index] = { ...this.transactions[index], ...data };
+      return this.transactions[index];
+    }
+    // const filter = this.transactions.find(
+    //   (transaction) => transaction.id === id
+    // );
+    // const update = { ...filter, ...data };
+
+    // const index = this.transactions.indexOf(filter);
+
+    // const updateTransaction = { ...this.transactions[index], ...update };
+
+    return this.transactions[index];
   }
 }
