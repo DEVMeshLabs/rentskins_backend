@@ -43,6 +43,10 @@ export class CreateTransactionUseCase {
       this.walletRepository.findByUser(buyer_id),
       this.transactionRepository.findBySkinTransaction(skin_id),
     ]);
+    const isValidEnv =
+      env.NODE_ENV === "production"
+        ? "https://api-rentskin-backend-on.onrender.com"
+        : "http://localhost:3333";
 
     if (!perfilBuyer || !perfilSeller) {
       throw new PerfilNotExistError();
@@ -116,7 +120,7 @@ export class CreateTransactionUseCase {
         if (findTransaction.status === "Em andamento") {
           console.log("Verificando o inventario do vendedor");
           const inventario = await axios
-            .get(`${env.URL_SITE}/v1/skins/inventory/${seller_id}`)
+            .get(`${isValidEnv}/v1/skins/inventory/${seller_id}`)
             .then((response) => response.data)
             .catch((err) => err.message);
 
@@ -156,7 +160,7 @@ export class CreateTransactionUseCase {
           } else if (!isAlreadyExistSkinInventory) {
             console.log("Verificando o inventario do comprador");
             const inventarioBuyer = await axios
-              .get(`${env.URL_SITE}/v1/skins/inventory/${buyer_id}`)
+              .get(`${isValidEnv}/v1/skins/inventory/${buyer_id}`)
               .then((response) => response.data)
               .catch((err) => err.message);
 
