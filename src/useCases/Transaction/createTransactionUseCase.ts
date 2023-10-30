@@ -42,6 +42,7 @@ export class CreateTransactionUseCase {
       this.walletRepository.findByUser(buyer_id),
       this.transactionRepository.findBySkinTransaction(skin_id),
     ]);
+
     const isValidEnv =
       process.env.NODE_ENV === "production"
         ? "https://api-rentskin-backend-on.onrender.com"

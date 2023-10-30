@@ -14,6 +14,7 @@ export class DeletePerfilUseCase {
 
     if (isForceDeletion === "true") {
       const response = await this.perfilInfoRepository.deletePerfilBanco(id);
+      console.log("Entrou aqui");
       return response;
     }
 

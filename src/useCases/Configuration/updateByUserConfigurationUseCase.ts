@@ -13,12 +13,32 @@ export class UpdateByIdUseCase {
     const findConfig = await this.configuration.findByUser(owner_id);
 
     const findAllConfig = await this.configuration.findByMany();
-    const isAlreadyExistCpf = findAllConfig.find((config) => {
-      return config.owner_cpf === data.owner_cpf;
+    const isAlreadyExistCpf = findAllConfig.filter((config) => {
+      if (config.owner_id === data.owner_id) {
+        throw new ConfigurationAlreadyExistCpfError("Perfil já existe.");
+      } else if (config.owner_cpf === data.owner_cpf) {
+        throw new ConfigurationAlreadyExistCpfError(
+          "CPF já cadastrado no sistema."
+        );
+      } else if (config.owner_email === data.owner_email) {
+        throw new ConfigurationAlreadyExistCpfError(
+          "Email já cadastrado no sistema."
+        );
+      } else if (config.owner_phone === data.owner_phone) {
+        throw new ConfigurationAlreadyExistCpfError(
+          "Telefone já cadastrado no sistema."
+        );
+      } else if (config.url_trade === data.url_trade) {
+        throw new ConfigurationAlreadyExistCpfError(
+          "Trade Link já cadastrado no sistema."
+        );
+      }
+
+      return true;
     });
 
-    if (isAlreadyExistCpf) {
-      throw new ConfigurationAlreadyExistCpfError();
+    if (!isAlreadyExistCpf) {
+      return;
     }
 
     if (!findConfig) {
