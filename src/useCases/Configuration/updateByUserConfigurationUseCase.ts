@@ -24,7 +24,11 @@ export class UpdateByIdUseCase {
         throw new ConfigurationAlreadyExistCpfError(
           "Email já cadastrado no sistema."
         );
-      } else if (config.owner_phone === data.owner_phone) {
+      } else if (
+        config.owner_phone === data.owner_phone &&
+        findConfig.owner_id !== owner_id
+      ) {
+        console.log(findConfig);
         throw new ConfigurationAlreadyExistCpfError(
           "Telefone já cadastrado no sistema."
         );
