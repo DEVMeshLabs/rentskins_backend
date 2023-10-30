@@ -18,11 +18,9 @@ export async function createPerfilDateController(
       `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`,
     ];
 
-    const [playerData, steamLevelData] = await getAllData(steamURLs).then(
-      (resp) => resp
-    );
+    const [playerData] = await getAllData(steamURLs).then((resp) => resp);
 
-    if (!playerData.success || !steamLevelData.success) {
+    if (!playerData.success) {
       return reply.status(400).send({ error: "Failed request, check steamId" });
     }
 
@@ -60,6 +58,7 @@ export async function createPerfilDateController(
       return reply.status(401).send({ error: error.message });
     }
     if (error instanceof Error) {
+      console.log(error);
       return reply.status(500).send({ error: error.message });
     }
   }
