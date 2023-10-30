@@ -1,5 +1,6 @@
 import { InMemoryConfiguration } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
+import { VerifyAccountVacBanError } from "@/useCases/@errors/Perfil/VerifyAccountVacBanError";
 import { CreatePerfilUseCase } from "@/useCases/Perfil/createPerfilUseCase";
 import { expect, describe, beforeEach, it } from "vitest";
 
@@ -14,7 +15,7 @@ describe("Perfil Use Case", () => {
     sut = new CreatePerfilUseCase(perfilRepository, configurationRepository);
   });
 
-  it("should be able to create a Perfil and configuration", async () => {
+  it("Deve ser capaz de criar um perfil e uma configuração", async () => {
     const perfil = await sut.execute(
       {
         owner_id: "76561198195920183",
@@ -38,5 +39,31 @@ describe("Perfil Use Case", () => {
     );
 
     expect(perfil.id).toEqual(expect.any(String));
+  });
+
+  it("Deve retornar um erro VerifyAccountVacBanError ao passar um ID com VAC Ban", async () => {
+    await expect(() =>
+      sut.execute(
+        {
+          owner_id: "76561198274650319",
+          owner_name: "Italo araújo",
+          owner_email: "",
+          owner_phone: "",
+          owner_cpf: "",
+          url_sell: "",
+          url_trade: "",
+          agreed_with_emails: false,
+          agreed_with_terms: false,
+        },
+        {
+          owner_id: "76561198274650319",
+          owner_name: "Italo araújo",
+          owner_country: "BR",
+          steam_created_date: "",
+          picture: "adadadadasd",
+          steam_url: "https://steamcommunity.com/profiles/76561198274650319",
+        }
+      )
+    ).rejects.toBeInstanceOf(VerifyAccountVacBanError);
   });
 });

@@ -12,7 +12,7 @@ describe("Skin Use Case", () => {
     sut = new CreateSkinUseCase(skinRepository);
   });
 
-  it("should be able to create a skin", async () => {
+  it("Deve ser capaz de criar uma skin", async () => {
     const skin = await sut.execute({
       asset_id: "10828437704",
       skin_image: "https://bit.ly/3Jn6aqn",
@@ -34,7 +34,7 @@ describe("Skin Use Case", () => {
     expect(skin.id).toEqual(expect.any(String));
   });
 
-  it("Should not be able to register with same asset_id", async () => {
+  it("Não deve ser possível registrar com o mesmo asset_id", async () => {
     const data = {
       asset_id: "10828437704",
       skin_image: "https://bit.ly/3Jn6aqn",
@@ -59,7 +59,7 @@ describe("Skin Use Case", () => {
     );
   });
 
-  it("should be able to create two skin", async () => {
+  it("Deve ser capaz de criar duas skins", async () => {
     const data = {
       asset_id: "10828437704",
       skin_image: "https://bit.ly/3Jn6aqn",

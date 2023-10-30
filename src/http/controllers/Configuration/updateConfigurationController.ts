@@ -9,12 +9,13 @@ export async function updateConfigurationController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
-  const { id } = req.params as { id: string };
+  const { owner_id } = req.params as { owner_id: string };
+  console.log(req.user);
 
   try {
     const data = updateConfigurationSchema.parse(req.body);
     const updateConfig = makeUpdateConfigurationUseCase();
-    await updateConfig.execute(id, { ...data });
+    await updateConfig.execute(owner_id, { ...data });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return reply
