@@ -32,7 +32,6 @@ describe("Perfil Use Case", () => {
         owner_name: "Italo araújo",
         owner_country: "BR",
         steam_created_date: "",
-        steam_level: 20,
         picture: "adadadadasd",
         steam_url: "https://steamcommunity.com/profiles/76561198195920183",
       }

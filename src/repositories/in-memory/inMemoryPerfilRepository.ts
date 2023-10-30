@@ -16,7 +16,6 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
       owner_type: "Usuario",
       owner_country: null,
       account_status: "Ativo",
-      steam_level: null,
       delivery_time: "",
       total_exchanges: 0,
       total_exchanges_completed: 0,
