@@ -16,7 +16,6 @@ export async function createPerfilDateController(
 
     const steamURLs = [
       `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`,
-      `https://api.steampowered.com/IPlayerService/GetSteamLevel/v1/?key=${env.STEAM_KEY}&steamid=${owner_id}`,
     ];
 
     const [playerData, steamLevelData] = await getAllData(steamURLs).then(
@@ -50,7 +49,6 @@ export async function createPerfilDateController(
         owner_name,
         owner_country,
         steam_created_date: accountCreationDate,
-        steam_level: steamLevelData.data.response.player_level,
         picture,
         steam_url,
       }
