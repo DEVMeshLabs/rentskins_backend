@@ -13,7 +13,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findByUser(owner_id: string) {
     const perfilUser = await prisma.perfil.findFirst({
       where: { owner_id, deletedAt: null },
-      include: { configuration: true, cart: true },
+      include: { Configuration: true, cart: true },
     });
     return perfilUser;
   }
@@ -36,7 +36,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findById(id: string) {
     const perfilId = await prisma.perfil.findFirst({
       where: { id, deletedAt: null },
-      include: { configuration: true, cart: true },
+      include: { Configuration: true, cart: true },
     });
     return perfilId;
   }
@@ -44,7 +44,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findByMany() {
     const perfilId = await prisma.perfil.findMany({
       where: { deletedAt: null },
-      include: { configuration: true, cart: true },
+      include: { Configuration: true, cart: true },
     });
     return perfilId;
   }
@@ -55,7 +55,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
         owner_type,
         deletedAt: null,
       },
-      include: { configuration: true, cart: true },
+      include: { Configuration: true, cart: true },
     });
     return perfilTypeUser;
   }
@@ -95,14 +95,6 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     return updateCart;
   }
 
-  async updateLevel(id: string, steam_level: number) {
-    const updateId = await prisma.perfil.update({
-      where: { id },
-      data: { steam_level, updatedAt: new Date() },
-    });
-    return updateId;
-  }
-
   async deletePerfil(id: string) {
     const deletePerfil = await prisma.perfil.update({
       where: { id },
@@ -115,8 +107,17 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async deletePerfilBanco(id: string) {
     const deletePerfil = await prisma.perfil.delete({
       where: { id },
-      include: { configuration: true, cart: true },
     });
+
+    await prisma.configuration.delete({
+      where: { id: deletePerfil.configurationId },
+    });
+
+    if (deletePerfil.cart_id !== null) {
+      await prisma.cart.delete({
+        where: { id: deletePerfil.cart_id },
+      });
+    }
 
     return deletePerfil;
   }

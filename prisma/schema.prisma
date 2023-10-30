@@ -83,7 +83,7 @@ model Notification {
 
 model Configuration {
   id                 String    @id @default(uuid()) @db.VarChar(36)
-  owner_id           String    @db.VarChar(255)
+  owner_id           String    @unique @db.VarChar(255)
   owner_name         String    @db.VarChar(255)
   owner_email        String    @db.VarChar(255)
   owner_phone        String    @db.VarChar(255)
@@ -118,8 +118,8 @@ model Perfil {
   steam_created_date        DateTime
   configurationId           String?        @db.VarChar(36)
   cart_id                   String?
-  configuration             Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
   cart                      Cart?          @relation(fields: [cart_id], references: [id], onDelete: Cascade)
+  Configuration             Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
 }
 
 model Transaction {
