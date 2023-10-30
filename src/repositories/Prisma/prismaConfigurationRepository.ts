@@ -24,10 +24,16 @@ export class PrismaConfigurationRepository implements IConfigurationRepository {
   }
 
   async create(data: Prisma.ConfigurationCreateInput) {
-    const createConfiguration = await prisma.configuration.create({
-      data,
-    });
-    return createConfiguration;
+    try {
+      const createConfiguration = await prisma.configuration.create({
+        data,
+      });
+      return createConfiguration;
+    } catch (error) {
+      // Aqui você pode lidar com o erro da maneira que preferir.
+      console.error("Erro ao criar a configuração:", error);
+      throw new Error(error);
+    }
   }
 
   async findByMany() {

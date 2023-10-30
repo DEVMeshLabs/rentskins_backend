@@ -23,6 +23,7 @@ export async function updateConfigurationController(
     } else if (error instanceof ConfigurationNotExistError) {
       return reply.status(404).send({ errors: error.message });
     } else if (error instanceof ConfigurationAlreadyExistCpfError) {
+      console.log("AQUIIIII", error.message);
       return reply.status(409).send({ errors: error.message });
     }
     throw error;

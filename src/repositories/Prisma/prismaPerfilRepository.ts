@@ -115,6 +115,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async deletePerfilBanco(id: string) {
     const deletePerfil = await prisma.perfil.delete({
       where: { id },
+      include: { configuration: true, cart: true },
     });
 
     return deletePerfil;

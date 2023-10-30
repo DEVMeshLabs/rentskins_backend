@@ -19,12 +19,6 @@ export class CreatePerfilUseCase {
       this.perfilRepository.findByUserNotDeleteAt(perfilDate.owner_id),
     ]);
 
-    if (foundUserProfileDeleAt && foundUserProfileDeleAt.deletedAt !== null) {
-      return this.perfilRepository.updateByIdUser(perfilDate.owner_id, {
-        deletedAt: null,
-      });
-    }
-
     const isVacBan = await fetch(
       `http://api.steampowered.com/ISteamUser/GetPlayerBans/v1?key=0B98876BF7EBF6720920F4F00CD20FA3&steamids=${perfilDate.owner_id}`
     ).then((response) => response.json());
@@ -33,6 +27,12 @@ export class CreatePerfilUseCase {
       throw new VerifyAccountVacBanError();
     } else if (foundUserProfile) {
       throw new PerfilAlreadyExistError();
+    }
+
+    if (foundUserProfileDeleAt && foundUserProfileDeleAt.deletedAt !== null) {
+      return this.perfilRepository.updateByIdUser(perfilDate.owner_id, {
+        deletedAt: null,
+      });
     }
 
     const createdConfiguration = await this.configurationRespository.create({
