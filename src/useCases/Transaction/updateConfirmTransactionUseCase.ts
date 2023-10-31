@@ -90,7 +90,6 @@ export class UpdateConfirmTransactionUseCase {
     const calc = new MediaDates();
     const mediaDate = await calc.calcularDiferenciaDates(filteredTransactions);
 
-    // ----------------------------------------- REFATORAR --------------------------------------------------------------------------
     if (findTransaction.seller_confirm === "Aceito") {
       const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
       await this.notificationsRepository.create({
@@ -106,7 +105,6 @@ export class UpdateConfirmTransactionUseCase {
         skin_id: findTransaction.skin_id,
       });
     }
-    // -----------------------------------------REFATORAR --------------------------------------------------------------------------
 
     if (findTransaction.status === "Concluído") {
       const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);

@@ -9,9 +9,8 @@ export async function updateConfigurationController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
-  const { owner_id } = req.params as { owner_id: string };
-  console.log(req.user);
-
+  const owner_id = req.user.ownerId;
+  console.log(owner_id);
   try {
     const data = updateConfigurationSchema.parse(req.body);
     const updateConfig = makeUpdateConfigurationUseCase();
@@ -24,7 +23,6 @@ export async function updateConfigurationController(
     } else if (error instanceof ConfigurationNotExistError) {
       return reply.status(404).send({ errors: error.message });
     } else if (error instanceof ConfigurationAlreadyExistCpfError) {
-      console.log("AQUIIIII", error.message);
       return reply.status(409).send({ errors: error.message });
     }
     throw error;
