@@ -12,6 +12,7 @@ import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlrea
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import cron from "node-cron";
 import axios from "axios";
+import console from "console";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -99,13 +100,9 @@ export class CreateTransactionUseCase {
       ),
     ]);
 
-    const teste = await this.perfilRepository.updateByUser(
-      perfilSeller.owner_id,
-      {
-        total_exchanges: perfilSeller.total_exchanges + 1,
-      }
-    );
-    console.log(teste);
+    await this.perfilRepository.updateByUser(perfilSeller.owner_id, {
+      total_exchanges: perfilSeller.total_exchanges + 1,
+    });
     await this.skinRepository.updateById(skin_id, {
       status: "Em andamento",
     });

@@ -19,7 +19,6 @@ export async function createPixTransactionController(
       cpf,
       email
     );
-    console.log(response);
     return reply.status(200).send(response);
   } catch (error) {
     return reply.status(500).send({ error: error.message });

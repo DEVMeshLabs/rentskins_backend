@@ -112,6 +112,9 @@ export class UpdateConfirmTransactionUseCase {
 
     if (findTransaction.status === "Concluído") {
       const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
+      const percentDiscount = 4;
+      const discountAmount = (percentDiscount / 100) * updateConfirm.balance;
+      const newBalance = updateConfirm.balance - discountAmount;
 
       const formattedBalance = findTransaction.balance.toLocaleString("pt-BR", {
         style: "currency",
@@ -123,7 +126,7 @@ export class UpdateConfirmTransactionUseCase {
         this.walletRepository.updateByUserValue(
           updateConfirm.seller_id,
           "increment",
-          updateConfirm.balance
+          newBalance
         ),
         this.perfilRepository.updateByUser(updateConfirm.seller_id, {
           total_exchanges_completed: findPerfil.total_exchanges_completed + 1,

@@ -159,8 +159,7 @@ describe("Update transaction Use Case", () => {
     await sut.execute(createTransaction.id, "Aceito", "buyer");
     const findWallet = await walletRepository.findByUser("76561199205585878");
     const findNotification = notificationsRepository.notifications;
-
-    expect(findWallet.value).toEqual(500);
+    expect(findWallet.value).toEqual(480);
     expect(findNotification.length).toEqual(2);
   });
 
