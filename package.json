@@ -10,6 +10,7 @@
     "start:dev": "tsx watch src/server.ts",
     "start": "node build/server.js",
     "build": "tsup --config ./tsup.config.ts",
+    "migrate": "npx prisma migrate deploy",
     "test": "vitest run --dir src/tests",
     "test:watch": "vitest"
   },
