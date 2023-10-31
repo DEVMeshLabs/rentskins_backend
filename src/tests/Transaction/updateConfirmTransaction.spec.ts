@@ -18,7 +18,7 @@ let notificationsRepository: InMemoryNotificationRepository;
 let mockFunction: MockFunctions;
 let sut: UpdateConfirmTransactionUseCase;
 
-describe("Transaction Update Use Case", () => {
+describe("Update transaction Use Case", () => {
   beforeEach(async () => {
     transactionRepository = new InMemoryTransactionRepository();
     perfilRepository = new InMemoryPerfilRepository();
@@ -252,5 +252,35 @@ describe("Transaction Update Use Case", () => {
     await expect(() =>
       sut.execute(createTransaction.id, "Aceito", "buyer")
     ).rejects.toBeInstanceOf(NotUpdateTransaction);
+  });
+
+  it("Deve aumentar o total_exchanges em 1 ao criar uma transaction com sucesso", async () => {
+    const [skin] = await Promise.all([
+      mockFunction.createSampleSkin("76561199205585878"),
+      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
+      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 5000,
+      }),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+        value: 0,
+      }),
+    ]);
+
+    const transaction = await transactionRepository.create({
+      skin_id: skin.id,
+      seller_id: "76561199205585878",
+      buyer_id: "76561198195920183",
+      balance: skin.skin_price,
+    });
+
+    await sut.execute(transaction.id, "Aceito", "buyer");
+
+    const findUser = await perfilRepository.findByUser("76561199205585878");
+    expect(findUser.total_exchanges_completed).toBe(1);
   });
 });

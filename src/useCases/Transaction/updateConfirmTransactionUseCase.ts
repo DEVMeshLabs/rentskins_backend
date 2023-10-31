@@ -40,6 +40,8 @@ export class UpdateConfirmTransactionUseCase {
     return updateConfirm;
   }
 
+  // ----------------------------------------------------------------
+
   private async findTransactionById(id: string) {
     const findTransaction = await this.transactionRepository.findById(id);
     if (!findTransaction) {
@@ -54,6 +56,7 @@ export class UpdateConfirmTransactionUseCase {
     }
   }
 
+  // ----------------------------------------------------------------
   private determineStatus(updateConfirm: any) {
     if (updateConfirm.buyer_confirm === "Aceito") {
       return "Concluído";
@@ -70,6 +73,7 @@ export class UpdateConfirmTransactionUseCase {
     );
   }
 
+  // ----------------------------------------------------------------
   async handleCompletedTransaction(
     id: string,
     updateConfirm: any
@@ -195,6 +199,7 @@ export class UpdateConfirmTransactionUseCase {
     }
   }
 
+  // ----------------------------------------------------------------
   async findPerfilByUser(owner_id: string) {
     const findPerfil = await this.perfilRepository.findByUser(owner_id);
 

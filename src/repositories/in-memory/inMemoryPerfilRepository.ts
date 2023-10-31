@@ -17,7 +17,7 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
       owner_country: null,
       account_status: "Ativo",
       delivery_time: "",
-      total_exchanges: 0,
+      total_exchanges: data.total_exchanges ?? 0,
       total_exchanges_completed: 0,
       reliability: "Sem informações",
       steam_created_date: null,
@@ -84,7 +84,6 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
         ...data,
       };
     }
-
     return this.perfil[userProfileIndex];
   }
 
@@ -92,7 +91,7 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
     return this.notImplemented();
   }
 
-  deletePerfil(id: string, force: string) {
+  deletePerfil(id: string) {
     return this.notImplemented();
   }
 

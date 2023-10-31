@@ -79,30 +79,33 @@ export class CreateTransactionUseCase {
       }),
 
       this.notificationsRepository.create({
-        owner_id: seller_id,
+        owner_id: perfilSeller.owner_id,
         description: `Venda do item ${findSkin.skin_name}, realizada por ${formattedBalance}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
 
       this.notificationsRepository.create({
-        owner_id: buyer_id,
+        owner_id: perfilBuyer.owner_id,
         description: `Compra do item ${findSkin.skin_name} realizada por ${formattedBalance}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
 
       this.walletRepository.updateByUserValue(
-        buyer_id,
+        perfilBuyer.owner_id,
         "decrement",
         findSkin.skin_price
       ),
-
-      this.perfilRepository.updateByUser(seller_id, {
-        total_exchanges: perfilSeller.total_exchanges + 1,
-      }),
     ]);
 
+    const teste = await this.perfilRepository.updateByUser(
+      perfilSeller.owner_id,
+      {
+        total_exchanges: perfilSeller.total_exchanges + 1,
+      }
+    );
+    console.log(teste);
     await this.skinRepository.updateById(skin_id, {
       status: "Em andamento",
     });
@@ -133,7 +136,7 @@ export class CreateTransactionUseCase {
             // ---------- REFATORAR ------------------
             await Promise.all([
               this.walletRepository.updateByUserValue(
-                buyer_id,
+                perfilBuyer.owner_id,
                 "increment",
                 findSkin.skin_price
               ),
@@ -141,13 +144,13 @@ export class CreateTransactionUseCase {
                 status: "Falhou",
               }),
               this.notificationsRepository.create({
-                owner_id: seller_id,
+                owner_id: perfilSeller.owner_id,
                 description: `O prazo de entrega do ${findSkin.skin_name} expirou, e a troca foi cancelada devido à não entrega.`,
                 skin_id: findSkin.id,
               }),
 
               this.notificationsRepository.create({
-                owner_id: buyer_id,
+                owner_id: perfilBuyer.owner_id,
                 description: `A compra do item ${findSkin.skin_name} foi cancelada porque o vendedor não enviou o item a tempo, e o valor foi reembolsado para a sua conta.`,
                 skin_id: findSkin.id,
               }),
