@@ -12,6 +12,10 @@ export class UpdateByIdUseCase {
   ): Promise<Prisma.BatchPayload> {
     const findConfig = await this.configuration.findByUser(owner_id);
 
+    if (!findConfig) {
+      throw new ConfigurationNotExistError();
+    }
+
     const findAllConfig = await this.configuration.findByMany();
     const isAlreadyExistCpf = findAllConfig.filter((config) => {
       if (config.owner_id === data.owner_id) {
@@ -28,7 +32,6 @@ export class UpdateByIdUseCase {
         config.owner_phone === data.owner_phone &&
         findConfig.owner_id !== owner_id
       ) {
-        console.log(findConfig);
         throw new ConfigurationAlreadyExistCpfError(
           "Telefone já cadastrado no sistema."
         );
@@ -43,10 +46,6 @@ export class UpdateByIdUseCase {
 
     if (!isAlreadyExistCpf) {
       return;
-    }
-
-    if (!findConfig) {
-      throw new ConfigurationNotExistError();
     }
 
     const updateId = await this.configuration.updateById(owner_id, { ...data });

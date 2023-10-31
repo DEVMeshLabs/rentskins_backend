@@ -28,17 +28,17 @@ export async function skinRouter(app: FastifyInstance) {
   app.post("/v1/skins/median/price", getMedianPriceController);
   app.post("/v1/skins/availability/:id", getAlreadyExistSkinInventory);
 
-  app.post("/v1/skins", { onRequest: verifyJwt }, createSkinController);
+  app.post("/v1/skins", { onRequest: [verifyJwt] }, createSkinController);
   app.post(
     "/v1/skins/inventory/:id",
-    { onRequest: verifyJwt },
+    { onRequest: [verifyJwt] },
     getInventoryManyUserController
   );
   app.post(
     "/v1/skins/float/:id",
-    { onRequest: verifyJwt },
+    { onRequest: [verifyJwt] },
     getFloatSkinController
   );
   app.delete("/v1/skins/:id", deleteSkinController);
-  app.put("/v1/skins/:id", { onRequest: verifyJwt }, updateSkinController);
+  app.put("/v1/skins/:id", { onRequest: [verifyJwt] }, updateSkinController);
 }
