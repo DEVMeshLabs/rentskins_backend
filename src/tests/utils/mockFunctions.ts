@@ -28,13 +28,17 @@ export class MockFunctions {
     });
   }
 
-  async createSampleProfile(owner_id: string, owner_name: string) {
+  async createSampleProfile(
+    owner_id: string,
+    owner_name: string,
+    total?: number
+  ) {
     return await this.perfilRepository.create({
       owner_id,
       owner_name,
+      total_exchanges: total ?? 0,
       picture: "asdadasdasd",
       steam_url: "https://steamcommunity.com/profiles/76561198195920183",
-      steam_level: 0,
       steam_created_date: "your_value_here",
     });
   }

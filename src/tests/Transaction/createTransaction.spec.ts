@@ -80,7 +80,7 @@ describe("Transaction Use Case", () => {
   it("Verificando a Existência do Perfil", async () => {
     await expect(() =>
       sut.execute({
-        skin_id: "sadasdasdasdasd",
+        skin_id: "asdsadasdas",
         seller_id: "76561199205585878",
         buyer_id: "76561198195920183",
       })
@@ -170,37 +170,35 @@ describe("Transaction Use Case", () => {
       })
     ).rejects.toBeInstanceOf(CannotAdvertiseSkinNotYour);
   });
-});
 
-it("Verificando a duplicação de anúncios da mesma skin", async () => {
-  const [skin] = await Promise.all([
-    mockFunction.createSampleSkin("76561199205585878"),
-    mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
-    mockFunction.createSampleProfile("76561198195920183", "Araujo"),
-    walletRepository.create({
-      owner_name: "Italo",
-      owner_id: "76561199205585878",
-    }),
+  it("Verificando a duplicação de anúncios da mesma skin", async () => {
+    const [skin] = await Promise.all([
+      mockFunction.createSampleSkin("76561199205585878"),
+      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
+      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
 
-    walletRepository.create({
-      owner_name: "Araujo",
-      owner_id: "76561198195920183",
-      value: 1000,
-    }),
-  ]);
-  // Tenta criar o anúncio pela primeira vez
-  await sut.execute({
-    skin_id: skin.id,
-    seller_id: "76561199205585878",
-    buyer_id: "76561198195920183",
-  });
-
-  // Tenta criar o anúncio pela segunda vez e espera que seja rejeitado com a exceção apropriada
-  await expect(() =>
-    sut.execute({
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 1000,
+      }),
+    ]);
+    await sut.execute({
       skin_id: skin.id,
       seller_id: "76561199205585878",
       buyer_id: "76561198195920183",
-    })
-  ).rejects.toBeInstanceOf(SkinHasAlreadyBeenSoldError);
+    });
+
+    await expect(() =>
+      sut.execute({
+        skin_id: skin.id,
+        seller_id: "76561199205585878",
+        buyer_id: "76561198195920183",
+      })
+    ).rejects.toBeInstanceOf(SkinHasAlreadyBeenSoldError);
+  });
 });

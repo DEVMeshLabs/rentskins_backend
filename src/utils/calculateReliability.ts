@@ -14,8 +14,6 @@ export async function calculateReliability(user: any) {
     hoursDifference = 0;
   }
 
-  console.log(hoursDifference);
-
   const timePercentage = Number(((hoursDifference / 24) * 100).toFixed(2));
 
   const deliveryPercentage = (
@@ -23,10 +21,14 @@ export async function calculateReliability(user: any) {
     100
   ).toFixed(2);
 
-  const reliabilityPercentage = (
-    Number(deliveryPercentage) * (3 / 4) +
-    Number(timePercentage) * (1 / 4)
-  ).toFixed(2);
+  let reliabilityPercentage =
+    Number(deliveryPercentage) * (3 / 4) + Number(timePercentage) * (1 / 4);
 
-  return reliabilityPercentage;
+  if (reliabilityPercentage > 100) {
+    reliabilityPercentage = 100;
+  } else if (reliabilityPercentage < 0) {
+    reliabilityPercentage = 0;
+  }
+
+  return reliabilityPercentage.toFixed(2);
 }
