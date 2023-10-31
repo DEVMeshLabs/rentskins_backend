@@ -14,12 +14,10 @@ export class DeletePerfilUseCase {
 
     if (isForceDeletion === "true") {
       const response = await this.perfilInfoRepository.deletePerfilBanco(id);
-      console.log("Entrou aqui");
       return response;
     }
 
     const perfilToDelete = await this.perfilInfoRepository.deletePerfil(id);
-    console.log("Saiu aqui");
     return perfilToDelete;
   }
 }

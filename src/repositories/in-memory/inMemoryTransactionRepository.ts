@@ -77,15 +77,6 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     return getTransaction;
   }
 
-  // async updateConfirm(id: string, status: string, query: string) {
-  //   const confirmField = query === "buyer" ? "buyer_confirm" : "seller_confirm";
-  //   const transactionAll = await prisma.transaction.update({
-  //     where: { id },
-  //     data: { [confirmField]: status, updatedAt: new Date() },
-  //   });
-  //   return transactionAll;
-  // }
-
   async updateId(id: string, data: any) {
     const index = this.transactions.findIndex(
       (transaction) => transaction.id === id
