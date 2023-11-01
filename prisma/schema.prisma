@@ -119,7 +119,7 @@ model Perfil {
   configurationId           String?        @db.VarChar(36)
   cart_id                   String?
   cart                      Cart?          @relation(fields: [cart_id], references: [id], onDelete: Cascade)
-  Configuration             Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
+  configuration             Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
 }
 
 model Transaction {

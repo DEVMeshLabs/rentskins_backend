@@ -6,6 +6,7 @@ export class GetManyPerfilUseCase {
 
   async execute(): Promise<Perfil[]> {
     const foundProfiles = await this.perfilInfoRepository.findByMany();
+    console.log(foundProfiles);
     return foundProfiles;
   }
 }

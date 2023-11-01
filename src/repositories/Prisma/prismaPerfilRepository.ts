@@ -13,7 +13,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findByUser(owner_id: string) {
     const perfilUser = await prisma.perfil.findFirst({
       where: { owner_id, deletedAt: null },
-      include: { Configuration: true, cart: true },
+      include: { configuration: true, cart: true },
     });
     return perfilUser;
   }
@@ -36,7 +36,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findById(id: string) {
     const perfilId = await prisma.perfil.findFirst({
       where: { id, deletedAt: null },
-      include: { Configuration: true, cart: true },
+      include: { configuration: true, cart: true },
     });
     return perfilId;
   }
@@ -44,7 +44,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
   async findByMany() {
     const perfilId = await prisma.perfil.findMany({
       where: { deletedAt: null },
-      include: { Configuration: true, cart: true },
+      include: { configuration: true, cart: true },
     });
     return perfilId;
   }
@@ -55,7 +55,7 @@ export class PrismaPerfilRepository implements IPerfilRepository {
         owner_type,
         deletedAt: null,
       },
-      include: { Configuration: true, cart: true },
+      include: { configuration: true, cart: true },
     });
     return perfilTypeUser;
   }
