@@ -10,6 +10,6 @@ export async function getManyCartController(
     const response = await makeGetMany.execute();
     return reply.status(200).send(response);
   } catch (error) {
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 }

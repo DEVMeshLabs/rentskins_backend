@@ -13,6 +13,6 @@ export async function getManyCategoryController(
     const findAll = await getManyCategory.execute(category);
     return reply.status(200).send(findAll);
   } catch (error) {
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 }

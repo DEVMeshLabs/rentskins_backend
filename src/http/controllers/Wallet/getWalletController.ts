@@ -16,6 +16,6 @@ export async function getWalletController(
     if (error instanceof WalletNotExistsError) {
       return reply.status(404).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

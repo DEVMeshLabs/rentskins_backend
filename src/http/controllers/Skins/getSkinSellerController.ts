@@ -16,6 +16,6 @@ export async function getSkinSellerController(
     if (error instanceof SellerNotExistError) {
       return reply.status(404).send({ message: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

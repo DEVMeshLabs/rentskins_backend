@@ -14,6 +14,6 @@ export async function getManyPerfilController(
     if (error instanceof PerfilAlreadyExistError) {
       return reply.status(404).send({ error: error.message });
     }
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 }
