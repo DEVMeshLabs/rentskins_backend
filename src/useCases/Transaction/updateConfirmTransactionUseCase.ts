@@ -29,7 +29,7 @@ export class UpdateConfirmTransactionUseCase {
       query
     );
 
-    const validStatus = this.determineStatus(updateConfirm);
+    const validStatus = await this.determineStatus(updateConfirm);
 
     await this.transactionRepository.updateId(id, { status: validStatus });
 
@@ -58,7 +58,7 @@ export class UpdateConfirmTransactionUseCase {
 
   // ----------------------------------------------------------------
 
-  private determineStatus(updateConfirm: any) {
+  private async determineStatus(updateConfirm: any): Promise<string> {
     if (updateConfirm.buyer_confirm === "Aceito") {
       return "Concluído";
     } else if (updateConfirm.buyer_confirm === "Recusado") {
@@ -86,7 +86,7 @@ export class UpdateConfirmTransactionUseCase {
         findTransaction.seller_id
       );
 
-    const skinId = await this.skinRepository.findById(findTransaction.skin_id);
+    const skin = await this.skinRepository.findById(findTransaction.skin_id);
 
     const filteredTransactions = findAllDateTransactions.filter((item) => {
       return item.salesAt !== null;
@@ -99,14 +99,14 @@ export class UpdateConfirmTransactionUseCase {
       const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
       await this.notificationsRepository.create({
         owner_id: updateConfirm.buyer_id,
-        description: `O usuário ${findPerfil.owner_name} confirmou o envio do item ${skinId.skin_name}.`,
+        description: `O usuário ${findPerfil.owner_name} confirmou o envio do item ${skin.skin_name}.`,
         skin_id: findTransaction.skin_id,
       });
     } else if (findTransaction.seller_confirm === "Recusado") {
       const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
       await this.notificationsRepository.create({
         owner_id: updateConfirm.buyer_id,
-        description: `O usuário ${findPerfil.owner_name} recusou o envio do item ${skinId.skin_name}.`,
+        description: `O usuário ${findPerfil.owner_name} recusou o envio do item ${skin.skin_name}.`,
         skin_id: findTransaction.skin_id,
       });
     }
@@ -140,7 +140,7 @@ export class UpdateConfirmTransactionUseCase {
 
         this.notificationsRepository.create({
           owner_id: updateConfirm.seller_id,
-          description: `A venda do item ${skinId.skin_name} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
+          description: `A venda do item ${skin.skin_name} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
           skin_id: findTransaction.skin_id,
         }),
         this.skinRepository.updateById(updateConfirm.skin_id, {
@@ -151,7 +151,7 @@ export class UpdateConfirmTransactionUseCase {
       const buyerUpdates = [
         this.notificationsRepository.create({
           owner_id: updateConfirm.buyer_id,
-          description: `A compra do item ${skinId.skin_name} foi realizada com sucesso! Verifique o item em seu inventário.`,
+          description: `A compra do item ${skin.skin_name} foi realizada com sucesso! Verifique o item em seu inventário.`,
           skin_id: findTransaction.skin_id,
         }),
       ];
@@ -180,16 +180,17 @@ export class UpdateConfirmTransactionUseCase {
         currency: "BRL",
         minimumFractionDigits: 2,
       });
+      // AQUIIIIII
 
       await Promise.all([
         this.notificationsRepository.create({
           owner_id: updateConfirm.buyer_id,
-          description: `A compra do item ${skinId.skin_name} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`,
+          description: `A compra do item ${skin.skin_name} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`,
           skin_id: findTransaction.skin_id,
         }),
         this.notificationsRepository.create({
           owner_id: updateConfirm.seller_id,
-          description: `A venda do item ${skinId.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
+          description: `A venda do item ${skin.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
           skin_id: findTransaction.skin_id,
         }),
         this.walletRepository.updateByUserValue(

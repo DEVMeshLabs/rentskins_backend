@@ -23,7 +23,7 @@ export function getAlreadyExistSkinInventory(
       "english",
       (err: Error | null, inventory?: any) => {
         if (err) {
-          throw new Error();
+          return reply.status(500).send({ error: err.message });
         }
         const filterInventory = inventory.filter((item: any) => {
           if (

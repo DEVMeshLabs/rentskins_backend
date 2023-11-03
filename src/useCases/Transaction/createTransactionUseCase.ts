@@ -10,10 +10,7 @@ import { INotificationRepository } from "@/repositories/interfaceRepository/INot
 import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdvertiseSkinNotYour";
 import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlreadyBeenSoldError";
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
-import cron from "node-cron";
-import axios from "axios";
-import console from "console";
-import { app } from "@/app";
+import { makeProcessTransaction } from "../@factories/Transaction/makeProcessTransaction";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -45,11 +42,6 @@ export class CreateTransactionUseCase {
       this.transactionRepository.findBySkinTransaction(skin_id),
     ]);
 
-    const isValidEnv =
-      process.env.NODE_ENV === "production"
-        ? "https://api-rentskin-backend-on.onrender.com"
-        : "http://localhost:3333";
-
     if (!perfilBuyer || !perfilSeller) {
       throw new PerfilNotExistError();
     } else if (perfilBuyer === perfilSeller) {
@@ -70,11 +62,6 @@ export class CreateTransactionUseCase {
       style: "currency",
       currency: "BRL",
       minimumFractionDigits: 2,
-    });
-
-    app.io.to(`${seller_id}`).emit("notification", {
-      description: `Venda do item ${findSkin.skin_name}, realizada por ${formattedBalance}.`,
-      skin_id: findSkin.id,
     });
 
     const [createTransaction] = await Promise.all([
@@ -112,108 +99,20 @@ export class CreateTransactionUseCase {
     await this.skinRepository.updateById(skin_id, {
       status: "Em andamento",
     });
+    console.log("Bateu AQUIII");
 
-    console.log("Bateu Aqui");
-    cron.schedule(
-      "* * 12 * * *",
-      async () => {
-        console.log("Iniciou");
-
-        const findTransaction = await this.transactionRepository.findById(
-          createTransaction.id
-        );
-
-        if (findTransaction.status === "Em andamento") {
-          console.log("Verificando o inventario do vendedor");
-          const inventario = await axios
-            .get(`${isValidEnv}/v1/skins/inventory/${seller_id}`)
-            .then((response) => response.data)
-            .catch((err) => err.message);
-
-          const isAlreadyExistSkinInventory = inventario.some((item: any) => {
-            return item.assetid === findSkin.asset_id;
-          });
-
-          if (isAlreadyExistSkinInventory) {
-            console.log("Atualizando a wallet do vendedor");
-            // ---------- REFATORAR ------------------
-            await Promise.all([
-              this.walletRepository.updateByUserValue(
-                perfilBuyer.owner_id,
-                "increment",
-                findSkin.skin_price
-              ),
-              this.transactionRepository.updateId(createTransaction.id, {
-                status: "Falhou",
-              }),
-              this.notificationsRepository.create({
-                owner_id: perfilSeller.owner_id,
-                description: `O prazo de entrega do ${findSkin.skin_name} expirou, e a troca foi cancelada devido à não entrega.`,
-                skin_id: findSkin.id,
-              }),
-
-              this.notificationsRepository.create({
-                owner_id: perfilBuyer.owner_id,
-                description: `A compra do item ${findSkin.skin_name} foi cancelada porque o vendedor não enviou o item a tempo, e o valor foi reembolsado para a sua conta.`,
-                skin_id: findSkin.id,
-              }),
-
-              this.skinRepository.updateById(findSkin.id, {
-                status: "Falhou",
-              }),
-            ]);
-            // ---------------------------------------
-          } else if (!isAlreadyExistSkinInventory) {
-            console.log("Verificando o inventario do comprador");
-            const inventarioBuyer = await axios
-              .get(`${isValidEnv}/v1/skins/inventory/${buyer_id}`)
-              .then((response) => response.data)
-              .catch((err) => err.message);
-
-            const isAlreadyExistSkinInventoryBuyer = inventarioBuyer.some(
-              (item: any) =>
-                item.name === findSkin.skin_name &&
-                item.market_name === findSkin.seller_name
-            );
-
-            if (!isAlreadyExistSkinInventoryBuyer) {
-              console.log("Atualizando a wallet do comprador");
-
-              await Promise.all([
-                this.walletRepository.updateByUserValue(
-                  buyer_id,
-                  "increment",
-                  findSkin.skin_price
-                ),
-                this.transactionRepository.updateId(createTransaction.id, {
-                  status: "Falhou",
-                }),
-                this.notificationsRepository.create({
-                  owner_id: seller_id,
-                  description: `A venda do item ${findSkin.skin_name} foi cancelada.`,
-                  skin_id: findSkin.id,
-                }),
-
-                this.notificationsRepository.create({
-                  owner_id: buyer_id,
-                  description: `A compra do item ${findSkin.skin_name} foi cancelada.`,
-                  skin_id: findSkin.id,
-                }),
-
-                this.skinRepository.updateById(findSkin.id, {
-                  status: "Falhou",
-                }),
-              ]);
-            }
-          }
-        }
-
-        console.log("Finalizando cron");
-      },
-      { name: `${createTransaction.id}` }
-    );
-
-    // cron.getTasks().get(createTransaction.id).stop();
+    setTimeout(async () => {
+      const processTransaction = makeProcessTransaction();
+      console.log("Iniciando cronnnnnnnnnnnnnnnnnnnnnnnn.");
+      await processTransaction.execute(
+        createTransaction,
+        findSkin,
+        perfilBuyer,
+        perfilSeller
+      );
+      console.log("Finalizando cronnnnnnnnnnnnnnnnnnnnnnnn.");
+    }, 30000);
+    // cron.schedule("30 * * * * *", async () => {});
 
     return createTransaction;
   }
