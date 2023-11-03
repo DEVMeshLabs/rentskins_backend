@@ -55,6 +55,6 @@ export function getAlreadyExistSkinInventory(
     if (error instanceof ZodError) {
       return reply.status(400).send({ error });
     }
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 }

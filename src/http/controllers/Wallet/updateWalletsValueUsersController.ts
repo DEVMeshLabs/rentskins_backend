@@ -26,6 +26,7 @@ export async function updateWalletsValueUsersController(
     } else if (error instanceof WalletNotExistsError) {
       return reply.status(404).send({ error: error.message });
     }
+    return reply.status(500).send({ error: error.message });
   }
 
   return reply.status(204).send();

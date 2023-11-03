@@ -51,6 +51,6 @@ export function getInventoryManyUserController(
         .status(400)
         .send({ message: "Erro de validação", errors: error.errors });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

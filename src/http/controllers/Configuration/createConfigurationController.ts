@@ -40,7 +40,7 @@ export async function createConfigurationController(
     } else if (error instanceof ConfigurationAlreadyExistError) {
       return reply.status(409).send({ errors: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 
   return reply.status(201).send();

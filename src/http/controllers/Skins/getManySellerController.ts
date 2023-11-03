@@ -26,6 +26,6 @@ export async function getManyCartController(
     if (error instanceof Error) {
       return reply.status(404).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

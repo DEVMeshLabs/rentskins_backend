@@ -29,8 +29,7 @@ export async function createNotificationController(
     } else if (error instanceof SkinNotExistError) {
       return reply.status(404).send({ error: error.message });
     }
-
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
   return reply.status(201).send();
 }

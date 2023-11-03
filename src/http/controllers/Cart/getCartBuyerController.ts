@@ -16,6 +16,6 @@ export async function getCartBuyerController(
     if (error instanceof CartNotExistError) {
       return reply.status(404).send({ error: error.message });
     }
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 }

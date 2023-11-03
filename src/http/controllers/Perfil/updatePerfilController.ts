@@ -42,7 +42,7 @@ export async function updatePerfilController(
     if (error instanceof PerfilNotExistError) {
       return reply.status(404).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 
   return reply.status(204).send();

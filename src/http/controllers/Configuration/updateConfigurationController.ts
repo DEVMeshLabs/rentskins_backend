@@ -24,7 +24,7 @@ export async function updateConfigurationController(
     } else if (error instanceof ConfigurationAlreadyExistCpfError) {
       return reply.status(409).send({ errors: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 
   return reply.status(204).send();
