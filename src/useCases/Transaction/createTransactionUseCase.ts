@@ -13,6 +13,7 @@ import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import cron from "node-cron";
 import axios from "axios";
 import console from "console";
+import { app } from "@/app";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -69,6 +70,11 @@ export class CreateTransactionUseCase {
       style: "currency",
       currency: "BRL",
       minimumFractionDigits: 2,
+    });
+
+    app.io.to(`${seller_id}`).emit("notification", {
+      description: `Venda do item ${findSkin.skin_name}, realizada por ${formattedBalance}.`,
+      skin_id: findSkin.id,
     });
 
     const [createTransaction] = await Promise.all([
@@ -172,6 +178,7 @@ export class CreateTransactionUseCase {
 
             if (!isAlreadyExistSkinInventoryBuyer) {
               console.log("Atualizando a wallet do comprador");
+
               await Promise.all([
                 this.walletRepository.updateByUserValue(
                   buyer_id,

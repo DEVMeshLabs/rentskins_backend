@@ -8,16 +8,7 @@ export const updatePerfilInfoSchema = z.object({
   delivery_time: z.string().optional(),
   delivery_fee: z.number().optional(),
   total_exchanges: z.number().optional(),
-  steam_url: z
-    .string()
-    .refine(
-      (value) =>
-        /^https:\/\/steamcommunity\.com\/profiles\/\d{17}$/.test(value),
-      {
-        message: "Não é um link válido da Steam.",
-      }
-    )
-    .optional(),
+  steam_url: z.string().optional(),
   account_status: z.enum(["Ativo", "Suspenso"]).optional(),
   picture: z.string().optional(),
   owner_cpf: z.string().optional(),

@@ -41,4 +41,11 @@ export async function skinRouter(app: FastifyInstance) {
   );
   app.delete("/v1/skins/:id", deleteSkinController);
   app.put("/v1/skins/:id", { onRequest: [verifyJwt] }, updateSkinController);
+
+  app.get("/test", (req, reply) => {
+    app.io.emit("notification", {
+      message: "Aqui vai a notificação",
+    });
+    return reply.send("OK");
+  });
 }

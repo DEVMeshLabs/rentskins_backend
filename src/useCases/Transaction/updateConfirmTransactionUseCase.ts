@@ -57,6 +57,7 @@ export class UpdateConfirmTransactionUseCase {
   }
 
   // ----------------------------------------------------------------
+
   private determineStatus(updateConfirm: any) {
     if (updateConfirm.buyer_confirm === "Aceito") {
       return "Concluído";
@@ -136,6 +137,7 @@ export class UpdateConfirmTransactionUseCase {
         this.perfilRepository.updateByUser(updateConfirm.seller_id, {
           delivery_time: mediaDate,
         }),
+
         this.notificationsRepository.create({
           owner_id: updateConfirm.seller_id,
           description: `A venda do item ${skinId.skin_name} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
