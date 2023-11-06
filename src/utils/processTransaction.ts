@@ -68,7 +68,7 @@ export class ProcessTransaction {
             status: "Falhou",
           }),
         ]);
-      } else if (!isAlreadyExistSkinInventory) {
+      } else {
         console.log("Verificando o inventario do comprador");
         const inventarioBuyer = await axios
           .get(`${isValidEnv}/v1/skins/inventory/${perfilBuyer.owner_id}`)

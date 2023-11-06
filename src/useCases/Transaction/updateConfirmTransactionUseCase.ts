@@ -180,7 +180,6 @@ export class UpdateConfirmTransactionUseCase {
         currency: "BRL",
         minimumFractionDigits: 2,
       });
-      // AQUIIIIII
 
       await Promise.all([
         this.notificationsRepository.create({

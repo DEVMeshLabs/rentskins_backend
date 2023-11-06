@@ -111,7 +111,7 @@ export class CreateTransactionUseCase {
         perfilSeller
       );
       console.log("Finalizando cronnnnnnnnnnnnnnnnnnnnnnnn.");
-    }, 30000);
+    }, 60000 * 15);
     // cron.schedule("30 * * * * *", async () => {});
 
     return createTransaction;
