@@ -6,7 +6,6 @@ export class MediaDates {
     const horas = Math.floor(segundos / 3600);
     const minutos = Math.floor((segundos % 3600) / 60);
     const segundosRestantes = segundos % 60;
-    console.log("OUTRO AQUIII", segundosRestantes.toFixed(0));
     return `${horas.toString().padStart(2, "0")}:${minutos
       .toString()
       .padStart(2, "0")}:${segundosRestantes
@@ -27,7 +26,6 @@ export class MediaDates {
       0
     );
     const mediaSegundos = somaSegundos / horarios.length;
-    console.log("AQUIII", mediaSegundos.toFixed(0));
     return this.segundosParaHorario(mediaSegundos);
   }
 
