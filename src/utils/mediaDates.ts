@@ -6,9 +6,13 @@ export class MediaDates {
     const horas = Math.floor(segundos / 3600);
     const minutos = Math.floor((segundos % 3600) / 60);
     const segundosRestantes = segundos % 60;
+    console.log("OUTRO AQUIII", segundosRestantes.toFixed(0));
     return `${horas.toString().padStart(2, "0")}:${minutos
       .toString()
-      .padStart(2, "0")}:${segundosRestantes.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}:${segundosRestantes
+      .toFixed(0)
+      .toString()
+      .padStart(2, "0")}`;
   }
 
   horarioParaSegundos(horario: string): number {
@@ -23,6 +27,7 @@ export class MediaDates {
       0
     );
     const mediaSegundos = somaSegundos / horarios.length;
+    console.log("AQUIII", mediaSegundos.toFixed(0));
     return this.segundosParaHorario(mediaSegundos);
   }
 
@@ -39,9 +44,10 @@ export class MediaDates {
 
       const horas = Math.floor(diferenca / 3600);
       const minutos = Math.floor((diferenca % 3600) / 60);
-      const segundos = Math.floor(diferenca % 60).toFixed(2);
+      const segundos = Math.floor(diferenca % 60).toFixed(0);
+      const media = `${horas}:${minutos}:${segundos}`;
 
-      return `${horas}:${minutos}:${segundos}`;
+      return media;
     });
 
     const response = this.calcularMediaHorarios(dates);
