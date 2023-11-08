@@ -16,7 +16,7 @@ describe("Perfil Use Case", () => {
   });
 
   it("Deve ser capaz de criar um perfil e uma configuração", async () => {
-    const perfil = await sut.execute(
+    const createPerfil = await sut.execute(
       {
         owner_id: "76561198195920183",
         owner_name: "Italo araújo",
@@ -38,7 +38,7 @@ describe("Perfil Use Case", () => {
       }
     );
 
-    expect(perfil.id).toEqual(expect.any(String));
+    expect(createPerfil.id).toEqual(expect.any(String));
   });
 
   it("Deve retornar um erro VerifyAccountVacBanError ao passar um ID com VAC Ban", async () => {

@@ -11,6 +11,7 @@ import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdverti
 import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlreadyBeenSoldError";
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { makeProcessTransaction } from "../@factories/Transaction/makeProcessTransaction";
+import { calculateReliability } from "@/utils/calculateReliability";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -99,7 +100,13 @@ export class CreateTransactionUseCase {
     await this.skinRepository.updateById(skin_id, {
       status: "Em andamento",
     });
-    console.log("Bateu AQUIII");
+
+    if (perfilSeller.total_exchanges > 2) {
+      const reliability = await calculateReliability(perfilSeller.owner_id);
+      await this.perfilRepository.updateByUser(perfilSeller.owner_id, {
+        reliability,
+      });
+    }
 
     setTimeout(async () => {
       const processTransaction = makeProcessTransaction();
