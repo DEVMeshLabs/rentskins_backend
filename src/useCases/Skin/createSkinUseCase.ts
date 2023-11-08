@@ -12,7 +12,8 @@ export class CreateSkinUseCase {
     );
 
     if (duplicateSkins.length > 0) {
-      throw new SkinAlreadyExistsError(`${duplicateSkins[0].skin_name}`);
+      const duplicateSkinName = duplicateSkins[0].skin_name;
+      throw new SkinAlreadyExistsError(duplicateSkinName);
     }
 
     const createdSkins = await this.skinsRepository.create({ ...data });
