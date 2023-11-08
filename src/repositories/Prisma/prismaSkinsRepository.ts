@@ -50,6 +50,10 @@ export class PrismaSkinRepository implements ISkinsRepository {
     let whereCondition: Object;
 
     if (type === "name") {
+      whereCondition = {
+        skin_name: { contains: search, mode: "insensitive" },
+      };
+    } else if (type === "category") {
       if (search === "Diversos") {
         whereCondition = {
           OR: [
@@ -59,13 +63,9 @@ export class PrismaSkinRepository implements ISkinsRepository {
         };
       } else {
         whereCondition = {
-          skin_name: { contains: search, mode: "insensitive" },
+          skin_category: { contains: search, mode: "insensitive" },
         };
       }
-    } else if (type === "category") {
-      whereCondition = {
-        skin_category: { contains: search, mode: "insensitive" },
-      };
     } else if (type === "weapon") {
       whereCondition = {
         skin_weapon: { contains: search, mode: "insensitive" },
