@@ -145,6 +145,7 @@ export class UpdateConfirmTransactionUseCase {
         }),
         this.skinRepository.updateById(updateConfirm.skin_id, {
           status: "Concluído",
+          saledAt: new Date(),
         }),
       ];
 

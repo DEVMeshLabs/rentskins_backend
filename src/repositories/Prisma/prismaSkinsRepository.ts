@@ -3,6 +3,18 @@ import { prisma } from "@/lib/prisma";
 import { ISkinsRepository } from "../interfaceRepository/ISkinsRepository";
 
 export class PrismaSkinRepository implements ISkinsRepository {
+  async findLastSellerSkins(name: string) {
+    const findAllLastSeller = await prisma.skin.findMany({
+      where: {
+        seller_name: name,
+        status: "Concluído",
+      },
+      orderBy: { createdAt: "desc" },
+    });
+
+    return findAllLastSeller;
+  }
+
   async create(data: Prisma.SkinCreateManyInput) {
     const skin = await prisma.skin.createMany({
       data,

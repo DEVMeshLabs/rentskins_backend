@@ -6,7 +6,6 @@ export function getInventoryUserController(
   reply: FastifyReply
 ) {
   const { id } = req.params as { id: string };
-
   try {
     return community.getUserInventoryContents(
       id,

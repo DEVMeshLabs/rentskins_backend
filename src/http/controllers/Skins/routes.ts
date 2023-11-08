@@ -15,6 +15,7 @@ import { getInventoryManyUserController } from "./getInventoryManyUserController
 import { getInventoryUserController } from "./getInventoryUserController";
 import { getAlreadyExistSkinInventory } from "./getAlreadyExistSkinInventory";
 import { getMedianPriceController } from "./getMedianPriceController";
+import { getLastSellerSkinsController } from "./getLastSellerSkinsController";
 
 export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins", getSkinManyController);
@@ -29,6 +30,8 @@ export async function skinRouter(app: FastifyInstance) {
   app.post("/v1/skins/availability/:id", getAlreadyExistSkinInventory);
 
   app.post("/v1/skins", { onRequest: [verifyJwt] }, createSkinController);
+  app.post("/v1/skins/lastseller", getLastSellerSkinsController);
+
   app.post(
     "/v1/skins/inventory/:id",
     { onRequest: [verifyJwt] },
@@ -41,11 +44,4 @@ export async function skinRouter(app: FastifyInstance) {
   );
   app.delete("/v1/skins/:id", deleteSkinController);
   app.put("/v1/skins/:id", { onRequest: [verifyJwt] }, updateSkinController);
-
-  app.get("/test", (req, reply) => {
-    app.io.emit("notification", {
-      message: "Aqui vai a notificação",
-    });
-    return reply.send("OK");
-  });
 }
