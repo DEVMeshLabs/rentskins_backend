@@ -48,8 +48,20 @@ export class PrismaSkinRepository implements ISkinsRepository {
     pageSize: number
   ) {
     let whereCondition: Object;
+
     if (type === "name") {
-      whereCondition = { skin_name: { contains: search, mode: "insensitive" } };
+      if (search === "Diversos") {
+        whereCondition = {
+          OR: [
+            { skin_category: { contains: "Container", mode: "insensitive" } },
+            { skin_category: { contains: "Sticker", mode: "insensitive" } },
+          ],
+        };
+      } else {
+        whereCondition = {
+          skin_name: { contains: search, mode: "insensitive" },
+        };
+      }
     } else if (type === "category") {
       whereCondition = {
         skin_category: { contains: search, mode: "insensitive" },
