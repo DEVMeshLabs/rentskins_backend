@@ -30,7 +30,7 @@ export async function skinRouter(app: FastifyInstance) {
   app.post("/v1/skins/availability/:id", getAlreadyExistSkinInventory);
 
   app.post("/v1/skins", { onRequest: [verifyJwt] }, createSkinController);
-  app.post("/v1/skins/lastseller", getLastSellerSkinsController);
+  app.post("/v1/skins/lastsales", getLastSellerSkinsController);
 
   app.post(
     "/v1/skins/inventory/:id",
