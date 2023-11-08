@@ -54,25 +54,6 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return userTransaction;
   }
 
-  async lastSalesUser(seller_id: string) {
-    const lastSales = await prisma.transaction.findMany({
-      where: {
-        seller_id,
-        buyer_confirm: "Aceito",
-        seller_confirm: "Aceito",
-        salesAt: {
-          not: {
-            equals: null,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
-    return lastSales;
-  }
-
   async transactionCountAll(seller_id: string) {
     const count = await prisma.transaction.count({
       where: {
