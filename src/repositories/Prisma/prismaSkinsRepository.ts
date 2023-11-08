@@ -6,7 +6,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
   async findLastSellerSkins(name: string) {
     const findAllLastSeller = await prisma.skin.findMany({
       where: {
-        seller_name: name,
+        skin_name: name,
         status: "Concluído",
       },
       orderBy: { createdAt: "desc" },
