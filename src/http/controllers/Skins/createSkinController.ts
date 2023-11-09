@@ -52,7 +52,9 @@ export async function createSkinController(
     await Promise.all([...response]);
   } catch (error) {
     if (error instanceof SkinAlreadyExistsError) {
-      return reply.status(409).send({ error: error.message });
+      return reply
+        .status(409)
+        .send({ error: error.message, asset_id: error.asset_id });
     } else if (error instanceof ZodError) {
       return reply.status(400).send({ error: error.message });
     }
