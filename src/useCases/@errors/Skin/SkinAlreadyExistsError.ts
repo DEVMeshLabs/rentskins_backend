@@ -1,5 +1,9 @@
 export class SkinAlreadyExistsError extends Error {
-  constructor(customer?: string) {
-    super(`Skin ${customer !== undefined ? customer : ""} Already Exist`);
+  public id: string;
+  public asset_id: string;
+  constructor(message?: string, id?: string, asset_id?: string) {
+    super(`O item ${message !== undefined ? message : ""} já foi anunciado.`);
+    this.asset_id = asset_id;
+    this.id = id;
   }
 }

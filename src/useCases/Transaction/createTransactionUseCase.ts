@@ -56,7 +56,9 @@ export class CreateTransactionUseCase {
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
     } else if (findSkinTransaction) {
-      throw new SkinHasAlreadyBeenSoldError(findSkin.skin_name);
+      throw new SkinHasAlreadyBeenSoldError(
+        `${findSkin.skin_name} ${findSkin.asset_id}`
+      );
     }
 
     const formattedBalance = findSkin.skin_price.toLocaleString("pt-BR", {
