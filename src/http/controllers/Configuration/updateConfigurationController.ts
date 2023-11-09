@@ -10,6 +10,7 @@ export async function updateConfigurationController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   const owner_id = req.user.ownerId;
+
   try {
     const data = updateConfigurationSchema.parse(req.body);
     const updateConfig = makeUpdateConfigurationUseCase();
