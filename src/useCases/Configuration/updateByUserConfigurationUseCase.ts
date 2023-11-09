@@ -10,32 +10,42 @@ export class UpdateByIdUseCase {
     owner_id: string,
     data: Prisma.ConfigurationUpdateInput
   ): Promise<Prisma.BatchPayload> {
-    const findConfig = await this.configuration.findByUser(owner_id);
+    const existingConfig = await this.configuration.findByUser(owner_id);
 
-    if (!findConfig) {
+    if (!existingConfig) {
       throw new ConfigurationNotExistError();
     }
 
-    const findAllConfig = await this.configuration.findByMany();
-    const isAlreadyExistCpf = findAllConfig.filter((config) => {
-      if (config.owner_id === data.owner_id) {
+    const allConfigurations = await this.configuration.findByMany();
+
+    const isDuplicate = allConfigurations.filter((config) => {
+      if (config.owner_id === data.owner_id && config.owner_id !== owner_id) {
         throw new ConfigurationAlreadyExistCpfError("Perfil já existe.");
-      } else if (config.owner_cpf === data.owner_cpf) {
+      } else if (
+        config.owner_cpf === data.owner_cpf &&
+        config.owner_id !== owner_id
+      ) {
         throw new ConfigurationAlreadyExistCpfError(
           "CPF já cadastrado no sistema."
         );
-      } else if (config.owner_email === data.owner_email) {
+      } else if (
+        config.owner_email === data.owner_email &&
+        config.owner_id !== owner_id
+      ) {
         throw new ConfigurationAlreadyExistCpfError(
           "Email já cadastrado no sistema."
         );
       } else if (
         config.owner_phone === data.owner_phone &&
-        findConfig.owner_id !== owner_id
+        config.owner_id !== owner_id
       ) {
         throw new ConfigurationAlreadyExistCpfError(
           "Telefone já cadastrado no sistema."
         );
-      } else if (config.url_trade === data.url_trade) {
+      } else if (
+        config.url_trade === data.url_trade &&
+        config.owner_id !== owner_id
+      ) {
         throw new ConfigurationAlreadyExistCpfError(
           "Trade Link já cadastrado no sistema."
         );
@@ -44,7 +54,7 @@ export class UpdateByIdUseCase {
       return true;
     });
 
-    if (!isAlreadyExistCpf) {
+    if (!isDuplicate) {
       return;
     }
 
