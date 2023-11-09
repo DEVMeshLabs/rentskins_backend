@@ -29,6 +29,7 @@ export async function createSkinController(
         asset_id,
         status_float,
         sale_type,
+        stickers,
       }) =>
         await skinRepository.execute({
           skin_image,
@@ -46,6 +47,7 @@ export async function createSkinController(
           status_float,
           sale_type,
           asset_id,
+          stickers,
         })
     );
 
