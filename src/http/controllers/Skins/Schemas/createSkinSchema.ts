@@ -18,6 +18,14 @@ const createSkinSchema = z.array(
     status: z.string(),
     status_float: z.string(),
     sale_type: z.string(),
+    stickers: z
+      .array(
+        z.object({
+          name: z.string(),
+          url: z.string(),
+        })
+      )
+      .optional(),
     cartId: z.string().optional(),
   })
 );

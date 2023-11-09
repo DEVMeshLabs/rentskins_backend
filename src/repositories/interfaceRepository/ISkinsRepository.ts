@@ -13,12 +13,7 @@ export interface ISkinsRepository {
   findByManyWeapon(skin_weapon: string): Promise<Skin[] | null>;
   findByManyCategory(skin_category: string): Promise<Skin[] | null>;
   findManyAssent(): Promise<Skin[]>;
-  findByManySeller(
-    seller_id: string,
-    page: number,
-    pageSize: number,
-    deletedAt: string
-  ): Promise<Skin[]>;
+  findByManySeller(seller_id: string, deletedAt: string): Promise<Skin[]>;
   findByCountSkins(): Promise<number>;
   findByCountSellers(seller_id: string): Promise<number>;
   findByCountSearch(search: string): Promise<number>;

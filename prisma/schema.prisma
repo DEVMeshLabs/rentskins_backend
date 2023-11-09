@@ -28,6 +28,7 @@ model Skin {
   status          String?        @db.VarChar(255)
   status_float    String         @db.VarChar(255)
   sale_type       String?        @db.VarChar(255)
+  stickers        Json?
   saledAt         DateTime?
   createdAt       DateTime       @default(now())
   updatedAt       DateTime?

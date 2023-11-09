@@ -22,20 +22,13 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return skin;
   }
 
-  async findByManySeller(
-    seller_id: string,
-    page: number,
-    pageSize: number,
-    deletedAt: string
-  ) {
+  async findByManySeller(seller_id: string, deletedAt: string) {
     const findSeller = prisma.skin.findMany({
       where:
         deletedAt === "false"
           ? { seller_id, deletedAt: null, status: null }
           : { seller_id },
-      take: pageSize,
       orderBy: { createdAt: "desc" },
-      skip: (page - 1) * pageSize,
     });
 
     return findSeller;
@@ -58,7 +51,6 @@ export class PrismaSkinRepository implements ISkinsRepository {
         whereCondition = {
           OR: [
             { skin_category: { contains: "Container", mode: "insensitive" } },
-            { skin_category: { contains: "Sticker", mode: "insensitive" } },
             { skin_category: { contains: "Collectible", mode: "insensitive" } },
           ],
         };
