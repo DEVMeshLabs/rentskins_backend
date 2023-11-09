@@ -59,6 +59,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
           OR: [
             { skin_category: { contains: "Container", mode: "insensitive" } },
             { skin_category: { contains: "Sticker", mode: "insensitive" } },
+            { skin_category: { contains: "Collectible", mode: "insensitive" } },
           ],
         };
       } else {
