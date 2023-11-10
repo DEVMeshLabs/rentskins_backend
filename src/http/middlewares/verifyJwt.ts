@@ -2,14 +2,13 @@ import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function verifyJwt(req: FastifyRequest, reply: FastifyReply) {
   const bearToken = req.headers.authorization;
+
   if (!bearToken) {
     return reply.status(401).send({
       error:
         "Por favor, forneça um token de autorização válido na solicitação.",
     });
   }
-
-  // const token = bearToken.split("Bearer ")[1];
 
   try {
     const decode = await req.jwtVerify();

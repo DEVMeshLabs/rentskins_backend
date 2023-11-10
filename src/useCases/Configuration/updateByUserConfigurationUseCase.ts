@@ -49,6 +49,10 @@ export class UpdateByIdUseCase {
         throw new ConfigurationAlreadyExistCpfError(
           "Trade Link já cadastrado no sistema."
         );
+      } else if (config.key === data.key && config.owner_id !== owner_id) {
+        throw new ConfigurationAlreadyExistCpfError(
+          "Chave API já cadastrado no sistema."
+        );
       }
 
       return true;
@@ -58,7 +62,9 @@ export class UpdateByIdUseCase {
       return;
     }
 
-    const updateId = await this.configuration.updateById(owner_id, { ...data });
+    const updateId = await this.configuration.updateById(owner_id, {
+      ...data,
+    });
 
     return updateId;
   }

@@ -11,6 +11,10 @@ export async function updateConfigurationController(
 ): Promise<FastifyReply | void> {
   const owner_id = req.user.ownerId;
 
+  if (!owner_id) {
+    return reply.status(404).send({ error: "owner_id não encontrado." });
+  }
+
   try {
     const data = updateConfigurationSchema.parse(req.body);
     const updateConfig = makeUpdateConfigurationUseCase();
