@@ -14,4 +14,5 @@ export const updateConfigurationSchema = z.object({
     .optional(),
   agreed_with_emails: z.boolean().optional(),
   agreed_with_terms: z.boolean().optional(),
+  key: z.string().optional(),
 });
