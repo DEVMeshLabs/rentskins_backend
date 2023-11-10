@@ -1,9 +1,9 @@
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { Prisma } from "@prisma/client";
 import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
-import { ConfigurationAlreadyExistCpfError } from "../@errors/Configuration/ConfigurationAlreadyExistCpfError";
+import { checkDuplicate } from "@/utils/checkDuplicateConfiguration";
 
-export class UpdateByIdUseCase {
+export class UpdateByUserConfigurationUseCase {
   constructor(private configuration: IConfigurationRepository) {}
 
   async execute(
@@ -18,42 +18,42 @@ export class UpdateByIdUseCase {
 
     const allConfigurations = await this.configuration.findByMany();
 
-    const isDuplicate = allConfigurations.filter((config) => {
-      if (config.owner_id === data.owner_id && config.owner_id !== owner_id) {
-        throw new ConfigurationAlreadyExistCpfError("Perfil já existe.");
-      } else if (
-        config.owner_cpf === data.owner_cpf &&
-        config.owner_id !== owner_id
-      ) {
-        throw new ConfigurationAlreadyExistCpfError(
-          "CPF já cadastrado no sistema."
-        );
-      } else if (
-        config.owner_email === data.owner_email &&
-        config.owner_id !== owner_id
-      ) {
-        throw new ConfigurationAlreadyExistCpfError(
-          "Email já cadastrado no sistema."
-        );
-      } else if (
-        config.owner_phone === data.owner_phone &&
-        config.owner_id !== owner_id
-      ) {
-        throw new ConfigurationAlreadyExistCpfError(
-          "Telefone já cadastrado no sistema."
-        );
-      } else if (
-        config.url_trade === data.url_trade &&
-        config.owner_id !== owner_id
-      ) {
-        throw new ConfigurationAlreadyExistCpfError(
-          "Trade Link já cadastrado no sistema."
-        );
-      } else if (config.key === data.key && config.owner_id !== owner_id) {
-        throw new ConfigurationAlreadyExistCpfError(
-          "Chave API já cadastrado no sistema."
-        );
-      }
+    const isDuplicate = allConfigurations.some((config) => {
+      checkDuplicate(
+        config,
+        "owner_id",
+        data.owner_id as string,
+        "Perfil já existe.",
+        owner_id
+      );
+      checkDuplicate(
+        config,
+        "owner_cpf",
+        data.owner_cpf as string,
+        "CPF já cadastrado no sistema.",
+        owner_id
+      );
+      checkDuplicate(
+        config,
+        "owner_email",
+        data.owner_email as string,
+        "Email já cadastrado no sistema.",
+        owner_id
+      );
+      checkDuplicate(
+        config,
+        "owner_phone",
+        data.owner_phone as string,
+        "Telefone já cadastrado no sistema.",
+        owner_id
+      );
+      checkDuplicate(
+        config,
+        "url_trade",
+        data.url_trade as string,
+        "Trade Link já cadastrado no sistema.",
+        owner_id
+      );
 
       return true;
     });
