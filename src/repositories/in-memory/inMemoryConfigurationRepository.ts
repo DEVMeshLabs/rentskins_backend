@@ -3,7 +3,7 @@ import { IConfigurationRepository } from "../interfaceRepository/IConfigurationR
 import { randomUUID } from "crypto";
 
 export class InMemoryConfiguration implements IConfigurationRepository {
-  public config: Configuration[] = [];
+  public config = [];
 
   private notImplemented(): Promise<any> {
     return Promise.resolve(null);
@@ -21,6 +21,7 @@ export class InMemoryConfiguration implements IConfigurationRepository {
       url_trade: "",
       agreed_with_emails: false,
       agreed_with_terms: false,
+      key: "",
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
@@ -31,11 +32,18 @@ export class InMemoryConfiguration implements IConfigurationRepository {
     return config;
   }
 
-  updateById(
+  async updateByUser(
     owner_id: string,
     data: Prisma.ConfigurationUncheckedUpdateManyInput
-  ): Promise<Prisma.BatchPayload> {
-    return this.notImplemented();
+  ): Promise<Configuration> {
+    const index = this.config.findIndex((item) => item.owner_id === owner_id);
+
+    if (index !== -1) {
+      this.config[index] = { ...this.config[index], ...data };
+      console.log(this.config[index]);
+      return this.config[index];
+    }
+    return this.config[index];
   }
 
   async findByUser(owner_id: string) {

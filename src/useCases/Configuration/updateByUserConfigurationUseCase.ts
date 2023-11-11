@@ -1,5 +1,5 @@
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
-import { Prisma } from "@prisma/client";
+import { Configuration, Prisma } from "@prisma/client";
 import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
 import { checkDuplicate } from "@/utils/checkDuplicateConfiguration";
 
@@ -9,7 +9,7 @@ export class UpdateByUserConfigurationUseCase {
   async execute(
     owner_id: string,
     data: Prisma.ConfigurationUpdateInput
-  ): Promise<Prisma.BatchPayload> {
+  ): Promise<Configuration> {
     const existingConfig = await this.configuration.findByUser(owner_id);
 
     if (!existingConfig) {
@@ -17,7 +17,6 @@ export class UpdateByUserConfigurationUseCase {
     }
 
     const allConfigurations = await this.configuration.findByMany();
-
     const isDuplicate = allConfigurations.some((config) => {
       checkDuplicate(
         config,
@@ -62,7 +61,7 @@ export class UpdateByUserConfigurationUseCase {
       return;
     }
 
-    const updateId = await this.configuration.updateById(owner_id, {
+    const updateId = await this.configuration.updateByUser(owner_id, {
       ...data,
     });
 
