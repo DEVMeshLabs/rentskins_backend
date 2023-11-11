@@ -3,6 +3,10 @@ import { ISkinsRepository } from "../interfaceRepository/ISkinsRepository";
 import { randomUUID } from "crypto";
 
 export class InMemorySkinRepository implements ISkinsRepository {
+  async findLastSellerSkins(name: string) {
+    return this.notImplemented();
+  }
+
   public skins: Skin[] = [];
 
   private notImplemented(): Promise<any> {
@@ -42,12 +46,7 @@ export class InMemorySkinRepository implements ISkinsRepository {
     return allSkins;
   }
 
-  findByManySeller(
-    seller_id: string,
-    page: number,
-    pageSize: number,
-    deletedAt: string
-  ): Promise<any> {
+  async findByManySeller(seller_id: string, deletedAt: string): Promise<any> {
     return this.notImplemented();
   }
 
@@ -94,6 +93,7 @@ export class InMemorySkinRepository implements ISkinsRepository {
       saledAt: null,
       sale_type: data.sale_type,
       status_float: data.status_float,
+      stickers: [],
       skin_link_game: "/",
       skin_link_steam: "/",
       createdAt: new Date(),

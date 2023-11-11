@@ -12,11 +12,11 @@ export class PrismaConfigurationRepository implements IConfigurationRepository {
     return deleteId;
   }
 
-  async updateById(
+  async updateByUser(
     owner_id: string,
     data: Prisma.ConfigurationUncheckedUpdateManyInput
   ) {
-    const updateUser = await prisma.configuration.updateMany({
+    const updateUser = await prisma.configuration.update({
       where: { owner_id },
       data: { ...data, updatedAt: new Date() },
     });

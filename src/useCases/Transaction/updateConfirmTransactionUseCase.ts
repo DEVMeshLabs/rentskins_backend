@@ -9,6 +9,7 @@ import { MediaDates } from "@/utils/mediaDates";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { calculateReliability } from "@/utils/calculateReliability";
+import { Trades } from "@/utils/trades";
 
 export class UpdateConfirmTransactionUseCase {
   constructor(
@@ -96,6 +97,8 @@ export class UpdateConfirmTransactionUseCase {
     const mediaDate = await calc.calcularDiferenciaDates(filteredTransactions);
 
     if (findTransaction.seller_confirm === "Aceito") {
+      await Trades.filterTradeHistory("76561198862407248", "34489117389");
+
       const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
       await this.notificationsRepository.create({
         owner_id: updateConfirm.buyer_id,
