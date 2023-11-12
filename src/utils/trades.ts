@@ -30,7 +30,6 @@ export class Trades {
           return asset.assetid === assetId;
         });
       });
-      console.log(assets);
       return assets;
     }
     console.log("No trades found");
