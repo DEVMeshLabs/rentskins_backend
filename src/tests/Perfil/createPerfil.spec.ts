@@ -1,17 +1,17 @@
-import { InMemoryConfiguration } from "@/repositories/in-memory/inMemoryConfigurationRepository";
+import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
 import { VerifyAccountVacBanError } from "@/useCases/@errors/Perfil/VerifyAccountVacBanError";
 import { CreatePerfilUseCase } from "@/useCases/Perfil/createPerfilUseCase";
 import { expect, describe, beforeEach, it } from "vitest";
 
 let perfilRepository: InMemoryPerfilRepository;
-let configurationRepository: InMemoryConfiguration;
+let configurationRepository: InMemoryConfigurationRepository;
 let sut: CreatePerfilUseCase;
 
 describe("Perfil Use Case", () => {
   beforeEach(async () => {
-    configurationRepository = new InMemoryConfiguration();
     perfilRepository = new InMemoryPerfilRepository();
+    configurationRepository = new InMemoryConfigurationRepository();
     sut = new CreatePerfilUseCase(perfilRepository, configurationRepository);
   });
 

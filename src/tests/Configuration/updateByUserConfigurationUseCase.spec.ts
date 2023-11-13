@@ -1,15 +1,15 @@
-import { InMemoryConfiguration } from "@/repositories/in-memory/inMemoryConfigurationRepository";
+import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 import { ConfigurationAlreadyExistCpfError } from "@/useCases/@errors/Configuration/ConfigurationAlreadyExistCpfError";
 import { ConfigurationNotExistError } from "@/useCases/@errors/Configuration/ConfigurationNotExistError";
 import { UpdateByUserConfigurationUseCase } from "@/useCases/Configuration/updateByUserConfigurationUseCase";
 import { expect, describe, beforeEach, it } from "vitest";
 
-let configurationRepository: InMemoryConfiguration;
+let configurationRepository: InMemoryConfigurationRepository;
 let sut: UpdateByUserConfigurationUseCase;
 
 describe("Configuration Use Case", () => {
   beforeEach(async () => {
-    configurationRepository = new InMemoryConfiguration();
+    configurationRepository = new InMemoryConfigurationRepository();
     sut = new UpdateByUserConfigurationUseCase(configurationRepository);
   });
 
