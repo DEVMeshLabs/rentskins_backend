@@ -4,12 +4,21 @@ import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRep
 import { TransactionNotExistError } from "../@errors/Transaction/TransactionNotExistError";
 import { NotUpdateTransaction } from "../@errors/Transaction/NotUpdateTransaction";
 import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
-import { Transaction } from "@prisma/client";
+import { Perfil, Skin, Transaction } from "@prisma/client";
 import { MediaDates } from "@/utils/mediaDates";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { calculateReliability } from "@/utils/calculateReliability";
 import { Trades } from "@/utils/trades";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
+
+interface IComposeOwnerIdUpdates {
+  id: string;
+  findTransaction: Transaction;
+  updateConfirm: Transaction;
+  skin: Skin;
+  mediaDate?: any;
+}
 
 export class UpdateConfirmTransactionUseCase {
   constructor(
@@ -17,7 +26,8 @@ export class UpdateConfirmTransactionUseCase {
     private perfilRepository: IPerfilRepository,
     private walletRepository: IWalletRepository,
     private notificationsRepository: INotificationRepository,
-    private skinRepository: ISkinsRepository
+    private skinRepository: ISkinsRepository,
+    private configurationRepository: IConfigurationRepository
   ) {}
 
   async execute(id: string, status: string, query: string) {
@@ -60,12 +70,11 @@ export class UpdateConfirmTransactionUseCase {
   // ----------------------------------------------------------------
 
   private async determineStatus(updateConfirm: any): Promise<string> {
-    if (updateConfirm.buyer_confirm === "Aceito") {
-      return "Concluído";
-    } else if (updateConfirm.buyer_confirm === "Recusado") {
-      return "Falhou";
-    }
-    return "Em andamento";
+    return updateConfirm.buyer_confirm === "Aceito"
+      ? "Concluído"
+      : updateConfirm.buyer_confirm === "Recusado"
+      ? "Falhou"
+      : "Em andamento";
   }
 
   private isPending(updateConfirm: any) {
@@ -79,15 +88,14 @@ export class UpdateConfirmTransactionUseCase {
   async handleCompletedTransaction(
     id: string,
     updateConfirm: any
-  ): Promise<void> {
+  ): Promise<any> {
     const findTransaction = await this.findTransactionById(id);
+    const skin = await this.skinRepository.findById(findTransaction.skin_id);
 
     const findAllDateTransactions =
       await this.transactionRepository.findByManyUser(
         findTransaction.seller_id
       );
-
-    const skin = await this.skinRepository.findById(findTransaction.skin_id);
 
     const filteredTransactions = findAllDateTransactions.filter((item) => {
       return item.salesAt !== null;
@@ -97,7 +105,20 @@ export class UpdateConfirmTransactionUseCase {
     const mediaDate = await calc.calcularDiferenciaDates(filteredTransactions);
 
     if (findTransaction.seller_confirm === "Aceito") {
-      await Trades.filterTradeHistory("76561198862407248", "34489117389");
+      // const configurationBuyer = await this.configurationRepository.findByUser(
+      //   findTransaction.buyer_id
+      // );
+
+      const configurationSeller = await this.configurationRepository.findByUser(
+        findTransaction.seller_id
+      );
+
+      console.log(configurationSeller);
+
+      if (configurationSeller.key && configurationSeller.key !== "") {
+        const trade = await Trades.filterTradeHistory();
+        console.log(trade);
+      }
 
       const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
       await this.notificationsRepository.create({
@@ -116,41 +137,19 @@ export class UpdateConfirmTransactionUseCase {
 
     if (findTransaction.status === "Concluído") {
       const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
-      const percentDiscount = 4;
-      const discountAmount = (percentDiscount / 100) * updateConfirm.balance;
-      const newBalance = updateConfirm.balance - discountAmount;
 
-      const formattedBalance = findTransaction.balance.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-        minimumFractionDigits: 2,
-      });
-
-      const sellerUpdate = [
-        this.walletRepository.updateByUserValue(
-          updateConfirm.seller_id,
-          "increment",
-          newBalance
-        ),
-        this.perfilRepository.updateByUser(updateConfirm.seller_id, {
-          total_exchanges_completed: findPerfil.total_exchanges_completed + 1,
-        }),
-
-        this.transactionRepository.updateId(id, { salesAt: new Date() }),
-        this.perfilRepository.updateByUser(updateConfirm.seller_id, {
-          delivery_time: mediaDate,
-        }),
-
-        this.notificationsRepository.create({
-          owner_id: updateConfirm.seller_id,
-          description: `A venda do item ${skin.skin_name} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
-          skin_id: findTransaction.skin_id,
-        }),
-        this.skinRepository.updateById(updateConfirm.skin_id, {
-          status: "Concluído",
-          saledAt: new Date(),
-        }),
-      ];
+      // Atualizar o vendedor e envia as notificações
+      const sellerUpdates = await this.composeSellerIdUpdatesConcluido(
+        updateConfirm.seller_id,
+        findPerfil,
+        {
+          id,
+          findTransaction,
+          updateConfirm,
+          skin,
+          mediaDate,
+        }
+      );
 
       const buyerUpdates = [
         this.notificationsRepository.create({
@@ -160,7 +159,7 @@ export class UpdateConfirmTransactionUseCase {
         }),
       ];
 
-      await Promise.all([...sellerUpdate, ...buyerUpdates]);
+      await Promise.all([...sellerUpdates, ...buyerUpdates]);
 
       const user = await this.perfilRepository.findByUser(
         findTransaction.seller_id
@@ -174,41 +173,21 @@ export class UpdateConfirmTransactionUseCase {
       }
     }
 
-    if (
-      findTransaction.status === "Falhou" &&
-      (findTransaction.buyer_confirm === "Recusado" ||
-        findTransaction.seller_confirm === "Recusado")
-    ) {
-      const formattedBalance = findTransaction.balance.toLocaleString("pt-BR", {
-        style: "currency",
-        currency: "BRL",
-        minimumFractionDigits: 2,
-      });
+    if (findTransaction.status === "Falhou") {
+      const composeBuyerUpdatesFalhou = await this.composeBuyerUpdatesFalhou(
+        findTransaction.buyer_id,
+        {
+          id,
+          findTransaction,
+          updateConfirm,
+          skin,
+        }
+      );
 
-      await Promise.all([
-        this.notificationsRepository.create({
-          owner_id: updateConfirm.buyer_id,
-          description: `A compra do item ${skin.skin_name} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`,
-          skin_id: findTransaction.skin_id,
-        }),
-        this.notificationsRepository.create({
-          owner_id: updateConfirm.seller_id,
-          description: `A venda do item ${skin.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
-          skin_id: findTransaction.skin_id,
-        }),
-        this.walletRepository.updateByUserValue(
-          findTransaction.buyer_id,
-          "increment",
-          findTransaction.balance
-        ),
-        this.skinRepository.updateById(findTransaction.skin_id, {
-          status: "Falhou",
-        }),
-      ]);
+      await Promise.all([...composeBuyerUpdatesFalhou]);
     }
   }
 
-  // ----------------------------------------------------------------
   async findPerfilByUser(owner_id: string) {
     const findPerfil = await this.perfilRepository.findByUser(owner_id);
 
@@ -218,4 +197,90 @@ export class UpdateConfirmTransactionUseCase {
 
     return findPerfil;
   }
+
+  async composeSellerIdUpdatesConcluido(
+    sellerId: string,
+    perfil: Perfil,
+    data: IComposeOwnerIdUpdates
+  ) {
+    const { newBalance } = calculateDiscount(data.updateConfirm.balance);
+    const formattedBalance = formatBalance(data.findTransaction.balance);
+
+    const notificationSeller = {
+      owner_id: sellerId,
+      description: `A venda do item ${data.skin.skin_name} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
+      skin_id: data.findTransaction.skin_id,
+    };
+
+    return [
+      this.walletRepository.updateByUserValue(
+        sellerId,
+        "increment",
+        newBalance
+      ),
+      this.perfilRepository.updateByUser(sellerId, {
+        total_exchanges_completed: perfil.total_exchanges_completed + 1,
+      }),
+
+      this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
+      this.perfilRepository.updateByUser(sellerId, {
+        delivery_time: data.mediaDate,
+      }),
+
+      this.notificationsRepository.create(notificationSeller),
+      this.skinRepository.updateById(data.updateConfirm.skin_id, {
+        status: "Concluído",
+        saledAt: new Date(),
+      }),
+    ];
+  }
+
+  async composeBuyerUpdatesFalhou(
+    buyerId: string,
+    data: IComposeOwnerIdUpdates
+  ) {
+    const formattedBalance = formatBalance(data.findTransaction.balance);
+
+    const notificationSeller = {
+      owner_id: buyerId,
+      description: `A venda do item ${data.skin.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
+      skin_id: data.findTransaction.skin_id,
+    };
+
+    const notificationBuyer = {
+      owner_id: data.findTransaction.buyer_id,
+      description: `A compra do item ${data.skin.skin_name} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`,
+      skin_id: data.findTransaction.skin_id,
+    };
+
+    return [
+      this.walletRepository.updateByUserValue(
+        buyerId,
+        "increment",
+        data.findTransaction.balance
+      ),
+      this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
+      this.notificationsRepository.create(notificationSeller),
+      this.notificationsRepository.create(notificationBuyer),
+      this.skinRepository.updateById(data.updateConfirm.skin_id, {
+        status: "Falhou",
+      }),
+    ];
+  }
+}
+
+function calculateDiscount(balance) {
+  const percentDiscount = 4;
+  const discountAmount = (percentDiscount / 100) * balance;
+  const newBalance = balance - discountAmount;
+
+  return { percentDiscount, discountAmount, newBalance };
+}
+
+function formatBalance(balance: number) {
+  return balance.toLocaleString("pt-BR", {
+    style: "currency",
+    currency: "BRL",
+    minimumFractionDigits: 2,
+  });
 }
