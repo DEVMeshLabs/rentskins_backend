@@ -115,7 +115,7 @@ export class UpdateConfirmTransactionUseCase {
 
       console.log(configurationSeller);
 
-      if (configurationSeller.key && configurationSeller.key !== "") {
+      if (configurationSeller) {
         const trade = await Trades.filterTradeHistory();
         console.log(trade);
       }
@@ -135,20 +135,23 @@ export class UpdateConfirmTransactionUseCase {
       });
     }
 
+    // STATUS TRANSACTION CONCLUÍDO
+
     if (findTransaction.status === "Concluído") {
       const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
 
       // Atualizar o vendedor e envia as notificações
-      const sellerUpdates = await this.composeSellerIdUpdatesConcluido(
+      const sellerUpdates = await this.composeOwnerIdUpdates(
         updateConfirm.seller_id,
-        findPerfil,
+        false,
         {
           id,
           findTransaction,
           updateConfirm,
           skin,
           mediaDate,
-        }
+        },
+        findPerfil
       );
 
       const buyerUpdates = [
@@ -173,18 +176,22 @@ export class UpdateConfirmTransactionUseCase {
       }
     }
 
+    // STATUS TRANSACTION FALHOU
+
     if (findTransaction.status === "Falhou") {
-      const composeBuyerUpdatesFalhou = await this.composeBuyerUpdatesFalhou(
+      const compose = await this.composeOwnerIdUpdates(
         findTransaction.buyer_id,
+        true,
         {
           id,
           findTransaction,
           updateConfirm,
           skin,
+          mediaDate,
         }
       );
 
-      await Promise.all([...composeBuyerUpdatesFalhou]);
+      await Promise.all([...compose]);
     }
   }
 
@@ -198,78 +205,75 @@ export class UpdateConfirmTransactionUseCase {
     return findPerfil;
   }
 
-  async composeSellerIdUpdatesConcluido(
-    sellerId: string,
-    perfil: Perfil,
-    data: IComposeOwnerIdUpdates
-  ) {
+  async composeOwnerIdUpdates(
+    ownerId: string,
+    isTransactionFailed: boolean,
+    data: IComposeOwnerIdUpdates,
+    perfil?: Perfil
+  ): Promise<any> {
+    const formattedBalance = formatBalance(data.findTransaction.balance);
     const { newBalance } = calculateDiscount(data.updateConfirm.balance);
-    const formattedBalance = formatBalance(data.findTransaction.balance);
 
-    const notificationSeller = {
-      owner_id: sellerId,
-      description: `A venda do item ${data.skin.skin_name} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
-      skin_id: data.findTransaction.skin_id,
-    };
+    if (isTransactionFailed) {
+      const notification = {
+        notificationSeller: {
+          owner_id: ownerId,
+          description: `A venda do item ${data.skin.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
+          skin_id: data.findTransaction.skin_id,
+        },
+        notificationBuyer: {
+          owner_id: data.findTransaction.buyer_id,
+          description: `A compra do item ${data.skin.skin_name} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`,
+          skin_id: data.findTransaction.skin_id,
+        },
+      };
 
-    return [
-      this.walletRepository.updateByUserValue(
-        sellerId,
-        "increment",
-        newBalance
-      ),
-      this.perfilRepository.updateByUser(sellerId, {
-        total_exchanges_completed: perfil.total_exchanges_completed + 1,
-      }),
+      return [
+        this.walletRepository.updateByUserValue(
+          ownerId,
+          "increment",
+          data.findTransaction.balance
+        ),
+        this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
+        this.notificationsRepository.create(notification.notificationSeller),
+        this.notificationsRepository.create(notification.notificationBuyer),
+        this.skinRepository.updateById(data.updateConfirm.skin_id, {
+          status: "Falhou",
+        }),
+      ];
+    } else {
+      const notificationSeller = {
+        owner_id: ownerId,
+        description: `A venda do item ${data.skin.skin_name} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
+        skin_id: data.findTransaction.skin_id,
+      };
 
-      this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
-      this.perfilRepository.updateByUser(sellerId, {
-        delivery_time: data.mediaDate,
-      }),
+      return [
+        this.walletRepository.updateByUserValue(
+          ownerId,
+          "increment",
+          newBalance
+        ),
+        this.perfilRepository.updateByUser(ownerId, {
+          total_exchanges_completed: perfil.total_exchanges_completed + 1,
+        }),
 
-      this.notificationsRepository.create(notificationSeller),
-      this.skinRepository.updateById(data.updateConfirm.skin_id, {
-        status: "Concluído",
-        saledAt: new Date(),
-      }),
-    ];
-  }
+        this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
+        this.perfilRepository.updateByUser(ownerId, {
+          delivery_time: data.mediaDate,
+        }),
 
-  async composeBuyerUpdatesFalhou(
-    buyerId: string,
-    data: IComposeOwnerIdUpdates
-  ) {
-    const formattedBalance = formatBalance(data.findTransaction.balance);
-
-    const notificationSeller = {
-      owner_id: buyerId,
-      description: `A venda do item ${data.skin.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
-      skin_id: data.findTransaction.skin_id,
-    };
-
-    const notificationBuyer = {
-      owner_id: data.findTransaction.buyer_id,
-      description: `A compra do item ${data.skin.skin_name} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`,
-      skin_id: data.findTransaction.skin_id,
-    };
-
-    return [
-      this.walletRepository.updateByUserValue(
-        buyerId,
-        "increment",
-        data.findTransaction.balance
-      ),
-      this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
-      this.notificationsRepository.create(notificationSeller),
-      this.notificationsRepository.create(notificationBuyer),
-      this.skinRepository.updateById(data.updateConfirm.skin_id, {
-        status: "Falhou",
-      }),
-    ];
+        this.notificationsRepository.create(notificationSeller),
+        this.skinRepository.updateById(data.updateConfirm.skin_id, {
+          status: "Concluído",
+          saledAt: new Date(),
+        }),
+      ];
+    }
   }
 }
 
-function calculateDiscount(balance) {
+function calculateDiscount(balance: number) {
   const percentDiscount = 4;
   const discountAmount = (percentDiscount / 100) * balance;
   const newBalance = balance - discountAmount;
