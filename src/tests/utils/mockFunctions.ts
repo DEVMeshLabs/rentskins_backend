@@ -1,10 +1,12 @@
+import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
 import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
 
 export class MockFunctions {
   constructor(
     private skinRepository: InMemorySkinRepository,
-    private perfilRepository: InMemoryPerfilRepository
+    private perfilRepository: InMemoryPerfilRepository,
+    private configurationRepository?: InMemoryConfigurationRepository
   ) {}
 
   async createSampleSkin(seller_id: string) {
@@ -33,6 +35,18 @@ export class MockFunctions {
     owner_name: string,
     total?: number
   ) {
+    const configuration = await this.configurationRepository.create({
+      owner_id,
+      owner_name,
+      owner_email: "",
+      owner_phone: "",
+      owner_cpf: "",
+      agreed_with_emails: false,
+      agreed_with_terms: false,
+      url_trade: "",
+      url_sell: "",
+    });
+
     return await this.perfilRepository.create({
       owner_id,
       owner_name,
@@ -40,6 +54,27 @@ export class MockFunctions {
       picture: "asdadasdasd",
       steam_url: "https://steamcommunity.com/profiles/76561198195920183",
       steam_created_date: "your_value_here",
+      configurationId: configuration.id,
     });
   }
 }
+
+// {
+//   owner_id,
+//   owner_name,
+//   owner_email: "",
+//   owner_phone: "",
+//   owner_cpf: "",
+//   url_sell: "",
+//   url_trade: "",
+//   agreed_with_emails: false,
+//   agreed_with_terms: false,
+// },
+// {
+//   owner_id,
+//   owner_name,
+//   owner_country,
+//   steam_created_date: accountCreationDate,
+//   picture,
+//   steam_url,
+// }

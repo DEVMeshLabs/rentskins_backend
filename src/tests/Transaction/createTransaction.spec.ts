@@ -12,12 +12,14 @@ import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsE
 import { CreateTransactionUseCase } from "@/useCases/Transaction/createTransactionUseCase";
 import { expect, describe, beforeEach, it } from "vitest";
 import { MockFunctions } from "../utils/mockFunctions";
+import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 
 let transactionRepository: InMemoryTransactionRepository;
 let perfilRepository: InMemoryPerfilRepository;
 let skinRepository: InMemorySkinRepository;
 let walletRepository: InMemoryWalletRepository;
 let notificationsRepository: InMemoryNotificationRepository;
+let configurationRepository: InMemoryConfigurationRepository;
 let mockFunction: MockFunctions;
 let sut: CreateTransactionUseCase;
 
@@ -28,7 +30,12 @@ describe("Transaction Use Case", () => {
     skinRepository = new InMemorySkinRepository();
     walletRepository = new InMemoryWalletRepository();
     notificationsRepository = new InMemoryNotificationRepository();
-    mockFunction = new MockFunctions(skinRepository, perfilRepository);
+    configurationRepository = new InMemoryConfigurationRepository();
+    mockFunction = new MockFunctions(
+      skinRepository,
+      perfilRepository,
+      configurationRepository
+    );
 
     sut = new CreateTransactionUseCase(
       transactionRepository,

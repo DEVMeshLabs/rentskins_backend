@@ -9,12 +9,14 @@ import { UpdateConfirmTransactionUseCase } from "@/useCases/Transaction/updateCo
 import { TransactionNotExistError } from "@/useCases/@errors/Transaction/TransactionNotExistError";
 import { PerfilNotExistError } from "@/useCases/@errors/Perfil/PerfilInfoNotExistError";
 import { NotUpdateTransaction } from "@/useCases/@errors/Transaction/NotUpdateTransaction";
+import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 
 let transactionRepository: InMemoryTransactionRepository;
 let perfilRepository: InMemoryPerfilRepository;
 let skinRepository: InMemorySkinRepository;
 let walletRepository: InMemoryWalletRepository;
 let notificationsRepository: InMemoryNotificationRepository;
+let configurationRepository: InMemoryConfigurationRepository;
 let mockFunction: MockFunctions;
 let sut: UpdateConfirmTransactionUseCase;
 
@@ -25,22 +27,28 @@ describe("Update transaction Use Case", () => {
     skinRepository = new InMemorySkinRepository();
     walletRepository = new InMemoryWalletRepository();
     notificationsRepository = new InMemoryNotificationRepository();
-    mockFunction = new MockFunctions(skinRepository, perfilRepository);
+    configurationRepository = new InMemoryConfigurationRepository();
+    mockFunction = new MockFunctions(
+      skinRepository,
+      perfilRepository,
+      configurationRepository
+    );
 
     sut = new UpdateConfirmTransactionUseCase(
       transactionRepository,
       perfilRepository,
       walletRepository,
       notificationsRepository,
-      skinRepository
+      skinRepository,
+      configurationRepository
     );
   });
 
   it("Deve ser capaz de fazer um update", async () => {
     const [skin] = await Promise.all([
       mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
       mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
