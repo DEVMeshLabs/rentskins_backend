@@ -17,3 +17,15 @@
          run: |
            npm ci
            npm run test
+        
+         env:
+            JWT_SECRET: test
+            STEAM_USERNAME: test
+            STEAM_PASSWORD: test
+            STEAM_KEY: test
+            STRIPE_PUBLIC_KEY: test
+            STRIPE_SECRET_KEY: test
+            STRIPE_SECRET_WEBHOOK_KEY: test
+            MERCADO_SECRET_KEY: test     
+        
+        
