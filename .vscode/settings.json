@@ -2,6 +2,7 @@
   "conventionalCommits.scopes": [
     "CreateConfiguration",
     "Skins",
-    "createCart"
+    "createCart",
+    "package.json"
   ]
 }
