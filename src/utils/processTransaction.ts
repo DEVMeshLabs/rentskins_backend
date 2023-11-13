@@ -40,8 +40,6 @@ export class ProcessTransaction {
         .then((response) => response.data)
         .catch((err) => err.message);
 
-      console.log(inventario);
-
       const isAlreadyExistSkinInventory = inventario.some((item: any) => {
         return item.assetid === findSkin.asset_id;
       });

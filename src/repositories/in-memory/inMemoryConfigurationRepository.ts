@@ -2,7 +2,9 @@ import { Configuration, Prisma } from "@prisma/client";
 import { IConfigurationRepository } from "../interfaceRepository/IConfigurationRepository";
 import { randomUUID } from "crypto";
 
-export class InMemoryConfiguration implements IConfigurationRepository {
+export class InMemoryConfigurationRepository
+  implements IConfigurationRepository
+{
   public config = [];
 
   private notImplemented(): Promise<any> {
@@ -40,7 +42,6 @@ export class InMemoryConfiguration implements IConfigurationRepository {
 
     if (index !== -1) {
       this.config[index] = { ...this.config[index], ...data };
-      console.log(this.config[index]);
       return this.config[index];
     }
     return this.config[index];
