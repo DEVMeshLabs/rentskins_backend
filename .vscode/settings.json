@@ -3,6 +3,7 @@
     "CreateConfiguration",
     "Skins",
     "createCart",
-    "package.json"
+    "package.json",
+    "workflow.yaml"
   ]
 }

@@ -1,6 +1,6 @@
  name: Continuos Integration
 
- on: push
+ on: [push]
 
  jobs:
    continuos-integration:
