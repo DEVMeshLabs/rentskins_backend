@@ -179,7 +179,7 @@ export class UpdateConfirmTransactionUseCase {
     // STATUS TRANSACTION FALHOU
 
     if (findTransaction.status === "Falhou") {
-      const compose = await this.composeOwnerIdUpdates(
+      const buyerUpdates = await this.composeOwnerIdUpdates(
         findTransaction.buyer_id,
         true,
         {
@@ -191,7 +191,7 @@ export class UpdateConfirmTransactionUseCase {
         }
       );
 
-      await Promise.all([...compose]);
+      await Promise.all([...buyerUpdates]);
     }
   }
 
@@ -272,6 +272,7 @@ export class UpdateConfirmTransactionUseCase {
     }
   }
 }
+
 
 function calculateDiscount(balance: number) {
   const percentDiscount = 4;
