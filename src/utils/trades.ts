@@ -13,11 +13,17 @@ export class Trades {
     }
   }
 
+  /**
+   * Filters the trade history based on the provided parameters.
+   *
+   * @return {Promise<boolean | string>} A Promise that resolves to a boolean indicating whether the specified asset exists in the trade history, or a string indicating that no trades were found.
+   */
+
   static async filterTradeHistory(): Promise<boolean | string> {
     const steamidOther = "76561198862407248";
     const assetId = "34489117389";
     const key = "C3B106395E5E2FCD39B30DF5E85C28E0";
-    let isVerifyStatus: true | false = false;
+    let isVerifyStatus: boolean = false;
 
     try {
       const trades = await this.getTradeHistory(key);
