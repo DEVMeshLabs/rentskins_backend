@@ -1,4 +1,4 @@
-export class CreateTransactionError extends Error {
+export class CartNotFoundError extends Error {
   constructor() {
     super("Cart was not found");
   }

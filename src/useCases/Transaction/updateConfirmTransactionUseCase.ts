@@ -11,6 +11,7 @@ import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepos
 import { calculateReliability } from "@/utils/calculateReliability";
 import { Trades } from "@/utils/trades";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
+import { calculateDiscount } from "@/utils/calculateDiscount";
 
 interface IComposeOwnerIdUpdates {
   id: string;
@@ -105,21 +106,29 @@ export class UpdateConfirmTransactionUseCase {
     const mediaDate = await calc.calcularDiferenciaDates(filteredTransactions);
 
     if (findTransaction.seller_confirm === "Aceito") {
-      // const configurationBuyer = await this.configurationRepository.findByUser(
-      //   findTransaction.buyer_id
-      // );
+      const configurationBuyer = await this.configurationRepository.findByUser(
+        findTransaction.buyer_id
+      );
 
       const configurationSeller = await this.configurationRepository.findByUser(
         findTransaction.seller_id
+      );
+      const findPerfilUser = await this.findPerfilByUser(
+        findTransaction.buyer_id
+      );
+
+      const findSkin = await this.skinRepository.findById(
+        findTransaction.skin_id
       );
 
       // Verificar se o vendedor ou comprador tem uma key
 
       if (configurationSeller.key && configurationSeller.key !== "") {
-        const findPerfil = await this.findPerfilByUser(
-          findTransaction.buyer_id
+        const trade = await Trades.filterTradeHistory(
+          findTransaction.buyer_id,
+          findSkin.asset_id,
+          configurationSeller.key
         );
-        const trade = await Trades.filterTradeHistory();
 
         if (trade) {
           const sellerUpdates = await this.composeOwnerIdUpdates(
@@ -132,13 +141,39 @@ export class UpdateConfirmTransactionUseCase {
               skin,
               mediaDate,
             },
-            findPerfil
+            findPerfilUser
           );
 
           await Promise.all([...sellerUpdates]);
           return;
         }
+      } else if (configurationBuyer.key && configurationBuyer.key !== "") {
+        const trade = await Trades.filterTradeHistory(
+          findTransaction.seller_id,
+          findSkin.asset_id,
+          configurationSeller.key
+        );
+
+        if (trade) {
+          const sellerUpdates = await this.composeOwnerIdUpdates(
+            updateConfirm.seller_id,
+            false,
+            {
+              id,
+              findTransaction,
+              updateConfirm,
+              skin,
+              mediaDate,
+            },
+            findPerfilUser
+          );
+
+          await Promise.all([...sellerUpdates]);
+
+          return;
+        }
       }
+
       // -------------------------------------------------------------
       const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
       await this.notificationsRepository.create({
@@ -265,10 +300,12 @@ export class UpdateConfirmTransactionUseCase {
           "increment",
           data.findTransaction.balance
         ),
-        this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
         this.notificationsRepository.create(
           notifications.notificationsSuccess.notificationSeller
         ),
+        this.transactionRepository.updateId(data.findTransaction.id, {
+          status: "Falhou",
+        }),
         this.notificationsRepository.create(
           notifications.notificationsSuccess.notificationBuyer
         ),
@@ -305,14 +342,6 @@ export class UpdateConfirmTransactionUseCase {
       ];
     }
   }
-}
-
-function calculateDiscount(balance: number) {
-  const percentDiscount = 4;
-  const discountAmount = (percentDiscount / 100) * balance;
-  const newBalance = balance - discountAmount;
-
-  return { percentDiscount, discountAmount, newBalance };
 }
 
 function formatBalance(balance: number) {
