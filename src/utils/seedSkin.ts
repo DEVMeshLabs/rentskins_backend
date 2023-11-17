@@ -6,6 +6,7 @@ export const seedSkin = [
     skin_category: "Pistol",
     skin_weapon: "Five-SeveN",
     skin_price: 450,
+    slug: "asdasdasd561654684",
     skin_float: "0,10072",
     seller_name: "Italo",
     seller_id: "76561199205585878",

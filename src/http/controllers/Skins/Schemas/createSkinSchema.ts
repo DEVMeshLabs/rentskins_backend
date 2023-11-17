@@ -11,7 +11,6 @@ const createSkinSchema = z.array(
     skin_rarity: z.string(),
     skin_link_game: z.string(),
     skin_link_steam: z.string(),
-    median_price: z.number(),
     asset_id: z.string(),
     seller_name: z.string(),
     seller_id: z.string().max(17),
