@@ -29,6 +29,7 @@
     "fastify-raw-body": "^4.2.2",
     "fastify-socket.io": "^5.0.0",
     "globaloffensive": "^2.3.0",
+    "md5": "^2.3.0",
     "mercadopago": "^2.0.1",
     "node-cron": "^3.0.2",
     "socket.io": "^4.7.2",
