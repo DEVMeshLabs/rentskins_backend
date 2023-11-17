@@ -1,6 +1,7 @@
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { Prisma } from "@prisma/client";
 import { SkinAlreadyExistsError } from "../@errors/Skin/SkinAlreadyExistsError";
+import { slug } from "@/utils/slug";
 
 export class CreateSkinUseCase {
   constructor(private skinsRepository: ISkinsRepository) {}
@@ -22,7 +23,15 @@ export class CreateSkinUseCase {
       );
     }
 
-    const createdSkins = await this.skinsRepository.create({ ...data });
+    const skinSlug = await slug(data.skin_name, data.asset_id);
+
+    const skin = {
+      ...data,
+      slug: skinSlug,
+    };
+
+    console.log(skin.slug);
+    const createdSkins = await this.skinsRepository.create(skin);
 
     return createdSkins;
   }
