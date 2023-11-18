@@ -21,7 +21,6 @@ describe("Skin Use Case", () => {
       skin_weapon: "Test skin exlucidaaaa",
       skin_price: 550,
       skin_float: "0,10072",
-      median_price: 253,
       seller_name: "Caçadora de demonios",
       seller_id: "76561199205585878",
       skin_rarity: "8650AC",

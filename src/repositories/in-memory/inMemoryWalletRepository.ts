@@ -68,4 +68,8 @@ export class InMemoryWalletRepository implements IWalletRepository {
   deleteWallet(id: string) {
     return this.notImplemented();
   }
+
+  updateByUser(owner_id: string, data: any) {
+    return this.notImplemented();
+  }
 }

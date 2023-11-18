@@ -49,7 +49,7 @@ model SkinToCart {
 
 model Cart {
   id         String       @id @default(uuid()) @db.VarChar(36)
-  buyer_id   String       @db.VarChar(255)
+  buyer_id   String       @unique @db.VarChar(255)
   price      Float        @default(0)
   createdAt  DateTime     @default(now())
   updatedAt  DateTime?
@@ -86,11 +86,11 @@ model Configuration {
   id                 String    @id @default(uuid()) @db.VarChar(36)
   owner_id           String    @unique @db.VarChar(255)
   owner_name         String    @db.VarChar(255)
-  owner_email        String    @db.VarChar(255)
-  owner_phone        String    @db.VarChar(255)
-  owner_cpf          String    @db.VarChar(14)
-  url_trade          String    @db.VarChar(255)
-  url_sell           String    @db.VarChar(255)
+  owner_email        String?   @db.VarChar(255)
+  owner_phone        String?   @db.VarChar(255)
+  owner_cpf          String?   @db.VarChar(14)
+  url_trade          String?   @db.VarChar(255)
+  url_sell           String?   @db.VarChar(255)
   agreed_with_emails Boolean?  @default(false)
   agreed_with_terms  Boolean?  @default(false)
   key                String?   @db.VarChar(32)
