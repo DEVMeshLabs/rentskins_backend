@@ -160,7 +160,7 @@ export class ProcessTransaction {
     const notifications = {
       notificationsSuccess: {
         notificationSeller: {
-          owner_id: ownerId,
+          owner_id: data.updateConfirm.seller_id,
           description: `A venda do item ${skinName} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
           skin_id: skinId,
         },
@@ -173,7 +173,7 @@ export class ProcessTransaction {
 
       notificationsFailed: {
         notificationSeller: {
-          owner_id: ownerId,
+          owner_id: data.updateConfirm.seller_id,
           description: `A venda do item ${skinName} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
           skin_id: skinId,
         },
