@@ -112,7 +112,7 @@ export class CreateTransactionUseCase {
       });
     }
 
-    const dataHoraExecucao = getFormattedDateArray(0, 0, 30, 0);
+    const dataHoraExecucao = getFormattedDateArray(0, 0, 1, 0);
 
     try {
       const minhaTarefaCron = cron.schedule(
