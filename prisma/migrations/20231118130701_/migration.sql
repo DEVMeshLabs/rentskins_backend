@@ -1,0 +1,6 @@
+-- AlterTable
+ALTER TABLE "Configuration" ALTER COLUMN "owner_email" DROP NOT NULL,
+ALTER COLUMN "owner_phone" DROP NOT NULL,
+ALTER COLUMN "owner_cpf" DROP NOT NULL,
+ALTER COLUMN "url_trade" DROP NOT NULL,
+ALTER COLUMN "url_sell" DROP NOT NULL;

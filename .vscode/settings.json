@@ -5,6 +5,7 @@
     "createCart",
     "package.json",
     "workflow.yaml",
-    "Dockerfile"
+    "Dockerfile",
+    "createPerfil"
   ]
 }

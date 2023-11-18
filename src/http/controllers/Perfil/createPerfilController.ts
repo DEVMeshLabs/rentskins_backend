@@ -30,27 +30,14 @@ export async function createPerfilDateController(
 
     const makePerfilRepository = makeCreatePerfil();
 
-    await makePerfilRepository.execute(
-      {
-        owner_id,
-        owner_name,
-        owner_email: "",
-        owner_phone: "",
-        owner_cpf: "",
-        url_sell: "",
-        url_trade: "",
-        agreed_with_emails: false,
-        agreed_with_terms: false,
-      },
-      {
-        owner_id,
-        owner_name,
-        owner_country,
-        steam_created_date: accountCreationDate,
-        picture,
-        steam_url,
-      }
-    );
+    await makePerfilRepository.execute({
+      owner_id,
+      owner_name,
+      owner_country,
+      steam_created_date: accountCreationDate,
+      picture,
+      steam_url,
+    });
   } catch (error) {
     if (error instanceof PerfilAlreadyExistError) {
       return reply.status(409).send({ error: error.message });

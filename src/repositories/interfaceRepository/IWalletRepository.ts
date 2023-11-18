@@ -5,6 +5,7 @@ export interface IWalletRepository {
   findById(id: string): Promise<Wallet | null>;
   findByUser(owner_id: string): Promise<Wallet | null>;
   findByWalletsId(id: string, other_id: string): Promise<any>;
+  updateByUser(owner_id: string, data: any): Promise<Wallet>;
   updateByUserValue(
     owner_id: string,
     type: string,
