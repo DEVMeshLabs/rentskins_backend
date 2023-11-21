@@ -1,3 +1,4 @@
+import { expect, describe, beforeEach, it, vi } from "vitest";
 import { InMemoryNotificationRepository } from "@/repositories/in-memory/inMemoryNotificationRepository";
 import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
 import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
@@ -10,7 +11,6 @@ import { SkinHasAlreadyBeenSoldError } from "@/useCases/@errors/Transaction/Skin
 import { InsufficientFundsError } from "@/useCases/@errors/Wallet/InsufficientFundsError";
 import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsError";
 import { CreateTransactionUseCase } from "@/useCases/Transaction/createTransactionUseCase";
-import { expect, describe, beforeEach, it } from "vitest";
 import { MockFunctions } from "../utils/mockFunctions";
 import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 
@@ -47,6 +47,8 @@ describe("Transaction Use Case", () => {
   });
 
   it("Deve ser capaz de criar uma transação", async () => {
+    vi.useFakeTimers();
+
     const [skin] = await Promise.all([
       mockFunction.createSampleSkin("76561199205585878"),
       mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
