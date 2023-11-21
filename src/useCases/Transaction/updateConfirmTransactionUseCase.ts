@@ -265,32 +265,20 @@ export class UpdateConfirmTransactionUseCase {
     const skinId = data.findTransaction.skin_id;
     const skinName = data.skin.skin_name;
 
-    const notifications = {
-      notificationsSuccess: {
-        notificationSeller: {
-          owner_id: data.updateConfirm.seller_id,
-          description: `A venda do item ${skinName} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`,
-          skin_id: skinId,
-        },
-        notificationBuyer: {
-          owner_id: data.findTransaction.buyer_id,
-          description: `A compra do item ${skinName} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`,
-          skin_id: skinId,
-        },
-      },
+    const sellerNotification = {
+      owner_id: data.updateConfirm.seller_id,
+      description: isTransactionFailed
+        ? `A venda do item ${skinName} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`
+        : `A venda do item ${skinName} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
+      skin_id: skinId,
+    };
 
-      notificationsFailed: {
-        notificationSeller: {
-          owner_id: data.updateConfirm.seller_id,
-          description: `A venda do item ${skinName} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
-          skin_id: skinId,
-        },
-        notificationBuyer: {
-          owner_id: data.updateConfirm.buyer_id,
-          description: `A compra do item ${skinName} foi realizada com sucesso! Verifique o item em seu inventário.`,
-          skin_id: skinId,
-        },
-      },
+    const buyerNotification = {
+      owner_id: data.updateConfirm.buyer_id,
+      description: isTransactionFailed
+        ? `A compra do item ${skinName} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`
+        : `A compra do item ${skinName} foi realizada com sucesso! Verifique o item em seu inventário.`,
+      skin_id: skinId,
     };
 
     if (isTransactionFailed) {
@@ -300,15 +288,11 @@ export class UpdateConfirmTransactionUseCase {
           "increment",
           data.findTransaction.balance
         ),
-        this.notificationsRepository.create(
-          notifications.notificationsSuccess.notificationSeller
-        ),
+        this.notificationsRepository.create(sellerNotification),
         this.transactionRepository.updateId(data.findTransaction.id, {
           status: "Falhou",
         }),
-        this.notificationsRepository.create(
-          notifications.notificationsSuccess.notificationBuyer
-        ),
+        this.notificationsRepository.create(buyerNotification),
         this.skinRepository.updateById(data.updateConfirm.skin_id, {
           status: "Falhou",
         }),
@@ -329,12 +313,8 @@ export class UpdateConfirmTransactionUseCase {
           delivery_time: data.mediaDate,
         }),
 
-        this.notificationsRepository.create(
-          notifications.notificationsFailed.notificationSeller
-        ),
-        this.notificationsRepository.create(
-          notifications.notificationsFailed.notificationBuyer
-        ),
+        this.notificationsRepository.create(sellerNotification),
+        this.notificationsRepository.create(buyerNotification),
         this.skinRepository.updateById(data.updateConfirm.skin_id, {
           status: "Concluído",
           saledAt: new Date(),

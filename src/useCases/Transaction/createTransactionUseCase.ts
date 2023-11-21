@@ -12,8 +12,8 @@ import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlrea
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { makeProcessTransaction } from "../@factories/Transaction/makeProcessTransaction";
 import { calculateReliability } from "@/utils/calculateReliability";
-import cron from "node-cron";
-import { getFormattedDateArray } from "@/utils/getFormattedDate";
+// import cron from "node-cron";
+// import { getFormattedDateArray } from "@/utils/getFormattedDate";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -112,27 +112,36 @@ export class CreateTransactionUseCase {
       });
     }
 
-    const dataHoraExecucao = getFormattedDateArray(0, 0, 1, 0);
+    // const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 10);
 
     try {
-      const minhaTarefaCron = cron.schedule(
-        `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
-        async () => {
-          console.log("Iniciando cronnnnnnnnnnnnnnnnnnnnnnnn.");
-          const processTransaction = makeProcessTransaction();
-          await processTransaction.execute(
-            createTransaction,
-            findSkin,
-            perfilBuyer,
-            perfilSeller
-          );
-
-          console.log("Finalizando cronnnnnnnnnnnnnnnnnnnnnnnn.");
-        },
-        { timezone: "America/Sao_Paulo" }
-      );
-
-      minhaTarefaCron.start();
+      setTimeout(async () => {
+        console.log("Iniciando cronnnnnnnnnnnnnnnnnnnnnnnn.");
+        const processTransaction = makeProcessTransaction();
+        await processTransaction.execute(
+          createTransaction,
+          findSkin,
+          perfilBuyer,
+          perfilSeller
+        );
+        console.log("Finalizando cronnnnnnnnnnnnnnnnnnnnnnnn.");
+      }, 10000 * 60 * 5);
+      // const minhaTarefaCron = cron.schedule(
+      //   `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
+      //   async () => {
+      //     console.log("Iniciando cronnnnnnnnnnnnnnnnnnnnnnnn.");
+      //     const processTransaction = makeProcessTransaction();
+      //     await processTransaction.execute(
+      //       createTransaction,
+      //       findSkin,
+      //       perfilBuyer,
+      //       perfilSeller
+      //     );
+      //     console.log("Finalizando cronnnnnnnnnnnnnnnnnnnnnnnn.");
+      //   },
+      //   { timezone: "America/Sao_Paulo" }
+      // );
+      // minhaTarefaCron.start();
     } catch (error) {
       console.error({ error: error.message });
     }
