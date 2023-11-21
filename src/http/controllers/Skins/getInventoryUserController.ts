@@ -6,12 +6,16 @@ export function getInventoryUserController(
   reply: FastifyReply
 ) {
   const { id } = req.params as { id: string };
+  const { tudo } = req.query as { tudo: string };
+
+  const isTrueOrFalse = tudo.toLowerCase() === "true";
+
   try {
     return community.getUserInventoryContents(
       id,
       730,
       2,
-      true,
+      isTrueOrFalse,
       "english",
       (err: Error | null, inventory?: any) => {
         if (err) {

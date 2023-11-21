@@ -134,14 +134,14 @@ export class ProcessTransaction {
         env.NODE_ENV === "production"
           ? "https://api-rentskin-backend-on.onrender.com"
           : "http://localhost:3333";
+
       const response = await axios.get(
-        `${isValidEnv}/v1/skins/inventory/${ownerId}`
+        `${isValidEnv}/v1/skins/inventory/${"76561198995872251"}?tudo=false`
       );
-      console.log(response.data.message);
+
       if (response.data.message === "Error") {
         throw new GetInventoryOwnerIdError();
       }
-      console.log(response.data);
       return response.data;
     } catch (err) {
       console.log(err);

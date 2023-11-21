@@ -57,13 +57,14 @@ export class CreatePerfilUseCase {
       owner_name: perfilData.owner_name,
     });
 
-    await this.cartRepository.create({
+    const cart = await this.cartRepository.create({
       buyer_id: perfilData.owner_id,
     });
 
     const createdPerfil = await this.perfilRepository.create({
       ...perfilData,
       configurationId: createdConfiguration.id,
+      cart_id: cart.id,
     });
 
     return createdPerfil;

@@ -125,7 +125,7 @@ export class CreateTransactionUseCase {
           perfilSeller
         );
         console.log("Finalizando cronnnnnnnnnnnnnnnnnnnnnnnn.");
-      }, 10000 * 60 * 5);
+      }, 10000);
       // const minhaTarefaCron = cron.schedule(
       //   `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
       //   async () => {
