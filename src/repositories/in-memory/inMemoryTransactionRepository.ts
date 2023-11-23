@@ -1,6 +1,7 @@
 import { Prisma, Transaction } from "@prisma/client";
 import { ITransactionRepository } from "../interfaceRepository/ITransactionRepository";
 import { randomUUID } from "crypto";
+import { Console } from "console";
 
 export class InMemoryTransactionRepository implements ITransactionRepository {
   public transactions: Transaction[] = [];
@@ -40,7 +41,6 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     const getTransaction = this.transactions.find((transaction) => {
       return transaction.id === id;
     });
-
     return getTransaction;
   }
 
