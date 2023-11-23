@@ -18,7 +18,6 @@ export class MockFunctions {
       skin_weapon: "Test skin exlucidaaaa",
       skin_price: 500,
       skin_float: "0,10072",
-      median_price: 253,
       seller_name: "Caçadora de demonios",
       seller_id,
       skin_rarity: "8650AC",

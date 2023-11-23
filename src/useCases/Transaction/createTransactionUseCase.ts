@@ -112,30 +112,29 @@ export class CreateTransactionUseCase {
       });
     }
 
-    const dataHoraExecucao = getFormattedDateArray(0, 0, 1, 0);
+    const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 10);
+    const processTransaction = makeProcessTransaction();
 
-    try {
-      const minhaTarefaCron = cron.schedule(
-        `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
-        async () => {
-          console.log("Iniciando cronnnnnnnnnnnnnnnnnnnnnnnn.");
-          const processTransaction = makeProcessTransaction();
+    cron.schedule(
+      `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
+      async () => {
+        console.log("INICIANDO CRONN");
+
+        try {
           await processTransaction.execute(
             createTransaction,
             findSkin,
             perfilBuyer,
-            perfilSeller
+            perfilSeller,
+            this.transactionRepository
           );
-
-          console.log("Finalizando cronnnnnnnnnnnnnnnnnnnnnnnn.");
-        },
-        { timezone: "America/Sao_Paulo" }
-      );
-
-      minhaTarefaCron.start();
-    } catch (error) {
-      console.error({ error: error.message });
-    }
+        } catch (error) {
+          console.log(error);
+        }
+        console.log("FINALIZANDOO CRONN");
+      },
+      { timezone: "America/Sao_Paulo" }
+    );
 
     return createTransaction;
   }
