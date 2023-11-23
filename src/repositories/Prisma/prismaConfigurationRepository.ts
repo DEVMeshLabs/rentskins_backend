@@ -54,6 +54,7 @@ export class PrismaConfigurationRepository implements IConfigurationRepository {
     const findIdUser = await prisma.configuration.findFirst({
       where: { owner_id, deletedAt: null },
     });
+    console.log(findIdUser);
     return findIdUser;
   }
 }
