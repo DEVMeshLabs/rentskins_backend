@@ -48,5 +48,6 @@ export async function createPerfilDateController(
       return reply.status(500).send({ error: error.message });
     }
   }
+
   return reply.status(201).send();
 }

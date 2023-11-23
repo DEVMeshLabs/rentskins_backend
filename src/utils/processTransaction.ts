@@ -1,31 +1,15 @@
-import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
-import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
-import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
-import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
-import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { Perfil, Skin, Transaction } from "@prisma/client";
 import axios from "axios";
-import { calculateDiscount } from "./calculateDiscount";
 import { env } from "process";
+import { Trades } from "./trades";
+import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { GetInventoryOwnerIdError } from "@/useCases/@errors/Transaction/GetInventoryOwnerIdError";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
-import { Trades } from "./trades";
-
-interface IComposeOwnerIdUpdates {
-  transactionId: string;
-  findTransaction: Transaction;
-  updateConfirm: Transaction;
-  skin: Skin;
-  mediaDate?: any;
-}
+import { makeComposeOwnerId } from "@/useCases/@factories/Transaction/makeComposeOwnerId";
 
 export class ProcessTransaction {
   constructor(
     private transactionRepository: ITransactionRepository,
-    private perfilRepository: IPerfilRepository,
-    private skinRepository: ISkinsRepository,
-    private walletRepository: IWalletRepository,
-    private notificationsRepository: INotificationRepository,
     private configurationRepository: IConfigurationRepository
   ) {}
 
@@ -33,12 +17,18 @@ export class ProcessTransaction {
     createTransaction: Transaction,
     findSkin: Skin,
     perfilBuyer: Perfil,
-    perfilSeller: Perfil
+    perfilSeller: Perfil,
+    transactionRepo: any
   ): Promise<void> {
     console.log("Executando processTransaction");
-    const findTransaction = await this.transactionRepository.findById(
+
+    const makeCompose = makeComposeOwnerId();
+
+    const findTransaction = await transactionRepo.findById(
       createTransaction.id
     );
+
+    console.log(findTransaction);
 
     if (findTransaction.status === "Em andamento") {
       console.log("Verificando o inventario do Vendedor com a KEY");
@@ -61,12 +51,16 @@ export class ProcessTransaction {
           configurationSeller.key || configurationBuyer.key
         );
         if (trades) {
-          return this.composeOwnerIdUpdates(perfilSeller.owner_id, false, {
-            transactionId: createTransaction.id,
-            findTransaction,
-            updateConfirm: createTransaction,
-            skin: findSkin,
-          });
+          return makeCompose.composeOwnerIdUpdates(
+            perfilSeller.owner_id,
+            false,
+            {
+              transactionId: createTransaction.id,
+              findTransaction,
+              updateConfirm: createTransaction,
+              skin: findSkin,
+            }
+          );
         }
       }
 
@@ -87,11 +81,9 @@ export class ProcessTransaction {
         }
       );
 
-      console.log(isAlreadyExistSkinInventory);
-
       if (isAlreadyExistSkinInventory) {
         console.log("Atualizando a wallet do vendedor");
-        return this.composeOwnerIdUpdates(perfilBuyer.owner_id, true, {
+        return makeCompose.composeOwnerIdUpdates(perfilBuyer.owner_id, true, {
           transactionId: createTransaction.id,
           findTransaction,
           updateConfirm: createTransaction,
@@ -110,7 +102,7 @@ export class ProcessTransaction {
 
         if (!isAlreadyExistSkinInventoryBuyer) {
           console.log("Atualizando a wallet do comprador");
-          const buyer = await this.composeOwnerIdUpdates(
+          const buyer = await makeCompose.composeOwnerIdUpdates(
             perfilBuyer.owner_id,
             true,
             {
@@ -121,7 +113,6 @@ export class ProcessTransaction {
             }
           );
           const buyerAll = await Promise.all([...buyer]);
-          console.log(buyerAll);
           return buyerAll;
         }
       }
@@ -148,82 +139,82 @@ export class ProcessTransaction {
     }
   }
 
-  async composeOwnerIdUpdates(
-    ownerId: string,
-    isTransactionFailed: boolean,
-    data: IComposeOwnerIdUpdates,
-    perfil?: Perfil
-  ): Promise<any> {
-    const { balance } = data.findTransaction;
-    const formattedBalance = formatBalance(balance);
-    const { newBalance } = calculateDiscount(data.updateConfirm.balance);
-    const skinId = data.findTransaction.skin_id;
-    const skinName = data.skin.skin_name;
+  //   async composeOwnerIdUpdates(
+  //     ownerId: string,
+  //     isTransactionFailed: boolean,
+  //     data: IComposeOwnerIdUpdates,
+  //     perfil?: Perfil
+  //   ): Promise<any> {
+  //     const { balance } = data.findTransaction;
+  //     const formattedBalance = formatBalance(balance);
+  //     const { newBalance } = calculateDiscount(data.updateConfirm.balance);
+  //     const skinId = data.findTransaction.skin_id;
+  //     const skinName = data.skin.skin_name;
 
-    const sellerNotification = {
-      owner_id: data.updateConfirm.seller_id,
-      description: isTransactionFailed
-        ? `A venda do item ${skinName} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`
-        : `A venda do item ${skinName} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
-      skin_id: skinId,
-    };
+  //     const sellerNotification = {
+  //       owner_id: data.updateConfirm.seller_id,
+  //       description: isTransactionFailed
+  //         ? `A venda do item ${skinName} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`
+  //         : `A venda do item ${skinName} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
+  //       skin_id: skinId,
+  //     };
 
-    const buyerNotification = {
-      owner_id: data.updateConfirm.buyer_id,
-      description: isTransactionFailed
-        ? `A compra do item ${skinName} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`
-        : `A compra do item ${skinName} foi realizada com sucesso! Verifique o item em seu inventário.`,
-      skin_id: skinId,
-    };
+  //     const buyerNotification = {
+  //       owner_id: data.updateConfirm.buyer_id,
+  //       description: isTransactionFailed
+  //         ? `A compra do item ${skinName} foi cancelada. ${formattedBalance} foram restaurados em seus créditos.`
+  //         : `A compra do item ${skinName} foi realizada com sucesso! Verifique o item em seu inventário.`,
+  //       skin_id: skinId,
+  //     };
 
-    if (isTransactionFailed) {
-      return [
-        this.walletRepository.updateByUserValue(
-          ownerId,
-          "increment",
-          data.findTransaction.balance
-        ),
-        this.notificationsRepository.create(sellerNotification),
-        this.transactionRepository.updateId(data.findTransaction.id, {
-          status: "Falhou",
-        }),
-        this.notificationsRepository.create(buyerNotification),
-        this.skinRepository.updateById(data.updateConfirm.skin_id, {
-          status: "Falhou",
-        }),
-      ];
-    } else {
-      return [
-        this.walletRepository.updateByUserValue(
-          ownerId,
-          "increment",
-          newBalance
-        ),
-        this.perfilRepository.updateByUser(ownerId, {
-          total_exchanges_completed: perfil.total_exchanges_completed + 1,
-        }),
+  //     if (isTransactionFailed) {
+  //       return [
+  //         this.walletRepository.updateByUserValue(
+  //           ownerId,
+  //           "increment",
+  //           data.findTransaction.balance
+  //         ),
+  //         this.notificationsRepository.create(sellerNotification),
+  //         this.transactionRepository.updateId(data.findTransaction.id, {
+  //           status: "Falhou",
+  //         }),
+  //         this.notificationsRepository.create(buyerNotification),
+  //         this.skinRepository.updateById(data.updateConfirm.skin_id, {
+  //           status: "Falhou",
+  //         }),
+  //       ];
+  //     } else {
+  //       return [
+  //         this.walletRepository.updateByUserValue(
+  //           ownerId,
+  //           "increment",
+  //           newBalance
+  //         ),
+  //         this.perfilRepository.updateByUser(ownerId, {
+  //           total_exchanges_completed: perfil.total_exchanges_completed + 1,
+  //         }),
 
-        this.transactionRepository.updateId(data.transactionId, {
-          salesAt: new Date(),
-        }),
-        this.perfilRepository.updateByUser(ownerId, {
-          delivery_time: data.mediaDate,
-        }),
+  //         this.transactionRepository.updateId(data.transactionId, {
+  //           salesAt: new Date(),
+  //         }),
+  //         this.perfilRepository.updateByUser(ownerId, {
+  //           delivery_time: data.mediaDate,
+  //         }),
 
-        this.notificationsRepository.create(sellerNotification),
-        this.notificationsRepository.create(buyerNotification),
-        this.skinRepository.updateById(data.updateConfirm.skin_id, {
-          status: "Concluído",
-          saledAt: new Date(),
-        }),
-      ];
-    }
-  }
-}
-function formatBalance(balance: number) {
-  return balance.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-  });
+  //         this.notificationsRepository.create(sellerNotification),
+  //         this.notificationsRepository.create(buyerNotification),
+  //         this.skinRepository.updateById(data.updateConfirm.skin_id, {
+  //           status: "Concluído",
+  //           saledAt: new Date(),
+  //         }),
+  //       ];
+  //     }
+  //   }
+  // }
+  // function formatBalance(balance: number) {
+  //   return balance.toLocaleString("pt-BR", {
+  //     style: "currency",
+  //     currency: "BRL",
+  //     minimumFractionDigits: 2,
+  //   });
 }
