@@ -94,7 +94,7 @@ export class CreateCheckoutSessionStripeUseCase {
           price_data: {
             unit_amount: amount * 100,
             currency: "brl",
-            product: "prod_OXhZUN8oYYERyj",
+            product: "prod_P3spuzJGzs7ivz",
           },
           quantity: 1,
         },

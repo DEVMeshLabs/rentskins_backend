@@ -10,10 +10,16 @@ import { INotificationRepository } from "@/repositories/interfaceRepository/INot
 import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdvertiseSkinNotYour";
 import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlreadyBeenSoldError";
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
-import { makeProcessTransaction } from "../@factories/Transaction/makeProcessTransaction";
 import { calculateReliability } from "@/utils/calculateReliability";
 import cron from "node-cron";
 import { getFormattedDateArray } from "@/utils/getFormattedDate";
+import axios from "axios";
+import { GetInventoryOwnerIdError } from "../@errors/Transaction/GetInventoryOwnerIdError";
+import { env } from "@/env";
+import { makeComposeOwnerId } from "../@factories/Transaction/makeComposeOwnerId";
+import { Trades } from "@/utils/trades";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
+import { Perfil, Skin, Transaction } from "@prisma/client";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -27,7 +33,8 @@ export class CreateTransactionUseCase {
     private perfilRepository: IPerfilRepository,
     private skinRepository: ISkinsRepository,
     private walletRepository: IWalletRepository,
-    private notificationsRepository: INotificationRepository
+    private notificationsRepository: INotificationRepository,
+    private configurationRepository: IConfigurationRepository
   ) {}
 
   async execute({ seller_id, buyer_id, skin_id }: ITransactionRequest) {
@@ -68,6 +75,7 @@ export class CreateTransactionUseCase {
       currency: "BRL",
       minimumFractionDigits: 2,
     });
+    console.log(this.configurationRepository);
 
     const [createTransaction] = await Promise.all([
       this.transactionRepository.create({
@@ -111,22 +119,18 @@ export class CreateTransactionUseCase {
         reliability,
       });
     }
-
     const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 10);
-    const processTransaction = makeProcessTransaction();
 
     cron.schedule(
       `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
       async () => {
         console.log("INICIANDO CRONN");
-
         try {
-          await processTransaction.execute(
+          await this.processTransaction(
             createTransaction,
             findSkin,
             perfilBuyer,
-            perfilSeller,
-            this.transactionRepository
+            perfilSeller
           );
         } catch (error) {
           console.log(error);
@@ -137,5 +141,132 @@ export class CreateTransactionUseCase {
     );
 
     return createTransaction;
+  }
+
+  async processTransaction(
+    createTransaction: Transaction,
+    findSkin: Skin,
+    perfilBuyer: Perfil,
+    perfilSeller: Perfil
+  ): Promise<void> {
+    console.log("Executando processTransaction");
+
+    const makeCompose = makeComposeOwnerId();
+
+    const findTransaction = await this.transactionRepository.findById(
+      createTransaction.id
+    );
+
+    if (findTransaction.status === "Em andamento") {
+      console.log("Verificando o inventario do Vendedor com a KEY");
+
+      const configurationSeller = await this.configurationRepository.findByUser(
+        findTransaction.seller_id
+      );
+
+      console.log(configurationSeller);
+
+      const configurationBuyer = await this.configurationRepository.findByUser(
+        findTransaction.buyer_id
+      );
+
+      const sellerKeyValid =
+        configurationSeller.key && configurationSeller.key !== "";
+      const buyerKeyValid =
+        configurationBuyer.key && configurationBuyer.key !== "";
+
+      if (sellerKeyValid || buyerKeyValid) {
+        const trades = await Trades.filterTradeHistory(
+          sellerKeyValid ? perfilBuyer.owner_id : perfilSeller.owner_id,
+          findSkin.asset_id,
+          configurationSeller.key || configurationBuyer.key
+        );
+        if (trades) {
+          return makeCompose.composeOwnerIdUpdates(
+            perfilSeller.owner_id,
+            false,
+            {
+              transactionId: createTransaction.id,
+              findTransaction,
+              updateConfirm: createTransaction,
+              skin: findSkin,
+            }
+          );
+        }
+      }
+
+      console.log("Verificando o inventario do Vendedor SEM A KEY");
+
+      const getInventorySeller = await this.getOwnerInventory(
+        perfilSeller.owner_id
+      );
+
+      if (!getInventorySeller) {
+        console.log("Deu ruim");
+        return;
+      }
+
+      const isAlreadyExistSkinInventory = getInventorySeller.some(
+        (item: any) => {
+          return item.assetid === findSkin.asset_id;
+        }
+      );
+
+      if (isAlreadyExistSkinInventory) {
+        console.log("Atualizando a wallet do vendedor");
+        return makeCompose.composeOwnerIdUpdates(perfilBuyer.owner_id, true, {
+          transactionId: createTransaction.id,
+          findTransaction,
+          updateConfirm: createTransaction,
+          skin: findSkin,
+        });
+      } else {
+        console.log("Verificando o inventario do comprador");
+
+        const getInventoryBuyer = await this.getOwnerInventory(
+          perfilBuyer.owner_id
+        );
+
+        const isAlreadyExistSkinInventoryBuyer = getInventoryBuyer.some(
+          (item: any) => item.market_name === findSkin.skin_name
+        );
+
+        if (!isAlreadyExistSkinInventoryBuyer) {
+          console.log("Atualizando a wallet do comprador");
+          const buyer = await makeCompose.composeOwnerIdUpdates(
+            perfilBuyer.owner_id,
+            true,
+            {
+              transactionId: createTransaction.id,
+              findTransaction,
+              updateConfirm: createTransaction,
+              skin: findSkin,
+            }
+          );
+          const buyerAll = await Promise.all([...buyer]);
+          return buyerAll;
+        }
+      }
+    }
+  }
+
+  private async getOwnerInventory(ownerId: string): Promise<any> {
+    try {
+      const isValidEnv =
+        env.NODE_ENV === "production"
+          ? "https://api-rentskin-backend-on.onrender.com"
+          : "http://localhost:3333";
+
+      const response = await axios.get(
+        `${isValidEnv}/v1/skins/inventory/${"76561198995872251"}?tudo=false`
+      );
+
+      if (response.data.message === "Error") {
+        throw new GetInventoryOwnerIdError();
+      }
+      return response.data;
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
