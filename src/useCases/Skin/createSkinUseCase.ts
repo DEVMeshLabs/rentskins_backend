@@ -30,7 +30,6 @@ export class CreateSkinUseCase {
       slug: skinSlug,
     };
 
-    console.log(skin.slug);
     const createdSkins = await this.skinsRepository.create(skin);
 
     return createdSkins;
