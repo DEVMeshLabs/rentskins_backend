@@ -118,26 +118,41 @@ export class CreateTransactionUseCase {
         reliability,
       });
     }
-    const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 30);
+    // const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 30);
 
-    cron.schedule(
-      `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
-      async () => {
-        console.log("INICIANDO CRONN");
-        try {
-          await this.processTransaction(
-            createTransaction,
-            findSkin,
-            perfilBuyer,
-            perfilSeller
-          );
-        } catch (error) {
-          console.log(error);
-        }
-        console.log("FINALIZANDOO CRONN");
-      },
-      { timezone: "America/Sao_Paulo" }
-    );
+    setTimeout(async () => {
+      console.log("INICIANDO CRONN");
+      try {
+        await this.processTransaction(
+          createTransaction,
+          findSkin,
+          perfilBuyer,
+          perfilSeller
+        );
+      } catch (error) {
+        console.log(error);
+      }
+      console.log("FINALIZANDOO CRONN");
+    }, 1000 * 30);
+
+    // cron.schedule(
+    //   `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
+    //   async () => {
+    //     console.log("INICIANDO CRONN");
+    //     try {
+    //       await this.processTransaction(
+    //         createTransaction,
+    //         findSkin,
+    //         perfilBuyer,
+    //         perfilSeller
+    //       );
+    //     } catch (error) {
+    //       console.log(error);
+    //     }
+    //     console.log("FINALIZANDOO CRONN");
+    //   },
+    //   { timezone: "America/Sao_Paulo" }
+    // );
 
     return createTransaction;
   }
@@ -162,8 +177,6 @@ export class CreateTransactionUseCase {
       const configurationSeller = await this.configurationRepository.findByUser(
         findTransaction.seller_id
       );
-
-      console.log(configurationSeller);
 
       const configurationBuyer = await this.configurationRepository.findByUser(
         findTransaction.buyer_id
