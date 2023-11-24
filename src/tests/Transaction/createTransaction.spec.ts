@@ -42,7 +42,8 @@ describe("Transaction Use Case", () => {
       perfilRepository,
       skinRepository,
       walletRepository,
-      notificationsRepository
+      notificationsRepository,
+      configurationRepository
     );
   });
 
