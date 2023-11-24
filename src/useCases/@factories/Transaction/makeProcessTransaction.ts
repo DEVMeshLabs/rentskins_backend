@@ -1,4 +1,3 @@
-import ProcessTransaction from "@/utils/processTransaction";
 import { makeCreateTransactionUseCase } from "./makeCreateTransactionUseCase";
 
 export function makeProcessTransaction() {
