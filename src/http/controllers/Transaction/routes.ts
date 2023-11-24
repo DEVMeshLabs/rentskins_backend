@@ -28,7 +28,7 @@ export async function transactionRouter(app: FastifyInstance) {
 
   app.post(
     "/v1/transaction/checkout",
-    { onRequest: verifyJwt },
+
     createCheckoutSessionStripeController
   );
   // Se retirar daqui, vai da erro

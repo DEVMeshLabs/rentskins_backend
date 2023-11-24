@@ -75,7 +75,6 @@ export class CreateTransactionUseCase {
       currency: "BRL",
       minimumFractionDigits: 2,
     });
-    console.log(this.configurationRepository);
 
     const [createTransaction] = await Promise.all([
       this.transactionRepository.create({
@@ -119,7 +118,7 @@ export class CreateTransactionUseCase {
         reliability,
       });
     }
-    const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 10);
+    const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 30);
 
     cron.schedule(
       `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
@@ -233,6 +232,7 @@ export class CreateTransactionUseCase {
 
         if (!isAlreadyExistSkinInventoryBuyer) {
           console.log("Atualizando a wallet do comprador");
+
           const buyer = await makeCompose.composeOwnerIdUpdates(
             perfilBuyer.owner_id,
             true,
