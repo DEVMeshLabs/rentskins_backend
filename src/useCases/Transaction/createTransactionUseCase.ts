@@ -133,7 +133,7 @@ export class CreateTransactionUseCase {
         console.log(error);
       }
       console.log("FINALIZANDOO CRONN");
-    });
+    }, 1000 * 30);
 
     // cron.schedule(
     //   `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
