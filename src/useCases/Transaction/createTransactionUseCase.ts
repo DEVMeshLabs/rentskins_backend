@@ -1,25 +1,27 @@
+import { Perfil, Skin, Transaction } from "@prisma/client";
+import { env } from "@/env";
+import schedule from "node-schedule";
+import axios from "axios";
+// ------------------ Repositorys -----------------
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
+import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
+import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
+// ------------------ Errors -----------------
 import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 import { SameUsersError } from "../@errors/Skin/SameUsersError";
-import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
-import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
-import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdvertiseSkinNotYour";
 import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlreadyBeenSoldError";
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
-import { calculateReliability } from "@/utils/calculateReliability";
-import cron from "node-cron";
-import { getFormattedDateArray } from "@/utils/getFormattedDate";
-import axios from "axios";
 import { GetInventoryOwnerIdError } from "../@errors/Transaction/GetInventoryOwnerIdError";
-import { env } from "@/env";
+// ------------------ Outros -----------------
+import { calculateReliability } from "@/utils/calculateReliability";
 import { makeComposeOwnerId } from "../@factories/Transaction/makeComposeOwnerId";
 import { Trades } from "@/utils/trades";
-import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
-import { Perfil, Skin, Transaction } from "@prisma/client";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -120,7 +122,22 @@ export class CreateTransactionUseCase {
     }
     // const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 30);
 
-    setTimeout(async () => {
+    // setTimeout(async () => {
+    //   console.log("INICIANDO CRONN");
+    //   try {
+    //     await this.processTransaction(
+    //       createTransaction,
+    //       findSkin,
+    //       perfilBuyer,
+    //       perfilSeller
+    //     );
+    //   } catch (error) {
+    //     console.log(error);
+    //   }
+    //   console.log("FINALIZANDOO CRONN");
+    // }, 1000 * 30);
+
+    schedule.scheduleJob(`20 * * * * *`, async () => {
       console.log("INICIANDO CRONN");
       try {
         await this.processTransaction(
@@ -133,27 +150,11 @@ export class CreateTransactionUseCase {
         console.log(error);
       }
       console.log("FINALIZANDOO CRONN");
-    }, 1000 * 30);
-
-    // cron.schedule(
-    //   `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
-    //   async () => {
-    //     console.log("INICIANDO CRONN");
-    //     try {
-    //       await this.processTransaction(
-    //         createTransaction,
-    //         findSkin,
-    //         perfilBuyer,
-    //         perfilSeller
-    //       );
-    //     } catch (error) {
-    //       console.log(error);
-    //     }
-    //     console.log("FINALIZANDOO CRONN");
-    //   },
-    //   { timezone: "America/Sao_Paulo" }
-    // );
-
+    });
+    const test = await this.transactionRepository.findById(
+      createTransaction.id
+    );
+    console.log("AQUIII", test);
     return createTransaction;
   }
 
@@ -212,6 +213,7 @@ export class CreateTransactionUseCase {
       const getInventorySeller = await this.getOwnerInventory(
         perfilSeller.owner_id
       );
+      console.log("TESTE", getInventorySeller);
 
       if (!getInventorySeller) {
         console.log("Deu ruim");
@@ -263,7 +265,8 @@ export class CreateTransactionUseCase {
     }
   }
 
-  private async getOwnerInventory(ownerId: string): Promise<any> {
+  async getOwnerInventory(ownerId: string): Promise<any> {
+    console.log("Entrou");
     try {
       const isValidEnv =
         env.NODE_ENV === "production"
@@ -271,12 +274,13 @@ export class CreateTransactionUseCase {
           : "http://localhost:3333";
 
       const response = await axios.get(
-        `${isValidEnv}/v1/skins/inventory/${"76561198995872251"}?tudo=false`
+        `${isValidEnv}/v1/skins/inventory/${ownerId}?tudo=false`
       );
 
       if (response.data.message === "Error") {
         throw new GetInventoryOwnerIdError();
       }
+      console.log(response);
       return response.data;
     } catch (err) {
       console.log(err);
