@@ -86,7 +86,7 @@ describe("Transaction Use Case", () => {
     expect(buyerWallet.value).toEqual(4500);
     expect(getTransaction.status).toEqual("Em andamento");
 
-    vi.advanceTimersByTime(10000);
+    vi.advanceTimersByTime(30000);
   });
 
   it("Verificando a Existência do Perfil", async () => {
