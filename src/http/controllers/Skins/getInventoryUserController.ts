@@ -6,9 +6,14 @@ export function getInventoryUserController(
   reply: FastifyReply
 ) {
   const { id } = req.params as { id: string };
-  const { tudo } = req.query as { tudo: string };
+  const { tradableOnly } = req.query as { tradableOnly: string };
+  let isTrueOrFalse;
 
-  const isTrueOrFalse = tudo.toLowerCase() === "true";
+  if (!tradableOnly) {
+    isTrueOrFalse = false;
+  } else if (tradableOnly.toLowerCase() === "true") {
+    isTrueOrFalse = true;
+  }
 
   try {
     return community.getUserInventoryContents(
