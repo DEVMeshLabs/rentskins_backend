@@ -28,7 +28,6 @@ export async function createCheckoutSessionStripeController(
       cancel_url,
       success_url,
     });
-    console.log(response);
 
     return reply.status(200).send({ url: response });
   } catch (error) {
