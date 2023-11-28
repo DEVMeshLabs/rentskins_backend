@@ -120,24 +120,8 @@ export class CreateTransactionUseCase {
         reliability,
       });
     }
-    // const dataHoraExecucao = getFormattedDateArray(0, 0, 0, 30);
 
-    // setTimeout(async () => {
-    //   console.log("INICIANDO CRONN");
-    //   try {
-    //     await this.processTransaction(
-    //       createTransaction,
-    //       findSkin,
-    //       perfilBuyer,
-    //       perfilSeller
-    //     );
-    //   } catch (error) {
-    //     console.log(error);
-    //   }
-    //   console.log("FINALIZANDOO CRONN");
-    // }, 1000 * 30);
-
-    schedule.scheduleJob(`20 * * * * *`, async () => {
+    schedule.scheduleJob(`* 5 * * * *`, async () => {
       console.log("INICIANDO CRONN");
       try {
         await this.processTransaction(
@@ -213,7 +197,6 @@ export class CreateTransactionUseCase {
       const getInventorySeller = await this.getOwnerInventory(
         perfilSeller.owner_id
       );
-      console.log("TESTE", getInventorySeller);
 
       if (!getInventorySeller) {
         console.log("Deu ruim");
@@ -258,6 +241,7 @@ export class CreateTransactionUseCase {
               skin: findSkin,
             }
           );
+
           const buyerAll = await Promise.all([...buyer]);
           return buyerAll;
         }
@@ -280,7 +264,6 @@ export class CreateTransactionUseCase {
       if (response.data.message === "Error") {
         throw new GetInventoryOwnerIdError();
       }
-      console.log(response);
       return response.data;
     } catch (err) {
       console.log(err);
