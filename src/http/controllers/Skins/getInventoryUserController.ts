@@ -7,7 +7,7 @@ export function getInventoryUserController(
 ) {
   const { id } = req.params as { id: string };
   const { tradableOnly } = req.query as { tradableOnly: string };
-  let isTrueOrFalse;
+  let isTrueOrFalse: boolean;
 
   if (!tradableOnly) {
     isTrueOrFalse = false;
