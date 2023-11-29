@@ -121,7 +121,7 @@ export class CreateTransactionUseCase {
       });
     }
 
-    schedule.scheduleJob(`* 5 * * * *`, async () => {
+    const job = schedule.scheduleJob(`* 5 * * * *`, async () => {
       console.log("INICIANDO CRONN");
       try {
         await this.processTransaction(
@@ -135,10 +135,8 @@ export class CreateTransactionUseCase {
       }
       console.log("FINALIZANDOO CRONN");
     });
-    const test = await this.transactionRepository.findById(
-      createTransaction.id
-    );
-    console.log("AQUIII", test);
+    schedule.cancelJob(job);
+
     return createTransaction;
   }
 
