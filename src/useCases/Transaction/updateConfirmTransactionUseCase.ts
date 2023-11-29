@@ -178,14 +178,14 @@ export class UpdateConfirmTransactionUseCase {
       const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
       await this.notificationsRepository.create({
         owner_id: updateConfirm.buyer_id,
-        description: `O usuário ${findPerfil.owner_name} confirmou o envio do item ${skin.skin_name}.`,
+        description: `O vendedor ${findPerfil.owner_name} confirmou o envio do item ${skin.skin_name}.`,
         skin_id: findTransaction.skin_id,
       });
     } else if (findTransaction.seller_confirm === "Recusado") {
       const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
       await this.notificationsRepository.create({
         owner_id: updateConfirm.buyer_id,
-        description: `O usuário ${findPerfil.owner_name} recusou o envio do item ${skin.skin_name}.`,
+        description: `O vendedor ${findPerfil.owner_name} recusou o envio do item ${skin.skin_name}.`,
         skin_id: findTransaction.skin_id,
       });
     }
