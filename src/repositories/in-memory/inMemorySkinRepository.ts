@@ -42,7 +42,6 @@ export class InMemorySkinRepository implements ISkinsRepository {
     const allSkins = this.skins.filter(
       (skin) => skin.status === null && skin.deletedAt === null
     );
-    console.log(allSkins);
     return allSkins;
   }
 
