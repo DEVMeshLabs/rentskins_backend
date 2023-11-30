@@ -22,6 +22,7 @@ import { GetInventoryOwnerIdError } from "../@errors/Transaction/GetInventoryOwn
 import { calculateReliability } from "@/utils/calculateReliability";
 import { makeComposeOwnerId } from "../@factories/Transaction/makeComposeOwnerId";
 import { Trades } from "@/utils/trades";
+import { getFormattedDateArray } from "@/utils/getFormattedDate";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -120,22 +121,32 @@ export class CreateTransactionUseCase {
         reliability,
       });
     }
+    // seconds, minutes, hours, dayOfMonth, month, dayOfYear
+    const [seconds, minutes, hours, day, month] = getFormattedDateArray(
+      0,
+      5,
+      0,
+      0
+    );
+    console.log(seconds);
 
-    const job = schedule.scheduleJob(`* 5 * * * *`, async () => {
-      console.log("INICIANDO CRONN");
-      try {
-        await this.processTransaction(
-          createTransaction,
-          findSkin,
-          perfilBuyer,
-          perfilSeller
-        );
-      } catch (error) {
-        console.log(error);
+    schedule.scheduleJob(
+      `${seconds} ${minutes} ${hours} ${day} ${month} *`,
+      async () => {
+        console.log("INICIANDO CRONN");
+        try {
+          await this.processTransaction(
+            createTransaction,
+            findSkin,
+            perfilBuyer,
+            perfilSeller
+          );
+        } catch (error) {
+          console.log(error);
+        }
+        console.log("FINALIZANDOO CRONN");
       }
-      console.log("FINALIZANDOO CRONN");
-    });
-    schedule.cancelJob(job);
+    );
 
     return createTransaction;
   }
@@ -196,7 +207,7 @@ export class CreateTransactionUseCase {
         perfilSeller.owner_id
       );
 
-      if (!getInventorySeller) {
+      if (Error instanceof GetInventoryOwnerIdError) {
         console.log("Deu ruim");
         return;
       }
@@ -262,6 +273,7 @@ export class CreateTransactionUseCase {
       if (response.data.message === "Error") {
         throw new GetInventoryOwnerIdError();
       }
+
       return response.data;
     } catch (err) {
       console.log(err);

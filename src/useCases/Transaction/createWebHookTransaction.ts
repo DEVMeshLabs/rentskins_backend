@@ -18,7 +18,6 @@ export class CreateWebHookTransactionUseCase {
         const customer = await customers.retrieve(
           paymentIntentSucceeded.customer
         );
-        console.log(customer);
 
         // Atualizando a wallet e Perfil
         await Promise.all([
