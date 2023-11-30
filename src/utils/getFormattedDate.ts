@@ -1,8 +1,25 @@
+/**
+ * Generates an array of formatted date components based on the current date
+ * and additional days, hours, minutes, and seconds provided.
+ *
+ * @param {number} additionalDays - The number of additional days to add to the current date (default: 0)
+ * @param {number} additionalHours - The number of additional hours to add to the current date (default: 0)
+ * @param {number} additionalMinutes - The number of additional minutes to add to the current date (default: 0)
+ * @param {number} additionalSeconds - The number of additional seconds to add to the current date (default: 0)
+ * @return {string[]} An array of formatted date components:
+ *                     - seconds: The seconds component of the date
+ *                     - minutes: The minutes component of the date
+ *                     - hours: The hours component of the date
+ *                     - dayOfMonth: The day of the month component of the date
+ *                     - month: The month component of the date
+ *                     - dayOfYear: The day of the year component of the date
+ */
+
 export function getFormattedDateArray(
-  additionalDays: number = 0,
-  additionalHours: number = 0,
+  additionalSeconds: number = 0,
   additionalMinutes: number = 0,
-  additionalSeconds: number = 0
+  additionalHours: number = 0,
+  additionalDays: number = 0
 ): string[] {
   const currentDate = new Date();
 
