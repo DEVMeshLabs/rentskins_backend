@@ -7,7 +7,6 @@ export class Trades {
         `https://api.steampowered.com/IEconService/GetTradeHistory/v1/?key=${key}&max_trades=50&get_descriptions=false&language=EN&include_failed=true&include_total=true`
       );
 
-      console.log(response);
       return response.data;
     } catch (error) {
       return error;
