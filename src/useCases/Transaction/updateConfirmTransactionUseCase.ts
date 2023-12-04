@@ -123,7 +123,26 @@ export class UpdateConfirmTransactionUseCase {
 
       // Verificar se o vendedor ou comprador tem uma key
 
-      if (configurationSeller.key && configurationSeller.key !== "") {
+      const hasSellerKey =
+        configurationSeller.key && configurationSeller.key !== "";
+
+      const hasBuyerKey =
+        configurationBuyer.key && configurationBuyer.key !== "";
+
+      const sellerUpdates = await this.composeOwnerIdUpdates(
+        updateConfirm.seller_id,
+        false,
+        {
+          id,
+          findTransaction,
+          updateConfirm,
+          skin,
+          mediaDate,
+        },
+        findPerfilUser
+      );
+
+      if (hasSellerKey) {
         const trade = await Trades.filterTradeHistory(
           findTransaction.buyer_id,
           findSkin.asset_id,
@@ -131,23 +150,10 @@ export class UpdateConfirmTransactionUseCase {
         );
 
         if (trade) {
-          const sellerUpdates = await this.composeOwnerIdUpdates(
-            updateConfirm.seller_id,
-            false,
-            {
-              id,
-              findTransaction,
-              updateConfirm,
-              skin,
-              mediaDate,
-            },
-            findPerfilUser
-          );
-
           await Promise.all([...sellerUpdates]);
           return;
         }
-      } else if (configurationBuyer.key && configurationBuyer.key !== "") {
+      } else if (hasBuyerKey) {
         const trade = await Trades.filterTradeHistory(
           findTransaction.seller_id,
           findSkin.asset_id,
@@ -155,21 +161,7 @@ export class UpdateConfirmTransactionUseCase {
         );
 
         if (trade) {
-          const sellerUpdates = await this.composeOwnerIdUpdates(
-            updateConfirm.seller_id,
-            false,
-            {
-              id,
-              findTransaction,
-              updateConfirm,
-              skin,
-              mediaDate,
-            },
-            findPerfilUser
-          );
-
           await Promise.all([...sellerUpdates]);
-
           return;
         }
       }
