@@ -1,4 +1,6 @@
-export async function calculateReliability(user: any) {
+import { Perfil } from "@prisma/client";
+
+export async function calculateReliability(user: Perfil) {
   if (user.delivery_time === "Sem informações") {
     return;
   }
@@ -16,7 +18,7 @@ export async function calculateReliability(user: any) {
     const timePercentage = Number(((hoursDifference / 24) * 100).toFixed(2));
 
     const deliveryPercentage = (
-      (user.total_exchanges_completed / user.total_exchanges) *
+      (user.total_exchanges_completed / user.total_exchanges_failed) *
       100
     ).toFixed(2);
 
@@ -28,6 +30,7 @@ export async function calculateReliability(user: any) {
     } else if (reliabilityPercentage < 0) {
       reliabilityPercentage = 0;
     }
+
     return reliabilityPercentage.toFixed(2);
   }
 }
