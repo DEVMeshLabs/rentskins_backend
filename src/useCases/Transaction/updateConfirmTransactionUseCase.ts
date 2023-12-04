@@ -86,6 +86,7 @@ export class UpdateConfirmTransactionUseCase {
   }
 
   // ----------------------------------------------------------------
+
   async handleCompletedTransaction(
     id: string,
     updateConfirm: any
@@ -103,7 +104,10 @@ export class UpdateConfirmTransactionUseCase {
     });
 
     const calc = new MediaDates();
-    const mediaDate = await calc.calcularDiferenciaDates(filteredTransactions);
+    const mediaDate = await calc.calcularDiferenciaDates(
+      filteredTransactions,
+      findTransaction.seller_id
+    );
 
     if (findTransaction.seller_confirm === "Aceito") {
       const configurationBuyer = await this.configurationRepository.findByUser(
@@ -207,7 +211,10 @@ export class UpdateConfirmTransactionUseCase {
         findTransaction.seller_id
       );
 
-      if (user.total_exchanges_completed > 2) {
+      if (
+        user.total_exchanges_completed > 2 &&
+        user.total_exchanges_failed > 2
+      ) {
         const reliability = await calculateReliability(user);
         await this.perfilRepository.updateByUser(findTransaction.seller_id, {
           reliability,
@@ -231,6 +238,27 @@ export class UpdateConfirmTransactionUseCase {
       );
 
       await Promise.all([...buyerUpdates]);
+
+      const perfil = await this.perfilRepository.findByUser(
+        findTransaction.seller_id
+      );
+
+      if (perfil) {
+        await this.perfilRepository.updateByUser(findTransaction.seller_id, {
+          total_exchanges_failed: perfil.total_exchanges_failed + 1,
+        });
+      }
+
+      if (
+        perfil &&
+        perfil.total_exchanges_completed > 2 &&
+        perfil.total_exchanges_completed > 2
+      ) {
+        const reliability = await calculateReliability(perfil);
+        await this.perfilRepository.updateByUser(findTransaction.seller_id, {
+          reliability,
+        });
+      }
     }
   }
 
@@ -296,9 +324,10 @@ export class UpdateConfirmTransactionUseCase {
           "increment",
           newBalance
         ),
-        this.perfilRepository.updateByUser(ownerId, {
-          total_exchanges_completed: perfil.total_exchanges_completed + 1,
-        }),
+        perfil &&
+          this.perfilRepository.updateByUser(ownerId, {
+            total_exchanges_completed: perfil.total_exchanges_completed + 1,
+          }),
 
         this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
         this.perfilRepository.updateByUser(ownerId, {
