@@ -52,8 +52,14 @@ describe("Transaction Use Case", () => {
 
     const [skin] = await Promise.all([
       mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
-      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleProfile({
+        owner_id: "76561199205585878",
+        owner_name: "Italo araújo",
+      }),
+      mockFunction.createSampleProfile({
+        owner_id: "76561198195920183",
+        owner_name: "Araujo",
+      }),
     ]);
 
     const vendedor = await walletRepository.create({
@@ -101,8 +107,14 @@ describe("Transaction Use Case", () => {
 
   it("Verificando a Existência da Skin", async () => {
     await Promise.all([
-      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
-      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleProfile({
+        owner_id: "76561199205585878",
+        owner_name: "Italo araújo",
+      }),
+      mockFunction.createSampleProfile({
+        owner_id: "76561198195920183",
+        owner_name: "Araujo",
+      }),
     ]);
 
     await expect(() =>
@@ -117,8 +129,14 @@ describe("Transaction Use Case", () => {
   it("Verificando a Existência da Carteira", async () => {
     const [skin] = await Promise.all([
       mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
-      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleProfile({
+        owner_id: "76561199205585878",
+        owner_name: "Italo araújo",
+      }),
+      mockFunction.createSampleProfile({
+        owner_id: "76561198195920183",
+        owner_name: "Araujo",
+      }),
     ]);
 
     await expect(() =>
@@ -133,8 +151,14 @@ describe("Transaction Use Case", () => {
   it("Verificando Saldo Insuficiente", async () => {
     const [skin] = await Promise.all([
       mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
-      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleProfile({
+        owner_id: "76561199205585878",
+        owner_name: "Italo araújo",
+      }),
+      mockFunction.createSampleProfile({
+        owner_id: "76561198195920183",
+        owner_name: "Araujo",
+      }),
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
@@ -155,13 +179,22 @@ describe("Transaction Use Case", () => {
       })
     ).rejects.toBeInstanceOf(InsufficientFundsError);
   });
-
+  // "76561199205585877", "Tiago"
   it("Verificando se consigo vender skins que não são minhas", async () => {
     const [skin] = await Promise.all([
       mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
-      mockFunction.createSampleProfile("76561199205585877", "Tiago"),
-      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleProfile({
+        owner_id: "76561199205585878",
+        owner_name: "Italo araújo",
+      }),
+      mockFunction.createSampleProfile({
+        owner_id: "76561198195920183",
+        owner_name: "Araujo",
+      }),
+      mockFunction.createSampleProfile({
+        owner_id: "76561199205585877",
+        owner_name: "Tiago",
+      }),
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
@@ -186,8 +219,14 @@ describe("Transaction Use Case", () => {
   it("Verificando a duplicação de anúncios da mesma skin", async () => {
     const [skin] = await Promise.all([
       mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile("76561199205585878", "Italo araújo"),
-      mockFunction.createSampleProfile("76561198195920183", "Araujo"),
+      mockFunction.createSampleProfile({
+        owner_id: "76561199205585878",
+        owner_name: "Italo araújo",
+      }),
+      mockFunction.createSampleProfile({
+        owner_id: "76561198195920183",
+        owner_name: "Araujo",
+      }),
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",

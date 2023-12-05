@@ -19,7 +19,6 @@ import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlrea
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { GetInventoryOwnerIdError } from "../@errors/Transaction/GetInventoryOwnerIdError";
 // ------------------ Outros -----------------
-import { calculateReliability } from "@/utils/calculateReliability";
 import { makeComposeOwnerId } from "../@factories/Transaction/makeComposeOwnerId";
 import { Trades } from "@/utils/trades";
 import { getFormattedDateArray } from "@/utils/getFormattedDate";
@@ -115,12 +114,6 @@ export class CreateTransactionUseCase {
       status: "Em andamento",
     });
 
-    if (perfilSeller.total_exchanges > 2) {
-      const reliability = await calculateReliability(perfilSeller.owner_id);
-      await this.perfilRepository.updateByUser(perfilSeller.owner_id, {
-        reliability,
-      });
-    }
     // seconds, minutes, hours, dayOfMonth, month, dayOfYear
     const [seconds, minutes, hours, day, month] = getFormattedDateArray(
       0,
@@ -128,7 +121,6 @@ export class CreateTransactionUseCase {
       0,
       0
     );
-    console.log(seconds);
 
     schedule.scheduleJob(
       `${seconds} ${minutes} ${hours} ${day} ${month} *`,

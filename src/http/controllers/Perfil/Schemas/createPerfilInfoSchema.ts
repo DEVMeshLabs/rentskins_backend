@@ -6,4 +6,5 @@ export const createPerfilInfoSchema = z.object({
   owner_country: z.string().optional(),
   picture: z.string(),
   steam_url: z.string().url(),
+  delivery_time: z.string().default("Sem informações"),
 });

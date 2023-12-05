@@ -36,8 +36,15 @@ export class MediaDates {
    * @return {Promise<string>} A Promise that resolves to a string representing the average time in the format "HH:mm:ss".
    */
 
-  async calcularDiferenciaDates(arrayDeDatas: Transaction[]): Promise<string> {
-    if (arrayDeDatas.length === 0) {
+  async calcularDiferenciaDates(
+    arrayDeDatas: Transaction[],
+    seller_id: string
+  ): Promise<string> {
+    const filterTransactionOwnerId = arrayDeDatas.filter(
+      (item) => item.seller_id === seller_id
+    );
+
+    if (filterTransactionOwnerId.length <= 0) {
       return "Sem informações";
     }
 
