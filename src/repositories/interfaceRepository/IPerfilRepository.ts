@@ -13,7 +13,10 @@ export interface IPerfilRepository {
     data: Prisma.PerfilUncheckedCreateInput
   ): Promise<Perfil>;
   updateByCart(owner_id: string, cart: string): Promise<any>;
-  updateByUser(owner_id: string, data: any): Promise<Perfil>;
+  updateByUser(
+    owner_id: string,
+    data: Prisma.PerfilUncheckedUpdateInput
+  ): Promise<Perfil>;
   updateByIdUser(id: string, data: any): Promise<any>;
   deletePerfil(id: string): Promise<Perfil>;
   deletePerfilBanco(id: string): Promise<Perfil>;

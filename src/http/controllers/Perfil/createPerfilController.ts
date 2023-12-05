@@ -11,8 +11,14 @@ export async function createPerfilDateController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { owner_id, owner_name, picture, owner_country, steam_url } =
-      createPerfilInfoSchema.parse(req.body);
+    const {
+      owner_id,
+      owner_name,
+      picture,
+      owner_country,
+      steam_url,
+      delivery_time,
+    } = createPerfilInfoSchema.parse(req.body);
 
     const steamURLs = [
       `https://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${env.STEAM_KEY}&steamids=${owner_id}`,
@@ -37,6 +43,7 @@ export async function createPerfilDateController(
       steam_created_date: accountCreationDate,
       picture,
       steam_url,
+      delivery_time,
     });
   } catch (error) {
     if (error instanceof PerfilAlreadyExistError) {
