@@ -210,11 +210,9 @@ export class UpdateConfirmTransactionUseCase {
       const user = await this.perfilRepository.findByUser(
         findTransaction.seller_id
       );
-
-      if (
-        user.total_exchanges_completed > 2 &&
-        user.total_exchanges_failed > 2
-      ) {
+      // &&
+      // user.total_exchanges_failed > 2
+      if (user.total_exchanges_completed > 2) {
         const reliability = await calculateReliability(user);
         await this.perfilRepository.updateByUser(findTransaction.seller_id, {
           reliability,
@@ -248,12 +246,9 @@ export class UpdateConfirmTransactionUseCase {
           total_exchanges_failed: perfil.total_exchanges_failed + 1,
         });
       }
-
-      if (
-        perfil &&
-        perfil.total_exchanges_completed > 2 &&
-        perfil.total_exchanges_completed > 2
-      ) {
+      // &&
+      // perfil.total_exchanges_completed > 2
+      if (perfil && perfil.total_exchanges_completed > 2) {
         const reliability = await calculateReliability(perfil);
         await this.perfilRepository.updateByUser(findTransaction.seller_id, {
           reliability,

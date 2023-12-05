@@ -354,7 +354,7 @@ describe("Update transaction Use Case", () => {
 
   it("Testando reability", async () => {
     vi.useFakeTimers();
-    const [skin1, skin2, perfil1] = await Promise.all([
+    const [skin1, skin2] = await Promise.all([
       mockFunction.createSampleSkin("76561199205585878"),
       mockFunction.createSampleSkin("76561199205585878"),
       mockFunction.createSampleProfile({
@@ -377,61 +377,61 @@ describe("Update transaction Use Case", () => {
       }),
     ]);
 
-    const transaction1 = await transactionRepository.create({
-      skin_id: skin1.id,
-      seller_id: "76561199205585878",
-      buyer_id: "76561198195920183",
-      balance: skin1.skin_price,
-    });
+    const transactions = await Promise.all([
+      transactionRepository.create({
+        skin_id: skin1.id,
+        seller_id: "76561199205585878",
+        buyer_id: "76561198195920183",
+        balance: skin1.skin_price,
+      }),
+      transactionRepository.create({
+        skin_id: skin2.id,
+        seller_id: "76561199205585878",
+        buyer_id: "76561198195920183",
+        balance: skin1.skin_price,
+      }),
 
-    const transaction2 = await transactionRepository.create({
-      skin_id: skin2.id,
-      seller_id: "76561199205585878",
-      buyer_id: "76561198195920183",
-      balance: skin1.skin_price,
-    });
+      transactionRepository.create({
+        skin_id: skin1.id,
+        seller_id: "76561199205585878",
+        buyer_id: "76561198195920183",
+        balance: skin1.skin_price,
+      }),
 
-    const transaction3 = await transactionRepository.create({
-      skin_id: skin1.id,
-      seller_id: "76561199205585878",
-      buyer_id: "76561198195920183",
-      balance: skin1.skin_price,
-    });
+      transactionRepository.create({
+        skin_id: skin2.id,
+        seller_id: "76561199205585878",
+        buyer_id: "76561198195920183",
+        balance: skin1.skin_price,
+      }),
+      transactionRepository.create({
+        skin_id: skin1.id,
+        seller_id: "76561199205585878",
+        buyer_id: "76561198195920183",
+        balance: skin1.skin_price,
+      }),
+      transactionRepository.create({
+        skin_id: skin2.id,
+        seller_id: "76561199205585878",
+        buyer_id: "76561198195920183",
+        balance: skin1.skin_price,
+      }),
+    ]);
 
-    const transaction4 = await transactionRepository.create({
-      skin_id: skin2.id,
-      seller_id: "76561199205585878",
-      buyer_id: "76561198195920183",
-      balance: skin1.skin_price,
-    });
-
-    const transaction5 = await transactionRepository.create({
-      skin_id: skin1.id,
-      seller_id: "76561199205585878",
-      buyer_id: "76561198195920183",
-      balance: skin1.skin_price,
-    });
-
-    const transaction6 = await transactionRepository.create({
-      skin_id: skin2.id,
-      seller_id: "76561199205585878",
-      buyer_id: "76561198195920183",
-      balance: skin1.skin_price,
-    });
-
-    await sut.execute(transaction4.id, "Recusado", "buyer");
-    await sut.execute(transaction5.id, "Recusado", "buyer");
-    await sut.execute(transaction6.id, "Recusado", "buyer");
     vi.advanceTimersByTime(1000 * 60 * 60);
-    await sut.execute(transaction1.id, "Aceito", "buyer");
-    await sut.execute(transaction2.id, "Aceito", "buyer");
-    await sut.execute(transaction3.id, "Aceito", "buyer");
 
-    const findUser = await perfilRepository.findByUser(transaction1.seller_id);
-    console.log("AQUII", perfil1);
-    console.log("AQUII", findUser);
-    expect(findUser.total_exchanges_completed).toBe(3);
-    expect(findUser.total_exchanges_failed).toBe(3);
-    expect(findUser.reliability).toBeTruthy();
+    for (let i = 0; i < transactions.length; i++) {
+      if (i <= 2) {
+        await sut.execute(transactions[i].id, "Recusado", "buyer");
+      } else {
+        await sut.execute(transactions[i].id, "Aceito", "buyer");
+      }
+    }
+    const perf = perfilRepository.perfil;
+
+    expect(perf[0].total_exchanges_completed).toBe(3);
+    expect(perf[0].total_exchanges_failed).toBe(3);
+    expect(perf[0].reliability).toBeTruthy();
+    expect(perf[0].reliability).toBe("61.46");
   });
 });
