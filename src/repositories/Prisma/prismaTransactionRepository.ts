@@ -72,14 +72,6 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return transactionAll;
   }
 
-  // async updateStatus(id: string, status: string) {
-  //   const transactionAll = await prisma.transaction.update({
-  //     where: { id },
-  //     data: { status, updatedAt: new Date() },
-  //   });
-  //   return transactionAll;
-  // }
-
   async updateId(id: string, data: Prisma.TransactionUpdateInput) {
     const updateId = await prisma.transaction.update({
       where: { id },
