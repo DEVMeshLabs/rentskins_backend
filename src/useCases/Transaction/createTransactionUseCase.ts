@@ -199,6 +199,8 @@ export class CreateTransactionUseCase {
         perfilSeller.owner_id
       );
 
+      console.log("Seller", getInventorySeller);
+
       if (Error instanceof GetInventoryOwnerIdError) {
         console.log("Deu ruim");
         return;
@@ -225,6 +227,24 @@ export class CreateTransactionUseCase {
           perfilBuyer.owner_id
         );
 
+        const filterStorageUnit =
+          getInventoryBuyer ??
+          getInventoryBuyer.filter(
+            (item: any) => item.market_name === "Storage Unit"
+          );
+
+        if (
+          (getInventoryBuyer.message === "Error" &&
+            !getInventoryBuyer.err.code) ||
+          filterStorageUnit
+        ) {
+          await this.transactionRepository.updateId(findTransaction.id, {
+            status: "Em análise",
+          });
+          console.log("Atualizando Status!");
+          return;
+        }
+        // "market_name": "Storage Unit",
         const isAlreadyExistSkinInventoryBuyer = getInventoryBuyer.some(
           (item: any) => item.market_name === findSkin.skin_name
         );
@@ -262,7 +282,7 @@ export class CreateTransactionUseCase {
         `${isValidEnv}/v1/skins/inventory/${ownerId}?tudo=false`
       );
 
-      if (response.data.message === "Error") {
+      if (response.data.message === "Error" && response.data.err.code) {
         throw new GetInventoryOwnerIdError();
       }
 
