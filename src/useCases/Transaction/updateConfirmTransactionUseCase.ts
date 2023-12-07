@@ -110,20 +110,17 @@ export class UpdateConfirmTransactionUseCase {
     );
 
     if (findTransaction.seller_confirm === "Aceito") {
-      const configurationBuyer = await this.configurationRepository.findByUser(
-        findTransaction.buyer_id
-      );
-
-      const configurationSeller = await this.configurationRepository.findByUser(
-        findTransaction.seller_id
-      );
-      const findPerfilUser = await this.findPerfilByUser(
-        findTransaction.buyer_id
-      );
-
-      const findSkin = await this.skinRepository.findById(
-        findTransaction.skin_id
-      );
+      const [
+        configurationBuyer,
+        configurationSeller,
+        findPerfilUser,
+        findSkin,
+      ] = await Promise.all([
+        this.configurationRepository.findByUser(findTransaction.buyer_id),
+        this.configurationRepository.findByUser(findTransaction.seller_id),
+        this.findPerfilByUser(findTransaction.buyer_id),
+        this.skinRepository.findById(findTransaction.skin_id),
+      ]);
 
       // Verificar se o vendedor ou comprador tem uma key
 
