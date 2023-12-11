@@ -25,22 +25,24 @@ export function getAlreadyExistSkinInventory(
         if (err) {
           return reply.status(500).send({ error: err.message });
         }
-        const filterInventory = inventory.filter((item: any) => {
-          if (
-            item.tags[0].name === "Container" ||
-            item.tags[0].name === "Graffiti" ||
-            item.tags[0].name === "Collectible" ||
-            item.tags[0].name === "Pass" ||
-            item.tags[0].name === "Patch"
-          ) {
-            return false;
-          }
-          return true;
-        });
+        // const filterInventory = inventory.filter((item: any) => {
+        //   if (
+        //     item.tags[0].name === "Container" ||
+        //     item.tags[0].name === "Graffiti" ||
+        //     item.tags[0].name === "Collectible" ||
+        //     item.tags[0].name === "Pass" ||
+        //     item.tags[0].name === "Patch"
+        //   ) {
+        //     return false;
+        //   }
+        //   return true;
+        // });
 
-        const isAlreadyExist = filterInventory.some(
+        const isAlreadyExist = inventory.some(
           (item: any) => item.assetid === assetid
         );
+
+        console.log(isAlreadyExist);
 
         if (!isAlreadyExist) {
           reply

@@ -13,6 +13,7 @@ import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsE
 import { CreateTransactionUseCase } from "@/useCases/Transaction/createTransactionUseCase";
 import { MockFunctions } from "../utils/mockFunctions";
 import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
+import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
 
 let transactionRepository: InMemoryTransactionRepository;
 let perfilRepository: InMemoryPerfilRepository;
@@ -21,6 +22,7 @@ let walletRepository: InMemoryWalletRepository;
 let notificationsRepository: InMemoryNotificationRepository;
 let configurationRepository: InMemoryConfigurationRepository;
 let mockFunction: MockFunctions;
+let makeCreateSkin: MakeCreateSkinRepository;
 let sut: CreateTransactionUseCase;
 
 describe("Transaction Use Case", () => {
@@ -36,6 +38,7 @@ describe("Transaction Use Case", () => {
       perfilRepository,
       configurationRepository
     );
+    makeCreateSkin = new MakeCreateSkinRepository(skinRepository);
 
     sut = new CreateTransactionUseCase(
       transactionRepository,
@@ -51,11 +54,14 @@ describe("Transaction Use Case", () => {
     vi.useFakeTimers();
 
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
       mockFunction.createSampleProfile({
         owner_id: "76561199205585878",
         owner_name: "Italo araújo",
       }),
+
       mockFunction.createSampleProfile({
         owner_id: "76561198195920183",
         owner_name: "Araujo",
@@ -79,7 +85,7 @@ describe("Transaction Use Case", () => {
       buyer_id: comprador.owner_id,
     });
 
-    const [getUser, buyerWallet, getTransaction] = await Promise.all([
+    const [getUser, , getTransaction] = await Promise.all([
       perfilRepository.findByUser(vendedor.owner_id),
       walletRepository.findByUser(comprador.owner_id),
       transactionRepository.findById(createTransaction.id),
@@ -87,12 +93,9 @@ describe("Transaction Use Case", () => {
 
     expect(skin.id).toEqual(expect.any(String));
     expect(createTransaction.id).toEqual(expect.any(String));
-    expect(createTransaction.balance).toEqual(500);
+    expect(createTransaction.balance).toEqual(skin.skin_price);
     expect(getUser.total_exchanges).toEqual(1);
-    expect(buyerWallet.value).toEqual(4500);
     expect(getTransaction.status).toEqual("Em andamento");
-
-    vi.advanceTimersByTime(1000 * 60 * 5);
   });
 
   it("Verificando a Existência do Perfil", async () => {

@@ -19,7 +19,7 @@ export class MockFunctions {
   ) {}
 
   async createSampleSkin(seller_id: string) {
-    return await this.skinRepository.create({
+    return this.skinRepository.create({
       asset_id: "10828437704",
       skin_image: "https://bit.ly/3Jn6aqn",
       skin_name: "exlucida | Trigger Disciplineeeee",
