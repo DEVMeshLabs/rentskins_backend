@@ -6,11 +6,12 @@ export async function calculateReliability(user: Perfil) {
   }
 
   if (user.delivery_time !== undefined) {
-    const [hora, minutos, segundos] = user.delivery_time.split(":");
-    const totalSegundos =
-      Number(hora) * 3600 + Number(minutos) * 60 + Number(segundos);
+    const [hours, minutes, seconds] = user.delivery_time.split(":");
 
-    let hoursDifference = Math.ceil((86400 - Number(totalSegundos)) / 3600);
+    const totalSeconds =
+      Number(hours) * 3600 + Number(minutes) * 60 + Number(seconds);
+
+    let hoursDifference = Math.ceil((86400 - Number(totalSeconds)) / 3600);
 
     if (hoursDifference <= 0) {
       hoursDifference = 0;
