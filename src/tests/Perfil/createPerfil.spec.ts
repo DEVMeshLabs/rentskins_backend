@@ -34,6 +34,10 @@ describe("Perfil Use Case", () => {
       steam_created_date: "",
       picture: "adadadadasd",
       steam_url: "https://steamcommunity.com/profiles/76561198195920183",
+      total_exchanges: 0,
+      total_exchanges_completed: 0,
+      total_exchanges_failed: 0,
+      delivery_time: "",
     });
 
     const configuration = configurationRepository.config;
@@ -54,7 +58,11 @@ describe("Perfil Use Case", () => {
         owner_country: "BR",
         steam_created_date: "",
         picture: "adadadadasd",
-        steam_url: "https://steamcommunity.com/profiles/76561198274650319",
+        steam_url: "https://steamcommunity.com/profiles/76561198195920183",
+        total_exchanges: 0,
+        total_exchanges_completed: 0,
+        total_exchanges_failed: 0,
+        delivery_time: "",
       })
     ).rejects.toBeInstanceOf(VerifyAccountVacBanError);
   });
