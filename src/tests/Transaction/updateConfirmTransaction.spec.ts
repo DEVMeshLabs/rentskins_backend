@@ -1,15 +1,19 @@
+import { expect, describe, beforeEach, it, vi } from "vitest";
+import { UpdateConfirmTransactionUseCase } from "@/useCases/Transaction/updateConfirmTransactionUseCase";
+// -------------- InMemory --------------
 import { InMemoryNotificationRepository } from "@/repositories/in-memory/inMemoryNotificationRepository";
 import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
 import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
 import { InMemoryTransactionRepository } from "@/repositories/in-memory/inMemoryTransactionRepository";
 import { InMemoryWalletRepository } from "@/repositories/in-memory/inMemoryWalletRepository";
-import { expect, describe, beforeEach, it, vi } from "vitest";
-import { MockFunctions } from "../utils/mockFunctions";
-import { UpdateConfirmTransactionUseCase } from "@/useCases/Transaction/updateConfirmTransactionUseCase";
+import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
+// -------------- Error --------------
 import { TransactionNotExistError } from "@/useCases/@errors/Transaction/TransactionNotExistError";
 import { PerfilNotExistError } from "@/useCases/@errors/Perfil/PerfilInfoNotExistError";
 import { NotUpdateTransaction } from "@/useCases/@errors/Transaction/NotUpdateTransaction";
-import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
+// -------------- Make --------------
+import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
+import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
 
 let transactionRepository: InMemoryTransactionRepository;
 let perfilRepository: InMemoryPerfilRepository;
@@ -17,7 +21,8 @@ let skinRepository: InMemorySkinRepository;
 let walletRepository: InMemoryWalletRepository;
 let notificationsRepository: InMemoryNotificationRepository;
 let configurationRepository: InMemoryConfigurationRepository;
-let mockFunction: MockFunctions;
+let makeCreateSkin: MakeCreateSkinRepository;
+let makeCreatePerfilRepository: MakeCreatePerfilRepository;
 let sut: UpdateConfirmTransactionUseCase;
 
 describe("Update transaction Use Case", () => {
@@ -28,8 +33,9 @@ describe("Update transaction Use Case", () => {
     walletRepository = new InMemoryWalletRepository();
     notificationsRepository = new InMemoryNotificationRepository();
     configurationRepository = new InMemoryConfigurationRepository();
-    mockFunction = new MockFunctions(
-      skinRepository,
+
+    makeCreateSkin = new MakeCreateSkinRepository(skinRepository);
+    makeCreatePerfilRepository = new MakeCreatePerfilRepository(
       perfilRepository,
       configurationRepository
     );
@@ -46,15 +52,11 @@ describe("Update transaction Use Case", () => {
 
   it("Deve ser capaz de fazer um update", async () => {
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile({
-        owner_id: "76561199205585878",
-        owner_name: "Italo araújo",
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
       }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561198195920183",
-        owner_name: "Araujo",
-      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
@@ -88,15 +90,11 @@ describe("Update transaction Use Case", () => {
 
   it("Deve concluir a transação quando o comprador aceitar", async () => {
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile({
-        owner_id: "76561199205585878",
-        owner_name: "Italo araújo",
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
       }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561198195920183",
-        owner_name: "Araujo",
-      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
@@ -118,21 +116,17 @@ describe("Update transaction Use Case", () => {
     await sut.execute(createTransaction.id, "Aceito", "buyer");
 
     const find = await transactionRepository.findById(createTransaction.id);
-
     expect(find.status).toEqual("Concluído");
   });
 
   it("Deve falhar a transação quando o comprador recusar e adicionar mais 1 em total_exchanges_failed", async () => {
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile({
-        owner_id: "76561199205585878",
-        owner_name: "Italo araújo",
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
       }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561198195920183",
-        owner_name: "Araujo",
-      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
+
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
@@ -167,15 +161,13 @@ describe("Update transaction Use Case", () => {
 
   it("Deve adicionar o saldo ao vendedor e notificar quando a transação for concluída", async () => {
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile({
-        owner_id: "76561199205585878",
-        owner_name: "Italo araújo",
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+        skin_price: 500,
       }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561198195920183",
-        owner_name: "Araujo",
-      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
+
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
@@ -207,20 +199,17 @@ describe("Update transaction Use Case", () => {
 
   it("Deve devolver o dinheiro ao comprador e notificar em caso de falha da transação", async () => {
     const [skin, comprador] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
       walletRepository.create({
         owner_name: "Araujo",
         owner_id: "76561198195920183",
         value: 5000,
       }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561199205585878",
-        owner_name: "Italo araújo",
-      }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561198195920183",
-        owner_name: "Araujo",
-      }),
+
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
       walletRepository.create({
         owner_name: "Italo",
         owner_id: "76561199205585878",
@@ -248,7 +237,9 @@ describe("Update transaction Use Case", () => {
 
   it("Deve lançar um erro de transação inválida", async () => {
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
     ]);
 
     await transactionRepository.create({
@@ -265,7 +256,9 @@ describe("Update transaction Use Case", () => {
 
   it("Deve lançar um erro de perfil não existe", async () => {
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
     ]);
 
     const createTransaction = await transactionRepository.create({
@@ -284,15 +277,11 @@ describe("Update transaction Use Case", () => {
 
   it("Deve lançar um erro de atualização", async () => {
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile({
-        owner_id: "76561199205585878",
-        owner_name: "Italo araújo",
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
       }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561198195920183",
-        owner_name: "Araujo",
-      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
     ]);
 
     const createTransaction = await transactionRepository.create({
@@ -311,15 +300,11 @@ describe("Update transaction Use Case", () => {
 
   it("Deve aumentar o total_exchanges em 1 ao criar uma transaction com sucesso", async () => {
     const [skin] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile({
-        owner_id: "76561199205585878",
-        owner_name: "Italo araújo",
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
       }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561198195920183",
-        owner_name: "Araujo",
-      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
       walletRepository.create({
         owner_name: "Araujo",
         owner_id: "76561198195920183",
@@ -345,26 +330,17 @@ describe("Update transaction Use Case", () => {
     expect(findUser.total_exchanges_completed).toBe(1);
   });
 
-  // "76561199205585878",
-  //       "Italo araújo",
-  //       4,
-  //       2,
-  //       2
-  // "76561198195920183", "Araujo"
-
   it("Testando reability", async () => {
     vi.useFakeTimers();
     const [skin1, skin2] = await Promise.all([
-      mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleSkin("76561199205585878"),
-      mockFunction.createSampleProfile({
-        owner_id: "76561199205585878",
-        owner_name: "Italo araújo",
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
       }),
-      mockFunction.createSampleProfile({
-        owner_id: "76561198195920183",
-        owner_name: "Araujo",
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
       }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
       walletRepository.create({
         owner_name: "Araujo",
         owner_id: "76561198195920183",
