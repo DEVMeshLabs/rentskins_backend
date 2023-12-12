@@ -211,7 +211,7 @@ describe("Transaction Use Case", () => {
       walletRepository.create({
         owner_name: "Araujo",
         owner_id: "76561198195920183",
-        value: 1000,
+        value: 10000,
       }),
     ]);
     await sut.execute({
