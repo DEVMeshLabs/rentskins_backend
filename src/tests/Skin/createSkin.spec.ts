@@ -1,7 +1,9 @@
-import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
-import { SkinAlreadyExistsError } from "@/useCases/@errors/Skin/SkinAlreadyExistsError";
-import { CreateSkinUseCase } from "@/useCases/Skin/createSkinUseCase";
 import { expect, describe, beforeEach, it } from "vitest";
+import { CreateSkinUseCase } from "@/useCases/Skin/createSkinUseCase";
+// -------------- InMemory --------------
+import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
+// -------------- Error --------------
+import { SkinAlreadyExistsError } from "@/useCases/@errors/Skin/SkinAlreadyExistsError";
 
 let skinRepository: InMemorySkinRepository;
 let sut: CreateSkinUseCase;
