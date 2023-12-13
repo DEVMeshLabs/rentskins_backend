@@ -165,7 +165,7 @@ describe("Transaction Use Case", () => {
       })
     ).rejects.toBeInstanceOf(InsufficientFundsError);
   });
-  // "76561199205585877", "Tiago"
+
   it("Verificando se consigo vender skins que não são minhas", async () => {
     const [skin] = await Promise.all([
       makeCreateSkin.execute({

@@ -88,14 +88,14 @@ export class CreateTransactionUseCase {
 
       this.notificationsRepository.create({
         owner_id: perfilSeller.owner_id,
-        description: `Venda do item ${findSkin.skin_name}, realizada por ${formattedBalance}.`,
+        description: `A transação do item ${findSkin.skin_name} foi iniciada por ${formattedBalance}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
 
       this.notificationsRepository.create({
         owner_id: perfilBuyer.owner_id,
-        description: `Compra do item ${findSkin.skin_name} realizada por ${formattedBalance}.`,
+        description: `A transação do item ${findSkin.skin_name} foi iniciada por ${formattedBalance}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
@@ -116,8 +116,8 @@ export class CreateTransactionUseCase {
 
     // seconds, minutes, hours, dayOfMonth, month, dayOfYear
     const [seconds, minutes, hours, day, month] = getFormattedDateArray(
-      0,
       5,
+      0,
       0,
       0
     );
@@ -192,6 +192,16 @@ export class CreateTransactionUseCase {
           );
         }
       }
+
+      // const trades = await Trades.filterTradeHistory();
+      // if (trades) {
+      //   return makeCompose.composeOwnerIdUpdates(perfilSeller.owner_id, false, {
+      //     transactionId: createTransaction.id,
+      //     findTransaction,
+      //     updateConfirm: createTransaction,
+      //     skin: findSkin,
+      //   });
+      // }
 
       console.log("Verificando o inventario do Vendedor SEM A KEY");
 
