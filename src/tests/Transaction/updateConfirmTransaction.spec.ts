@@ -153,6 +153,8 @@ describe("Update transaction Use Case", () => {
       createTransaction.seller_id
     );
 
+    console.log(notifications);
+
     expect(find.status).toEqual("Falhou");
     expect(notifications[0].owner_id).toEqual(createTransaction.seller_id);
     expect(notifications[1].owner_id).toEqual(createTransaction.buyer_id);
