@@ -117,7 +117,7 @@ export class CreateTransactionUseCase {
     // seconds, minutes, hours, dayOfMonth, month, dayOfYear
     const [seconds, minutes, hours, day, month] = getFormattedDateArray(
       0,
-      5,
+      2,
       0,
       0
     );
@@ -193,16 +193,6 @@ export class CreateTransactionUseCase {
         }
       }
 
-      // const trades = await Trades.filterTradeHistory();
-      // if (trades) {
-      //   return makeCompose.composeOwnerIdUpdates(perfilSeller.owner_id, false, {
-      //     transactionId: createTransaction.id,
-      //     findTransaction,
-      //     updateConfirm: createTransaction,
-      //     skin: findSkin,
-      //   });
-      // }
-
       console.log("Verificando o inventario do Vendedor SEM A KEY");
 
       const getInventorySeller = await this.getOwnerInventory(
@@ -251,10 +241,10 @@ export class CreateTransactionUseCase {
           await this.transactionRepository.updateId(findTransaction.id, {
             status: "Em análise",
           });
+
           console.log("Atualizando Status!");
           return;
         }
-        // "market_name": "Storage Unit",
         const isAlreadyExistSkinInventoryBuyer = getInventoryBuyer.some(
           (item: any) => item.market_name === findSkin.skin_name
         );
