@@ -175,7 +175,7 @@ export class UpdateConfirmTransactionUseCase {
         skin_id: findTransaction.skin_id,
       });
     } else if (findTransaction.seller_confirm === "Recusado") {
-      const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
+      const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
       await this.notificationsRepository.create({
         owner_id: updateConfirm.buyer_id,
         description: `O vendedor ${findPerfil.owner_name} recusou o envio do item ${skin.skin_name}.`,

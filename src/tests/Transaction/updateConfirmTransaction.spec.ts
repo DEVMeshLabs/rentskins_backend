@@ -230,9 +230,11 @@ describe("Update transaction Use Case", () => {
 
     const expectedBalanceAfterFailure = comprador.value + skin.skin_price;
     const findNotification = notificationsRepository.notifications;
+    const perfil = perfilRepository.perfil[0];
 
     expect(findWallet.value).toEqual(expectedBalanceAfterFailure);
     expect(findNotification.length).toEqual(2);
+    expect(perfil.total_exchanges_failed).toEqual(1);
   });
 
   it("Deve lançar um erro de transação inválida", async () => {
