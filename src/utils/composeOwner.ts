@@ -67,6 +67,9 @@ export class ComposeOwner {
         this.skinRepository.updateById(data.updateConfirm.skin_id, {
           status: "Falhou",
         }),
+        this.perfilRepository.updateByUser(ownerId, {
+          total_exchanges_failed: perfil.total_exchanges_failed + 1,
+        }),
       ];
     } else {
       return [
