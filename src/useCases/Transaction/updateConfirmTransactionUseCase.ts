@@ -4,7 +4,7 @@ import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRep
 import { TransactionNotExistError } from "../@errors/Transaction/TransactionNotExistError";
 import { NotUpdateTransaction } from "../@errors/Transaction/NotUpdateTransaction";
 import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
-import { Perfil, Skin, Transaction } from "@prisma/client";
+import { Skin, Transaction } from "@prisma/client";
 import { MediaDates } from "@/utils/mediaDates";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
@@ -110,17 +110,13 @@ export class UpdateConfirmTransactionUseCase {
     );
 
     if (findTransaction.seller_confirm === "Aceito") {
-      const [
-        configurationBuyer,
-        configurationSeller,
-        findPerfilUser,
-        findSkin,
-      ] = await Promise.all([
-        this.configurationRepository.findByUser(findTransaction.buyer_id),
-        this.configurationRepository.findByUser(findTransaction.seller_id),
-        this.findPerfilByUser(findTransaction.buyer_id),
-        this.skinRepository.findById(findTransaction.skin_id),
-      ]);
+      const [configurationBuyer, configurationSeller, , findSkin] =
+        await Promise.all([
+          this.configurationRepository.findByUser(findTransaction.buyer_id),
+          this.configurationRepository.findByUser(findTransaction.seller_id),
+          this.findPerfilByUser(findTransaction.buyer_id),
+          this.skinRepository.findById(findTransaction.skin_id),
+        ]);
 
       // Verificar se o vendedor ou comprador tem uma key
 
@@ -139,8 +135,7 @@ export class UpdateConfirmTransactionUseCase {
           updateConfirm,
           skin,
           mediaDate,
-        },
-        findPerfilUser
+        }
       );
 
       if (hasSellerKey) {
@@ -176,31 +171,35 @@ export class UpdateConfirmTransactionUseCase {
       });
     } else if (findTransaction.seller_confirm === "Recusado") {
       const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
-      // await this.notificationsRepository.create({
-      //   owner_id: updateConfirm.buyer_id,
-      //   description: `O vendedor ${findPerfil.owner_name} recusou o envio do item ${skin.skin_name}.`,
-      //   skin_id: findTransaction.skin_id,
-      // });
-      await this.composeOwnerIdUpdates(
-        updateConfirm.seller_id,
-        true,
-        {
-          id,
-          findTransaction,
-          updateConfirm,
-          skin,
-          mediaDate,
-        },
-        findPerfil,
-        `O vendedor ${findPerfil.owner_name} recusou o envio do item ${skin.skin_name}.`
-      );
+
+      const transactionFailed = [
+        this.walletRepository.updateByUserValue(
+          findTransaction.buyer_id,
+          "increment",
+          findTransaction.balance
+        ),
+        this.notificationsRepository.create({
+          owner_id: findTransaction.buyer_id,
+          description: `O vendedor ${findPerfil.owner_name} recusou o envio do item ${skin.skin_name}.`,
+          skin_id: findTransaction.skin_id,
+        }),
+        this.transactionRepository.updateId(findTransaction.id, {
+          status: "Falhou",
+        }),
+        this.skinRepository.updateById(updateConfirm.skin_id, {
+          status: "Falhou",
+        }),
+        this.perfilRepository.updateByUser(findTransaction.seller_id, {
+          total_exchanges_failed: findPerfil.total_exchanges_failed + 1,
+        }),
+      ];
+
+      return Promise.all([...transactionFailed]);
     }
 
     // STATUS TRANSACTION CONCLUÍDO
 
     if (findTransaction.status === "Concluído") {
-      const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
-
       // Atualizar o vendedor e envia as notificações
       const sellerUpdates = await this.composeOwnerIdUpdates(
         updateConfirm.seller_id,
@@ -211,8 +210,7 @@ export class UpdateConfirmTransactionUseCase {
           updateConfirm,
           skin,
           mediaDate,
-        },
-        findPerfil
+        }
       );
 
       await Promise.all([...sellerUpdates]);
@@ -280,9 +278,7 @@ export class UpdateConfirmTransactionUseCase {
   async composeOwnerIdUpdates(
     ownerId: string,
     isTransactionFailed: boolean,
-    data: IComposeOwnerIdUpdates,
-    perfil?: Perfil,
-    description?: string
+    data: IComposeOwnerIdUpdates
   ): Promise<any> {
     const { balance } = data.findTransaction;
     const formattedBalance = formatBalance(balance);
@@ -312,8 +308,7 @@ export class UpdateConfirmTransactionUseCase {
         data,
         newBalance,
         sellerNotification,
-        buyerNotification,
-        perfil
+        buyerNotification
       );
     }
   }
@@ -356,12 +351,18 @@ export class UpdateConfirmTransactionUseCase {
     sellerNotification: any,
     buyerNotification: any
   ) {
+    const perfil = await this.perfilRepository.findByUser(ownerId);
+
     return [
       this.walletRepository.updateByUserValue(
         ownerId,
         "increment",
         data.findTransaction.balance
       ),
+      perfil &&
+        this.perfilRepository.updateByUser(ownerId, {
+          total_exchanges_failed: perfil.total_exchanges_failed + 1,
+        }),
       this.notificationsRepository.create(sellerNotification),
       this.transactionRepository.updateId(data.findTransaction.id, {
         status: "Falhou",
@@ -378,15 +379,15 @@ export class UpdateConfirmTransactionUseCase {
     data: IComposeOwnerIdUpdates,
     newBalance: number,
     sellerNotification: any,
-    buyerNotification: any,
-    perfil?: Perfil
+    buyerNotification: any
   ) {
+    const perfil = await this.perfilRepository.findByUser(ownerId);
+
     return [
       this.walletRepository.updateByUserValue(ownerId, "increment", newBalance),
-      perfil &&
-        this.perfilRepository.updateByUser(ownerId, {
-          total_exchanges_completed: perfil.total_exchanges_completed + 1,
-        }),
+      this.perfilRepository.updateByUser(ownerId, {
+        total_exchanges_completed: perfil.total_exchanges_completed + 1,
+      }),
 
       this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
       this.perfilRepository.updateByUser(ownerId, {

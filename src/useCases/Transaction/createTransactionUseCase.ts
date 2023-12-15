@@ -64,15 +64,13 @@ export class CreateTransactionUseCase {
       throw new WalletNotExistsError();
     } else if (findWallet.value < findSkin.skin_price) {
       throw new InsufficientFundsError();
+    } else if (findSkin.seller_id !== seller_id) {
+      throw new CannotAdvertiseSkinNotYour();
+    } else if (findSkinTransaction) {
+      throw new SkinHasAlreadyBeenSoldError(
+        `${findSkin.skin_name} ${findSkin.asset_id}`
+      );
     }
-
-    // else if (findSkin.seller_id !== seller_id) {
-    //   throw new CannotAdvertiseSkinNotYour();
-    // } else if (findSkinTransaction) {
-    //   throw new SkinHasAlreadyBeenSoldError(
-    //     `${findSkin.skin_name} ${findSkin.asset_id}`
-    //   );
-    // }
 
     const formattedBalance = findSkin.skin_price.toLocaleString("pt-BR", {
       style: "currency",
@@ -119,7 +117,7 @@ export class CreateTransactionUseCase {
     // seconds, minutes, hours, dayOfMonth, month, dayOfYear
     const [seconds, minutes, hours, day, month] = getFormattedDateArray(
       0,
-      2,
+      5,
       0,
       0
     );
