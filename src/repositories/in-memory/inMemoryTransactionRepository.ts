@@ -1,7 +1,6 @@
 import { Prisma, Transaction } from "@prisma/client";
 import { ITransactionRepository } from "../interfaceRepository/ITransactionRepository";
 import { randomUUID } from "crypto";
-import { Console } from "console";
 
 export class InMemoryTransactionRepository implements ITransactionRepository {
   public transactions: Transaction[] = [];
