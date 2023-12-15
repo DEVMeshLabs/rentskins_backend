@@ -117,7 +117,7 @@ export class CreateTransactionUseCase {
     // seconds, minutes, hours, dayOfMonth, month, dayOfYear
     const [seconds, minutes, hours, day, month] = getFormattedDateArray(
       0,
-      2,
+      5,
       0,
       0
     );
