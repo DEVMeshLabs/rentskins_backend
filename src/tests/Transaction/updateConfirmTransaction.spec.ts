@@ -153,12 +153,51 @@ describe("Update transaction Use Case", () => {
       createTransaction.seller_id
     );
 
-    console.log(notifications);
-
     expect(find.status).toEqual("Falhou");
     expect(notifications[0].owner_id).toEqual(createTransaction.seller_id);
     expect(notifications[1].owner_id).toEqual(createTransaction.buyer_id);
     expect(perfil.total_exchanges_failed).toEqual(1);
+  });
+
+  it("Deve falhar a transação quando o vendedor recusar e adicionar mais 1 em total_exchanges_failed", async () => {
+    const [skin] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
+
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
+
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 5000,
+      }),
+    ]);
+
+    const createTransaction = await transactionRepository.create({
+      skin_id: skin.id,
+      seller_id: "76561199205585878",
+      buyer_id: "76561198195920183",
+      balance: skin.skin_price,
+    });
+
+    await sut.execute(createTransaction.id, "Recusado", "seller");
+    const find = await transactionRepository.findById(createTransaction.id);
+    const notifications = notificationsRepository.notifications;
+    const perfil = await perfilRepository.findByUser(
+      createTransaction.seller_id
+    );
+    const wallets = walletRepository.wallet;
+    expect(notifications[0].owner_id).toEqual(createTransaction.buyer_id);
+    expect(notifications.length).toEqual(1);
+    expect(find.status).toEqual("Falhou");
+    expect(perfil.total_exchanges_failed).toEqual(1);
+    expect(wallets[1].value).toEqual(5500);
   });
 
   it("Deve adicionar o saldo ao vendedor e notificar quando a transação for concluída", async () => {

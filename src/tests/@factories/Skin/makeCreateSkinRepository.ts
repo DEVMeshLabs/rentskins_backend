@@ -12,7 +12,7 @@ export class MakeCreateSkinRepository {
       skin_name: faker.lorem.sentence(),
       skin_category: "Pistol",
       skin_weapon: "Test skin exlucida",
-      skin_price: faker.number.int({ min: 50, max: 1000 }),
+      skin_price: 500,
       skin_float: "0,10072",
       seller_name: "Caçadora de demonios",
       seller_id: "",
