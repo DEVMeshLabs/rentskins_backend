@@ -223,19 +223,15 @@ export class UpdateConfirmTransactionUseCase {
     // STATUS TRANSACTION FALHOU
 
     if (findTransaction.status === "Falhou") {
-      const buyerUpdates = await this.composeOwnerIdUpdates(
-        findTransaction.buyer_id,
-        true,
-        {
+      await Promise.all([
+        this.composeOwnerIdUpdates(findTransaction.buyer_id, true, {
           id,
           findTransaction,
           updateConfirm,
           skin,
           mediaDate,
-        }
-      );
-
-      await Promise.all([...buyerUpdates]);
+        }),
+      ]);
 
       const perfil = await this.perfilRepository.findByUser(
         findTransaction.seller_id
@@ -245,14 +241,13 @@ export class UpdateConfirmTransactionUseCase {
         await this.perfilRepository.updateByUser(findTransaction.seller_id, {
           total_exchanges_failed: perfil.total_exchanges_failed + 1,
         });
-      }
-      // &&
-      // perfil.total_exchanges_completed > 2
-      if (perfil && perfil.total_exchanges_completed > 2) {
-        const reliability = await calculateReliability(perfil);
-        await this.perfilRepository.updateByUser(findTransaction.seller_id, {
-          reliability,
-        });
+
+        if (perfil.total_exchanges_completed > 2) {
+          const reliability = await calculateReliability(perfil);
+          await this.perfilRepository.updateByUser(findTransaction.seller_id, {
+            reliability,
+          });
+        }
       }
     }
   }
@@ -345,24 +340,26 @@ export class UpdateConfirmTransactionUseCase {
   ) {
     const perfil = await this.perfilRepository.findByUser(ownerId);
 
-    return [
-      this.walletRepository.updateByUserValue(
-        ownerId,
-        "increment",
-        data.findTransaction.balance
-      ),
-      this.perfilRepository.updateByUser(ownerId, {
-        total_exchanges_failed: perfil.total_exchanges_failed + 1,
-      }),
-      this.notificationsRepository.create(sellerNotification),
-      this.transactionRepository.updateId(data.findTransaction.id, {
-        status: "Falhou",
-      }),
-      this.notificationsRepository.create(buyerNotification),
-      this.skinRepository.updateById(data.updateConfirm.skin_id, {
-        status: "Falhou",
-      }),
-    ];
+    if (perfil) {
+      return [
+        this.walletRepository.updateByUserValue(
+          ownerId,
+          "increment",
+          data.findTransaction.balance
+        ),
+        this.perfilRepository.updateByUser(ownerId, {
+          total_exchanges_failed: perfil.total_exchanges_failed + 1,
+        }),
+        this.notificationsRepository.create(sellerNotification),
+        this.transactionRepository.updateId(data.findTransaction.id, {
+          status: "Falhou",
+        }),
+        this.notificationsRepository.create(buyerNotification),
+        this.skinRepository.updateById(data.updateConfirm.skin_id, {
+          status: "Falhou",
+        }),
+      ];
+    }
   }
 
   async handleSuccessfulTransaction(

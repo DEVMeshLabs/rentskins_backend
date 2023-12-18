@@ -298,11 +298,9 @@ describe("Update transaction Use Case", () => {
   });
 
   it("Deve lançar um erro de perfil não existe", async () => {
-    const [skin] = await Promise.all([
-      makeCreateSkin.execute({
-        seller_id: "76561199205585878",
-      }),
-    ]);
+    const skin = await makeCreateSkin.execute({
+      seller_id: "76561199205585878",
+    });
 
     const createTransaction = await transactionRepository.create({
       skin_id: skin.id,
