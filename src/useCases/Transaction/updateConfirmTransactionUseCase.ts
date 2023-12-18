@@ -110,65 +110,57 @@ export class UpdateConfirmTransactionUseCase {
     );
 
     if (findTransaction.seller_confirm === "Aceito") {
+      const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
+
       const [configurationBuyer, configurationSeller, , findSkin] =
         await Promise.all([
           this.configurationRepository.findByUser(findTransaction.buyer_id),
           this.configurationRepository.findByUser(findTransaction.seller_id),
           this.findPerfilByUser(findTransaction.buyer_id),
           this.skinRepository.findById(findTransaction.skin_id),
+          this.notificationsRepository.create({
+            owner_id: updateConfirm.buyer_id,
+            description: `O vendedor ${findPerfil.owner_name} confirmou o envio do item ${skin.skin_name}.`,
+            skin_id: findTransaction.skin_id,
+          }),
         ]);
 
       // Verificar se o vendedor ou comprador tem uma key
 
-      const hasSellerKey =
-        configurationSeller.key && configurationSeller.key !== "";
+      const hasSellerKey = !!configurationSeller.key;
+      const hasBuyerKey = !!configurationBuyer.key;
 
-      const hasBuyerKey =
-        configurationBuyer.key && configurationBuyer.key !== "";
+      const tradeUserId = hasSellerKey
+        ? findTransaction.buyer_id
+        : findTransaction.seller_id;
 
-      const sellerUpdates = await this.composeOwnerIdUpdates(
-        updateConfirm.seller_id,
-        false,
-        {
-          id,
-          findTransaction,
-          updateConfirm,
-          skin,
-          mediaDate,
-        }
-      );
+      const tradeKey = hasSellerKey
+        ? configurationSeller.key
+        : configurationBuyer.key;
 
-      if (hasSellerKey) {
+      if (hasSellerKey || hasBuyerKey) {
         const trade = await Trades.filterTradeHistory(
-          findTransaction.buyer_id,
+          tradeUserId,
           findSkin.asset_id,
-          configurationSeller.key
+          tradeKey
         );
 
         if (trade) {
-          await Promise.all([...sellerUpdates]);
-          return;
-        }
-      } else if (hasBuyerKey) {
-        const trade = await Trades.filterTradeHistory(
-          findTransaction.seller_id,
-          findSkin.asset_id,
-          configurationSeller.key
-        );
-
-        if (trade) {
-          await Promise.all([...sellerUpdates]);
-          return;
+          console.log("Entrou no lugar!");
+          const sellerUpdates = await this.composeOwnerIdUpdates(
+            updateConfirm.seller_id,
+            false,
+            {
+              id,
+              findTransaction,
+              updateConfirm,
+              skin,
+              mediaDate,
+            }
+          );
+          return Promise.all([...sellerUpdates]);
         }
       }
-
-      // -------------------------------------------------------------
-      const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
-      await this.notificationsRepository.create({
-        owner_id: updateConfirm.buyer_id,
-        description: `O vendedor ${findPerfil.owner_name} confirmou o envio do item ${skin.skin_name}.`,
-        skin_id: findTransaction.skin_id,
-      });
     } else if (findTransaction.seller_confirm === "Recusado") {
       const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
 
@@ -359,10 +351,9 @@ export class UpdateConfirmTransactionUseCase {
         "increment",
         data.findTransaction.balance
       ),
-      perfil &&
-        this.perfilRepository.updateByUser(ownerId, {
-          total_exchanges_failed: perfil.total_exchanges_failed + 1,
-        }),
+      this.perfilRepository.updateByUser(ownerId, {
+        total_exchanges_failed: perfil.total_exchanges_failed + 1,
+      }),
       this.notificationsRepository.create(sellerNotification),
       this.transactionRepository.updateId(data.findTransaction.id, {
         status: "Falhou",
