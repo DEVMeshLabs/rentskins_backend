@@ -166,6 +166,14 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return skinId;
   }
 
+  async findBySlug(slug: string) {
+    const skinSlug = await prisma.skin.findFirst({
+      where: { slug, deletedAt: null },
+    });
+
+    return skinSlug;
+  }
+
   async deleteSkin(id: string) {
     const response = await Promise.all([
       await prisma.notification.deleteMany({
