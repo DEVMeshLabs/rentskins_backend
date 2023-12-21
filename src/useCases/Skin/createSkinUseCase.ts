@@ -23,7 +23,11 @@ export class CreateSkinUseCase {
       );
     }
 
-    const skinSlug = await slug(data.skin_name, data.asset_id);
+    const skinSlug = await slug(
+      data.skin_category,
+      data.skin_weapon,
+      data.asset_id
+    );
 
     const skin = {
       ...data,

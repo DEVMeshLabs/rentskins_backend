@@ -8,6 +8,7 @@ export interface ISkinsRepository {
     pageSize: number
   ): any;
   findById(id: string): Promise<Skin | null>;
+  findBySlug(slug: string): Promise<Skin | null>;
   findBySeller(seller_id: string): Promise<Skin | null>;
   findByMany(page: number, pageSize: number): Promise<Skin[]>;
   findByManyWeapon(skin_weapon: string): Promise<Skin[] | null>;
