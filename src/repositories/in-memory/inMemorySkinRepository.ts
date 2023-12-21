@@ -3,6 +3,10 @@ import { ISkinsRepository } from "../interfaceRepository/ISkinsRepository";
 import { randomUUID } from "crypto";
 
 export class InMemorySkinRepository implements ISkinsRepository {
+  async findBySlug(slug: string) {
+    return this.notImplemented();
+  }
+
   async findLastSellerSkins(name: string) {
     return this.notImplemented();
   }
