@@ -451,4 +451,81 @@ describe("Update transaction Use Case", () => {
     expect(perf[0].reliability).toBeTruthy();
     expect(perf[0].reliability).toBe("61.46");
   });
+
+  it("Deve mandar apenas uma notificação para o comprador", async () => {
+    const [skin, perfilSeller, perfilBuyer] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
+
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 5000,
+      }),
+    ]);
+
+    const createTransaction = await transactionRepository.create({
+      skin_id: skin.id,
+      seller_id: "76561199205585878",
+      buyer_id: "76561198195920183",
+      balance: skin.skin_price,
+    });
+    await sut.execute(createTransaction.id, "Aceito", "seller");
+
+    const notifications = notificationsRepository.notifications;
+
+    const msg = `O vendedor ${perfilSeller.owner_name} confirmou o envio do item ${skin.skin_name}.`;
+
+    expect(notifications.length).toBe(1);
+    expect(notifications[0].owner_id).toEqual(perfilBuyer.owner_id);
+    expect(notifications[0].description).toEqual(msg);
+  });
+  // 76561198995872251
+  // 76561199205585878
+  it("teste", async () => {
+    const vendedor = "76561198995872251";
+    const comprador = "76561199205585878";
+
+    const [skin] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: vendedor,
+      }),
+
+      makeCreatePerfilRepository.execute(vendedor),
+      makeCreatePerfilRepository.execute(
+        comprador,
+        "C3B106395E5E2FCD39B30DF5E85C28E0"
+      ),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
+
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: vendedor,
+        value: 5000,
+      }),
+    ]);
+
+    const createTransaction = await transactionRepository.create({
+      skin_id: skin.id,
+      seller_id: vendedor,
+      buyer_id: comprador,
+      balance: skin.skin_price,
+    });
+
+    await sut.execute(createTransaction.id, "Aceito", "seller");
+
+    // const notifications = notificationsRepository.notifications;
+
+    // const msg = `O vendedor ${perfilSeller.owner_name} confirmou o envio do item ${skin.skin_name}.`;
+  });
 });

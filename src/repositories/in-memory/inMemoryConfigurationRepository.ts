@@ -23,7 +23,7 @@ export class InMemoryConfigurationRepository
       url_trade: "",
       agreed_with_emails: false,
       agreed_with_terms: false,
-      key: "",
+      key: data.key,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
