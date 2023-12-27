@@ -490,8 +490,11 @@ describe("Update transaction Use Case", () => {
   // 76561198995872251
   // 76561199205585878
   it("teste", async () => {
-    const vendedor = "76561198995872251";
-    const comprador = "76561199205585878";
+    const comprador = "76561198862407248";
+    const vendedor = "76561198015724229";
+
+    // const tokenId29 = "15B121C41C8C8E7EE912E0A3EFB22C66";
+    const tokenId48 = "AE9B8F78F2CE40C7EE618FD41EA569DE";
 
     const [skin] = await Promise.all([
       makeCreateSkin.execute({
@@ -499,13 +502,10 @@ describe("Update transaction Use Case", () => {
       }),
 
       makeCreatePerfilRepository.execute(vendedor),
-      makeCreatePerfilRepository.execute(
-        comprador,
-        "C3B106395E5E2FCD39B30DF5E85C28E0"
-      ),
+      makeCreatePerfilRepository.execute(comprador, tokenId48),
       walletRepository.create({
         owner_name: "Italo",
-        owner_id: "76561199205585878",
+        owner_id: comprador,
       }),
 
       walletRepository.create({
