@@ -110,7 +110,7 @@ export class UpdateConfirmTransactionUseCase {
     );
 
     if (findTransaction.seller_confirm === "Aceito") {
-      const findPerfil = await this.findPerfilByUser(findTransaction.buyer_id);
+      const findPerfil = await this.findPerfilByUser(findTransaction.seller_id);
 
       const [configurationBuyer, configurationSeller, , findSkin] =
         await Promise.all([
@@ -138,13 +138,19 @@ export class UpdateConfirmTransactionUseCase {
         ? configurationSeller.key
         : configurationBuyer.key;
 
+      // const steamIdOther = "76561198862407248";
+      // const assetId = "34489117389";
+      // const key = "C3B106395E5E2FCD39B30DF5E85C28E0";
+      const validandoTrade = !tradeKey;
       if (hasSellerKey || hasBuyerKey) {
         const trade = await Trades.filterTradeHistory(
           tradeUserId,
+          tradeKey,
           findSkin.asset_id,
-          tradeKey
+          validandoTrade
         );
 
+        console.log("_________Trade_________", trade);
         if (trade) {
           console.log("Entrou no lugar!");
           const sellerUpdates = await this.composeOwnerIdUpdates(

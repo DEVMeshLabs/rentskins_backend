@@ -22,12 +22,9 @@ export class Trades {
   static async filterTradeHistory(
     steamIdOther: string,
     key: string,
-    assetId: String
+    assetId: String,
+    assets_received: boolean
   ): Promise<boolean | string> {
-    // const steamIdOther = "76561198862407248";
-    // const assetId = "34489117389";
-    // const key = "C3B106395E5E2FCD39B30DF5E85C28E0";
-
     try {
       const trades = await this.getTradeHistory(key);
       if (trades.response.trades && trades.response.trades.length > 0) {
@@ -35,10 +32,15 @@ export class Trades {
           return trade.steamid_other === steamIdOther && trade.status === 3;
         });
 
-        const assets = tradesFiltered.flatMap((trade) =>
-          trade.assets_received.filter((asset) => asset.assetid === assetId)
-        );
-        const isAlreadyExistAsset = assets.some(
+        let dados;
+
+        if (assets_received) {
+          dados = this.filterAssets(tradesFiltered, "assets_received", assetId);
+        } else {
+          dados = this.filterAssets(tradesFiltered, "assets_given", assetId);
+        }
+
+        const isAlreadyExistAsset = dados.some(
           (item) => item.assetid === assetId
         );
 
@@ -49,5 +51,14 @@ export class Trades {
     } catch (error) {
       console.log(error);
     }
+  }
+
+  static filterAssets(trades, assetKey, assetId) {
+    return trades.reduce((acc, trade) => {
+      const filteredAssets = trade[assetKey].filter(
+        (asset) => asset.assetid === assetId
+      );
+      return acc.concat(filteredAssets);
+    }, []);
   }
 }

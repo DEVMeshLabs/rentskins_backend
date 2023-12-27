@@ -168,16 +168,23 @@ export class CreateTransactionUseCase {
         findTransaction.buyer_id
       );
 
-      const sellerKeyValid =
-        configurationSeller.key && configurationSeller.key !== "";
-      const buyerKeyValid =
-        configurationBuyer.key && configurationBuyer.key !== "";
+      const hasSellerKey = !!configurationSeller.key;
+      const hasBuyerKey = !!configurationBuyer.key;
 
-      if (sellerKeyValid || buyerKeyValid) {
+      const tradeUserId = hasSellerKey
+        ? findTransaction.buyer_id
+        : findTransaction.seller_id;
+
+      const tradeKey = hasSellerKey
+        ? configurationSeller.key
+        : configurationBuyer.key;
+      const validandoTrade = !tradeKey;
+      if (hasBuyerKey || hasSellerKey) {
         const trades = await Trades.filterTradeHistory(
-          sellerKeyValid ? perfilBuyer.owner_id : perfilSeller.owner_id,
+          tradeUserId,
+          tradeKey,
           findSkin.asset_id,
-          configurationSeller.key || configurationBuyer.key
+          validandoTrade
         );
         if (trades) {
           return makeCompose.composeOwnerIdUpdates(
@@ -198,8 +205,6 @@ export class CreateTransactionUseCase {
       const getInventorySeller = await this.getOwnerInventory(
         perfilSeller.owner_id
       );
-
-      console.log("Seller", getInventorySeller);
 
       if (Error instanceof GetInventoryOwnerIdError) {
         console.log("Deu ruim");
