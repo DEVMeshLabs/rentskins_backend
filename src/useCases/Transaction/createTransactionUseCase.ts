@@ -178,15 +178,14 @@ export class CreateTransactionUseCase {
       const tradeKey = hasSellerKey
         ? configurationSeller.key
         : configurationBuyer.key;
-      const validandoTrade = !tradeKey;
+
       if (hasBuyerKey || hasSellerKey) {
         const trades = await Trades.filterTradeHistory(
           tradeUserId,
           tradeKey,
-          findSkin.asset_id,
-          validandoTrade
+          findSkin.asset_id
         );
-        if (trades) {
+        if (trades.length > 0) {
           return makeCompose.composeOwnerIdUpdates(
             perfilSeller.owner_id,
             false,
