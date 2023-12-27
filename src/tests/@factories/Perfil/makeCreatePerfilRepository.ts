@@ -11,6 +11,7 @@ export class MakeCreatePerfilRepository {
 
   async execute(
     onwer_id: string,
+    key?: string,
     override: Partial<Prisma.PerfilCreateInput> = {}
   ) {
     const fakeName = faker.internet.userName();
@@ -21,6 +22,7 @@ export class MakeCreatePerfilRepository {
       owner_email: faker.internet.email(),
       owner_phone: faker.phone.number(),
       owner_cpf: "",
+      key: key ?? "",
       agreed_with_emails: false,
       agreed_with_terms: false,
       url_trade: "",
