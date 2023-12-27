@@ -1,5 +1,25 @@
 import axios from "axios";
 
+interface IAssetsType {
+  appid: number;
+  contextid: string;
+  assetid: string;
+  amount: string;
+  classid: string;
+  instanceid: string;
+  new_assetid: string;
+  new_contextid: string;
+}
+
+interface IAssets {
+  tradeid: string;
+  steamid_other: string;
+  time_init: number;
+  status: number;
+  assets_given: IAssetsType[];
+  assets_received: IAssetsType[];
+}
+
 export class Trades {
   static async getTradeHistory(key: string) {
     try {
@@ -22,43 +42,41 @@ export class Trades {
   static async filterTradeHistory(
     steamIdOther: string,
     key: string,
-    assetId: String,
-    assets_received: boolean
-  ): Promise<boolean | string> {
+    assetId: string
+  ) {
     try {
       const trades = await this.getTradeHistory(key);
-      if (trades.response.trades && trades.response.trades.length > 0) {
+      const validandoTradesHistori =
+        trades.response.trades && trades.response.trades.length > 0;
+
+      if (validandoTradesHistori) {
         const tradesFiltered = trades.response.trades.filter((trade) => {
           return trade.steamid_other === steamIdOther && trade.status === 3;
         });
 
-        let dados;
+        const filteredTrades = tradesFiltered.flatMap((item: IAssets) => {
+          const assetsGiven = Array.isArray(item.assets_given)
+            ? item.assets_given
+            : [];
+          const assetsReceived = Array.isArray(item.assets_received)
+            ? item.assets_received
+            : [];
 
-        if (assets_received) {
-          dados = this.filterAssets(tradesFiltered, "assets_received", assetId);
-        } else {
-          dados = this.filterAssets(tradesFiltered, "assets_given", assetId);
-        }
+          const allAssets = [...assetsGiven, ...assetsReceived];
 
-        const isAlreadyExistAsset = dados.some(
-          (item) => item.assetid === assetId
-        );
+          return allAssets.filter((asset: IAssetsType) => {
+            if (asset.assetid === assetId) {
+              return true;
+            }
 
-        return isAlreadyExistAsset;
+            return false;
+          });
+        });
+
+        return filteredTrades;
       }
-
-      return false;
     } catch (error) {
       console.log(error);
     }
-  }
-
-  static filterAssets(trades, assetKey, assetId) {
-    return trades.reduce((acc, trade) => {
-      const filteredAssets = trade[assetKey].filter(
-        (asset) => asset.assetid === assetId
-      );
-      return acc.concat(filteredAssets);
-    }, []);
   }
 }
