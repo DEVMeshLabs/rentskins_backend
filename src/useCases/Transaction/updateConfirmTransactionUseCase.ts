@@ -137,6 +137,7 @@ export class UpdateConfirmTransactionUseCase {
       const tradeKey = hasSellerKey
         ? configurationSeller.key
         : configurationBuyer.key;
+
       // const steamIdOther = "76561198862407248";
       // const assetId = "34489117389";
       // const key = "C3B106395E5E2FCD39B30DF5E85C28E0";
@@ -385,6 +386,9 @@ export class UpdateConfirmTransactionUseCase {
       }),
 
       this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
+      this.transactionRepository.updateId(data.id, {
+        status: "Concluído",
+      }),
       this.perfilRepository.updateByUser(ownerId, {
         delivery_time: data.mediaDate,
       }),
