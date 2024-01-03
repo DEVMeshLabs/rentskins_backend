@@ -190,7 +190,7 @@ export class CreateTransactionUseCase {
             perfilSeller.owner_id,
             false,
             {
-              transactionId: createTransaction.id,
+              id: createTransaction.id,
               findTransaction,
               updateConfirm: createTransaction,
               skin: findSkin,
@@ -219,7 +219,7 @@ export class CreateTransactionUseCase {
       if (isAlreadyExistSkinInventory) {
         console.log("Atualizando a wallet do vendedor");
         return makeCompose.composeOwnerIdUpdates(perfilBuyer.owner_id, true, {
-          transactionId: createTransaction.id,
+          id: createTransaction.id,
           findTransaction,
           updateConfirm: createTransaction,
           skin: findSkin,
@@ -260,7 +260,7 @@ export class CreateTransactionUseCase {
             perfilBuyer.owner_id,
             true,
             {
-              transactionId: createTransaction.id,
+              id: createTransaction.id,
               findTransaction,
               updateConfirm: createTransaction,
               skin: findSkin,
