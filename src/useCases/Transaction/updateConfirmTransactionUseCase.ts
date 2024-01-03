@@ -379,14 +379,14 @@ export class UpdateConfirmTransactionUseCase {
   ) {
     const perfil = await this.perfilRepository.findByUser(ownerId);
 
-    return [
+    const updates = [
       this.walletRepository.updateByUserValue(ownerId, "increment", newBalance),
       this.perfilRepository.updateByUser(ownerId, {
         total_exchanges_completed: perfil.total_exchanges_completed + 1,
       }),
 
-      this.transactionRepository.updateId(data.id, { salesAt: new Date() }),
       this.transactionRepository.updateId(data.id, {
+        salesAt: new Date(),
         status: "Concluído",
       }),
       this.perfilRepository.updateByUser(ownerId, {
@@ -400,6 +400,8 @@ export class UpdateConfirmTransactionUseCase {
         saledAt: new Date(),
       }),
     ];
+
+    return Promise.all(updates);
   }
 }
 
