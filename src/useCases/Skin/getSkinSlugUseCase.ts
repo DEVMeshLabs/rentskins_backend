@@ -7,7 +7,6 @@ export class GetSkinSlugUseCase {
 
   async execute(slug: string): Promise<Skin> {
     const skin = await this.getSkinRepository.findBySlug(slug);
-    console.log(skin);
 
     if (!skin) {
       throw new SkinNotExistError();
