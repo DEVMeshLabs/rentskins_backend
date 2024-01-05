@@ -18,8 +18,8 @@ app.register(cors, {
 // -------------------------- FLOAT ------------------------------
 
 user.logOn({
-  accountName: env.STEAM_USERNAME,
-  password: env.STEAM_PASSWORD,
+  accountName: "Rentskins1",
+  password: "c03bca41b453d4c15c6e62c0e39892b3",
 });
 
 user.on("loggedOn", () => {
