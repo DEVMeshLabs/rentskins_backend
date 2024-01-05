@@ -17,22 +17,22 @@ app.register(cors, {
 
 // -------------------------- FLOAT ------------------------------
 
-// user.logOn({
-//   accountName: env.STEAM_USERNAME,
-//   password: env.STEAM_PASSWORD,
-// });
+user.logOn({
+  accountName: env.STEAM_USERNAME,
+  password: env.STEAM_PASSWORD,
+});
 
-// user.on("loggedOn", () => {
-//   console.log("ok");
-//   user.gamesPlayed(730);
-//   csgo.on("connectedToGC", async () => {
-//     console.log("Logado!");
-//   });
-// });
+user.on("loggedOn", () => {
+  console.log("ok");
+  user.gamesPlayed(730);
+  csgo.on("connectedToGC", async () => {
+    console.log("Logado!");
+  });
+});
 
-// user.on("error", (err) => {
-//   console.log(err.message);
-// });
+user.on("error", (err) => {
+  console.log(err.message);
+});
 
 // --------------------------------------------------------
 
