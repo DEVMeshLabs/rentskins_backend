@@ -151,8 +151,6 @@ export class UpdateConfirmTransactionUseCase {
           findSkin.asset_id
         );
 
-        console.log("_________Trade_________", trade);
-
         if (trade.length > 0) {
           console.log("Entrou no lugar!");
           const sellerUpdates = await this.composeOwnerIdUpdates(
