@@ -11,7 +11,6 @@ export class CreateWebHookPixUseCase {
 
   async execute(req: any) {
     if (req.body) {
-      console.log(req.body);
       switch (req.body.type) {
         case "payment": {
           console.log("Tipo: pagamento");
