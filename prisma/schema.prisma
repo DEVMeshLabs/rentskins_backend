@@ -140,3 +140,18 @@ model Transaction {
   deletedAt      DateTime?
   skin           Skin?     @relation(fields: [skin_id], references: [id])
 }
+
+model RentalTransaction {
+  id              String    @id @default(uuid()) @db.VarChar(36)
+  owner_id        String    @db.VarChar(255)
+  skin_id         String    @db.VarChar(255)
+  total_price     Float?
+  fee_total_price Float?
+  days_quantity   String    @db.VarChar(5)
+  status          String?   @default("Em andamento") @db.VarChar(255)
+  start_date      DateTime?
+  end_date        DateTime?
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime?
+  deletedAt       DateTime?
+}

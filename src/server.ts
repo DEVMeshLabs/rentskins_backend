@@ -17,22 +17,22 @@ app.register(cors, {
 
 // -------------------------- FLOAT ------------------------------
 
-user.logOn({
-  accountName: "Rentskins1",
-  password: "c03bca41b453d4c15c6e62c0e39892b3",
-});
+// user.logOn({
+//   accountName: "usefairly",
+//   password: "6fd4050e3cf81fffd2b64eb4338be0d0",
+// });
 
-user.on("loggedOn", () => {
-  console.log("ok");
-  user.gamesPlayed(730);
-  csgo.on("connectedToGC", async () => {
-    console.log("Logado!");
-  });
-});
+// user.on("loggedOn", () => {
+//   console.log("ok");
+//   user.gamesPlayed(730);
+//   csgo.on("connectedToGC", async () => {
+//     console.log("Logado!");
+//   });
+// });
 
-user.on("error", (err) => {
-  console.log(err.message);
-});
+// user.on("error", (err) => {
+//   console.log(err.message);
+// });
 
 // --------------------------------------------------------
 
