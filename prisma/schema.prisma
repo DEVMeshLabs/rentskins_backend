@@ -146,6 +146,7 @@ model RentalTransaction {
   owner_id        String    @db.VarChar(255)
   skin_id         String    @db.VarChar(255)
   total_price     Float?
+  fee             String?   @db.VarChar(255)
   fee_total_price Float?
   days_quantity   String    @db.VarChar(5)
   status          String?   @default("Em andamento") @db.VarChar(255)
