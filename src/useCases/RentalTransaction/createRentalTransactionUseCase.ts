@@ -9,6 +9,8 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
+import { getTratarDateRental } from "@/utils/getTratarDateRental";
+import schedule from "node-schedule";
 
 interface IComposeOwnerIdUpdates {
   perfil: Perfil;
@@ -93,6 +95,26 @@ export class CreateRentalTransactionUseCase {
       sellerNotification,
       buyerNotification,
     });
+    const { secundos, minutos, horas, mes, dia } = getTratarDateRental(
+      createRentalTransaction.end_date
+    );
+    schedule.scheduleJob(
+      `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
+      async () => {
+        console.log("INICIANDO CRONN RENTAL TRANSACTION");
+        try {
+          await this.notificationsRepository.create({
+            owner_id: data.owner_id,
+            description: `O tempo limite do aluguel da skin ${skin.skin_name} está chegando ao fim! Devolva o item`,
+            skin_id: skin.id,
+            type: "input",
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        console.log("FINALIZANDOO CRONN RENTAL TRANSACTION");
+      }
+    );
 
     return createRentalTransaction;
   }

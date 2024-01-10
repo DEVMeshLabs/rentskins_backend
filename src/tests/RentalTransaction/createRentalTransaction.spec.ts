@@ -1,4 +1,4 @@
-import { expect, describe, beforeEach, it } from "vitest";
+import { expect, describe, beforeEach, it, vi } from "vitest";
 import { CreateRentalTransactionUseCase } from "@/useCases/RentalTransaction/createRentalTransactionUseCase";
 // -------------- InMemory --------------
 import { InMemoryRentalTransactionRepository } from "@/repositories/in-memory/inMemoryRentalTransactionRepository";
@@ -196,5 +196,40 @@ describe("Rental Transaction Use Case", () => {
       days_quantity: "14",
     });
     expect(create.fee_total_price).toEqual(164);
+  });
+
+  it("Deve criar a notificação faltando 12h para finalizar a Rental Transaction", async () => {
+    vi.useFakeTimers();
+
+    await Promise.all([
+      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute("76561199205585873"),
+      makeCreateSkinRepository.execute({
+        id: "124",
+        skin_name: "Teste cronjob",
+        skin_price: 200,
+        seller_id: "76561199205585873",
+      }),
+      walletRepository.create({
+        owner_id: "76561199205585878",
+        owner_name: "Teste 1",
+        value: 1000,
+      }),
+    ]);
+
+    const create = await sut.execute({
+      owner_id: "76561199205585878",
+      skin_id: "124",
+      days_quantity: "7",
+    });
+
+    vi.advanceTimersByTime(24 * 60 * 60 * 1000 * 7);
+
+    expect(notificationRepository.notifications[2].owner_id).toEqual(
+      create.owner_id
+    );
+    expect(notificationRepository.notifications[2].description).toContain(
+      "O tempo limite"
+    );
   });
 });
