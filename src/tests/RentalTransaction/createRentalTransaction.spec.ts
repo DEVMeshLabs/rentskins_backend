@@ -54,7 +54,7 @@ describe("Rental Transaction Use Case", () => {
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
-        skin_price: 1000,
+        skin_price: 200,
         seller_id: "76561199205585873",
       }),
       walletRepository.create({
@@ -67,7 +67,7 @@ describe("Rental Transaction Use Case", () => {
     const createRentalTransaction = await sut.execute({
       owner_id: "76561199205585878",
       skin_id: "124",
-      days_quantity: "1",
+      days_quantity: "7",
     });
 
     expect(createRentalTransaction.id).toEqual(expect.any(String));
@@ -80,7 +80,7 @@ describe("Rental Transaction Use Case", () => {
     const data = {
       owner_id: "76561199205585878",
       skin_id: "124",
-      days_quantity: "1",
+      days_quantity: "7",
     };
 
     await expect(() => sut.execute(data)).rejects.toBeInstanceOf(
@@ -94,7 +94,7 @@ describe("Rental Transaction Use Case", () => {
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
-        skin_price: 1000,
+        skin_price: 100,
         seller_id: "76561199205585873",
       }),
       walletRepository.create({
@@ -115,18 +115,18 @@ describe("Rental Transaction Use Case", () => {
       sut.execute({
         owner_id: "123",
         skin_id: "124",
-        days_quantity: "1",
+        days_quantity: "7",
       })
     ).rejects.toBeInstanceOf(SkinHasAlreadyBeenAnnounced);
   });
 
   it("Deve ser capaz de retirar o valor total da skin da carteira do comprador", async () => {
-    await Promise.all([
+    const [, , skin, wallet] = await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
-        skin_price: 1000,
+        skin_price: 100,
         seller_id: "76561199205585873",
       }),
       walletRepository.create({
@@ -139,11 +139,12 @@ describe("Rental Transaction Use Case", () => {
     await sut.execute({
       owner_id: "76561199205585878",
       skin_id: "124",
-      days_quantity: "1",
+      days_quantity: "21",
     });
 
     const walletPrice = walletRepository.wallet[0].value;
-    expect(walletPrice).toEqual(0);
+    const valorRetirar = wallet.value - skin.skin_price;
+    expect(walletPrice).toEqual(valorRetirar);
   });
 
   it("Deve ser capaz de criar as notificações ", async () => {
@@ -152,7 +153,7 @@ describe("Rental Transaction Use Case", () => {
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
-        skin_price: 1000,
+        skin_price: 200,
         seller_id: "76561199205585873",
       }),
       walletRepository.create({
@@ -165,11 +166,35 @@ describe("Rental Transaction Use Case", () => {
     await sut.execute({
       owner_id: "76561199205585878",
       skin_id: "124",
-      days_quantity: "1",
+      days_quantity: "14",
     });
     const notificações = notificationRepository.notifications;
 
     expect(notificações[0].owner_id).toEqual(comprador.owner_id);
     expect(notificações[1].owner_id).toEqual(vendedor.owner_id);
+  });
+
+  it("Deve ser capaz adicionar o valor correto de total da skin menos a porcetagem", async () => {
+    await Promise.all([
+      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute("76561199205585873"),
+      makeCreateSkinRepository.execute({
+        id: "124",
+        skin_price: 200,
+        seller_id: "76561199205585873",
+      }),
+      walletRepository.create({
+        owner_id: "76561199205585878",
+        owner_name: "Teste 1",
+        value: 1000,
+      }),
+    ]);
+
+    const create = await sut.execute({
+      owner_id: "76561199205585878",
+      skin_id: "124",
+      days_quantity: "14",
+    });
+    expect(create.fee_total_price).toEqual(164);
   });
 });

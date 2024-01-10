@@ -50,16 +50,25 @@ export class CreateRentalTransactionUseCase {
       throw new InsufficientFundsError();
     }
 
+    const { fee, fee_total_price } = this.calculateFee(
+      data.days_quantity,
+      skin.skin_price
+    );
+
     const endDate = new Date().setDate(
       new Date().getDate() + Number(data.days_quantity)
     );
     const endDateNew = new Date(endDate);
 
-    const rental = await this.rentalTransactionRepository.create({
-      ...data,
-      start_date: new Date(),
-      end_date: endDateNew,
-    });
+    const createRentalTransaction =
+      await this.rentalTransactionRepository.create({
+        ...data,
+        total_price: skin.skin_price,
+        fee,
+        fee_total_price,
+        start_date: new Date(),
+        end_date: endDateNew,
+      });
 
     // Notificações
 
@@ -80,12 +89,12 @@ export class CreateRentalTransactionUseCase {
     await this.handleProgressRentalTransaction(data.owner_id, {
       perfil: vendedor,
       skin,
-      rentalTransaction: rental,
+      rentalTransaction: createRentalTransaction,
       sellerNotification,
       buyerNotification,
     });
 
-    return rental;
+    return createRentalTransaction;
   }
 
   // ------------------------- Outras funções -------------------------
@@ -211,5 +220,20 @@ export class CreateRentalTransactionUseCase {
     };
 
     return sellerNotification;
+  }
+
+  calculateFee(days_quantity: string, skin_price: number) {
+    const feeQuantityDays = {
+      7: 10,
+      14: 18,
+      21: 23,
+    };
+
+    const fee = feeQuantityDays[days_quantity];
+    const fee_total_price = skin_price - (fee / 100) * skin_price;
+    return {
+      fee: `${fee}%`,
+      fee_total_price,
+    };
   }
 }

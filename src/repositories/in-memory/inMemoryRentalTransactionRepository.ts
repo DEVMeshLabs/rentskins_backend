@@ -13,6 +13,7 @@ export class InMemoryRentalTransactionRepository
       owner_id: data.owner_id,
       skin_id: data.skin_id,
       total_price: data.total_price ?? null,
+      fee: data.fee ?? null,
       fee_total_price: data.fee_total_price ?? null,
       days_quantity: data.days_quantity,
       status: data.status ?? "Em andamento",
