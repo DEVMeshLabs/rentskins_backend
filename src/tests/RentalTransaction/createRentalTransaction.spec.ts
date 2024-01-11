@@ -200,6 +200,7 @@ describe("Rental Transaction Use Case", () => {
 
   it("Deve criar a notificação faltando 12h para finalizar a Rental Transaction", async () => {
     vi.useFakeTimers();
+    const addSpy = vi.spyOn(notificationRepository, "create");
 
     await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
@@ -225,11 +226,11 @@ describe("Rental Transaction Use Case", () => {
 
     vi.advanceTimersByTime(24 * 60 * 60 * 1000 * 7);
 
-    expect(notificationRepository.notifications[2].owner_id).toEqual(
-      create.owner_id
-    );
-    expect(notificationRepository.notifications[2].description).toContain(
-      "O tempo limite"
-    );
+    const notification = notificationRepository.notifications[2];
+
+    expect(notification.owner_id).toEqual(create.owner_id);
+    expect(notification.description).toContain("O tempo limite");
+    expect(addSpy).toHaveBeenCalledTimes(3);
+    addSpy.mockRestore();
   });
 });
