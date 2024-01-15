@@ -224,13 +224,12 @@ describe("Rental Transaction Use Case", () => {
       days_quantity: "7",
     });
 
-    vi.advanceTimersByTime(561600000); // 6 Dias e 12 horas
-    const notification = notificationRepository.notifications;
+    vi.advanceTimersByTime(571600000); // 6 Dias e 12 horas
 
+    const notification = notificationRepository.notifications;
     expect(notification[2].owner_id).toEqual(create.owner_id);
     expect(notification[2].description).toContain("O tempo limite");
     expect(addSpy).toHaveBeenCalledTimes(3);
-    addSpy.mockRestore();
   });
 
   it("Deve validar o prazo final", async () => {
@@ -260,13 +259,48 @@ describe("Rental Transaction Use Case", () => {
       days_quantity: "7",
     });
 
-    vi.advanceTimersByTime(604800000);
+    vi.advanceTimersByTime(604800000); // 7 dias
     const notification = notificationRepository.notifications;
 
     expect(notification[3].owner_id).toEqual(create.owner_id);
     expect(notification[3].description).toContain("Devolva o item");
     expect(addSpy).toHaveBeenCalledTimes(4);
     expect(spySchedule).toHaveBeenCalledTimes(2);
-    addSpy.mockRestore();
+  });
+
+  it("Deve rodar apenas 2 job", async () => {
+    vi.useFakeTimers();
+    const addSpy = vi.spyOn(notificationRepository, "create");
+    const spySchedule = vi.spyOn(schedule, "scheduleJob");
+
+    await Promise.all([
+      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute("76561199205585873"),
+      makeCreateSkinRepository.execute({
+        id: "124",
+        skin_name: "Teste cronjob",
+        skin_price: 200,
+        seller_id: "76561199205585873",
+      }),
+      walletRepository.create({
+        owner_id: "76561199205585878",
+        owner_name: "Teste 1",
+        value: 1000,
+      }),
+    ]);
+
+    await sut.execute({
+      owner_id: "76561199205585878",
+      skin_id: "124",
+      days_quantity: "7",
+    });
+
+    vi.advanceTimersByTime(561600000); // 6 Dias e 12 horas
+    expect(addSpy).toHaveBeenCalledTimes(3);
+
+    vi.advanceTimersByTime(43200000); // + 12h
+    expect(addSpy).toHaveBeenCalledTimes(4);
+
+    expect(spySchedule).toHaveBeenCalledTimes(2);
   });
 });
