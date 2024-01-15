@@ -2,7 +2,6 @@ import dayjs from "dayjs";
 
 export function getTratarDateRental(end_date: string, before: boolean) {
   let endDateRental: string;
-
   if (before) {
     endDateRental = dayjs(end_date).subtract(1, "day").format();
   } else {
@@ -15,6 +14,7 @@ export function getTratarDateRental(end_date: string, before: boolean) {
   const secundos = tratarSecundos.split("-")[0];
 
   const dateObject = {
+    endDateRental,
     horas,
     minutos,
     secundos,
