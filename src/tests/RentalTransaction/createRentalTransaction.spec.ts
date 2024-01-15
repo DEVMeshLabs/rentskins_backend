@@ -204,8 +204,9 @@ describe("Rental Transaction Use Case", () => {
   });
 
   it("Deve criar a notificação faltando 12h para finalizar a Rental Transaction", async () => {
-    vi.useFakeTimers();
     const addSpy = vi.spyOn(notificationRepository, "create");
+
+    vi.useFakeTimers();
 
     await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
@@ -231,15 +232,16 @@ describe("Rental Transaction Use Case", () => {
     vi.advanceTimersByTime(571600000); // 6 Dias e 12 horas
 
     const notification = notificationRepository.notifications;
+
     expect(notification[2].owner_id).toEqual(create.owner_id);
     expect(notification[2].description).toContain("O tempo limite");
     expect(addSpy).toHaveBeenCalledTimes(3);
   });
 
   it("Deve validar o prazo final", async () => {
-    vi.useFakeTimers();
     const addSpy = vi.spyOn(notificationRepository, "create");
     const spySchedule = vi.spyOn(schedule, "scheduleJob");
+    vi.useFakeTimers();
 
     await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
@@ -263,19 +265,21 @@ describe("Rental Transaction Use Case", () => {
       days_quantity: "7",
     });
 
-    vi.advanceTimersByTime(604800000); // 7 dias
+    vi.advanceTimersByTime(614800000); // 7 dias
+
     const notification = notificationRepository.notifications;
 
     expect(notification[3].owner_id).toEqual(create.owner_id);
     expect(notification[3].description).toContain("Devolva o item");
+
     expect(addSpy).toHaveBeenCalledTimes(4);
     expect(spySchedule).toHaveBeenCalledTimes(2);
   });
 
   it("Deve rodar apenas 2 job", async () => {
-    vi.useFakeTimers();
     const addSpy = vi.spyOn(notificationRepository, "create");
     const spySchedule = vi.spyOn(schedule, "scheduleJob");
+    vi.useFakeTimers();
 
     await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
@@ -299,10 +303,10 @@ describe("Rental Transaction Use Case", () => {
       days_quantity: "7",
     });
 
-    vi.advanceTimersByTime(561600000); // 6 Dias e 12 horas
+    vi.advanceTimersByTime(571600000); // 6 Dias e 12 horas
     expect(addSpy).toHaveBeenCalledTimes(3);
 
-    vi.advanceTimersByTime(43200000); // + 12h
+    vi.advanceTimersByTime(44200000); // + 12h
     expect(addSpy).toHaveBeenCalledTimes(4);
 
     expect(spySchedule).toHaveBeenCalledTimes(2);
