@@ -1,18 +1,26 @@
-export function getTratarDateRental(end_date: Date, before: boolean) {
-  const endDateRental = new Date(end_date.getTime());
+import dayjs from "dayjs";
+
+export function getTratarDateRental(end_date: string, before: boolean) {
+  let endDateRental: string;
 
   if (before) {
-    const hoursBefore = 12;
-    endDateRental.setHours(endDateRental.getHours() - hoursBefore);
+    endDateRental = dayjs(end_date).subtract(1, "day").format();
+  } else {
+    endDateRental = dayjs(end_date).format();
   }
 
+  const splitando = endDateRental.split("T");
+  const [ano, mes, dia] = splitando[0].split("-");
+  const [horas, minutos, tratarSecundos] = splitando[1].split(":");
+  const secundos = tratarSecundos.split("-")[0];
+
   const dateObject = {
-    horas: endDateRental.getUTCHours(),
-    minutos: endDateRental.getUTCMinutes(),
-    secundos: endDateRental.getUTCSeconds(),
-    dia: endDateRental.getDate(),
-    mes: endDateRental.getMonth() + 1,
-    ano: endDateRental.getFullYear(),
+    horas,
+    minutos,
+    secundos,
+    dia,
+    mes,
+    ano,
   };
 
   return dateObject;

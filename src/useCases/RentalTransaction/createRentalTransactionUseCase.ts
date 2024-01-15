@@ -11,6 +11,7 @@ import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { getTratarDateRental } from "@/utils/getTratarDateRental";
 import schedule from "node-schedule";
+import dayjs from "dayjs";
 
 interface IComposeOwnerIdUpdates {
   perfil: Perfil;
@@ -57,11 +58,7 @@ export class CreateRentalTransactionUseCase {
       skin.skin_price
     );
 
-    const endDate = new Date().setDate(
-      new Date().getDate() + Number(data.days_quantity)
-    );
-    const endDateNew = new Date(endDate);
-
+    const endDateNew = dayjs(new Date()).add(7, "day").format();
     const createRentalTransaction =
       await this.rentalTransactionRepository.create({
         ...data,
@@ -235,6 +232,7 @@ export class CreateRentalTransactionUseCase {
     };
 
     const fee = feeQuantityDays[days_quantity];
+
     const fee_total_price = skin_price - (fee / 100) * skin_price;
     return {
       fee: `${fee}%`,
@@ -242,7 +240,7 @@ export class CreateRentalTransactionUseCase {
     };
   }
 
-  async notification12hBefore(owner_id: string, date: Date, skin: Skin) {
+  async notification12hBefore(owner_id: string, date: string, skin: Skin) {
     const { secundos, minutos, horas, mes, dia } = getTratarDateRental(
       date,
       true
@@ -250,7 +248,6 @@ export class CreateRentalTransactionUseCase {
     schedule.scheduleJob(
       `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
       async () => {
-        console.log("INICIANDO CRONN RENTAL TRANSACTION");
         try {
           await this.notificationsRepository.create({
             owner_id,
@@ -261,22 +258,19 @@ export class CreateRentalTransactionUseCase {
         } catch (error) {
           console.log(error);
         }
-        console.log("FINALIZANDOO CRONN RENTAL TRANSACTION");
       }
     );
   }
 
-  async deadLine(owner_id: string, date: Date, skin: Skin) {
+  async deadLine(owner_id: string, date: string, skin: Skin) {
     const { secundos, minutos, horas, mes, dia } = getTratarDateRental(
       date,
       false
     );
-    console.log(horas, minutos, secundos, mes, dia);
 
     schedule.scheduleJob(
       `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
       async () => {
-        console.log("INICIANDO CRONN PRAZO FINAL");
         try {
           await this.notificationsRepository.create({
             owner_id,
@@ -287,7 +281,6 @@ export class CreateRentalTransactionUseCase {
         } catch (error) {
           console.log(error);
         }
-        console.log("FINALIZANDOO CRONN PRAZO FINAL");
       }
     );
   }
