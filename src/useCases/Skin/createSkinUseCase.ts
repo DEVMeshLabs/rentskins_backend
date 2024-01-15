@@ -1,7 +1,7 @@
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { Prisma } from "@prisma/client";
 import { SkinAlreadyExistsError } from "../@errors/Skin/SkinAlreadyExistsError";
-import { slug } from "@/useCases/Wallet/utils/slug";
+import { slug } from "@/utils/slug";
 
 export class CreateSkinUseCase {
   constructor(private skinsRepository: ISkinsRepository) {}

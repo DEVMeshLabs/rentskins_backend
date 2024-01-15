@@ -9,7 +9,7 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
-import { getTratarDateRental } from "@/useCases/Wallet/utils/getTratarDateRental";
+import { getTratarDateRental } from "@/utils/getTratarDateRental";
 import schedule from "node-schedule";
 
 interface IComposeOwnerIdUpdates {

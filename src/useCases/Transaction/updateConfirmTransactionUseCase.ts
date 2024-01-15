@@ -5,13 +5,13 @@ import { TransactionNotExistError } from "../@errors/Transaction/TransactionNotE
 import { NotUpdateTransaction } from "../@errors/Transaction/NotUpdateTransaction";
 import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 import { Skin, Transaction } from "@prisma/client";
-import { MediaDates } from "@/useCases/Wallet/utils/mediaDates";
+import { MediaDates } from "@/utils/mediaDates";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
-import { calculateReliability } from "@/useCases/Wallet/utils/calculateReliability";
-import { Trades } from "@/useCases/Wallet/utils/trades";
+import { calculateReliability } from "@/utils/calculateReliability";
+import { Trades } from "@/utils/trades";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
-import { calculateDiscount } from "@/useCases/Wallet/utils/calculateDiscount";
+import { calculateDiscount } from "@/utils/calculateDiscount";
 
 interface IComposeOwnerIdUpdates {
   id: string;
