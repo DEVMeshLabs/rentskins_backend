@@ -257,25 +257,19 @@ export class CreateRentalTransactionUseCase {
   }
 
   async deadLine(owner_id: string, date: string, skin: Skin) {
-    const { secundos, minutos, horas, mes, dia } = getTratarDateRental(
-      date,
-      false
-    );
+    const { endDateRental } = getTratarDateRental(date, false);
 
-    return schedule.scheduleJob(
-      `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
-      async () => {
-        try {
-          await this.notificationsRepository.create({
-            owner_id,
-            description: `O tempo limite do aluguel da skin ${skin.skin_name} chegou ao fim! Devolva o item`,
-            skin_id: skin.id,
-            type: "input",
-          });
-        } catch (error) {
-          console.log(error);
-        }
+    return schedule.scheduleJob(endDateRental, async () => {
+      try {
+        await this.notificationsRepository.create({
+          owner_id,
+          description: `O tempo limite do aluguel da skin ${skin.skin_name} chegou ao fim! Devolva o item`,
+          skin_id: skin.id,
+          type: "input",
+        });
+      } catch (error) {
+        console.log(error);
       }
-    );
+    });
   }
 }
