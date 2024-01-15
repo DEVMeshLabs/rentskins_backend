@@ -204,9 +204,8 @@ describe("Rental Transaction Use Case", () => {
   });
 
   it("Deve criar a notificação faltando 12h para finalizar a Rental Transaction", async () => {
-    const addSpy = vi.spyOn(notificationRepository, "create");
-
     vi.useFakeTimers();
+    const addSpy = vi.spyOn(notificationRepository, "create");
 
     await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
@@ -239,9 +238,9 @@ describe("Rental Transaction Use Case", () => {
   });
 
   it("Deve validar o prazo final", async () => {
+    vi.useFakeTimers();
     const addSpy = vi.spyOn(notificationRepository, "create");
     const spySchedule = vi.spyOn(schedule, "scheduleJob");
-    vi.useFakeTimers();
 
     await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
@@ -264,7 +263,7 @@ describe("Rental Transaction Use Case", () => {
       skin_id: "124",
       days_quantity: "7",
     });
-
+    console.log(create);
     vi.advanceTimersByTime(614800000); // 7 dias
 
     const notification = notificationRepository.notifications;
@@ -274,12 +273,13 @@ describe("Rental Transaction Use Case", () => {
 
     expect(addSpy).toHaveBeenCalledTimes(4);
     expect(spySchedule).toHaveBeenCalledTimes(2);
+    vi.useRealTimers();
   });
 
   it("Deve rodar apenas 2 job", async () => {
-    const addSpy = vi.spyOn(notificationRepository, "create");
-    const spySchedule = vi.spyOn(schedule, "scheduleJob");
     vi.useFakeTimers();
+    const notificationSpyon = vi.spyOn(notificationRepository, "create");
+    const spySchedule = vi.spyOn(schedule, "scheduleJob");
 
     await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
@@ -301,14 +301,16 @@ describe("Rental Transaction Use Case", () => {
       owner_id: "76561199205585878",
       skin_id: "124",
       days_quantity: "7",
+      start_date: "",
     });
 
-    vi.advanceTimersByTime(571600000); // 6 Dias e 12 horas
-    expect(addSpy).toHaveBeenCalledTimes(3);
+    vi.advanceTimersByTime(561600000); // 6 Dias e 12 horas
+    expect(notificationSpyon).toHaveBeenCalledTimes(3);
 
-    vi.advanceTimersByTime(44200000); // + 12h
-    expect(addSpy).toHaveBeenCalledTimes(4);
+    vi.advanceTimersByTime(43200000); // + 12h
+    console.log(notificationRepository.notifications);
 
+    expect(notificationSpyon).toHaveBeenCalledTimes(4);
     expect(spySchedule).toHaveBeenCalledTimes(2);
   });
 });

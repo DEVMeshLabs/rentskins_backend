@@ -241,25 +241,19 @@ export class CreateRentalTransactionUseCase {
   }
 
   async notification12hBefore(owner_id: string, date: string, skin: Skin) {
-    const { secundos, minutos, horas, mes, dia } = getTratarDateRental(
-      date,
-      true
-    );
-    schedule.scheduleJob(
-      `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
-      async () => {
-        try {
-          await this.notificationsRepository.create({
-            owner_id,
-            description: `O tempo limite do aluguel da skin ${skin.skin_name} está chegando ao fim! Devolva o item`,
-            skin_id: skin.id,
-            type: "input",
-          });
-        } catch (error) {
-          console.log(error);
-        }
+    const { endDateRental } = getTratarDateRental(date, true);
+    return schedule.scheduleJob(endDateRental, async () => {
+      try {
+        await this.notificationsRepository.create({
+          owner_id,
+          description: `O tempo limite do aluguel da skin ${skin.skin_name} está chegando ao fim! Devolva o item`,
+          skin_id: skin.id,
+          type: "input",
+        });
+      } catch (error) {
+        console.log(error);
       }
-    );
+    });
   }
 
   async deadLine(owner_id: string, date: string, skin: Skin) {
@@ -268,7 +262,7 @@ export class CreateRentalTransactionUseCase {
       false
     );
 
-    schedule.scheduleJob(
+    return schedule.scheduleJob(
       `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
       async () => {
         try {
