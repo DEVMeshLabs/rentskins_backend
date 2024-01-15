@@ -20,8 +20,8 @@ import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { GetInventoryOwnerIdError } from "../@errors/Transaction/GetInventoryOwnerIdError";
 // ------------------ Outros -----------------
 import { makeComposeOwnerId } from "../@factories/Transaction/makeComposeOwnerId";
-import { Trades } from "@/utils/trades";
-import { getFormattedDateArray } from "@/utils/getFormattedDate";
+import { Trades } from "@/useCases/Wallet/utils/trades";
+import { getFormattedDateArray } from "@/useCases/Wallet/utils/getFormattedDate";
 
 interface ITransactionRequest {
   seller_id: string;

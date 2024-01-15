@@ -1,9 +1,10 @@
-export function getTratarDateRental(end_date: Date) {
+export function getTratarDateRental(end_date: Date, before: boolean) {
   const endDateRental = new Date(end_date.getTime());
 
-  const hoursBefore = 12;
-
-  endDateRental.setHours(endDateRental.getHours() - hoursBefore);
+  if (before) {
+    const hoursBefore = 12;
+    endDateRental.setHours(endDateRental.getHours() - hoursBefore);
+  }
 
   const dateObject = {
     horas: endDateRental.getUTCHours(),

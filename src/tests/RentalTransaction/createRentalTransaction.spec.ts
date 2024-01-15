@@ -13,6 +13,7 @@ import { SkinHasAlreadyBeenAnnounced } from "@/useCases/@errors/RentalTransactio
 // -------------- Factories --------------
 import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
 import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
+import schedule from "node-schedule";
 
 let rentalTransactionRepository: InMemoryRentalTransactionRepository;
 let skinRepository: InMemorySkinRepository;
@@ -217,6 +218,41 @@ describe("Rental Transaction Use Case", () => {
         value: 1000,
       }),
     ]);
+    const create = await sut.execute({
+      owner_id: "76561199205585878",
+      skin_id: "124",
+      days_quantity: "7",
+    });
+
+    vi.advanceTimersByTime(561600000); // 6 Dias e 12 horas
+    const notification = notificationRepository.notifications;
+
+    expect(notification[2].owner_id).toEqual(create.owner_id);
+    expect(notification[2].description).toContain("O tempo limite");
+    expect(addSpy).toHaveBeenCalledTimes(3);
+    addSpy.mockRestore();
+  });
+
+  it("Deve validar o prazo final", async () => {
+    vi.useFakeTimers();
+    const addSpy = vi.spyOn(notificationRepository, "create");
+    const spySchedule = vi.spyOn(schedule, "scheduleJob");
+
+    await Promise.all([
+      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute("76561199205585873"),
+      makeCreateSkinRepository.execute({
+        id: "124",
+        skin_name: "Teste cronjob",
+        skin_price: 200,
+        seller_id: "76561199205585873",
+      }),
+      walletRepository.create({
+        owner_id: "76561199205585878",
+        owner_name: "Teste 1",
+        value: 1000,
+      }),
+    ]);
 
     const create = await sut.execute({
       owner_id: "76561199205585878",
@@ -224,13 +260,13 @@ describe("Rental Transaction Use Case", () => {
       days_quantity: "7",
     });
 
-    vi.advanceTimersByTime(24 * 60 * 60 * 1000 * 7);
+    vi.advanceTimersByTime(604800000);
+    const notification = notificationRepository.notifications;
 
-    const notification = notificationRepository.notifications[2];
-
-    expect(notification.owner_id).toEqual(create.owner_id);
-    expect(notification.description).toContain("O tempo limite");
-    expect(addSpy).toHaveBeenCalledTimes(3);
+    expect(notification[3].owner_id).toEqual(create.owner_id);
+    expect(notification[3].description).toContain("Devolva o item");
+    expect(addSpy).toHaveBeenCalledTimes(4);
+    expect(spySchedule).toHaveBeenCalledTimes(2);
     addSpy.mockRestore();
   });
 });
