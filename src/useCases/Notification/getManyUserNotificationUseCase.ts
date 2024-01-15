@@ -1,5 +1,5 @@
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
-import { DataFilter } from "@/useCases/Wallet/utils/dataFilterDay";
+import { DataFilter } from "@/utils/dataFilterDay";
 import { Notification } from "@prisma/client";
 
 export class GetManyUserNotification {

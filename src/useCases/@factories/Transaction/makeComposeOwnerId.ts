@@ -3,7 +3,7 @@ import { PrismaPerfilRepository } from "@/repositories/Prisma/prismaPerfilReposi
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
 import { PrismaTransactionRepository } from "@/repositories/Prisma/prismaTransactionRepository";
 import { PrismaWalletRepository } from "@/repositories/Prisma/prismaWalletRepository";
-import { ComposeOwner } from "@/useCases/Wallet/utils/composeOwner";
+import { ComposeOwner } from "@/utils/composeOwner";
 
 export function makeComposeOwnerId() {
   const transactionRepository = new PrismaTransactionRepository();
