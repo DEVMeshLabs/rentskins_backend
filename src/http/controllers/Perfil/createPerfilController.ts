@@ -1,7 +1,7 @@
 import { makeCreatePerfil } from "@/useCases/@factories/Perfil/makeCreatePerfil";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { env } from "process";
-import { getAllData } from "@/utils/getAllResponse";
+import { getAllData } from "@/useCases/Wallet/utils/getAllResponse";
 import { createPerfilInfoSchema } from "./Schemas/createPerfilInfoSchema";
 import { PerfilAlreadyExistError } from "@/useCases/@errors/Perfil/PerfilInfoAlreadyExistError";
 import { VerifyAccountVacBanError } from "@/useCases/@errors/Perfil/VerifyAccountVacBanError";

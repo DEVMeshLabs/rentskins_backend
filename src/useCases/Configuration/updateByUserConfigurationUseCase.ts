@@ -1,7 +1,7 @@
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { Configuration, Prisma } from "@prisma/client";
 import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
-import { checkDuplicate } from "@/utils/checkDuplicateConfiguration";
+import { checkDuplicate } from "@/useCases/Wallet/utils/checkDuplicateConfiguration";
 
 export class UpdateByUserConfigurationUseCase {
   constructor(private configuration: IConfigurationRepository) {}

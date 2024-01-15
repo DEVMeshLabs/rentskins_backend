@@ -9,7 +9,7 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
-import { getTratarDateRental } from "@/utils/getTratarDateRental";
+import { getTratarDateRental } from "@/useCases/Wallet/utils/getTratarDateRental";
 import schedule from "node-schedule";
 
 interface IComposeOwnerIdUpdates {
@@ -95,26 +95,9 @@ export class CreateRentalTransactionUseCase {
       sellerNotification,
       buyerNotification,
     });
-    const { secundos, minutos, horas, mes, dia } = getTratarDateRental(
-      createRentalTransaction.end_date
-    );
-    schedule.scheduleJob(
-      `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
-      async () => {
-        console.log("INICIANDO CRONN RENTAL TRANSACTION");
-        try {
-          await this.notificationsRepository.create({
-            owner_id: data.owner_id,
-            description: `O tempo limite do aluguel da skin ${skin.skin_name} está chegando ao fim! Devolva o item`,
-            skin_id: skin.id,
-            type: "input",
-          });
-        } catch (error) {
-          console.log(error);
-        }
-        console.log("FINALIZANDOO CRONN RENTAL TRANSACTION");
-      }
-    );
+
+    await this.notification12hBefore(data.owner_id, endDateNew, skin);
+    await this.deadLine(data.owner_id, endDateNew, skin);
 
     return createRentalTransaction;
   }
@@ -257,5 +240,55 @@ export class CreateRentalTransactionUseCase {
       fee: `${fee}%`,
       fee_total_price,
     };
+  }
+
+  async notification12hBefore(owner_id: string, date: Date, skin: Skin) {
+    const { secundos, minutos, horas, mes, dia } = getTratarDateRental(
+      date,
+      true
+    );
+    schedule.scheduleJob(
+      `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
+      async () => {
+        console.log("INICIANDO CRONN RENTAL TRANSACTION");
+        try {
+          await this.notificationsRepository.create({
+            owner_id,
+            description: `O tempo limite do aluguel da skin ${skin.skin_name} está chegando ao fim! Devolva o item`,
+            skin_id: skin.id,
+            type: "input",
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        console.log("FINALIZANDOO CRONN RENTAL TRANSACTION");
+      }
+    );
+  }
+
+  async deadLine(owner_id: string, date: Date, skin: Skin) {
+    const { secundos, minutos, horas, mes, dia } = getTratarDateRental(
+      date,
+      false
+    );
+    console.log(horas, minutos, secundos, mes, dia);
+
+    schedule.scheduleJob(
+      `${secundos} ${minutos} ${horas} ${dia} ${mes} *`,
+      async () => {
+        console.log("INICIANDO CRONN PRAZO FINAL");
+        try {
+          await this.notificationsRepository.create({
+            owner_id,
+            description: `O tempo limite do aluguel da skin ${skin.skin_name} chegou ao fim! Devolva o item`,
+            skin_id: skin.id,
+            type: "input",
+          });
+        } catch (error) {
+          console.log(error);
+        }
+        console.log("FINALIZANDOO CRONN PRAZO FINAL");
+      }
+    );
   }
 }
