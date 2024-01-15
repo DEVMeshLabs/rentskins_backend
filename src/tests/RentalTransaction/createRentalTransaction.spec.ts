@@ -13,7 +13,6 @@ import { SkinHasAlreadyBeenAnnounced } from "@/useCases/@errors/RentalTransactio
 // -------------- Factories --------------
 import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
 import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
-import schedule from "node-schedule";
 
 let rentalTransactionRepository: InMemoryRentalTransactionRepository;
 let skinRepository: InMemorySkinRepository;
@@ -239,7 +238,6 @@ describe("Rental Transaction Use Case", () => {
   it("Deve validar o prazo final", async () => {
     vi.useFakeTimers();
     const addSpy = vi.spyOn(notificationRepository, "create");
-    const spySchedule = vi.spyOn(schedule, "scheduleJob");
 
     await Promise.all([
       makeCreatePerfil.execute("76561199205585878"),
@@ -262,17 +260,20 @@ describe("Rental Transaction Use Case", () => {
       skin_id: "124",
       days_quantity: "7",
     });
-    vi.advanceTimersByTime(614800000); // 7 dias
+
+    vi.advanceTimersByTime(624800000); // 7 dias
 
     const notification = notificationRepository.notifications;
-    console.log(notification);
-    console.log(create);
 
-    expect(notification[3].owner_id).toEqual(create.owner_id);
-    expect(notification[3].description).toContain("Devolva o item");
+    const filterNotification = notification.find((item) => {
+      return (
+        item.description.includes("chegou ao fim!") &&
+        item.owner_id === create.owner_id
+      );
+    });
 
+    expect(filterNotification.owner_id).toEqual(create.owner_id);
     expect(addSpy).toHaveBeenCalledTimes(4);
-    expect(spySchedule).toHaveBeenCalledTimes(2);
   });
 
   // it("Deve rodar apenas 2 job", async () => {

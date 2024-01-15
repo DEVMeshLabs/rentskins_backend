@@ -241,7 +241,7 @@ export class CreateRentalTransactionUseCase {
   }
 
   async notification12hBefore(owner_id: string, date: string, skin: Skin) {
-    const { endDateRental } = getTratarDateRental(date, true);
+    const endDateRental = getTratarDateRental(date, true);
     return schedule.scheduleJob(endDateRental, async () => {
       try {
         await this.notificationsRepository.create({
@@ -257,7 +257,7 @@ export class CreateRentalTransactionUseCase {
   }
 
   async deadLine(owner_id: string, date: string, skin: Skin) {
-    const { endDateRental } = getTratarDateRental(date, false);
+    const endDateRental = getTratarDateRental(date, false);
 
     return schedule.scheduleJob(endDateRental, async () => {
       try {
