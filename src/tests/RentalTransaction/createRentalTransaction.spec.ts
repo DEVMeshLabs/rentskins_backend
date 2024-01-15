@@ -1,4 +1,4 @@
-import { expect, describe, beforeEach, it, vi } from "vitest";
+import { expect, describe, beforeEach, it, vi, afterEach } from "vitest";
 import { CreateRentalTransactionUseCase } from "@/useCases/RentalTransaction/createRentalTransactionUseCase";
 // -------------- InMemory --------------
 import { InMemoryRentalTransactionRepository } from "@/repositories/in-memory/inMemoryRentalTransactionRepository";
@@ -47,6 +47,10 @@ describe("Rental Transaction Use Case", () => {
       walletRepository,
       notificationRepository
     );
+  });
+
+  afterEach(() => {
+    vi.useRealTimers();
   });
 
   it("Deve ser capaz de criar uma Rental Transaction", async () => {
