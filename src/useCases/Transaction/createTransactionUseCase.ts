@@ -185,7 +185,7 @@ export class CreateTransactionUseCase {
           tradeKey,
           findSkin.asset_id
         );
-        if (trades.length > 0) {
+        if (trades && trades.length > 0) {
           return makeCompose.composeOwnerIdUpdates(
             perfilSeller.owner_id,
             false,
