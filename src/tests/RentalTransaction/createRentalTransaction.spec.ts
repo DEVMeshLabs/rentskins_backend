@@ -1,5 +1,7 @@
 import { expect, describe, beforeEach, it, vi, afterEach } from "vitest";
 import { CreateRentalTransactionUseCase } from "@/useCases/RentalTransaction/createRentalTransactionUseCase";
+import nock from "nock";
+import getHistoric from "../fixures/getItensHistoric.json";
 // -------------- InMemory --------------
 import { InMemoryRentalTransactionRepository } from "@/repositories/in-memory/inMemoryRentalTransactionRepository";
 import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
@@ -44,7 +46,8 @@ describe("Rental Transaction Use Case", () => {
       skinRepository,
       perfilRepository,
       walletRepository,
-      notificationRepository
+      notificationRepository,
+      configurationRepository
     );
   });
 
@@ -54,7 +57,10 @@ describe("Rental Transaction Use Case", () => {
 
   it("Deve ser capaz de criar uma Rental Transaction", async () => {
     await Promise.all([
-      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute(
+        "76561199205585878",
+        "9DE77D4A568AE81B8975E54BFE1DC8C9"
+      ),
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
@@ -78,7 +84,10 @@ describe("Rental Transaction Use Case", () => {
   });
 
   it("Deve dar um error de Skin not Exist", async () => {
-    await makeCreatePerfil.execute("76561199205585878");
+    await makeCreatePerfil.execute(
+      "76561199205585878",
+      "9DE77D4A568AE81B8975E54BFE1DC8C9"
+    );
     await makeCreatePerfil.execute("76561199205585873");
 
     const data = {
@@ -94,7 +103,10 @@ describe("Rental Transaction Use Case", () => {
 
   it("Deve dar um error de Skin Already Been Announced", async () => {
     await Promise.all([
-      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute(
+        "76561199205585878",
+        "9DE77D4A568AE81B8975E54BFE1DC8C9"
+      ),
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
@@ -126,7 +138,10 @@ describe("Rental Transaction Use Case", () => {
 
   it("Deve ser capaz de retirar o valor total da skin da carteira do comprador", async () => {
     const [, , skin, wallet] = await Promise.all([
-      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute(
+        "76561199205585878",
+        "9DE77D4A568AE81B8975E54BFE1DC8C9"
+      ),
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
@@ -153,7 +168,10 @@ describe("Rental Transaction Use Case", () => {
 
   it("Deve ser capaz de criar as notificações ", async () => {
     const [comprador, vendedor] = await Promise.all([
-      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute(
+        "76561199205585878",
+        "9DE77D4A568AE81B8975E54BFE1DC8C9"
+      ),
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
@@ -180,7 +198,10 @@ describe("Rental Transaction Use Case", () => {
 
   it("Deve ser capaz adicionar o valor correto de total da skin menos a porcetagem", async () => {
     await Promise.all([
-      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute(
+        "76561199205585878",
+        "9DE77D4A568AE81B8975E54BFE1DC8C9"
+      ),
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
@@ -207,7 +228,10 @@ describe("Rental Transaction Use Case", () => {
     const addSpy = vi.spyOn(notificationRepository, "create");
 
     await Promise.all([
-      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute(
+        "76561199205585878",
+        "9DE77D4A568AE81B8975E54BFE1DC8C9"
+      ),
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
@@ -221,12 +245,12 @@ describe("Rental Transaction Use Case", () => {
         value: 1000,
       }),
     ]);
+
     const create = await sut.execute({
       owner_id: "76561199205585878",
       skin_id: "124",
       days_quantity: "7",
     });
-
     vi.advanceTimersByTime(571600000); // 6 Dias e 12 horas
     const notification = notificationRepository.notifications;
 
@@ -238,9 +262,13 @@ describe("Rental Transaction Use Case", () => {
   it("Deve validar o prazo final", async () => {
     vi.useFakeTimers();
     const addSpy = vi.spyOn(notificationRepository, "create");
-
+    // const key1 = "9DE77D4A568AE81B8975E54BFE1DC8C9";
+    // const key2 = "15B121C41C8C8E7EE912E0A3EFB22C66";
     await Promise.all([
-      makeCreatePerfil.execute("76561199205585878"),
+      makeCreatePerfil.execute(
+        "76561199205585878",
+        "9DE77D4A568AE81B8975E54BFE1DC8C9"
+      ),
       makeCreatePerfil.execute("76561199205585873"),
       makeCreateSkinRepository.execute({
         id: "124",
@@ -255,6 +283,18 @@ describe("Rental Transaction Use Case", () => {
       }),
     ]);
 
+    const scope = nock("https://api.steampowered.com")
+      .get("/IEconService/GetTradeHistory/v1/")
+      .query({
+        key: "9DE77D4A568AE81B8975E54BFE1DC8C9",
+        max_trades: "50",
+        get_descriptions: "false",
+        language: "EN",
+        include_failed: "true",
+        include_total: "true",
+      })
+      .reply(200, getHistoric);
+
     const create = await sut.execute({
       owner_id: "76561199205585878",
       skin_id: "124",
@@ -264,16 +304,16 @@ describe("Rental Transaction Use Case", () => {
     vi.advanceTimersByTime(624800000); // 7 dias
 
     const notification = notificationRepository.notifications;
-
     const filterNotification = notification.find((item) => {
       return (
         item.description.includes("chegou ao fim!") &&
         item.owner_id === create.owner_id
       );
     });
-
     expect(filterNotification.owner_id).toEqual(create.owner_id);
     expect(addSpy).toHaveBeenCalledTimes(4);
+    expect(scope.isDone()).toBe(true);
+    scope.done();
   });
 
   // it("Deve rodar apenas 2 job", async () => {

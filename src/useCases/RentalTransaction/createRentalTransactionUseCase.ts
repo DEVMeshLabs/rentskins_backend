@@ -9,9 +9,11 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
+import { Trades } from "@/utils/trades";
 import { getTratarDateRental } from "@/utils/getTratarDateRental";
 import schedule from "node-schedule";
 import dayjs from "dayjs";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 
 interface IComposeOwnerIdUpdates {
   perfil: Perfil;
@@ -27,7 +29,8 @@ export class CreateRentalTransactionUseCase {
     private skinRepository: ISkinsRepository,
     private perfilRepository: IPerfilRepository,
     private walletRepository: IWalletRepository,
-    private notificationsRepository: INotificationRepository
+    private notificationsRepository: INotificationRepository,
+    private configurationRepository: IConfigurationRepository
   ) {}
 
   async execute(data: Prisma.RentalTransactionCreateInput) {
@@ -258,6 +261,7 @@ export class CreateRentalTransactionUseCase {
 
   async deadLine(owner_id: string, date: string, skin: Skin) {
     const endDateRental = getTratarDateRental(date, false);
+    await this.checkInventory(owner_id, skin);
 
     return schedule.scheduleJob(endDateRental, async () => {
       try {
@@ -267,9 +271,46 @@ export class CreateRentalTransactionUseCase {
           skin_id: skin.id,
           type: "input",
         });
+        await this.checkInventory(owner_id, skin);
       } catch (error) {
         console.log(error);
       }
     });
+  }
+
+  async checkInventory(ownerId: string, skin: Skin) {
+    const configurationSeller = await this.configurationRepository.findByUser(
+      skin.seller_id
+    );
+
+    const configurationBuyer = await this.configurationRepository.findByUser(
+      ownerId
+    );
+
+    const hasSellerKey = !!configurationSeller.key;
+    const hasBuyerKey = !!configurationBuyer.key;
+
+    const tradeUserId = hasSellerKey ? ownerId : skin.seller_id;
+
+    const tradeKey = hasSellerKey
+      ? configurationSeller.key
+      : configurationBuyer.key;
+
+    if (hasSellerKey || hasBuyerKey) {
+      const trades = await Trades.filterTradeHistory(
+        tradeUserId,
+        tradeKey,
+        skin.asset_id
+      );
+
+      if (trades && trades.length > 0) {
+        // return makeCompose.composeOwnerIdUpdates(skin.seller_id, false, {
+        //   id: createTransaction.id,
+        //   findTransaction,
+        //   updateConfirm: createTransaction,
+        //   skin: findSkin,
+        // });
+      }
+    }
   }
 }

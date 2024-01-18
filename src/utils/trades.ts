@@ -20,14 +20,18 @@ interface IAssets {
   assets_received: IAssetsType[];
 }
 
+// tradeId = 5931870240083447536
+// steamId_other = 76561198015724229
+// assetid = 35291538180
+
 export class Trades {
   static async getTradeHistory(key: string) {
     try {
-      const response = await axios.get(
+      const { data } = await axios.get(
         `https://api.steampowered.com/IEconService/GetTradeHistory/v1/?key=${key}&max_trades=50&get_descriptions=false&language=EN&include_failed=true&include_total=true`
       );
 
-      return response.data;
+      return data;
     } catch (error) {
       return error;
     }
@@ -45,12 +49,18 @@ export class Trades {
     assetId: string
   ) {
     try {
-      const trades = await this.getTradeHistory(key);
+      const inventory = await this.getTradeHistory(key);
+
+      // console.log("AQUIII", trades);
+
       const validandoTradesHistori =
-        trades.response.trades && trades.response.trades.length > 0;
+        inventory &&
+        inventory.response &&
+        inventory.response.trades &&
+        inventory.response.trades.length > 0;
 
       if (validandoTradesHistori) {
-        const tradesFiltered = trades.response.trades.filter((trade) => {
+        const tradesFiltered = inventory.response.trades.filter((trade) => {
           return trade.steamid_other === steamIdOther && trade.status === 3;
         });
 
