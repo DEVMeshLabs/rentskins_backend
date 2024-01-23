@@ -15,27 +15,6 @@ app.register(cors, {
   origin: true,
 });
 
-// -------------------------- FLOAT ------------------------------
-
-user.logOn({
-  accountName: "Rentskins1",
-  password: "c03bca41b453d4c15c6e62c0e39892b3",
-});
-
-user.on("loggedOn", () => {
-  console.log("ok");
-  user.gamesPlayed(730);
-  csgo.on("connectedToGC", async () => {
-    console.log("Logado!");
-  });
-});
-
-user.on("error", (err) => {
-  console.log(err.message);
-});
-
-// --------------------------------------------------------
-
 app
   .listen({
     host: "0.0.0.0",
