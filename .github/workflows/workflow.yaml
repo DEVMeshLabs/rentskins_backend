@@ -28,5 +28,6 @@
             STRIPE_SECRET_KEY: test
             STRIPE_SECRET_WEBHOOK_KEY: test
             MERCADO_SECRET_KEY: test     
+            KEY_STEAM_WEB_API: test
         
         
