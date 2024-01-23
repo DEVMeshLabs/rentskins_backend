@@ -142,17 +142,19 @@ model Transaction {
 }
 
 model RentalTransaction {
-  id              String    @id @default(uuid()) @db.VarChar(36)
-  owner_id        String    @db.VarChar(255)
-  skin_id         String    @db.VarChar(255)
-  total_price     Float?
-  fee             String?   @db.VarChar(255)
-  fee_total_price Float?
-  days_quantity   String    @db.VarChar(5)
-  status          String?   @default("Em andamento") @db.VarChar(255)
-  start_date      DateTime?
-  end_date        DateTime?
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime?
-  deletedAt       DateTime?
+  id                 String    @id @default(uuid()) @db.VarChar(36)
+  owner_id           String    @db.VarChar(255)
+  skin_id            String    @db.VarChar(255)
+  total_price        Float?
+  fee                String?   @db.VarChar(255)
+  fee_total_price    Float?
+  seller_total_price Float?
+  commission_rent    Float?
+  days_quantity      String    @db.VarChar(5)
+  status             String?   @default("Em andamento") @db.VarChar(255)
+  start_date         DateTime?
+  end_date           DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime?
+  deletedAt          DateTime?
 }

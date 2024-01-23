@@ -15,6 +15,8 @@ export class InMemoryRentalTransactionRepository
       total_price: data.total_price ?? null,
       fee: data.fee ?? null,
       fee_total_price: data.fee_total_price ?? null,
+      seller_total_price: data.seller_total_price ?? null,
+      commission_rent: data.commission_rent ?? null,
       days_quantity: data.days_quantity,
       status: data.status ?? "Em andamento",
       start_date: new Date(data.start_date) ?? null,

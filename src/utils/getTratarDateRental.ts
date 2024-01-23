@@ -1,14 +1,19 @@
 import dayjs from "dayjs";
 
 export function getTratarDateRental(end_date: string, before: boolean) {
-  const endDateRental = before
-    ? dayjs(end_date).subtract(12, "hours").format()
-    : dayjs(end_date).format();
+  let endDateRental = dayjs(end_date);
 
-  const [ano, mes, dia, horas, minutos] = endDateRental
+  if (before) {
+    endDateRental = endDateRental.subtract(12, "hours");
+  }
+
+  endDateRental = endDateRental.subtract(3, "hours");
+  const formattedDate = endDateRental.format();
+
+  const [ano, mes, dia, horas, minutos] = formattedDate
     .split(/[-T:]/)
     .map(Number);
-  const mesNovo = mes - 1;
 
-  return new Date(ano, mesNovo, dia, horas, minutos);
+  const response = new Date(ano, mes - 1, dia, horas, minutos);
+  return response;
 }

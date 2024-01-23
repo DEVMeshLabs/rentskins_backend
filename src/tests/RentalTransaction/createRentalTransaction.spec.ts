@@ -253,7 +253,7 @@ describe("Rental Transaction Use Case", () => {
     });
     vi.advanceTimersByTime(571600000); // 6 Dias e 12 horas
     const notification = notificationRepository.notifications;
-
+    console.log(notification);
     expect(notification[2].owner_id).toEqual(create.owner_id);
     expect(notification[2].description).toContain("O tempo limite");
     expect(addSpy).toHaveBeenCalledTimes(3);
@@ -310,11 +310,57 @@ describe("Rental Transaction Use Case", () => {
         item.owner_id === create.owner_id
       );
     });
+    console.log(notification);
     expect(filterNotification.owner_id).toEqual(create.owner_id);
     expect(addSpy).toHaveBeenCalledTimes(4);
-    expect(scope.isDone()).toBe(true);
+    // expect(scope.isDone()).toBe(true);
     scope.done();
   });
+
+  // it("Deve devolver os valores corretos para ambas as partes", async () => {
+  //   vi.useFakeTimers();
+  //   // const key1 = "9DE77D4A568AE81B8975E54BFE1DC8C9";
+  //   // const key2 = "15B121C41C8C8E7EE912E0A3EFB22C66";
+  //   await Promise.all([
+  //     makeCreatePerfil.execute(
+  //       "76561199205585878",
+  //       "9DE77D4A568AE81B8975E54BFE1DC8C9"
+  //     ),
+  //     makeCreatePerfil.execute("76561199205585873"),
+  //     makeCreateSkinRepository.execute({
+  //       id: "124",
+  //       skin_name: "Teste cronjob",
+  //       skin_price: 200,
+  //       seller_id: "76561199205585873",
+  //     }),
+  //     walletRepository.create({
+  //       owner_id: "76561199205585878",
+  //       owner_name: "Teste 1",
+  //       value: 1000,
+  //     }),
+  //   ]);
+
+  //   // nock("https://api.steampowered.com")
+  //   //   .get("/IEconService/GetTradeHistory/v1/")
+  //   //   .query({
+  //   //     key: "9DE77D4A568AE81B8975E54BFE1DC8C9",
+  //   //     max_trades: "50",
+  //   //     get_descriptions: "false",
+  //   //     language: "EN",
+  //   //     include_failed: "true",
+  //   //     include_total: "true",
+  //   //   })
+  //   //   .reply(200, getHistoric);
+
+  //   await sut.execute({
+  //     owner_id: "76561199205585878",
+  //     skin_id: "124",
+  //     days_quantity: "7",
+  //   });
+
+  //   vi.advanceTimersByTime(624800000); // 7 dias
+  //   // const perfils = perfilRepository.perfil;
+  // });
 
   // it("Deve rodar apenas 2 job", async () => {
   //   vi.useFakeTimers();

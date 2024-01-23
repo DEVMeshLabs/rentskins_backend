@@ -9,18 +9,20 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
-import { Trades } from "@/utils/trades";
+import { filterTradeHistory } from "@/utils/trades";
 import { getTratarDateRental } from "@/utils/getTratarDateRental";
 import schedule from "node-schedule";
 import dayjs from "dayjs";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
+import axios from "axios";
+import { env } from "@/env";
 
 interface IComposeOwnerIdUpdates {
   perfil: Perfil;
   skin: Skin;
-  rentalTransaction: RentalTransaction;
-  buyerNotification: any;
-  sellerNotification: any;
+  rentalTransaction?: RentalTransaction;
+  sellerNotification?: any;
+  buyerNotification?: any;
 }
 
 export class CreateRentalTransactionUseCase {
@@ -56,10 +58,8 @@ export class CreateRentalTransactionUseCase {
       throw new InsufficientFundsError();
     }
 
-    const { fee, fee_total_price } = this.calculateFee(
-      data.days_quantity,
-      skin.skin_price
-    );
+    const { fee, fee_total_price, commission_rent, seller_total_price } =
+      this.calculateFee(data.days_quantity, skin.skin_price);
 
     const endDateNew = dayjs(new Date()).add(7, "day").format();
     const createRentalTransaction =
@@ -68,6 +68,8 @@ export class CreateRentalTransactionUseCase {
         total_price: skin.skin_price,
         fee,
         fee_total_price,
+        seller_total_price,
+        commission_rent,
         start_date: new Date(),
         end_date: endDateNew,
       });
@@ -140,60 +142,52 @@ export class CreateRentalTransactionUseCase {
     owner_id: string,
     data: IComposeOwnerIdUpdates
   ) {
-    const { perfil, skin, buyerNotification, sellerNotification } = data;
+    const perfil = await this.perfilRepository.findByUser(owner_id);
+    const skin = await this.skinRepository.findById(data.skin.id);
+
+    const rentalTransaction =
+      await this.rentalTransactionRepository.findBySkinRentalTransaction(
+        skin.id
+      );
+
+    console.log("AQUI", rentalTransaction);
 
     const updates = [
-      this.walletRepository.updateByUserValue(owner_id, "increment", 526),
+      this.walletRepository.updateByUserValue(
+        owner_id,
+        "increment",
+        rentalTransaction.fee_total_price
+      ),
+      this.walletRepository.updateByUserValue(
+        skin.seller_id,
+        "increment",
+        rentalTransaction.commission_rent
+      ),
+
       this.perfilRepository.updateByUser(owner_id, {
         total_exchanges_completed: perfil.total_exchanges_completed + 1,
       }),
-      this.notificationsRepository.create(buyerNotification),
-      this.notificationsRepository.create(sellerNotification),
+      this.notificationsRepository.create({
+        owner_id,
+        description: `O tempo limite do aluguel da skin ${skin.skin_name} chegou ao fim! Devolva o item.`,
+        skin_id: skin.id,
+      }),
+      this.notificationsRepository.create({
+        owner_id: skin.seller_id,
+        description: `O aluguel da skin ${skin.skin_name} chegou ao fim! Sua conta foi creditada com ${rentalTransaction.fee_total_price}`,
+        skin_id: skin.id,
+      }),
       this.skinRepository.updateById(skin.id, {
         status: "Concluído",
         saledAt: new Date(),
       }),
-      this.rentalTransactionRepository.updateId(data.rentalTransaction.id, {
+      this.rentalTransactionRepository.updateId(rentalTransaction.id, {
         status: "Concluído",
       }),
     ];
 
     return Promise.all(updates);
   }
-
-  // async handleSuccessfulTransaction(
-  //   ownerId: string,
-  //   data: IComposeOwnerIdUpdates,
-  //   newBalance: number,
-  //   sellerNotification: any,
-  //   buyerNotification: any
-  // ) {
-  //   const perfil = await this.perfilRepository.findByUser(ownerId);
-
-  //   const updates = [
-  //     this.walletRepository.updateByUserValue(ownerId, "increment", newBalance),
-  //     this.perfilRepository.updateByUser(ownerId, {
-  //       total_exchanges_completed: perfil.total_exchanges_completed + 1,
-  //     }),
-
-  //     this.rentalTransactionRepository.updateId(data.id, {
-  //       salesAt: new Date(),
-  //       status: "Concluído",
-  //     }),
-  //     this.perfilRepository.updateByUser(ownerId, {
-  //       delivery_time: data.mediaDate,
-  //     }),
-
-  //     this.notificationsRepository.create(sellerNotification),
-  //     this.notificationsRepository.create(buyerNotification),
-  //     this.skinRepository.updateById(data.updateConfirm.skin_id, {
-  //       status: "Concluído",
-  //       saledAt: new Date(),
-  //     }),
-  //   ];
-
-  //   return Promise.all(updates);
-  // }
 
   createBuyerNotification(
     owner_id: string,
@@ -204,7 +198,7 @@ export class CreateRentalTransactionUseCase {
       owner_id,
       description: isTransactionFailed
         ? `O aluguel do item ${skin.skin_name} foi cancelado. foram restaurados em seus créditos.`
-        : `O aluguel do item ${skin.skin_name} foi realizado com sucesso! Verifique o item em seu inventário.`,
+        : `O tempo limite do aluguel da skin ${skin.skin_name} chegou ao fim! Devolva o item`,
       skin_id: skin.id,
     };
 
@@ -237,17 +231,70 @@ export class CreateRentalTransactionUseCase {
     const fee = feeQuantityDays[days_quantity];
 
     const fee_total_price = skin_price - (fee / 100) * skin_price;
+    const sellerPrice = (fee / 100) * skin_price;
+
+    const rent_comission = sellerPrice - (fee / 100) * fee_total_price;
+    const commission_rent = Number(rent_comission.toFixed(2));
+
+    const seller_total_price = sellerPrice - commission_rent;
+
     return {
       fee: `${fee}%`,
       fee_total_price,
+      seller_total_price,
+      commission_rent,
     };
+  }
+
+  async checkInventory(
+    ownerId: string,
+    skin: Skin,
+    configurationSeller,
+    configurationBuyer,
+    perfil
+  ) {
+    const hasSellerKey = !!configurationSeller.key;
+    const hasBuyerKey = !!configurationBuyer.key;
+    // const tradeUserId = hasSellerKey ? ownerId : skin.seller_id;
+
+    // const tradeKey = hasSellerKey
+    //   ? configurationSeller.key
+    //   : configurationBuyer.key;
+
+    // tradeId = 5931870240083447536
+    // steamId_other = 76561198015724229
+    // assetid = 35291538180
+    // key = 9DE77D4A568AE81B8975E54BFE1DC8C9
+
+    if (hasSellerKey || hasBuyerKey) {
+      // const trades = await Trades.filterTradeHistory(
+      //   tradeUserId,
+      //   tradeKey,
+      //   skin.asset_id
+      // );
+
+      const trades = await filterTradeHistory(
+        "76561198015724229",
+        "9DE77D4A568AE81B8975E54BFE1DC8C9",
+        "35291538180"
+      );
+      console.log(trades);
+      if (trades && trades.length > 0) {
+        const teste = await this.handleSuccessfulTransaction(ownerId, {
+          perfil,
+          skin,
+        });
+        console.log(teste);
+        return teste;
+      }
+    }
   }
 
   async notification12hBefore(owner_id: string, date: string, skin: Skin) {
     const endDateRental = getTratarDateRental(date, true);
     return schedule.scheduleJob(endDateRental, async () => {
       try {
-        await this.notificationsRepository.create({
+        return this.notificationsRepository.create({
           owner_id,
           description: `O tempo limite do aluguel da skin ${skin.skin_name} está chegando ao fim! Devolva o item`,
           skin_id: skin.id,
@@ -261,56 +308,45 @@ export class CreateRentalTransactionUseCase {
 
   async deadLine(owner_id: string, date: string, skin: Skin) {
     const endDateRental = getTratarDateRental(date, false);
-    await this.checkInventory(owner_id, skin);
+    // const configurationSeller = await this.configurationRepository.findByUser(
+    //   skin.seller_id
+    // );
+    // const configurationBuyer = await this.configurationRepository.findByUser(
+    //   owner_id
+    // );
+    // const perfil = await this.perfilRepository.findByUser(owner_id);
 
-    return schedule.scheduleJob(endDateRental, async () => {
+    // const key = "9DE77D4A568AE81B8975E54BFE1DC8C9";
+
+    schedule.scheduleJob(endDateRental, async () => {
       try {
-        await this.notificationsRepository.create({
-          owner_id,
-          description: `O tempo limite do aluguel da skin ${skin.skin_name} chegou ao fim! Devolva o item`,
-          skin_id: skin.id,
-          type: "input",
-        });
-        await this.checkInventory(owner_id, skin);
+        await callExternalAPI();
       } catch (error) {
-        console.log(error);
+        console.log("Error: ", error);
+        return error;
       }
     });
   }
+}
 
-  async checkInventory(ownerId: string, skin: Skin) {
-    const configurationSeller = await this.configurationRepository.findByUser(
-      skin.seller_id
+async function callExternalAPI() {
+  try {
+    console.log("Aqui");
+    const { data } = await axios.get(
+      `https://api.steampowered.com/IEconService/GetTradeHistory/v1/?key=${env.KEY_STEAM}&max_trades=50&get_descriptions=false&language=EN&include_failed=true&include_total=true`
     );
-
-    const configurationBuyer = await this.configurationRepository.findByUser(
-      ownerId
-    );
-
-    const hasSellerKey = !!configurationSeller.key;
-    const hasBuyerKey = !!configurationBuyer.key;
-
-    const tradeUserId = hasSellerKey ? ownerId : skin.seller_id;
-
-    const tradeKey = hasSellerKey
-      ? configurationSeller.key
-      : configurationBuyer.key;
-
-    if (hasSellerKey || hasBuyerKey) {
-      const trades = await Trades.filterTradeHistory(
-        tradeUserId,
-        tradeKey,
-        skin.asset_id
-      );
-
-      if (trades && trades.length > 0) {
-        // return makeCompose.composeOwnerIdUpdates(skin.seller_id, false, {
-        //   id: createTransaction.id,
-        //   findTransaction,
-        //   updateConfirm: createTransaction,
-        //   skin: findSkin,
-        // });
-      }
-    }
+    console.log("Data: ", data);
+    return data;
+  } catch (error) {
+    console.log("Error: ", error);
+    return error;
   }
 }
+
+// await this.checkInventory(
+//   owner_id,
+//   skin,
+//   configurationSeller,
+//   configurationBuyer,
+//   perfil
+// );
