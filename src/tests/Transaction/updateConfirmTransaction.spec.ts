@@ -114,6 +114,7 @@ describe("Update transaction Use Case", () => {
       balance: skin.skin_price,
     });
     await sut.execute(createTransaction.id, "Aceito", "buyer");
+    console.log(notificationsRepository.notifications);
 
     const find = await transactionRepository.findById(createTransaction.id);
     expect(find.status).toEqual("Concluído");
