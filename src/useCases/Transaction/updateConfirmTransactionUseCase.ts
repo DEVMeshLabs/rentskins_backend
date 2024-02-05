@@ -409,8 +409,6 @@ function formatBalance(balance: number) {
   const calcPorcentagem = balance * (porcentagem / 100);
   const result = balance - calcPorcentagem;
 
-  console.log(balance);
-  console.log(result);
   return {
     formattedBalance: balance.toLocaleString("pt-BR", {
       style: "currency",
