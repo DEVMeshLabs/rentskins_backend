@@ -86,7 +86,6 @@ describe("Transaction Use Case", () => {
       walletRepository.findByUser(comprador.owner_id),
       transactionRepository.findById(createTransaction.id),
     ]);
-
     expect(skin.id).toEqual(expect.any(String));
     expect(createTransaction.id).toEqual(expect.any(String));
     expect(createTransaction.balance).toEqual(skin.skin_price);
