@@ -21,7 +21,7 @@ export class DeleteSkinUseCase {
     if (deletedSkin.deletedAt !== null) {
       await this.notificationRepository.create({
         owner_id: deletedSkin.seller_id,
-        description: "Skin deleted successfully",
+        description: "O seu anúncio foi removido com sucesso!",
         skin_id: deletedSkin.id,
       });
     }
