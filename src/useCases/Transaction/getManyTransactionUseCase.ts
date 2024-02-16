@@ -3,7 +3,7 @@ import { ITransactionRepository } from "@/repositories/interfaceRepository/ITran
 export class GetManyTransactionUseCase {
   constructor(private transactionRepository: ITransactionRepository) {}
   async execute() {
-    const retrive = await this.transactionRepository.findByMany();
-    return retrive;
+    const allTransaction = await this.transactionRepository.findByMany();
+    return allTransaction;
   }
 }
