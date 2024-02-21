@@ -147,6 +147,7 @@ model TransactionHistory {
   transaction_id     String       @db.VarChar(255)
   buyer_id           String       @db.VarChar(255)
   seller_id          String       @db.VarChar(255)
+  asset_id           String       @db.VarChar(255)
   processTransaction Boolean      @default(false)
   createdAt          DateTime     @default(now())
   updatedAt          DateTime?
