@@ -30,6 +30,7 @@ export class CreateTransactionHistoryUseCase {
       transaction_id: findTransaction.id,
       buyer_id,
       seller_id,
+      asset_id: findTransaction.skin_id,
     });
 
     return create;
