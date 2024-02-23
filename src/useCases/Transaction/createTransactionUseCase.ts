@@ -1,6 +1,5 @@
 import { Perfil, Skin, Transaction } from "@prisma/client";
 import { env } from "@/env";
-import schedule from "node-schedule";
 import axios from "axios";
 // ------------------ Repositorys -----------------
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
@@ -21,7 +20,7 @@ import { GetInventoryOwnerIdError } from "../@errors/Transaction/GetInventoryOwn
 // ------------------ Outros -----------------
 import { makeComposeOwnerId } from "../@factories/Transaction/makeComposeOwnerId";
 import { Trades } from "@/utils/trades";
-import { getFormattedDateArray } from "@/utils/getFormattedDate";
+import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -32,6 +31,7 @@ interface ITransactionRequest {
 export class CreateTransactionUseCase {
   constructor(
     private transactionRepository: ITransactionRepository,
+    private transactionHisotry: ITransactionHistoryRepository,
     private perfilRepository: IPerfilRepository,
     private skinRepository: ISkinsRepository,
     private walletRepository: IWalletRepository,
@@ -105,40 +105,20 @@ export class CreateTransactionUseCase {
         "decrement",
         findSkin.skin_price
       ),
+      this.perfilRepository.updateByUser(perfilSeller.owner_id, {
+        total_exchanges: perfilSeller.total_exchanges + 1,
+      }),
+      this.skinRepository.updateById(skin_id, {
+        status: "Em andamento",
+      }),
     ]);
 
-    await this.perfilRepository.updateByUser(perfilSeller.owner_id, {
-      total_exchanges: perfilSeller.total_exchanges + 1,
+    await this.transactionHisotry.create({
+      transaction_id: createTransaction.id,
+      seller_id,
+      buyer_id,
+      asset_id: findSkin.asset_id,
     });
-    await this.skinRepository.updateById(skin_id, {
-      status: "Em andamento",
-    });
-
-    // seconds, minutes, hours, dayOfMonth, month, dayOfYear
-    const [seconds, minutes, hours, day, month] = getFormattedDateArray(
-      0,
-      5,
-      0,
-      0
-    );
-
-    schedule.scheduleJob(
-      `${seconds} ${minutes} ${hours} ${day} ${month} *`,
-      async () => {
-        console.log("INICIANDO CRONN");
-        try {
-          await this.processTransaction(
-            createTransaction,
-            findSkin,
-            perfilBuyer,
-            perfilSeller
-          );
-        } catch (error) {
-          console.log(error);
-        }
-        console.log("FINALIZANDOO CRONN");
-      }
-    );
 
     return createTransaction;
   }
