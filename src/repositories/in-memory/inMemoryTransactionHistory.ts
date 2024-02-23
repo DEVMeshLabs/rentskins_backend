@@ -18,6 +18,7 @@ export class InMemoryTransactionHistoryRepository
       buyer_id: data.buyer_id,
       seller_id: data.seller_id,
       processTransaction: data.processTransaction ?? false,
+      asset_id: data.asset_id,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
@@ -34,7 +35,26 @@ export class InMemoryTransactionHistoryRepository
     return getTransaction;
   }
 
-  async findByMany() {
-    return this.notImplemented();
+  async findByMany(isProcess: boolean) {
+    const getTransaction = this.transactionsHistory.filter((transaction) => {
+      return transaction.processTransaction === isProcess;
+    });
+    return getTransaction;
+  }
+
+  async updateId(id: string, data: any) {
+    const index = this.transactionsHistory.findIndex(
+      (transaction) => transaction.id === id
+    );
+
+    if (index !== -1) {
+      this.transactionsHistory[index] = {
+        ...this.transactionsHistory[index],
+        ...data,
+      };
+      return this.transactionsHistory[index];
+    }
+
+    return this.transactionsHistory[index];
   }
 }

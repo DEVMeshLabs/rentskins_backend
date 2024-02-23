@@ -12,9 +12,9 @@ export class PrismaTransactionHistoryRepository
     return createdTransaction;
   }
 
-  async findByMany() {
+  async findByMany(isProcess: false) {
     const allTransactionsHistory = await prisma.transactionHistory.findMany({
-      where: { deletedAt: null },
+      where: { deletedAt: null, processTransaction: isProcess },
       orderBy: { createdAt: "desc" },
     });
     return allTransactionsHistory;
@@ -25,5 +25,14 @@ export class PrismaTransactionHistoryRepository
       where: { id, deletedAt: null },
     });
     return findTransaction;
+  }
+
+  async updateId(id: string, data: Prisma.TransactionHistoryUpdateInput) {
+    const updateId = await prisma.transactionHistory.update({
+      where: { id },
+      data: { ...data },
+    });
+
+    return updateId;
   }
 }
