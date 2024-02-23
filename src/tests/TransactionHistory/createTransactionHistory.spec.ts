@@ -76,7 +76,6 @@ describe("Transaction Use Case", () => {
       transaction_id: createTransaction.id,
     });
 
-    console.log(createdTransactionHistory);
     expect(createdTransactionHistory.id).toEqual(expect.any(String));
   });
 });
