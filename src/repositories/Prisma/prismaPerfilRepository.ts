@@ -87,6 +87,22 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     return updateUser;
   }
 
+  async updateTotalExchanges(id: string) {
+    const perfil = await prisma.perfil.findUnique({
+      where: { id },
+    });
+
+    const updateTotalExchanges = await prisma.perfil.update({
+      where: { id },
+      data: {
+        total_exchanges_completed: perfil.total_exchanges_completed + 1,
+        updatedAt: new Date(),
+      },
+    });
+
+    return updateTotalExchanges;
+  }
+
   async updateByCart(owner_id: string, cart: string) {
     const updateCart = await prisma.perfil.updateMany({
       where: { owner_id },
