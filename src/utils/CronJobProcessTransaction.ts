@@ -65,32 +65,34 @@ export class CronJobProcessTransaction {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
       false
     );
-    console.log("allTransactions", allTransactions);
 
-    if (allTransactions.length === 0) {
+    if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
     }
 
-    for (let i = 0; i < allTransactions.length; i++) {
-      const inventorySeller = await this.processTransaction(allTransactions[i]);
-      console.log("inventorySeller", inventorySeller);
+    for (const transaction of allTransactions) {
+      const inventorySeller = await this.processTransaction(transaction);
 
       if (inventorySeller && inventorySeller.length > 0) {
+        const { completed, partnersteamid, receivedassetids } =
+          inventorySeller[0];
+        const { buyer_id, asset_id } = transaction;
+
         if (
-          inventorySeller[0].completed === true &&
-          inventorySeller[0].partnersteamid === allTransactions[i].buyer_id &&
-          inventorySeller[0].receivedassetids.includes(
-            allTransactions[i].asset_id
-          )
+          completed &&
+          partnersteamid === buyer_id &&
+          receivedassetids.includes(asset_id)
         ) {
           await this.handleSuccessTransaction({
-            transactionHistory: allTransactions[i],
+            transactionHistory: transaction,
+          });
+        } else {
+          await this.handleFailedTransaction({
+            transactionHistory: transaction,
           });
         }
       } else {
-        await this.handleFailedTransaction({
-          transactionHistory: allTransactions[i],
-        });
+        await this.handleFailedTransaction({ transactionHistory: transaction });
       }
     }
     return "Transação processada com sucesso.";
