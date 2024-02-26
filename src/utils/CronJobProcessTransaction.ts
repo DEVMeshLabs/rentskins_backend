@@ -1,7 +1,7 @@
-// import { env } from "@/env";
+import { env } from "@/env";
+
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
-// import axios from "axios";
-import mockInventory from "./mockInventory.json";
+import axios from "axios";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { TransactionHistory } from "@prisma/client";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
@@ -42,10 +42,21 @@ export class CronJobProcessTransaction {
     assetid: string
   ) {
     try {
-      const inventorySeller = mockInventory;
+      const baseUrl = "https://www.steamwebapi.com";
+
+      const inventorySeller = await axios
+        .post(
+          `${baseUrl}/steam/api/trade/status?key=${env.KEY_STEAM_WEB_API}`,
+          {
+            steamcommunityapikey,
+            partnersteamid,
+            assetid,
+          }
+        )
+        .then((response) => response.data);
       return inventorySeller;
     } catch (error) {
-      console.log(error);
+      return error.response.data;
     }
   }
 
@@ -62,6 +73,7 @@ export class CronJobProcessTransaction {
 
     for (let i = 0; i < allTransactions.length; i++) {
       const inventorySeller = await this.processTransaction(allTransactions[i]);
+      console.log("inventorySeller", inventorySeller);
 
       if (inventorySeller && inventorySeller.length > 0) {
         if (
@@ -74,11 +86,11 @@ export class CronJobProcessTransaction {
           await this.handleSuccessTransaction({
             transactionHistory: allTransactions[i],
           });
-        } else {
-          await this.handleFailedTransaction({
-            transactionHistory: allTransactions[i],
-          });
         }
+      } else {
+        await this.handleFailedTransaction({
+          transactionHistory: allTransactions[i],
+        });
       }
     }
     return "Transação processada com sucesso.";
@@ -94,12 +106,20 @@ export class CronJobProcessTransaction {
     );
 
     if (config && config.key && config.key !== " ") {
+      console.log(
+        "Respostassssss" +
+          " " +
+          transaction.seller_id +
+          " " +
+          transaction.asset_id +
+          " " +
+          config.key
+      );
       const inventorySeller = await this.fetchInventory(
         config.key,
-        transaction.seller_id,
+        transaction.buyer_id,
         transaction.asset_id
       );
-
       return inventorySeller;
     } else {
       return false;
@@ -194,14 +214,3 @@ export class CronJobProcessTransaction {
     ]);
   }
 }
-
-// const baseUrl = "https://www.steamwebapi.com";
-
-// const inventorySeller = await axios.post(
-//   `${baseUrl}/steam/api/trade/status?key=${env.KEY_STEAM_WEB_API}`,
-//   {
-//     steamcommunityapikey,
-//     partnersteamid,
-//     assetid,
-//   }
-// );
