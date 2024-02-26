@@ -1,4 +1,6 @@
 import { expect, describe, beforeEach, it } from "vitest";
+import nock from "nock";
+import inventorySeller from "../fixures/mockInventory.json";
 // -------------- InMemory --------------
 import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
 import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
@@ -6,13 +8,14 @@ import { InMemoryTransactionRepository } from "@/repositories/in-memory/inMemory
 import { InMemoryWalletRepository } from "@/repositories/in-memory/inMemoryWalletRepository";
 import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 // -------------- Error --------------
-// -------------- Error --------------
 import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
 import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
 import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
 import { CronJobProcessTransaction } from "@/utils/CronJobProcessTransaction";
 import { InMemoryNotificationRepository } from "@/repositories/in-memory/inMemoryNotificationRepository";
+// -------------- Utils --------------
 import { formatBalance } from "@/utils/formatBalance";
+import { env } from "@/env";
 
 let transactionRepository: InMemoryTransactionRepository;
 let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
@@ -90,8 +93,20 @@ describe("CronJobProcess Use Case", () => {
         asset_id: skin.asset_id,
       }
     );
+    // const baseUrl = "https://www.steamwebapi.com";
+
+    // const inventorySeller = await axios
+    //   .post(
+    //     `${baseUrl}/steam/api/trade/status?key=${env.KEY_STEAM_WEB_API}`,
+    const scope = nock("https://www.steamwebapi.com")
+      .post("/steam/api/trade/status")
+      .query({
+        key: env.KEY_STEAM_WEB_API,
+      })
+      .reply(200, inventorySeller);
 
     await sut.execute();
+
     const notifications = notificationRepository.notifications;
     const { porcentagem } = formatBalance(skin.skin_price);
 
@@ -99,17 +114,18 @@ describe("CronJobProcess Use Case", () => {
     expect(
       transactionHistoryRepository.transactionsHistory[0].processTransaction
     ).toBe(true);
-    expect(notifications[0].owner_id).toBe("76561198015724229");
-    expect(notifications[1].owner_id).toBe("76561198862407248");
     expect(perfilRepository.perfil[0].total_exchanges_completed).toBe(1);
     expect(walletRepository.wallet[0].value).toBe(porcentagem);
+    expect(notifications[0].owner_id).toBe("76561198015724229");
+    expect(notifications[1].owner_id).toBe("76561198862407248");
+    scope.done();
   });
 
   it("Deve ser capaz de criar notificações, retornar o valor para o comprador, aumentar o total de transações faileds", async () => {
     const [skin] = await Promise.all([
       makeCreateSkin.execute({
         seller_id: "76561198015724229",
-        asset_id: "35",
+        asset_id: "35477944718",
       }),
       makeCreatePerfilRepository.execute(
         "76561198015724229",
@@ -146,6 +162,13 @@ describe("CronJobProcess Use Case", () => {
       }
     );
 
+    const scope = nock("https://www.steamwebapi.com")
+      .post("/steam/api/trade/status")
+      .query({
+        key: env.KEY_STEAM_WEB_API,
+      })
+      .reply(404, []);
+
     await sut.execute();
     console.log(walletRepository.wallet);
 
@@ -159,5 +182,6 @@ describe("CronJobProcess Use Case", () => {
     expect(notifications[1].owner_id).toBe("76561198862407248");
     expect(perfilRepository.perfil[0].total_exchanges_failed).toBe(1);
     expect(walletRepository.wallet[1].value).toBe(1500);
+    scope.done();
   });
 });

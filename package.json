@@ -31,6 +31,7 @@
     "globaloffensive": "^2.3.0",
     "md5": "^2.3.0",
     "mercadopago": "^2.0.1",
+    "nock": "^13.5.3",
     "node-schedule": "^2.1.1",
     "socket.io": "^4.7.2",
     "steam-market-pricing": "^2.0.0",
