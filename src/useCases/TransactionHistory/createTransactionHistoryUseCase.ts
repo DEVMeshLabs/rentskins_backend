@@ -3,6 +3,7 @@ import { ITransactionHistoryRepository } from "@/repositories/interfaceRepositor
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 // ------------------ Errors -----------------
 import { TransactionHistoryNotExistError } from "../@errors/TransactionHistory/TransactionHistoryNotExistError";
+import { addHours } from "@/utils/compareDates";
 // ------------------ Outros -----------------
 
 interface ITransactionRequest {
@@ -31,6 +32,7 @@ export class CreateTransactionHistoryUseCase {
       buyer_id,
       seller_id,
       asset_id: findTransaction.skin_id,
+      dateProcess: addHours(),
     });
 
     return create;
