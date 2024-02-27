@@ -21,6 +21,7 @@ import { GetInventoryOwnerIdError } from "../@errors/Transaction/GetInventoryOwn
 import { makeComposeOwnerId } from "../@factories/Transaction/makeComposeOwnerId";
 import { Trades } from "@/utils/trades";
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
+import { addHours } from "@/utils/compareDates";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -112,12 +113,13 @@ export class CreateTransactionUseCase {
         status: "Em andamento",
       }),
     ]);
-
+    // O dateProcess tem que pegar a data atual e aumentar 2horas
     await this.transactionHisotry.create({
       transaction_id: createTransaction.id,
       seller_id,
       buyer_id,
       asset_id: findSkin.asset_id,
+      dateProcess: addHours(),
     });
 
     return createTransaction;
