@@ -9,6 +9,7 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { formatBalance } from "./formatBalance";
+import { compareDates } from "./compareDates";
 
 interface IUpdateTransactionHistory {
   transactionHistory: TransactionHistory;
@@ -71,9 +72,10 @@ export class CronJobProcessTransaction {
     }
 
     for (const transaction of allTransactions) {
+      const datesCompare = compareDates(transaction.dateProcess, new Date());
       const inventorySeller = await this.processTransaction(transaction);
 
-      if (inventorySeller && inventorySeller.length > 0) {
+      if (inventorySeller && inventorySeller.length > 0 && datesCompare) {
         const { completed, partnersteamid, receivedassetids } =
           inventorySeller[0];
         const { buyer_id, asset_id } = transaction;
@@ -108,15 +110,6 @@ export class CronJobProcessTransaction {
     );
 
     if (config && config.key && config.key !== " ") {
-      console.log(
-        "Respostassssss" +
-          " " +
-          transaction.seller_id +
-          " " +
-          transaction.asset_id +
-          " " +
-          config.key
-      );
       const inventorySeller = await this.fetchInventory(
         config.key,
         transaction.buyer_id,
@@ -127,15 +120,6 @@ export class CronJobProcessTransaction {
       return false;
     }
   }
-
-  // Atualizar a transação o perfil do comprador e do vendedor e gerar notificações;
-  /**
-   * [x] - Preciso atualizar a transação para completed
-   * [x] - Preciso atualizar a transactionHistory para processTransaction = true
-   * [x] - Preciso gerar notificações para o comprador e para o vendedor
-   * [x] - Preciso atualizar o saldo do vendedor
-   * [x] - Preciso atualizar o total de vendas completas do vendedor
-   */
 
   async handleSuccessTransaction({
     transactionHistory,
@@ -150,8 +134,6 @@ export class CronJobProcessTransaction {
     const { formattedBalance, porcentagem } = formatBalance(
       transaction.balance
     );
-
-    console.log("porcentagem: " + porcentagem);
 
     await Promise.all([
       this.perfilRepository.updateTotalExchanges(perfilSeller.id),
