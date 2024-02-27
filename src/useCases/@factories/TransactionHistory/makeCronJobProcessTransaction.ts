@@ -1,28 +1,25 @@
 import { PrismaConfigurationRepository } from "@/repositories/Prisma/prismaConfigurationRepository";
 import { PrismaNotificationRepository } from "@/repositories/Prisma/prismaNotificationRepository";
 import { PrismaPerfilRepository } from "@/repositories/Prisma/prismaPerfilRepository";
-import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
 import { PrismaTransactionHistoryRepository } from "@/repositories/Prisma/prismaTransactionHistory";
 import { PrismaTransactionRepository } from "@/repositories/Prisma/prismaTransactionRepository";
 import { PrismaWalletRepository } from "@/repositories/Prisma/prismaWalletRepository";
-import { CreateTransactionUseCase } from "@/useCases/Transaction/createTransactionUseCase";
+import { CronJobProcessTransaction } from "@/utils/CronJobProcessTransaction";
 
-export function makeCreateTransactionUseCase() {
-  const perfilRepository = new PrismaPerfilRepository();
-  const transactionRepository = new PrismaTransactionRepository();
-  const skinRepository = new PrismaSkinRepository();
-  const walletRepository = new PrismaWalletRepository();
-  const notificationsRepository = new PrismaNotificationRepository();
-  const configurationRepository = new PrismaConfigurationRepository();
+export function makeCronJobProcessTransaction() {
   const transactionHistoryRepository = new PrismaTransactionHistoryRepository();
-  const createTransaction = new CreateTransactionUseCase(
-    transactionRepository,
+  const transactionRepository = new PrismaTransactionRepository();
+  const configurationRepository = new PrismaConfigurationRepository();
+  const notificationRepository = new PrismaNotificationRepository();
+  const walletRepository = new PrismaWalletRepository();
+  const perfilRepository = new PrismaPerfilRepository();
+  const functionCron = new CronJobProcessTransaction(
     transactionHistoryRepository,
-    perfilRepository,
-    skinRepository,
+    transactionRepository,
+    configurationRepository,
+    notificationRepository,
     walletRepository,
-    notificationsRepository,
-    configurationRepository
+    perfilRepository
   );
-  return createTransaction;
+  return functionCron;
 }

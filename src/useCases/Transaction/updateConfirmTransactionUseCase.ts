@@ -12,6 +12,7 @@ import { calculateReliability } from "@/utils/calculateReliability";
 import { Trades } from "@/utils/trades";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { calculateDiscount } from "@/utils/calculateDiscount";
+import { formatBalance } from "@/utils/formatBalance";
 
 interface IComposeOwnerIdUpdates {
   id: string;
@@ -402,19 +403,4 @@ export class UpdateConfirmTransactionUseCase {
 
     return Promise.all(updates);
   }
-}
-
-function formatBalance(balance: number) {
-  const porcentagem = 4;
-  const calcPorcentagem = balance * (porcentagem / 100);
-  const result = balance - calcPorcentagem;
-
-  return {
-    formattedBalance: balance.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 2,
-    }),
-    porcentagem: result,
-  };
 }
