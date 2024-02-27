@@ -10,6 +10,7 @@ import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRep
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { formatBalance } from "./formatBalance";
 import { compareDates } from "./compareDates";
+import { KeySteamNotFoundError } from "@/useCases/@errors/TransactionHistory/KeySteamNotFoundError";
 
 interface IUpdateTransactionHistory {
   transactionHistory: TransactionHistory;
@@ -31,9 +32,7 @@ export class CronJobProcessTransaction {
     console.log("Inciando cronjob...");
 
     // Preciso verificar o assetid, o partnersteamid e o steamcommunityapikey
-    const valid = await this.processPendingTransactions();
-
-    console.log(valid);
+    await this.processPendingTransactions();
   }
 
   // --------------------------------------------------------------------------------------------
@@ -66,16 +65,18 @@ export class CronJobProcessTransaction {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
       false
     );
-
     if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
     }
 
     for (const transaction of allTransactions) {
       const datesCompare = compareDates(transaction.dateProcess, new Date());
+      if (!datesCompare) {
+        return;
+      }
       const inventorySeller = await this.processTransaction(transaction);
 
-      if (inventorySeller && inventorySeller.length > 0 && datesCompare) {
+      if (inventorySeller && inventorySeller.length > 0) {
         const { completed, partnersteamid, receivedassetids } =
           inventorySeller[0];
         const { buyer_id, asset_id } = transaction;
@@ -108,6 +109,10 @@ export class CronJobProcessTransaction {
     const config = await this.configurationRepository.findByUser(
       transaction.seller_id
     );
+
+    if (!config.key) {
+      throw new KeySteamNotFoundError();
+    }
 
     if (config && config.key && config.key !== " ") {
       const inventorySeller = await this.fetchInventory(

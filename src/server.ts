@@ -16,7 +16,14 @@ export const { checkout, webhooks, customers } = require("stripe")(
 
 const makeTransaction = makeCronJobProcessTransaction();
 
-job.scheduleJob("1 * * * * *", async () => await makeTransaction.execute());
+job.scheduleJob("* * 1 * * *", async () => {
+  try {
+    await makeTransaction.execute();
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
+});
 
 app.register(cors, {
   origin: true,

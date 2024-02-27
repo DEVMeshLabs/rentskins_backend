@@ -1,11 +1,11 @@
-// comparar 2 datas e retorna true se for igual e false se for diferente
+// comparar data, horas e minutos e retorna true se for igual e false se for diferente
 
 export function compareDates(date1: Date, date2: Date) {
-  if (date1.getTime() === date2.getTime()) {
-    return true;
-  }
+  console.log("Dateeeeeeeeeeeeeee--------", date1.getTime() <= date2.getTime());
+  console.log("Date 1", date1);
+  console.log("Date 2", date2);
 
-  return false;
+  return date1.getTime() <= date2.getTime();
 }
 
 export function addHours() {
