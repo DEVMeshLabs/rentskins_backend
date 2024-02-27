@@ -18,6 +18,7 @@ export interface IPerfilRepository {
     data: Prisma.PerfilUncheckedUpdateInput
   ): Promise<Perfil>;
   updateByIdUser(id: string, data: any): Promise<any>;
+  updateTotalExchanges(id: string): Promise<Perfil>;
   deletePerfil(id: string): Promise<Perfil>;
   deletePerfilBanco(id: string): Promise<Perfil>;
 }

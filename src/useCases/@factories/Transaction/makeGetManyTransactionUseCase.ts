@@ -3,8 +3,6 @@ import { GetManyTransactionUseCase } from "@/useCases/Transaction/getManyTransac
 
 export function makeGetManyTransactionUseCase() {
   const transactionRepository = new PrismaTransactionRepository();
-  const createSkinUseCase = new GetManyTransactionUseCase(
-    transactionRepository
-  );
-  return createSkinUseCase;
+  const allTransaction = new GetManyTransactionUseCase(transactionRepository);
+  return allTransaction;
 }

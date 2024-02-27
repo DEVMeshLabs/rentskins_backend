@@ -5,9 +5,12 @@ import { Prisma } from "@prisma/client";
 export class MakeCreateSkinRepository {
   constructor(private skinRepository: InMemorySkinRepository) {}
 
-  async execute(override: Partial<Prisma.SkinCreateInput> = {}) {
+  async execute(
+    override: Partial<Prisma.SkinCreateInput> = {},
+    asset_id?: string
+  ) {
     return this.skinRepository.create({
-      asset_id: `${faker.number.int({ min: 1, max: 100 })}`,
+      asset_id: asset_id && `${faker.number.int({ min: 1, max: 100 })}`,
       skin_image: "https://bit.ly/3Jn6aqn",
       skin_name: faker.lorem.sentence(),
       skin_category: "Pistol",

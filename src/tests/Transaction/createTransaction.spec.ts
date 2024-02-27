@@ -17,8 +17,10 @@ import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsE
 // -------------- Error --------------
 import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
 import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
+import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
 
 let transactionRepository: InMemoryTransactionRepository;
+let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
 let perfilRepository: InMemoryPerfilRepository;
 let skinRepository: InMemorySkinRepository;
 let walletRepository: InMemoryWalletRepository;
@@ -31,6 +33,7 @@ let sut: CreateTransactionUseCase;
 describe("Transaction Use Case", () => {
   beforeEach(async () => {
     transactionRepository = new InMemoryTransactionRepository();
+    transactionHistoryRepository = new InMemoryTransactionHistoryRepository();
     perfilRepository = new InMemoryPerfilRepository();
     skinRepository = new InMemorySkinRepository();
     walletRepository = new InMemoryWalletRepository();
@@ -45,6 +48,7 @@ describe("Transaction Use Case", () => {
 
     sut = new CreateTransactionUseCase(
       transactionRepository,
+      transactionHistoryRepository,
       perfilRepository,
       skinRepository,
       walletRepository,
@@ -91,6 +95,8 @@ describe("Transaction Use Case", () => {
     expect(createTransaction.balance).toEqual(skin.skin_price);
     expect(getUser.total_exchanges).toEqual(1);
     expect(getTransaction.status).toEqual("Em andamento");
+
+    vi.advanceTimersByTime(5000);
   });
 
   it("Verificando a Existência do Perfil", async () => {
