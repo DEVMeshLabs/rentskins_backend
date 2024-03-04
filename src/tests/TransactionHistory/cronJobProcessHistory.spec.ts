@@ -127,7 +127,7 @@ describe("CronJobProcess Use Case", () => {
     expect(walletRepository.wallet[0].value).toBe(porcentagem);
     expect(notifications[0].owner_id).toBe("76561198015724229");
     expect(notifications[1].owner_id).toBe("76561198862407248");
-    expect(transactionRepository.transactions[0].status).toBe("concluído");
+    expect(transactionRepository.transactions[0].status).toBe("Concluído");
     scope.done();
   });
 
@@ -195,7 +195,7 @@ describe("CronJobProcess Use Case", () => {
     expect(notifications[1].owner_id).toBe("76561198862407248");
     expect(perfilRepository.perfil[0].total_exchanges_failed).toBe(1);
     expect(walletRepository.wallet[1].value).toBe(1500);
-    expect(transactionRepository.transactions[0].status).toBe("Falhada");
+    expect(transactionRepository.transactions[0].status).toBe("Falhou");
     scope.done();
   });
 });
