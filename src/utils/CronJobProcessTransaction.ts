@@ -10,6 +10,7 @@ import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRep
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { formatBalance } from "./formatBalance";
 import { compareDates } from "./compareDates";
+import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 // import { KeySteamNotFoundError } from "@/useCases/@errors/TransactionHistory/KeySteamNotFoundError";
 
 interface IUpdateTransactionHistory {
@@ -23,7 +24,8 @@ export class CronJobProcessTransaction {
     private configurationRepository: IConfigurationRepository,
     private notificationRepository: INotificationRepository,
     private walletRepository: IWalletRepository,
-    private perfilRepository: IPerfilRepository
+    private perfilRepository: IPerfilRepository,
+    private skinRepository: ISkinsRepository
   ) {}
 
   // Pegar todas as transações, filtrar por process = false, e processar cada uma delas
@@ -77,15 +79,19 @@ export class CronJobProcessTransaction {
         return;
       }
       const inventorySeller = await this.processTransaction(transaction);
+      console.log(inventorySeller[0], "inventorySeller");
 
       if (inventorySeller && inventorySeller.length > 0) {
-        const { completed, partnersteamid, receivedassetids } =
+        const { completed, partnersteamid, sentassetids, sent } =
           inventorySeller[0];
+
         const { buyer_id, asset_id } = transaction;
         if (
           completed &&
           partnersteamid === buyer_id &&
-          receivedassetids.includes(asset_id)
+          sentassetids !== undefined &&
+          sentassetids[0] === asset_id &&
+          sent
         ) {
           await this.handleSuccessTransaction({
             transactionHistory: transaction,
@@ -157,6 +163,10 @@ export class CronJobProcessTransaction {
       this.notificationRepository.create({
         owner_id: transactionHistory.buyer_id,
         description: `Parabéns! Sua compra foi finalizada com sucesso.`,
+      }),
+      this.skinRepository.updateById(transaction.skin_id, {
+        status: "Concluído",
+        saledAt: new Date(),
       }),
       this.walletRepository.updateByUserValue(
         transactionHistory.seller_id,

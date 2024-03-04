@@ -51,7 +51,8 @@ describe("CronJobProcess Use Case", () => {
       configurationRepository,
       notificationRepository,
       walletRepository,
-      perfilRepository
+      perfilRepository,
+      skinRepository
     );
 
     afterEach(() => {
@@ -65,24 +66,24 @@ describe("CronJobProcess Use Case", () => {
     const [skin] = await Promise.all([
       makeCreateSkin.execute({
         seller_id: "76561198015724229",
-        asset_id: "35477944719",
+        asset_id: "35298318122",
       }),
+      makeCreatePerfilRepository.execute("76561198015724229"),
       makeCreatePerfilRepository.execute(
-        "76561198015724229",
-        "15B121C41C8C8E7EE912E0A3EFB22C66"
+        "76561198862407248",
+        "DBBF677F1392F52023DC909D966F7516"
       ),
-      makeCreatePerfilRepository.execute("76561198862407248"),
     ]);
 
     const vendedor = await walletRepository.create({
       owner_name: "Italo",
-      owner_id: "76561198015724229",
+      owner_id: "76561198862407248",
       value: 0,
     });
 
     const comprador = await walletRepository.create({
       owner_name: "Araujo",
-      owner_id: "76561198862407248",
+      owner_id: "76561198015724229",
       value: 5000,
     });
 
@@ -123,10 +124,13 @@ describe("CronJobProcess Use Case", () => {
     expect(
       transactionHistoryRepository.transactionsHistory[0].processTransaction
     ).toBe(true);
-    expect(perfilRepository.perfil[0].total_exchanges_completed).toBe(1);
+
+    console.log(transactionRepository.transactions);
+
+    expect(perfilRepository.perfil[1].total_exchanges_completed).toBe(1);
     expect(walletRepository.wallet[0].value).toBe(porcentagem);
-    expect(notifications[0].owner_id).toBe("76561198015724229");
-    expect(notifications[1].owner_id).toBe("76561198862407248");
+    expect(notifications[1].owner_id).toBe("76561198015724229");
+    expect(notifications[0].owner_id).toBe("76561198862407248");
     expect(transactionRepository.transactions[0].status).toBe("Concluído");
     scope.done();
   });
@@ -136,24 +140,24 @@ describe("CronJobProcess Use Case", () => {
     const [skin] = await Promise.all([
       makeCreateSkin.execute({
         seller_id: "76561198015724229",
-        asset_id: "35477944718",
+        asset_id: "35298318122",
       }),
+      makeCreatePerfilRepository.execute("76561198015724229"),
       makeCreatePerfilRepository.execute(
-        "76561198015724229",
-        "15B121C41C8C8E7EE912E0A3EFB22C66"
+        "76561198862407248",
+        "DBBF677F1392F52023DC909D966F7516"
       ),
-      makeCreatePerfilRepository.execute("76561198862407248"),
     ]);
 
     const vendedor = await walletRepository.create({
       owner_name: "Italo",
-      owner_id: "76561198015724229",
+      owner_id: "76561198862407248",
       value: 0,
     });
 
     const comprador = await walletRepository.create({
       owner_name: "Araujo",
-      owner_id: "76561198862407248",
+      owner_id: "76561198015724229",
       value: 1000,
     });
 
@@ -191,9 +195,9 @@ describe("CronJobProcess Use Case", () => {
     expect(
       transactionHistoryRepository.transactionsHistory[0].processTransaction
     ).toBe(true);
-    expect(notifications[0].owner_id).toBe("76561198015724229");
-    expect(notifications[1].owner_id).toBe("76561198862407248");
-    expect(perfilRepository.perfil[0].total_exchanges_failed).toBe(1);
+    expect(notifications[1].owner_id).toBe("76561198015724229");
+    expect(notifications[0].owner_id).toBe("76561198862407248");
+    expect(perfilRepository.perfil[1].total_exchanges_failed).toBe(1);
     expect(walletRepository.wallet[1].value).toBe(1500);
     expect(transactionRepository.transactions[0].status).toBe("Falhou");
     scope.done();
