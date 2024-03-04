@@ -3,7 +3,7 @@
 export function compareDates(date1: Date, date2: Date) {
   console.log("Dateeeeeeeeeeeeeee--------", date1.getTime() <= date2.getTime());
   console.log("Date 1", date1);
-  console.log("Date 2", date2);
+  console.log("Date 2 - new Date", date2);
 
   return date1.getTime() <= date2.getTime();
 }

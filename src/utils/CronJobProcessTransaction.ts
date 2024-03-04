@@ -10,7 +10,7 @@ import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRep
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { formatBalance } from "./formatBalance";
 import { compareDates } from "./compareDates";
-import { KeySteamNotFoundError } from "@/useCases/@errors/TransactionHistory/KeySteamNotFoundError";
+// import { KeySteamNotFoundError } from "@/useCases/@errors/TransactionHistory/KeySteamNotFoundError";
 
 interface IUpdateTransactionHistory {
   transactionHistory: TransactionHistory;
@@ -80,7 +80,6 @@ export class CronJobProcessTransaction {
         const { completed, partnersteamid, receivedassetids } =
           inventorySeller[0];
         const { buyer_id, asset_id } = transaction;
-
         if (
           completed &&
           partnersteamid === buyer_id &&
@@ -111,7 +110,7 @@ export class CronJobProcessTransaction {
     );
 
     if (!config.key) {
-      throw new KeySteamNotFoundError();
+      return "Key steam not found";
     }
 
     if (config && config.key && config.key !== " ") {
