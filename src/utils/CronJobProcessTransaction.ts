@@ -147,7 +147,7 @@ export class CronJobProcessTransaction {
         processTransaction: true,
       }),
       this.transactionRepository.updateId(transaction.id, {
-        status: "concluído",
+        status: "Concluído",
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
