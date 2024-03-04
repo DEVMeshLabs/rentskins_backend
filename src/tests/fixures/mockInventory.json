@@ -1,35 +1,35 @@
 [
   {
-    "tradeid": "5214673889823019096",
-    "partnersteamid": "76561198862407248",
-    "timestamp": 1707145300,
+    "tradeid": "5301370636430327610",
+    "partnersteamid": "76561198015724229",
+    "timestamp": 1709589453,
     "status": "confirmed",
     "completed": true,
-    "date": "2024-02-05 15:01:40",
-    "sent": false,
-    "sentcount": 0,
-    "sentassets": [],
-    "sentassetids": [],
-    "sentnewassetids": [],
-    "received": true,
-    "receivedcount": 1,
-    "receivedassets": [
+    "date": "2024-03-04 21:57:33",
+    "sent": true,
+    "sentcount": 1,
+    "sentassets": [
       {
         "appid": 730,
         "contextid": "2",
-        "assetid": "35477944719",
-        "classid": "3035568810",
-        "instanceid": "302028390",
+        "assetid": "35298318122",
+        "classid": "5316842944",
+        "instanceid": "143865972",
         "amount": "1",
-        "newassetid": "35660584697",
+        "newassetid": "36215922801",
         "newcontextid": "2"
       }
     ],
-    "receivedassetids": [
-      "35477944719"
+    "sentassetids": [
+      "35298318122"
     ],
-    "receivednewassetids": [
-      "35660584697"
-    ]
+    "sentnewassetids": [
+      "36215922801"
+    ],
+    "received": false,
+    "receivedcount": 0,
+    "receivedassets": [],
+    "receivedassetids": [],
+    "receivednewassetids": []
   }
 ]
