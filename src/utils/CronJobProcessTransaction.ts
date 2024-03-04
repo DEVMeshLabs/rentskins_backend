@@ -33,6 +33,8 @@ export class CronJobProcessTransaction {
 
     // Preciso verificar o assetid, o partnersteamid e o steamcommunityapikey
     await this.processPendingTransactions();
+
+    console.log("Cronjob finalizado...");
   }
 
   // --------------------------------------------------------------------------------------------
