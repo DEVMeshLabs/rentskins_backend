@@ -16,7 +16,7 @@ export const { checkout, webhooks, customers } = require("stripe")(
 
 const makeTransaction = makeCronJobProcessTransaction();
 
-job.scheduleJob("* * 1 * * *", async () => {
+job.scheduleJob("* 5 * * * *", async () => {
   try {
     await makeTransaction.execute();
   } catch (error) {
