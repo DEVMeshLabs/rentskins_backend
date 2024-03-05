@@ -143,9 +143,7 @@ export class CronJobProcessTransaction {
     const transaction = await this.transactionRepository.findById(
       transactionHistory.transaction_id
     );
-    const { formattedBalance, porcentagem } = formatBalance(
-      transaction.balance
-    );
+    const { porcentagem } = formatBalance(transaction.balance);
 
     await Promise.all([
       this.perfilRepository.updateTotalExchanges(perfilSeller.id),
@@ -158,7 +156,7 @@ export class CronJobProcessTransaction {
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
-        description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${formattedBalance}.`,
+        description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.buyer_id,
