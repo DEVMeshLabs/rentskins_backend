@@ -62,8 +62,9 @@ export class CreateTransactionUseCase {
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
     } else if (
-      findSkinTransaction.salesAt !== null &&
-      findSkinTransaction.status !== "Em andamento"
+      findSkinTransaction &&
+      findSkinTransaction.status !== "Em andamento" &&
+      findSkinTransaction.salesAt !== null
     ) {
       throw new SkinHasAlreadyBeenSoldError(
         `${findSkin.skin_name} ${findSkin.asset_id}`
