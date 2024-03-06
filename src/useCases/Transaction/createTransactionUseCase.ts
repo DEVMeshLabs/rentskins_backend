@@ -16,7 +16,6 @@ import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 // ------------------ Outros -----------------
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
 import { addHours } from "@/utils/compareDates";
-import { KeySteamNotFoundError } from "../@errors/TransactionHistory/KeySteamNotFoundError";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -42,7 +41,6 @@ export class CreateTransactionUseCase {
       findSkin,
       findWallet,
       findSkinTransaction,
-      configSeller,
     ] = await Promise.all([
       this.perfilRepository.findByUser(buyer_id),
       this.perfilRepository.findByUser(seller_id),
@@ -58,8 +56,6 @@ export class CreateTransactionUseCase {
       throw new SameUsersError();
     } else if (!findSkin) {
       throw new SkinNotExistError();
-    } else if (!configSeller.key) {
-      throw new KeySteamNotFoundError();
     } else if (!findWallet) {
       throw new WalletNotExistsError();
     } else if (findWallet.value < findSkin.skin_price) {

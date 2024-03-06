@@ -3,6 +3,7 @@ import { FastifyRequest, FastifyReply } from "fastify";
 import createSkinSchema from "./Schemas/createSkinSchema";
 import { SkinAlreadyExistsError } from "@/useCases/@errors/Skin/SkinAlreadyExistsError";
 import { ZodError } from "zod";
+import { KeySteamNotFoundError } from "@/useCases/@errors/TransactionHistory/KeySteamNotFoundError";
 
 export async function createSkinController(
   req: FastifyRequest,
@@ -55,6 +56,8 @@ export async function createSkinController(
       return reply
         .status(409)
         .send({ error: error.message, asset_id: error.asset_id });
+    } else if (error instanceof KeySteamNotFoundError) {
+      return reply.status(400).send({ error: error.message });
     } else if (error instanceof ZodError) {
       return reply.status(400).send({ error: error.message });
     }
