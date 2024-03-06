@@ -4,14 +4,17 @@ import { CreateSkinUseCase } from "@/useCases/Skin/createSkinUseCase";
 import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
 // -------------- Error --------------
 import { SkinAlreadyExistsError } from "@/useCases/@errors/Skin/SkinAlreadyExistsError";
+import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 
 let skinRepository: InMemorySkinRepository;
+let configRepostiory: InMemoryConfigurationRepository;
 let sut: CreateSkinUseCase;
 
 describe("Skin Use Case", () => {
   beforeEach(async () => {
     skinRepository = new InMemorySkinRepository();
-    sut = new CreateSkinUseCase(skinRepository);
+    configRepostiory = new InMemoryConfigurationRepository();
+    sut = new CreateSkinUseCase(skinRepository, configRepostiory);
   });
 
   it("Deve ser capaz de criar uma skin", async () => {

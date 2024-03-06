@@ -2,11 +2,18 @@ import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepos
 import { Prisma } from "@prisma/client";
 import { SkinAlreadyExistsError } from "../@errors/Skin/SkinAlreadyExistsError";
 import { slug } from "@/utils/slug";
+import { KeySteamNotFoundError } from "../@errors/TransactionHistory/KeySteamNotFoundError";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 
 export class CreateSkinUseCase {
-  constructor(private skinsRepository: ISkinsRepository) {}
+  constructor(
+    private skinsRepository: ISkinsRepository,
+    private configRepostiory: IConfigurationRepository
+  ) {}
+
   async execute(data: Prisma.SkinCreateInput): Promise<any> {
     const existingSkins = await this.skinsRepository.findManyAssent();
+    const configSeller = await this.configRepostiory.findByUser(data.seller_id);
 
     const duplicateSkins = existingSkins.filter(
       (item) => item.asset_id === data.asset_id && item.status !== "Falhou"
@@ -21,6 +28,8 @@ export class CreateSkinUseCase {
         idSkin,
         duplicateSkinAssetId
       );
+    } else if (!configSeller.key) {
+      throw new KeySteamNotFoundError();
     }
 
     const skinSlug = await slug(

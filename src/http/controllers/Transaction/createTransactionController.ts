@@ -26,7 +26,6 @@ export async function createTransactionController(
       SkinHasAlreadyBeenSoldError: 409,
       WalletNotExistsError: 404,
       GetInventoryOwnerIdError: 429,
-      KeySteamNotFoundError: 404,
     };
 
     const status = errorMappings[error.constructor.name] || 500;
