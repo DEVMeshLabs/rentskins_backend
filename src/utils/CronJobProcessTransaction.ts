@@ -184,6 +184,7 @@ export class CronJobProcessTransaction {
     const transaction = await this.transactionRepository.findById(
       transactionHistory.transaction_id
     );
+    const skin = await this.skinRepository.findById(transaction.skin_id);
     const { formattedBalance } = formatBalance(transaction.balance);
 
     await Promise.all([
@@ -195,17 +196,21 @@ export class CronJobProcessTransaction {
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
-        description: `Algo aconteceu de errado com a sua venda.`,
+        description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi reativado.`,
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.buyer_id,
-        description: `Algo aconteceu de errado com a sua compra. O valor de ${formattedBalance} foi devolvido para sua carteira.`,
+        description: `O vendedor não enviou a skin. O valor de ${formattedBalance} foi devolvido para sua carteira.`,
       }),
       this.walletRepository.updateByUserValue(
         transactionHistory.buyer_id,
         "increment",
         transaction.balance
       ),
+      this.skinRepository.updateById(transaction.skin_id, {
+        status: null,
+        saledAt: null,
+      }),
       this.perfilRepository.updateByUser(transactionHistory.seller_id, {
         total_exchanges_failed: perfilSeller.total_exchanges_failed + 1,
       }),
