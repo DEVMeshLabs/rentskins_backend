@@ -62,10 +62,7 @@ export class CreateTransactionUseCase {
       throw new InsufficientFundsError();
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
-    } else if (
-      (findSkinTransaction && findSkinTransaction.status !== null) ||
-      (findSkinTransaction && findSkinTransaction.salesAt !== null)
-    ) {
+    } else if (findSkinTransaction && findSkinTransaction.salesAt !== null) {
       throw new SkinHasAlreadyBeenSoldError(
         `${findSkin.skin_name} ${findSkin.asset_id}`
       );
