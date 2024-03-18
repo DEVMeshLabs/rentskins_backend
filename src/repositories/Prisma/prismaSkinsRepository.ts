@@ -26,7 +26,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
     const findSeller = prisma.skin.findMany({
       where:
         deletedAt === "false"
-          ? { seller_id, deletedAt: null, status: null }
+          ? { seller_id, deletedAt: null, status: null, saledAt: null }
           : { seller_id },
       orderBy: { createdAt: "desc" },
     });
@@ -69,6 +69,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
       where: {
         ...whereCondition,
         status: null,
+        saledAt: null,
         deletedAt: null,
       },
       orderBy: { createdAt: "desc" },
@@ -80,7 +81,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
 
   async findByMany(page: number, pageSize: number) {
     const skinAll = await prisma.skin.findMany({
-      where: { deletedAt: null, status: null },
+      where: { deletedAt: null, status: null, saledAt: null },
       orderBy: { createdAt: "desc" },
       take: pageSize,
       skip: (page - 1) * pageSize,
@@ -90,7 +91,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
 
   async findManyAssent() {
     const skinAllAssent = await prisma.skin.findMany({
-      where: { deletedAt: null, status: null },
+      where: { deletedAt: null, status: null, saledAt: null },
       orderBy: { createdAt: "desc" },
     });
     return skinAllAssent;
@@ -98,14 +99,14 @@ export class PrismaSkinRepository implements ISkinsRepository {
 
   async findBySeller(seller_id: string) {
     const findSeller = await prisma.skin.findFirst({
-      where: { seller_id, deletedAt: null, status: null },
+      where: { seller_id, deletedAt: null, status: null, saledAt: null },
     });
     return findSeller;
   }
 
   async findByManyCategory(skin_category: string) {
     const findManyCategory = await prisma.skin.findMany({
-      where: { skin_category, deletedAt: null, status: null },
+      where: { skin_category, deletedAt: null, status: null, saledAt: null },
       orderBy: { createdAt: "desc" },
     });
 
@@ -114,7 +115,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
 
   async findByManyWeapon(skin_weapon: string) {
     const findWeapon = await prisma.skin.findMany({
-      where: { skin_weapon, deletedAt: null, status: null },
+      where: { skin_weapon, deletedAt: null, status: null, saledAt: null },
       orderBy: { createdAt: "desc" },
     });
 
@@ -123,14 +124,14 @@ export class PrismaSkinRepository implements ISkinsRepository {
 
   async findByCountSkins() {
     const countSkins = await prisma.skin.count({
-      where: { deletedAt: null, status: null },
+      where: { deletedAt: null, status: null, saledAt: null },
     });
     return countSkins;
   }
 
   async findByCountSellers(seller_id: string) {
     const countSkins = await prisma.skin.count({
-      where: { seller_id, deletedAt: null, status: null },
+      where: { seller_id, deletedAt: null, status: null, saledAt: null },
     });
     return countSkins;
   }
@@ -145,6 +146,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
         ],
         deletedAt: null,
         status: null,
+        saledAt: null,
       },
     });
     return findSearch;
@@ -168,7 +170,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
 
   async findBySlug(slug: string) {
     const skinSlug = await prisma.skin.findFirst({
-      where: { slug, deletedAt: null },
+      where: { slug, deletedAt: null, saledAt: null },
     });
 
     return skinSlug;

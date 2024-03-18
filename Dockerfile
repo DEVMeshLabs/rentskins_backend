@@ -1,19 +1,13 @@
-FROM node:latest
+FROM node:latest AS run
+WORKDIR /src
 
-WORKDIR /app
-
-# Copie o arquivo de configuração do projeto e instale as dependências
-COPY package.json ./
-COPY package-lock.json ./
-COPY tsconfig.json ./
-COPY ./prisma ./prisma
-
-RUN npm ci
+COPY package*.json ./
+RUN npm install --only=production
 
 COPY . .
 
-RUN npm run build
+RUN npx prisma generate
 
-EXPOSE 3333
+EXPOSE 3000
 
-CMD [ "npm", "build" ]
+CMD ["npm", "start"]

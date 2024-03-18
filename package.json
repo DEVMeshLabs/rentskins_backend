@@ -50,7 +50,6 @@
     "@rocketseat/eslint-config": "^1.2.0",
     "@types/globaloffensive": "^2.3.1",
     "@types/node": "^20.4.0",
-    "@types/node-cron": "^3.0.10",
     "@types/node-schedule": "^2.1.4",
     "@types/socket.io": "^3.0.2",
     "@types/steam": "^0.0.29",

@@ -21,6 +21,7 @@ import { getSkinSlugController } from "./getSkinSlugController";
 export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins", getSkinManyController);
   app.get("/v1/skins/:id", getSkinController);
+  app.post("/v1/skins/float", getFloatSkinController);
   app.get("/v1/skins/seller/:seller_id", getSkinSellerController);
   app.get("/v1/skins/seller/user/:seller_id", getManyCartController);
   app.get("/v1/skins/weapon/:weapon", getManyWeaponController);

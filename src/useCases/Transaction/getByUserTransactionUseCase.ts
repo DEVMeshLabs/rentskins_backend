@@ -1,15 +1,18 @@
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
-import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
+import { TransactionNotExistError } from "../@errors/Transaction/TransactionNotExistError";
 
 export class GetByUserTransactionUseCase {
   constructor(private transactionRepository: ITransactionRepository) {}
   async execute(id: string, query: string) {
-    const findUser = await this.transactionRepository.findByUser(id, query);
+    const findTransactionUser = await this.transactionRepository.findByUser(
+      id,
+      query
+    );
 
-    if (!findUser) {
-      throw new PerfilNotExistError();
+    if (!findTransactionUser) {
+      throw new TransactionNotExistError();
     }
 
-    return findUser;
+    return findTransactionUser;
   }
 }

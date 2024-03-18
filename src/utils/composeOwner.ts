@@ -5,6 +5,7 @@ import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRep
 import { Perfil, Skin, Transaction } from "@prisma/client";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { calculateDiscount } from "./calculateDiscount";
+import { formatBalance } from "./formatBalance";
 
 interface IComposeOwnerIdUpdates {
   id: string;
@@ -30,7 +31,7 @@ export class ComposeOwner {
     perfil?: Perfil
   ): Promise<any> {
     const { balance } = data.findTransaction;
-    const formattedBalance = this.formatBalance(balance);
+    const { formattedBalance } = formatBalance(balance);
     const { newBalance } = calculateDiscount(data.updateConfirm.balance);
 
     const sellerNotification = this.createSellerNotification(
@@ -156,13 +157,5 @@ export class ComposeOwner {
     ];
 
     return Promise.all(updates);
-  }
-
-  formatBalance(balance: number) {
-    return balance.toLocaleString("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-      minimumFractionDigits: 2,
-    });
   }
 }

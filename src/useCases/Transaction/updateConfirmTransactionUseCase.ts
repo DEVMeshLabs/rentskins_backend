@@ -12,6 +12,7 @@ import { calculateReliability } from "@/utils/calculateReliability";
 import { Trades } from "@/utils/trades";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { calculateDiscount } from "@/utils/calculateDiscount";
+import { formatBalance } from "@/utils/formatBalance";
 
 interface IComposeOwnerIdUpdates {
   id: string;
@@ -178,7 +179,7 @@ export class UpdateConfirmTransactionUseCase {
         ),
         this.notificationsRepository.create({
           owner_id: findTransaction.buyer_id,
-          description: `O vendedor ${findPerfil.owner_name} recusou o envio do item ${skin.skin_name}.`,
+          description: `O vendedor recusou o envio do item ${skin.skin_name}.`,
           skin_id: findTransaction.skin_id,
         }),
         this.transactionRepository.updateId(findTransaction.id, {
@@ -274,13 +275,14 @@ export class UpdateConfirmTransactionUseCase {
     data: IComposeOwnerIdUpdates
   ): Promise<any> {
     const { balance } = data.findTransaction;
-    const formattedBalance = formatBalance(balance);
+    const { formattedBalance, porcentagem } = formatBalance(balance);
+
     const { newBalance } = calculateDiscount(data.updateConfirm.balance);
 
     const sellerNotification = this.createSellerNotification(
       data,
       isTransactionFailed,
-      formattedBalance
+      porcentagem.toString()
     );
     const buyerNotification = this.createBuyerNotification(
       data,
@@ -315,7 +317,7 @@ export class UpdateConfirmTransactionUseCase {
       owner_id: data.updateConfirm.seller_id,
       description: isTransactionFailed
         ? `A venda do item ${data.skin.skin_name} foi cancelada. Conclua as trocas com honestidade ou sua conta receberá uma punição.`
-        : `A venda do item ${data.skin.skin_name} foi realizada com sucesso! Seus créditos foram carregados em ${formattedBalance}.`,
+        : `A venda do item ${data.skin.skin_name} foi realizada com sucesso! Seus créditos foram carregados em R$:${formattedBalance}.`,
       skin_id: data.skin.id,
     };
 
@@ -401,12 +403,4 @@ export class UpdateConfirmTransactionUseCase {
 
     return Promise.all(updates);
   }
-}
-
-function formatBalance(balance: number) {
-  return balance.toLocaleString("pt-BR", {
-    style: "currency",
-    currency: "BRL",
-    minimumFractionDigits: 2,
-  });
 }

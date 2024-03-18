@@ -111,9 +111,9 @@ model Perfil {
   steam_url                 String         @db.VarChar(255)
   picture                   String         @db.VarChar(255)
   delivery_time             String         @db.VarChar(255)
-  total_exchanges           Int            @default(0) @db.Integer
-  total_exchanges_completed Int            @default(0) @db.Integer
-  total_exchanges_failed    Int            @default(0) @db.Integer
+  total_exchanges           Int            @default(0)
+  total_exchanges_completed Int            @default(0)
+  total_exchanges_failed    Int            @default(0)
   reliability               String         @default("Sem informações") @db.VarChar(255)
   createdAt                 DateTime       @default(now())
   updatedAt                 DateTime?
@@ -126,19 +126,34 @@ model Perfil {
 }
 
 model Transaction {
-  id             String    @id @default(uuid()) @db.VarChar(36)
-  skin_id        String    @db.VarChar(255)
-  buyer_id       String    @db.VarChar(255)
-  seller_id      String    @db.VarChar(255)
-  seller_confirm String?   @default("Pendente") @db.VarChar(255)
-  buyer_confirm  String?   @default("Pendente") @db.VarChar(255)
-  balance        Float
-  status         String?   @default("Em andamento") @db.VarChar(255)
-  createdAt      DateTime  @default(now())
-  salesAt        DateTime?
-  updatedAt      DateTime?
-  deletedAt      DateTime?
-  skin           Skin?     @relation(fields: [skin_id], references: [id])
+  id                 String               @id @default(uuid()) @db.VarChar(36)
+  skin_id            String               @db.VarChar(255)
+  buyer_id           String               @db.VarChar(255)
+  seller_id          String               @db.VarChar(255)
+  seller_confirm     String?              @default("Pendente") @db.VarChar(255)
+  buyer_confirm      String?              @default("Pendente") @db.VarChar(255)
+  balance            Float
+  status             String?              @default("Em andamento") @db.VarChar(255)
+  createdAt          DateTime             @default(now())
+  salesAt            DateTime?
+  updatedAt          DateTime?
+  deletedAt          DateTime?
+  skin               Skin?                @relation(fields: [skin_id], references: [id])
+  TransactionHistory TransactionHistory[]
+}
+
+model TransactionHistory {
+  id                 String       @id @default(uuid()) @db.VarChar(36)
+  transaction_id     String       @db.VarChar(255)
+  buyer_id           String       @db.VarChar(255)
+  seller_id          String       @db.VarChar(255)
+  asset_id           String       @db.VarChar(255)
+  processTransaction Boolean      @default(false)
+  dateProcess        DateTime
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime?
+  deletedAt          DateTime?
+  transaction        Transaction? @relation(fields: [transaction_id], references: [id])
 }
 
 model RentalTransaction {
