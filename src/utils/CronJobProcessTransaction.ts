@@ -11,7 +11,6 @@ import { ITransactionRepository } from "@/repositories/interfaceRepository/ITran
 import { formatBalance } from "./formatBalance";
 import { compareDates } from "./compareDates";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
-// import { KeySteamNotFoundError } from "@/useCases/@errors/TransactionHistory/KeySteamNotFoundError";
 
 interface IUpdateTransactionHistory {
   transactionHistory: TransactionHistory;
