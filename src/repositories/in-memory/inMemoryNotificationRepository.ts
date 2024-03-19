@@ -15,7 +15,7 @@ export class InMemoryNotificationRepository implements INotificationRepository {
       description: data.description,
       skin_id: data.skin_id,
       new: true,
-      type: null,
+      type: data.type ?? null,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,

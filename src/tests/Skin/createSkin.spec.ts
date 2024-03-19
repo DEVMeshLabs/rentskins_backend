@@ -5,19 +5,37 @@ import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRep
 // -------------- Error --------------
 import { SkinAlreadyExistsError } from "@/useCases/@errors/Skin/SkinAlreadyExistsError";
 import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
+import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
+import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
 
 let skinRepository: InMemorySkinRepository;
 let configRepostiory: InMemoryConfigurationRepository;
+let perfilRepository: InMemoryPerfilRepository;
+let makeCreatePerfilRepository: MakeCreatePerfilRepository;
 let sut: CreateSkinUseCase;
 
 describe("Skin Use Case", () => {
   beforeEach(async () => {
     skinRepository = new InMemorySkinRepository();
     configRepostiory = new InMemoryConfigurationRepository();
+    perfilRepository = new InMemoryPerfilRepository();
+    makeCreatePerfilRepository = new MakeCreatePerfilRepository(
+      perfilRepository,
+      configRepostiory
+    );
+
     sut = new CreateSkinUseCase(skinRepository, configRepostiory);
   });
 
   it("Deve ser capaz de criar uma skin", async () => {
+    await Promise.all([
+      makeCreatePerfilRepository.execute(
+        "76561198015724229",
+        "DBBF677F1392F52023DC909D966F7516"
+      ),
+      makeCreatePerfilRepository.execute("76561198862407248"),
+    ]);
+
     const skin = await sut.execute({
       asset_id: "10828437704",
       skin_image: "https://bit.ly/3Jn6aqn",
@@ -27,18 +45,25 @@ describe("Skin Use Case", () => {
       skin_price: 550,
       skin_float: "0,10072",
       seller_name: "Caçadora de demonios",
-      seller_id: "76561199205585878",
+      seller_id: "76561198015724229",
       skin_rarity: "8650AC",
       sale_type: "Caçadora",
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
     });
-
     expect(skin.id).toEqual(expect.any(String));
   });
 
   it("Não deve ser possível registrar com o mesmo asset_id", async () => {
+    await Promise.all([
+      makeCreatePerfilRepository.execute(
+        "76561198015724229",
+        "DBBF677F1392F52023DC909D966F7516"
+      ),
+      makeCreatePerfilRepository.execute("76561198862407248"),
+    ]);
+
     const data = {
       asset_id: "10828437704",
       skin_image: "https://bit.ly/3Jn6aqn",
@@ -49,7 +74,7 @@ describe("Skin Use Case", () => {
       skin_float: "0,10072",
       median_price: 253,
       seller_name: "Caçadora de demonios",
-      seller_id: "76561199205585878",
+      seller_id: "76561198015724229",
       skin_rarity: "8650AC",
       sale_type: "Caçadora",
       status_float: "Muito usada",
@@ -64,6 +89,14 @@ describe("Skin Use Case", () => {
   });
 
   it("Deve ser capaz de criar duas skins", async () => {
+    await Promise.all([
+      makeCreatePerfilRepository.execute(
+        "76561198015724229",
+        "DBBF677F1392F52023DC909D966F7516"
+      ),
+      makeCreatePerfilRepository.execute("76561198862407248"),
+    ]);
+
     const data = {
       asset_id: "10828437704",
       skin_image: "https://bit.ly/3Jn6aqn",
@@ -74,7 +107,7 @@ describe("Skin Use Case", () => {
       skin_float: "0,10072",
       median_price: 253,
       seller_name: "Caçadora de demonios",
-      seller_id: "76561199205585878",
+      seller_id: "76561198015724229",
       skin_rarity: "8650AC",
       sale_type: "Caçadora",
       status_float: "Muito usada",
@@ -92,7 +125,7 @@ describe("Skin Use Case", () => {
       skin_float: "0,10072",
       median_price: 253,
       seller_name: "Caçadora de demonios",
-      seller_id: "76561199205585878",
+      seller_id: "76561198015724229",
       skin_rarity: "8650AC",
       sale_type: "Caçadora",
       status_float: "Muito usada",
