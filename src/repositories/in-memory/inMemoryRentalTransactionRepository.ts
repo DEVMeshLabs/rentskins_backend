@@ -10,10 +10,11 @@ export class InMemoryRentalTransactionRepository
   async create(data: Prisma.RentalTransactionCreateInput) {
     const rentalTransaction = {
       id: data.id ?? randomUUID(),
-      owner_id: data.owner_id,
+      seller_id: data.seller_id,
+      buyer_id: data.buyer_id,
       skin_id: data.skin_id,
       total_price: data.total_price ?? null,
-      fee: data.fee ?? null,
+      remainder: data.remainder ?? null,
       fee_total_price: data.fee_total_price ?? null,
       days_quantity: data.days_quantity,
       status: data.status ?? "Em andamento",
