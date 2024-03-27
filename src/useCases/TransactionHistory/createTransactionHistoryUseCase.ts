@@ -11,6 +11,7 @@ interface ITransactionRequest {
   transaction_id?: string;
   rentalTransaction_id?: string;
   rental: boolean;
+  asset_id: string;
   seller_id: string;
   buyer_id: string;
 }
@@ -28,6 +29,7 @@ export class CreateTransactionHistoryUseCase {
     buyer_id,
     seller_id,
     rental,
+    asset_id,
   }: ITransactionRequest) {
     const findTransaction = await this.transactionRepository.findById(
       transaction_id
@@ -49,7 +51,7 @@ export class CreateTransactionHistoryUseCase {
       rentalTransaction_id: findRentalTransaction.id && null,
       buyer_id,
       seller_id,
-      asset_id: findTransaction.skin_id,
+      asset_id,
       dateProcess: process,
     });
     console.log(create);
