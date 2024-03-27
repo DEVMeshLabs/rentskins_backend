@@ -21,6 +21,7 @@ export class InMemoryTransactionHistoryRepository
       dateProcess: new Date(data.dateProcess), // Convert the value to a Date object
       asset_id: data.asset_id,
       rentalTransaction_id: data.rentalTransaction_id,
+      rental: data.rental ?? false,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,

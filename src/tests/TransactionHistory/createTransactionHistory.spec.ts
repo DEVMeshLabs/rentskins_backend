@@ -11,18 +11,20 @@ import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepos
 import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
 import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
 import { CreateTransactionHistoryUseCase } from "@/useCases/TransactionHistory/createTransactionHistoryUseCase";
+import { InMemoryRentalTransactionRepository } from "@/repositories/in-memory/inMemoryRentalTransactionRepository";
 
 let transactionRepository: InMemoryTransactionRepository;
 let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
 let perfilRepository: InMemoryPerfilRepository;
 let skinRepository: InMemorySkinRepository;
 let walletRepository: InMemoryWalletRepository;
+let rentalTransaction: InMemoryRentalTransactionRepository;
 let configurationRepository: InMemoryConfigurationRepository;
 let makeCreateSkin: MakeCreateSkinRepository;
 let makeCreatePerfilRepository: MakeCreatePerfilRepository;
 let sut: CreateTransactionHistoryUseCase;
 
-describe("Transaction Use Case", () => {
+describe("Transaction History Use Case", () => {
   beforeEach(async () => {
     transactionRepository = new InMemoryTransactionRepository();
     transactionHistoryRepository = new InMemoryTransactionHistoryRepository();
@@ -30,7 +32,7 @@ describe("Transaction Use Case", () => {
     skinRepository = new InMemorySkinRepository();
     walletRepository = new InMemoryWalletRepository();
     configurationRepository = new InMemoryConfigurationRepository();
-
+    rentalTransaction = new InMemoryRentalTransactionRepository();
     makeCreateSkin = new MakeCreateSkinRepository(skinRepository);
     makeCreatePerfilRepository = new MakeCreatePerfilRepository(
       perfilRepository,
@@ -39,7 +41,8 @@ describe("Transaction Use Case", () => {
 
     sut = new CreateTransactionHistoryUseCase(
       transactionHistoryRepository,
-      transactionRepository
+      transactionRepository,
+      rentalTransaction
     );
   });
 
@@ -74,8 +77,9 @@ describe("Transaction Use Case", () => {
       buyer_id: comprador.owner_id,
       seller_id: vendedor.owner_id,
       transaction_id: createTransaction.id,
+      rental: false,
     });
-
+    console.log(createdTransactionHistory);
     expect(createdTransactionHistory.id).toEqual(expect.any(String));
   });
 });

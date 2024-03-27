@@ -104,9 +104,10 @@ describe("CronJobProcessRental Use Case", () => {
       {
         buyer_id: comprador.owner_id,
         seller_id: vendedor.owner_id,
-        transaction_id: createTransaction.id,
+        rentalTransaction_id: createTransaction.id,
         asset_id: skin.asset_id,
         dateProcess: newDate,
+        rental: true,
       }
     );
 
