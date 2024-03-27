@@ -30,7 +30,7 @@ let makeCreateSkin: MakeCreateSkinRepository;
 let makeCreatePerfilRepository: MakeCreatePerfilRepository;
 let sut: CronJobProcessTransaction;
 
-describe("CronJobProcess Use Case", () => {
+describe("CronJobProcessTransaction Use Case", () => {
   beforeEach(async () => {
     transactionRepository = new InMemoryTransactionRepository();
     transactionHistoryRepository = new InMemoryTransactionHistoryRepository();
@@ -100,7 +100,7 @@ describe("CronJobProcess Use Case", () => {
         seller_id: vendedor.owner_id,
         transaction_id: createTransaction.id,
         asset_id: skin.asset_id,
-        dateProcess: addHours(),
+        dateProcess: addHours(1),
       }
     );
 
@@ -111,7 +111,7 @@ describe("CronJobProcess Use Case", () => {
       })
       .reply(200, inventorySeller);
 
-    const date = addHours();
+    const date = addHours(1);
 
     vi.setSystemTime(date);
 
@@ -124,8 +124,6 @@ describe("CronJobProcess Use Case", () => {
     expect(
       transactionHistoryRepository.transactionsHistory[0].processTransaction
     ).toBe(true);
-
-    console.log(transactionRepository.transactions);
 
     expect(perfilRepository.perfil[1].total_exchanges_completed).toBe(1);
     expect(walletRepository.wallet[0].value).toBe(porcentagem);
@@ -174,7 +172,7 @@ describe("CronJobProcess Use Case", () => {
         seller_id: vendedor.owner_id,
         transaction_id: createTransaction.id,
         asset_id: skin.asset_id,
-        dateProcess: addHours(),
+        dateProcess: addHours(1),
       }
     );
 
@@ -185,7 +183,7 @@ describe("CronJobProcess Use Case", () => {
       })
       .reply(404, []);
 
-    const date = addHours();
+    const date = addHours(1);
     vi.setSystemTime(date);
     await sut.execute();
 

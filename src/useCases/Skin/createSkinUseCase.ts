@@ -14,7 +14,6 @@ export class CreateSkinUseCase {
   async execute(data: Prisma.SkinCreateInput): Promise<any> {
     const existingSkins = await this.skinsRepository.findManyAssent();
     const configSeller = await this.configRepostiory.findByUser(data.seller_id);
-
     const duplicateSkins = existingSkins.filter(
       (item) => item.asset_id === data.asset_id && item.status !== "Falhou"
     );

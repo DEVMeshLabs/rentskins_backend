@@ -42,8 +42,6 @@ export function getAlreadyExistSkinInventory(
           (item: any) => item.assetid === assetid
         );
 
-        console.log(isAlreadyExist);
-
         if (!isAlreadyExist) {
           reply
             .status(404)
