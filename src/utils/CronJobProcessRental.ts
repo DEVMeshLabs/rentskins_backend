@@ -16,7 +16,7 @@ interface IUpdateTransactionHistory {
   transactionHistory: TransactionHistory;
 }
 
-export class CronJobProcessTransaction {
+export class CronJobProcessRental {
   constructor(
     private transactionHistoryRepository: ITransactionHistoryRepository,
     private rentalTransaction: IRentalTransactionRepository,
@@ -68,17 +68,17 @@ export class CronJobProcessTransaction {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
       false
     );
+    console.log(allTransactions);
     if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
     }
 
     for (const transaction of allTransactions) {
       const datesCompare = compareDates(transaction.dateProcess, new Date());
-      if (!datesCompare) {
+      if (!datesCompare || transaction.rentalTransaction_id === null) {
         return;
       }
       const inventorySeller = await this.processTransaction(transaction);
-      console.log(inventorySeller[0], "inventorySeller");
 
       if (inventorySeller && inventorySeller.length > 0) {
         const { completed, partnersteamid, receivedassetids, received } =
@@ -145,7 +145,7 @@ export class CronJobProcessTransaction {
       transactionHistory.seller_id
     );
     const rentalTransaction = await this.rentalTransaction.findById(
-      transactionHistory.transaction_id
+      transactionHistory.rentalTransaction_id
     );
     const skin = await this.skinRepository.findById(rentalTransaction.skin_id);
 
@@ -173,6 +173,11 @@ export class CronJobProcessTransaction {
       this.walletRepository.updateByUserValue(
         transactionHistory.seller_id,
         "increment",
+        rentalTransaction.remainder
+      ),
+      this.walletRepository.updateByUserValue(
+        transactionHistory.buyer_id,
+        "increment",
         rentalTransaction.fee_total_price
       ),
     ]);
@@ -186,7 +191,7 @@ export class CronJobProcessTransaction {
     );
 
     const rentalTransaction = await this.rentalTransaction.findById(
-      transactionHistory.transaction_id
+      transactionHistory.rentalTransaction_id
     );
     const skin = await this.skinRepository.findById(rentalTransaction.skin_id);
     const { formattedBalance } = formatBalance(rentalTransaction.total_price);

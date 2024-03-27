@@ -1,3 +1,4 @@
+import { PrismaRentalTransactionRepository } from "@/repositories/Prisma/prismaRentalTransactionRepository";
 import { PrismaTransactionHistoryRepository } from "@/repositories/Prisma/prismaTransactionHistory";
 import { PrismaTransactionRepository } from "@/repositories/Prisma/prismaTransactionRepository";
 import { CreateTransactionHistoryUseCase } from "@/useCases/TransactionHistory/createTransactionHistoryUseCase";
@@ -5,9 +6,11 @@ import { CreateTransactionHistoryUseCase } from "@/useCases/TransactionHistory/c
 export function makeCreateTransactionHistoryUseCase() {
   const transactionRepository = new PrismaTransactionRepository();
   const transactionHistoryRepository = new PrismaTransactionHistoryRepository();
+  const rentalTransactionRepository = new PrismaRentalTransactionRepository();
   const createTransaction = new CreateTransactionHistoryUseCase(
     transactionHistoryRepository,
-    transactionRepository
+    transactionRepository,
+    rentalTransactionRepository
   );
   return createTransaction;
 }

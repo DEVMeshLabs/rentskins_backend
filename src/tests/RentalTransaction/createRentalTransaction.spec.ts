@@ -89,7 +89,6 @@ describe("Rental Transaction Use Case", () => {
       skin_id: "124",
       days_quantity: "7",
     });
-    console.log(createRentalTransaction);
 
     expect(createRentalTransaction.id).toEqual(expect.any(String));
   });
