@@ -150,6 +150,7 @@ model TransactionHistory {
   processTransaction   Boolean            @default(false)
   dateProcess          DateTime
   createdAt            DateTime           @default(now())
+  rental               Boolean            @default(false)
   updatedAt            DateTime?
   deletedAt            DateTime?
   transaction_id       String?            @db.VarChar(255)
