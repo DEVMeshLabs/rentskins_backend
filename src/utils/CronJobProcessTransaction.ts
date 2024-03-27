@@ -74,11 +74,10 @@ export class CronJobProcessTransaction {
 
     for (const transaction of allTransactions) {
       const datesCompare = compareDates(transaction.dateProcess, new Date());
-      if (!datesCompare) {
+      if (!datesCompare || transaction.transaction_id === null) {
         return;
       }
       const inventorySeller = await this.processTransaction(transaction);
-      console.log(inventorySeller[0], "inventorySeller");
 
       if (inventorySeller && inventorySeller.length > 0) {
         const { completed, partnersteamid, sentassetids, sent } =

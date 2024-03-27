@@ -1,7 +1,6 @@
 import { Prisma, TransactionHistory } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { ITransactionHistoryRepository } from "../interfaceRepository/ITransactionHistoryRepository";
-import { addHours } from "@/utils/compareDates";
 
 export class InMemoryTransactionHistoryRepository
   implements ITransactionHistoryRepository
@@ -19,8 +18,9 @@ export class InMemoryTransactionHistoryRepository
       buyer_id: data.buyer_id,
       seller_id: data.seller_id,
       processTransaction: data.processTransaction ?? false,
-      dateProcess: addHours(),
+      dateProcess: new Date(data.dateProcess), // Convert the value to a Date object
       asset_id: data.asset_id,
+      rentalTransaction_id: data.rentalTransaction_id,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,

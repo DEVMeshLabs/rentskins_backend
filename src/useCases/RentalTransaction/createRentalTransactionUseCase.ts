@@ -16,7 +16,7 @@ import { INotificationRepository } from "@/repositories/interfaceRepository/INot
 export class CreateRentalTransactionUseCase {
   constructor(
     private rentalTransactionRepository: IRentalTransactionRepository,
-    private transactionHisotry: ITransactionHistoryRepository,
+    private transactionHistory: ITransactionHistoryRepository,
     private skinRepository: ISkinsRepository,
     private perfilRepository: IPerfilRepository,
     private walletRepository: IWalletRepository,
@@ -56,7 +56,9 @@ export class CreateRentalTransactionUseCase {
       data.days_quantity,
       skin.skin_price
     );
-    const endDateNew = dayjs(new Date()).add(7, "day").format();
+    const endDateNew = dayjs(new Date())
+      .add(Number(data.days_quantity), "day")
+      .format();
 
     const [rental] = await Promise.all([
       this.rentalTransactionRepository.create({
@@ -94,13 +96,12 @@ export class CreateRentalTransactionUseCase {
         status: "Em andamento",
       }),
     ]);
-
-    await this.transactionHisotry.create({
-      transaction_id: rental.id,
+    await this.transactionHistory.create({
+      rentalTransaction_id: rental.id,
       seller_id: data.seller_id,
       buyer_id: data.buyer_id,
       asset_id: skin.asset_id,
-      dateProcess: addHours(),
+      dateProcess: addHours(24 * (Number(rental.days_quantity) + 1)),
     });
     return rental;
   }
