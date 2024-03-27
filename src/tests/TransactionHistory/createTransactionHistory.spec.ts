@@ -1,49 +1,48 @@
 import { expect, describe, beforeEach, it } from "vitest";
 // -------------- InMemory --------------
-import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
-import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
-import { InMemoryTransactionRepository } from "@/repositories/in-memory/inMemoryTransactionRepository";
-import { InMemoryWalletRepository } from "@/repositories/in-memory/inMemoryWalletRepository";
-import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
-// -------------- Error --------------
-// -------------- Error --------------
-import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
-import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
-import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
-import { CreateTransactionHistoryUseCase } from "@/useCases/TransactionHistory/createTransactionHistoryUseCase";
-import { InMemoryRentalTransactionRepository } from "@/repositories/in-memory/inMemoryRentalTransactionRepository";
+// import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
+// import { InMemorySkinRepository } from "@/repositories/in-memory/inMemorySkinRepository";
+// import { InMemoryTransactionRepository } from "@/repositories/in-memory/inMemoryTransactionRepository";
+// import { InMemoryWalletRepository } from "@/repositories/in-memory/inMemoryWalletRepository";
+// import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
+// // -------------- Error --------------
+// // -------------- Error --------------
+// import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
+// import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
+// import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
+// import { CreateTransactionHistoryUseCase } from "@/useCases/TransactionHistory/createTransactionHistoryUseCase";
+// import { InMemoryRentalTransactionRepository } from "@/repositories/in-memory/inMemoryRentalTransactionRepository";
 
-let transactionRepository: InMemoryTransactionRepository;
-let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
-let perfilRepository: InMemoryPerfilRepository;
-let skinRepository: InMemorySkinRepository;
-// let walletRepository: InMemoryWalletRepository;
-let rentalTransaction: InMemoryRentalTransactionRepository;
-let configurationRepository: InMemoryConfigurationRepository;
+// let transactionRepository: InMemoryTransactionRepository;
+// let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
+// let perfilRepository: InMemoryPerfilRepository;
+// let skinRepository: InMemorySkinRepository;
+// // let walletRepository: InMemoryWalletRepository;
+// let rentalTransaction: InMemoryRentalTransactionRepository;
+// let configurationRepository: InMemoryConfigurationRepository;
 // let makeCreateSkin: MakeCreateSkinRepository;
 // let makeCreatePerfilRepository: MakeCreatePerfilRepository;
 // let sut: CreateTransactionHistoryUseCase;
 
 describe("Transaction History Use Case", () => {
   beforeEach(async () => {
-    transactionRepository = new InMemoryTransactionRepository();
-    transactionHistoryRepository = new InMemoryTransactionHistoryRepository();
-    perfilRepository = new InMemoryPerfilRepository();
-    skinRepository = new InMemorySkinRepository();
-    walletRepository = new InMemoryWalletRepository();
-    configurationRepository = new InMemoryConfigurationRepository();
-    rentalTransaction = new InMemoryRentalTransactionRepository();
-    makeCreateSkin = new MakeCreateSkinRepository(skinRepository);
-    makeCreatePerfilRepository = new MakeCreatePerfilRepository(
-      perfilRepository,
-      configurationRepository
-    );
-
-    sut = new CreateTransactionHistoryUseCase(
-      transactionHistoryRepository,
-      transactionRepository,
-      rentalTransaction
-    );
+    // transactionRepository = new InMemoryTransactionRepository();
+    // transactionHistoryRepository = new InMemoryTransactionHistoryRepository();
+    // perfilRepository = new InMemoryPerfilRepository();
+    // skinRepository = new InMemorySkinRepository();
+    // // walletRepository = new InMemoryWalletRepository();
+    // configurationRepository = new InMemoryConfigurationRepository();
+    // rentalTransaction = new InMemoryRentalTransactionRepository();
+    // makeCreateSkin = new MakeCreateSkinRepository(skinRepository);
+    // makeCreatePerfilRepository = new MakeCreatePerfilRepository(
+    //  perfilRepository,
+    //  configurationRepository
+    // );
+    // sut = new CreateTransactionHistoryUseCase(
+    //   transactionHistoryRepository,
+    //   transactionRepository,
+    //   rentalTransaction
+    // );
   });
 
   it("Deve ser capaz de criar um History", async () => {
