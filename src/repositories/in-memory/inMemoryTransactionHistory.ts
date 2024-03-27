@@ -1,7 +1,6 @@
 import { Prisma, TransactionHistory } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { ITransactionHistoryRepository } from "../interfaceRepository/ITransactionHistoryRepository";
-import { addHours } from "@/utils/compareDates";
 
 export class InMemoryTransactionHistoryRepository
   implements ITransactionHistoryRepository
@@ -15,17 +14,19 @@ export class InMemoryTransactionHistoryRepository
   async create(data: Prisma.TransactionHistoryUncheckedCreateInput) {
     const transactionHistory: TransactionHistory = {
       id: data.id ?? randomUUID(),
-      transaction_id: data.transaction_id,
+      transaction_id: data.transaction_id ?? null,
       buyer_id: data.buyer_id,
       seller_id: data.seller_id,
       processTransaction: data.processTransaction ?? false,
-      dateProcess: addHours(),
+      dateProcess: new Date(data.dateProcess), // Convert the value to a Date object
       asset_id: data.asset_id,
+      rentalTransaction_id: data.rentalTransaction_id ?? null,
+      rental: data.rental ?? false,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
     };
-
+    console.log(transactionHistory);
     this.transactionsHistory.push(transactionHistory);
     return transactionHistory;
   }

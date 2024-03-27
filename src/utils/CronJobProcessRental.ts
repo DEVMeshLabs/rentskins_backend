@@ -7,19 +7,19 @@ import { TransactionHistory } from "@prisma/client";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
-import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { formatBalance } from "./formatBalance";
 import { compareDates } from "./compareDates";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
+import { IRentalTransactionRepository } from "@/repositories/interfaceRepository/IRentalTransactionRepository";
 
 interface IUpdateTransactionHistory {
   transactionHistory: TransactionHistory;
 }
 
-export class CronJobProcessTransaction {
+export class CronJobProcessRental {
   constructor(
     private transactionHistoryRepository: ITransactionHistoryRepository,
-    private transactionRepository: ITransactionRepository,
+    private rentalTransaction: IRentalTransactionRepository,
     private configurationRepository: IConfigurationRepository,
     private notificationRepository: INotificationRepository,
     private walletRepository: IWalletRepository,
@@ -30,12 +30,12 @@ export class CronJobProcessTransaction {
   // Pegar todas as transações, filtrar por process = false, e processar cada uma delas
   // --------------------------------------------------------------------------------------------
   async execute() {
-    console.log("Inciando cronjob...");
+    console.log("Inciando cronjob Rental...");
 
     // Preciso verificar o assetid, o partnersteamid e o steamcommunityapikey
     await this.processPendingTransactions();
 
-    console.log("Cronjob finalizado...");
+    console.log("Cronjob Rental finalizado...");
   }
 
   // --------------------------------------------------------------------------------------------
@@ -68,28 +68,29 @@ export class CronJobProcessTransaction {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
       false
     );
+    console.log(allTransactions);
     if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
     }
 
     for (const transaction of allTransactions) {
       const datesCompare = compareDates(transaction.dateProcess, new Date());
-      if (!datesCompare || transaction.transaction_id === null) {
+      if (!datesCompare || transaction.rentalTransaction_id === null) {
         return;
       }
       const inventorySeller = await this.processTransaction(transaction);
 
       if (inventorySeller && inventorySeller.length > 0) {
-        const { completed, partnersteamid, sentassetids, sent } =
+        const { completed, partnersteamid, receivedassetids, received } =
           inventorySeller[0];
 
         const { buyer_id, asset_id } = transaction;
         if (
           completed &&
           partnersteamid === buyer_id &&
-          sentassetids !== undefined &&
-          sentassetids[0] === asset_id &&
-          sent
+          receivedassetids !== undefined &&
+          receivedassetids[0] === asset_id &&
+          received
         ) {
           await this.handleSuccessTransaction({
             transactionHistory: transaction,
@@ -131,17 +132,22 @@ export class CronJobProcessTransaction {
     }
   }
 
+  /**
+   * Logicas de sucesso e falha da transação:
+   * Se falhar, quer dizer que o comprador não devolveu a skin, então será retirado o total_price da carteira do vendedor
+   * Se de sucesso, quer dizer que o comprador devolveu a skin, então será adicionado o valor referente aos dias na carteira do vendedor
+   */
+
   async handleSuccessTransaction({
     transactionHistory,
   }: IUpdateTransactionHistory) {
     const perfilSeller = await this.perfilRepository.findByUser(
       transactionHistory.seller_id
     );
-
-    const transaction = await this.transactionRepository.findById(
-      transactionHistory.transaction_id
+    const rentalTransaction = await this.rentalTransaction.findById(
+      transactionHistory.rentalTransaction_id
     );
-    const { porcentagem } = formatBalance(transaction.balance);
+    const skin = await this.skinRepository.findById(rentalTransaction.skin_id);
 
     await Promise.all([
       this.perfilRepository.updateTotalExchanges(perfilSeller.id),
@@ -149,25 +155,30 @@ export class CronJobProcessTransaction {
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
         processTransaction: true,
       }),
-      this.transactionRepository.updateId(transaction.id, {
+      this.rentalTransaction.updateId(rentalTransaction.id, {
         status: "Concluído",
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
-        description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
+        description: `Parabéns! O comprador realizou a devolução do item ${skin.skin_name} com sucesso. O valor ${rentalTransaction.remainder} já está na sua conta.`,
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.buyer_id,
-        description: `Parabéns! Sua compra foi finalizada com sucesso.`,
+        description: `Parabéns! Sua devolução foi finalizada com sucesso. O valor retornado foi de ${rentalTransaction.fee_total_price}.`,
       }),
-      this.skinRepository.updateById(transaction.skin_id, {
+      this.skinRepository.updateById(rentalTransaction.skin_id, {
         status: "Concluído",
         saledAt: new Date(),
       }),
       this.walletRepository.updateByUserValue(
         transactionHistory.seller_id,
         "increment",
-        porcentagem
+        rentalTransaction.remainder
+      ),
+      this.walletRepository.updateByUserValue(
+        transactionHistory.buyer_id,
+        "increment",
+        rentalTransaction.fee_total_price
       ),
     ]);
   }
@@ -179,38 +190,38 @@ export class CronJobProcessTransaction {
       transactionHistory.seller_id
     );
 
-    const transaction = await this.transactionRepository.findById(
-      transactionHistory.transaction_id
+    const rentalTransaction = await this.rentalTransaction.findById(
+      transactionHistory.rentalTransaction_id
     );
-    const skin = await this.skinRepository.findById(transaction.skin_id);
-    const { formattedBalance } = formatBalance(transaction.balance);
+    const skin = await this.skinRepository.findById(rentalTransaction.skin_id);
+    const { formattedBalance } = formatBalance(rentalTransaction.total_price);
 
     await Promise.all([
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
         processTransaction: true,
       }),
-      this.transactionRepository.updateId(transaction.id, {
-        status: "Falhou",
+      this.rentalTransaction.updateId(rentalTransaction.id, {
+        status: "Concluído",
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
-        description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi reativado.`,
+        description: `A venda da skin ${skin.skin_name} foi realizada com sucesso"`,
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.buyer_id,
-        description: `O vendedor não enviou a skin. O valor de ${formattedBalance} foi devolvido para sua carteira.`,
+        description: `Você não devolveu a skin ${skin.skin_name} no prazo estipulado, por isso foi retirado o valor de ${formattedBalance} da sua carteira.`,
       }),
       this.walletRepository.updateByUserValue(
-        transactionHistory.buyer_id,
+        transactionHistory.seller_id,
         "increment",
-        transaction.balance
+        rentalTransaction.total_price
       ),
-      this.skinRepository.updateById(transaction.skin_id, {
-        status: null,
-        saledAt: null,
+      this.skinRepository.updateById(rentalTransaction.skin_id, {
+        status: "Concluído",
+        saledAt: new Date(),
       }),
       this.perfilRepository.updateByUser(transactionHistory.seller_id, {
-        total_exchanges_failed: perfilSeller.total_exchanges_failed + 1,
+        total_exchanges_completed: perfilSeller.total_exchanges_completed + 1,
       }),
     ]);
   }

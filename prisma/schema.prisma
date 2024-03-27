@@ -143,15 +143,36 @@ model Transaction {
 }
 
 model TransactionHistory {
-  id                 String       @id @default(uuid()) @db.VarChar(36)
-  transaction_id     String       @db.VarChar(255)
-  buyer_id           String       @db.VarChar(255)
-  seller_id          String       @db.VarChar(255)
-  asset_id           String       @db.VarChar(255)
-  processTransaction Boolean      @default(false)
-  dateProcess        DateTime
-  createdAt          DateTime     @default(now())
+  id                   String             @id @default(uuid()) @db.VarChar(36)
+  buyer_id             String             @db.VarChar(255)
+  seller_id            String             @db.VarChar(255)
+  asset_id             String             @db.VarChar(255)
+  processTransaction   Boolean            @default(false)
+  dateProcess          DateTime
+  createdAt            DateTime           @default(now())
+  rental               Boolean            @default(false)
+  updatedAt            DateTime?
+  deletedAt            DateTime?
+  transaction_id       String?            @db.VarChar(255)
+  rentalTransaction_id String?            @db.VarChar(255)
+  transaction          Transaction?       @relation(fields: [transaction_id], references: [id])
+  rentalTransaction    RentalTransaction? @relation(fields: [rentalTransaction_id], references: [id])
+}
+
+model RentalTransaction {
+  id                 String               @id @default(uuid()) @db.VarChar(36)
+  seller_id          String               @db.VarChar(255)
+  buyer_id           String               @db.VarChar(255)
+  skin_id            String               @db.VarChar(255)
+  total_price        Float?
+  remainder          Float?
+  fee_total_price    Float?
+  days_quantity      String               @db.VarChar(5)
+  status             String?              @default("Em andamento") @db.VarChar(255)
+  start_date         DateTime?
+  end_date           DateTime?
+  createdAt          DateTime             @default(now())
   updatedAt          DateTime?
   deletedAt          DateTime?
-  transaction        Transaction? @relation(fields: [transaction_id], references: [id])
+  TransactionHistory TransactionHistory[]
 }

@@ -12,6 +12,7 @@ import { ZodError } from "zod";
 import jwt from "@fastify/jwt";
 import fastifySocketIO from "fastify-socket.io";
 import { Server } from "socket.io";
+import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/router";
 
 export const app = fastify();
 
@@ -25,6 +26,7 @@ app.register(cartRouter);
 app.register(transactionRouter);
 app.register(perfilRouter);
 app.register(skinToCartRouter);
+app.register(rentalTransactionRouter);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
