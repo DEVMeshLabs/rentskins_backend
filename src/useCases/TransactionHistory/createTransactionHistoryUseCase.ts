@@ -48,7 +48,6 @@ export class CreateTransactionHistoryUseCase {
       asset_id: findTransaction.skin_id,
       dateProcess: process,
     });
-    console.log(create);
     return create;
   }
 }
