@@ -4,6 +4,7 @@ import { SkinAlreadyExistsError } from "../@errors/Skin/SkinAlreadyExistsError";
 import { slug } from "@/utils/slug";
 import { KeySteamNotFoundError } from "../@errors/TransactionHistory/KeySteamNotFoundError";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
+import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
 
 export class CreateSkinUseCase {
   constructor(
@@ -18,6 +19,12 @@ export class CreateSkinUseCase {
       (item) => item.asset_id === data.asset_id && item.status !== "Falhou"
     );
 
+    if (!configSeller) {
+      throw new ConfigurationNotExistError();
+    } else if (!configSeller.key) {
+      throw new KeySteamNotFoundError();
+    }
+
     if (duplicateSkins.length > 0) {
       const idSkin = duplicateSkins[0].id;
       const duplicateSkinName = duplicateSkins[0].skin_name;
@@ -27,8 +34,6 @@ export class CreateSkinUseCase {
         idSkin,
         duplicateSkinAssetId
       );
-    } else if (!configSeller.key) {
-      throw new KeySteamNotFoundError();
     }
 
     const skinSlug = await slug(
