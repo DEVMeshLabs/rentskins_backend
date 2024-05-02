@@ -77,6 +77,7 @@ export class CronJobProcessTransaction {
       if (!datesCompare || transaction.transaction_id === null) {
         return;
       }
+
       const inventorySeller = await this.processTransaction(transaction);
 
       if (inventorySeller && inventorySeller.length > 0) {
@@ -106,7 +107,7 @@ export class CronJobProcessTransaction {
     return "Transação processada com sucesso.";
   }
 
-  // --------------------------------------------------------------------------------------------
+  // --------- Ai fudeu -----------------------------------------------------------------------------------
   async processTransaction(transaction: TransactionHistory) {
     if (!transaction) {
       return;
