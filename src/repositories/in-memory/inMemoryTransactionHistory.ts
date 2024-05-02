@@ -26,7 +26,7 @@ export class InMemoryTransactionHistoryRepository
       updatedAt: null,
       deletedAt: null,
     };
-    console.log(transactionHistory);
+
     this.transactionsHistory.push(transactionHistory);
     return transactionHistory;
   }

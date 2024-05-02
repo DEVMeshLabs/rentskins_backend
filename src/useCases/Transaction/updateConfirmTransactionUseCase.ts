@@ -153,7 +153,6 @@ export class UpdateConfirmTransactionUseCase {
         );
 
         if (trade.length > 0) {
-          console.log("Entrou no lugar!");
           const sellerUpdates = await this.composeOwnerIdUpdates(
             updateConfirm.seller_id,
             false,
