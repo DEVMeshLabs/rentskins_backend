@@ -21,7 +21,7 @@ export class CreateSkinUseCase {
 
     if (!configSeller) {
       throw new ConfigurationNotExistError();
-    } else if (!configSeller.key) {
+    } else if (!configSeller.key || !configSeller.url_trade) {
       throw new KeySteamNotFoundError();
     }
 
