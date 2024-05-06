@@ -13,6 +13,8 @@ import jwt from "@fastify/jwt";
 import fastifySocketIO from "fastify-socket.io";
 import { Server } from "socket.io";
 import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/router";
+import { FastifyRequest } from "fastify/types/request";
+import { FastifyReply } from "fastify/types/reply";
 
 export const app = fastify();
 
@@ -27,6 +29,11 @@ app.register(transactionRouter);
 app.register(perfilRouter);
 app.register(skinToCartRouter);
 app.register(rentalTransactionRouter);
+
+app.post("test", (req: FastifyRequest, reply: FastifyReply) => {
+  const user = req.body;
+  console.log(user);
+});
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
