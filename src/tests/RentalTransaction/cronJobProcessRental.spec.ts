@@ -99,7 +99,6 @@ describe("CronJobProcessRental Use Case", () => {
     const newDate = addHours(
       24 * (Number(createTransaction.days_quantity) + 1)
     );
-    console.log(newDate);
     const createdTransactionHistory = await transactionHistoryRepository.create(
       {
         buyer_id: comprador.owner_id,
