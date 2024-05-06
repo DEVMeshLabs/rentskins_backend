@@ -33,6 +33,7 @@ app.register(rentalTransactionRouter);
 app.post("/v1/test", (req: FastifyRequest, reply: FastifyReply) => {
   const user = req.body;
   console.log(user);
+  return reply.status(200).send({ menssage: "Ok" });
 });
 
 app.setErrorHandler((error, _, reply) => {
