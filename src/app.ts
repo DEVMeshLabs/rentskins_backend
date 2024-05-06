@@ -30,7 +30,7 @@ app.register(perfilRouter);
 app.register(skinToCartRouter);
 app.register(rentalTransactionRouter);
 
-app.post("test", (req: FastifyRequest, reply: FastifyReply) => {
+app.post("/v1/test", (req: FastifyRequest, reply: FastifyReply) => {
   const user = req.body;
   console.log(user);
 });
