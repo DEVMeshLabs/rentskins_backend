@@ -51,6 +51,7 @@ describe("Skin Use Case", () => {
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
+      skin_paintseed: 123456,
     });
     expect(skin.id).toEqual(expect.any(String));
   });
@@ -80,6 +81,7 @@ describe("Skin Use Case", () => {
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
+      skin_paintseed: 123457,
     };
 
     await sut.execute(data);
@@ -94,7 +96,10 @@ describe("Skin Use Case", () => {
         "76561198015724229",
         "DBBF677F1392F52023DC909D966F7516"
       ),
-      makeCreatePerfilRepository.execute("76561198862407248"),
+      makeCreatePerfilRepository.execute(
+        "76561198862407248",
+        "DBBF677F1392F52023DC909D966F7517"
+      ),
     ]);
 
     const data = {
@@ -113,6 +118,7 @@ describe("Skin Use Case", () => {
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
+      skin_paintseed: 123458,
     };
 
     const data2 = {
@@ -131,6 +137,7 @@ describe("Skin Use Case", () => {
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
+      skin_paintseed: 123459,
     };
 
     const skin1 = await sut.execute(data);
