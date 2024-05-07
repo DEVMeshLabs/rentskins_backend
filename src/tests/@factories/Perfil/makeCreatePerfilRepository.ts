@@ -25,7 +25,8 @@ export class MakeCreatePerfilRepository {
       key: key ?? "",
       agreed_with_emails: false,
       agreed_with_terms: false,
-      url_trade: "",
+      url_trade:
+        "https://steamcommunity.com/tradeoffer/new/?partner=55458501&token=ASK4Mxwv",
       url_sell: "",
     });
 

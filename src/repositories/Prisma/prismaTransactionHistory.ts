@@ -12,7 +12,7 @@ export class PrismaTransactionHistoryRepository
     return createdTransaction;
   }
 
-  async findByMany(isProcess: false) {
+  async findByMany(isProcess: "Default" | "Pending" | "Completed" | "Failed") {
     const allTransactionsHistory = await prisma.transactionHistory.findMany({
       where: { deletedAt: null, processTransaction: isProcess },
       orderBy: { createdAt: "desc" },
