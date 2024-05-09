@@ -1,4 +1,5 @@
 import fastify from "fastify";
+
 import { skinRouter } from "./http/controllers/Skins/routes";
 import { walletRouter } from "./http/controllers/Wallet/routes";
 import { configurationRouter } from "./http/controllers/Configuration/routes";
@@ -10,16 +11,15 @@ import { skinToCartRouter } from "./http/controllers/SkinToCart/routes";
 import { env } from "process";
 import { ZodError } from "zod";
 import jwt from "@fastify/jwt";
-import fastifySocketIO from "fastify-socket.io";
-import { Server } from "socket.io";
 import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/router";
-import { FastifyRequest } from "fastify/types/request";
-import { FastifyReply } from "fastify/types/reply";
+import { Server } from "node:http";
+import { wsRouter } from "./http/controllers/ws/router";
+import fastifyWebsocket from "@fastify/websocket";
 
 export const app = fastify();
 
 app.register(jwt, { secret: env.JWT_SECRET });
-app.register(fastifySocketIO);
+app.register(fastifyWebsocket);
 app.register(skinRouter);
 app.register(walletRouter);
 app.register(configurationRouter);
@@ -29,11 +29,14 @@ app.register(transactionRouter);
 app.register(perfilRouter);
 app.register(skinToCartRouter);
 app.register(rentalTransactionRouter);
+app.register(wsRouter);
 
-app.post("/v1/test", (req: FastifyRequest, reply: FastifyReply) => {
-  const user = req.body;
-  console.log(user);
-  return reply.status(200).send({ menssage: "Ok" });
+app.get("/v1/wss", { websocket: true }, (connection) => {
+  console.log("Aquii");
+  connection.socket.on("message", (message: string) => {
+    console.log("message received: ", message);
+    connection.socket.send(message);
+  });
 });
 
 app.setErrorHandler((error, _, reply) => {

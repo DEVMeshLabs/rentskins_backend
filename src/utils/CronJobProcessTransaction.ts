@@ -66,7 +66,7 @@ export class CronJobProcessTransaction {
   // --------------------------------------------------------------------------------------------
   async processPendingTransactions() {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
-      false
+      "Pending"
     );
     if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
@@ -148,7 +148,7 @@ export class CronJobProcessTransaction {
       this.perfilRepository.updateTotalExchanges(perfilSeller.id),
 
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
-        processTransaction: true,
+        processTransaction: "Completed",
       }),
       this.transactionRepository.updateId(transaction.id, {
         status: "Concluído",
@@ -188,7 +188,7 @@ export class CronJobProcessTransaction {
 
     await Promise.all([
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
-        processTransaction: true,
+        processTransaction: "Failed",
       }),
       this.transactionRepository.updateId(transaction.id, {
         status: "Falhou",
