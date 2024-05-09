@@ -1,0 +1,15 @@
+{
+  "md5apikeyforverification": "37f0137684452ecb211894c2edcedeed",
+  "event": "tradecreate",
+  "steamid": "76561198015724229",
+  "info": "Webhook from www.steamwebapi.com - trust only the steamid/event on the top and not the steamid in the payload. And check the md5apikeyforverification - its your hashed apikey.",
+  "payload": {
+    "success": true,
+    "status": 200,
+    "tradeofferid": "6995316999",
+    "needsmobileconfirmation": false,
+    "needsemailconfirmation": true,
+    "emaildomain": "gmail.com"
+  },
+  "verified": true
+}
