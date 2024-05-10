@@ -155,7 +155,7 @@ model TransactionHistory {
   buyer_id             String                   @db.VarChar(255)
   seller_id            String                   @db.VarChar(255)
   asset_id             String                   @db.VarChar(255)
-  processTransaction   ProcessTransactionStatus @default(Default)
+  processTransaction   ProcessTransactionStatus @default(Pending)
   dateProcess          DateTime
   createdAt            DateTime                 @default(now())
   rental               Boolean                  @default(false)
