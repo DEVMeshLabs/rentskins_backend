@@ -15,6 +15,7 @@ import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/ro
 import { Server } from "node:http";
 import { wsRouter } from "./http/controllers/ws/router";
 import fastifyWebsocket from "@fastify/websocket";
+import { transactionHistoryRouter } from "./http/controllers/TransactionHistory/routes";
 
 export const app = fastify();
 
@@ -25,19 +26,12 @@ app.register(walletRouter);
 app.register(configurationRouter);
 app.register(notificationRouter);
 app.register(cartRouter);
-app.register(transactionRouter);
 app.register(perfilRouter);
 app.register(skinToCartRouter);
+app.register(transactionRouter);
+app.register(transactionHistoryRouter);
 app.register(rentalTransactionRouter);
 app.register(wsRouter);
-
-app.get("/v1/wss", { websocket: true }, (connection) => {
-  console.log("Aquii");
-  connection.socket.on("message", (message: string) => {
-    console.log("message received: ", message);
-    connection.socket.send(message);
-  });
-});
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
