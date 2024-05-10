@@ -27,11 +27,11 @@ export class ValidateTransactionHistoryUseCase {
   ) {}
 
   async execute(
-    historyId: string,
+    transactionId: string,
     historic: IGetHistoricTrade
   ): Promise<void | string> {
     const transactionHistory = await this.transactionHistory.findByTrasactionId(
-      historyId
+      transactionId
     );
 
     if (!transactionHistory) {
