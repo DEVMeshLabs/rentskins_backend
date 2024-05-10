@@ -6,4 +6,5 @@ export async function wsRouter(app: FastifyInstance) {
     "/webhook/validate/trade/:historyId",
     validateHistoryTradeController
   );
+  app.post("/webhook/validate/send/:historyId", validateHistoryTradeController);
 }

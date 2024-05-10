@@ -61,11 +61,6 @@ export class ValidateTransactionHistoryUseCase {
         })
         .filter(Boolean);
 
-      console.log(
-        "AQUIIIIIIIIIII-----------",
-        filterTransactionParticipantsItems.length
-      );
-
       if (filterTransactionParticipantsItems.length === 0) {
         throw new ValidateTransactionHistoryError();
       }
