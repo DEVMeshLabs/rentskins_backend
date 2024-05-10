@@ -11,11 +11,11 @@ export async function validateHistoryTradeController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   const { historic }: { historic: IGetHistoricTrade } = req.body;
-  const { historyId } = req.params as { historyId: string };
+  const { transactionId } = req.params as { transactionId: string };
 
   try {
     const makeValidade = makeValidateTransactionHistoryUseCase();
-    const validate = await makeValidade.execute(historyId, historic);
+    const validate = await makeValidade.execute(transactionId, historic);
     console.log(validate);
     return reply.status(200).send(validate);
   } catch (error) {

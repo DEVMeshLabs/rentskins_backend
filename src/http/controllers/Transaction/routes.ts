@@ -10,9 +10,11 @@ import { updateConfirmTransactionController } from "./updateConfirmTransactionCo
 import { isVacBanController } from "./isVacBanController";
 import { createPixTransactionController } from "./createPixTransactionController";
 import { createWebHookPixController } from "./createWebHookPixController";
+import { getIdTransactionController } from "./getIdTransactionController";
 
 export async function transactionRouter(app: FastifyInstance) {
   app.get("/v1/transaction/:id", getUserTransactionController);
+  app.get("/v1/transaction/send/:id", getIdTransactionController);
   app.get("/v1/transaction", getManyTransactionController);
   app.get("/v1/verify/vac/:id", isVacBanController);
   app.patch(

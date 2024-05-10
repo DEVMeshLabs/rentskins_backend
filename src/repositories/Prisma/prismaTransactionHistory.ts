@@ -27,9 +27,9 @@ export class PrismaTransactionHistoryRepository
     return findTransaction;
   }
 
-  async findByTrasactionId(historyId: string) {
+  async findByTrasactionId(transactionId: string) {
     const findTransaction = await prisma.transactionHistory.findFirst({
-      where: { transaction_id: historyId, deletedAt: null },
+      where: { transaction_id: transactionId, deletedAt: null },
     });
     return findTransaction;
   }
