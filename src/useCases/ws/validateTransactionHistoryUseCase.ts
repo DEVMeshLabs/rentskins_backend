@@ -29,7 +29,7 @@ export class ValidateTransactionHistoryUseCase {
   async execute(
     historyId: string,
     historic: IGetHistoricTrade
-  ): Promise<boolean | string> {
+  ): Promise<void | string> {
     const transactionHistory = await this.transactionHistory.findByTrasactionId(
       historyId
     );
@@ -43,7 +43,8 @@ export class ValidateTransactionHistoryUseCase {
       historic.jsonPayload.payload &&
       historic.jsonPayload.payload.verified === true &&
       historic.jsonPayload.payload.data &&
-      historic.jsonPayload.payload.data.length > 0
+      historic.jsonPayload.payload.data.length > 0 &&
+      transactionHistory.processTransaction === "Pending"
     ) {
       const filterTransactionParticipantsId =
         historic.jsonPayload.payload.data.filter(
@@ -60,16 +61,19 @@ export class ValidateTransactionHistoryUseCase {
         })
         .filter(Boolean);
 
-      if (!filterTransactionParticipantsItems[0]) {
+      console.log(
+        "AQUIIIIIIIIIII-----------",
+        filterTransactionParticipantsItems.length
+      );
+
+      if (filterTransactionParticipantsItems.length === 0) {
         throw new ValidateTransactionHistoryError();
       }
+
+      await this.handleSuccessTransaction({
+        transactionHistory,
+      });
     }
-
-    await this.handleSuccessTransaction({
-      transactionHistory,
-    });
-
-    return true;
   }
 
   async handleSuccessTransaction({

@@ -15,6 +15,7 @@ import { addHours } from "@/utils/compareDates";
 import { ValidateTransactionHistoryUseCase } from "@/useCases/ws/validateTransactionHistoryUseCase";
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
 import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
+import { ValidateTransactionHistoryError } from "@/useCases/@errors/ws/validateTransactionHistoryError";
 
 let transactionRepository: InMemoryTransactionRepository;
 let transactionHistoryRepository: ITransactionHistoryRepository;
@@ -59,7 +60,7 @@ describe("CronJobProcessTransaction Use Case", () => {
 
   it("Deve ser capaz de criar notificações, pagar valor, aumentar o total de transações completas", async () => {
     const mockData = JSON.parse(
-      fs.readFileSync("src/tests/fixures/getTradeHistory.json", "utf-8")
+      fs.readFileSync("src/tests/fixures/getTradeHistorySucess.json", "utf-8")
     );
     console.log(mockData);
 
@@ -101,6 +102,7 @@ describe("CronJobProcessTransaction Use Case", () => {
         transaction_id: createTransaction.id,
         asset_id: skin.asset_id,
         dateProcess: addHours(1),
+        processTransaction: "Pending",
       }
     );
 
@@ -114,5 +116,114 @@ describe("CronJobProcessTransaction Use Case", () => {
     expect(notifications[0].owner_id).toBe("76561198015724229");
     expect(notifications[1].owner_id).toBe("76561198862407248");
     expect(transactionRepository.transactions[0].status).toBe("Concluído");
+  });
+
+  it("Teste de erro na execução com ValidateTransactionHistoryError", async () => {
+    const mockData = JSON.parse(
+      fs.readFileSync("src/tests/fixures/getTradeHistorySucess.json", "utf-8")
+    );
+    console.log(mockData);
+
+    const [skin] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: "76561198015724229",
+        asset_id: "329584152",
+      }),
+      makeCreatePerfilRepository.execute(
+        "76561198015724229",
+        "DBBF677F1392F52023DC909D966F7516"
+      ),
+      makeCreatePerfilRepository.execute("76561198862407248"),
+    ]);
+
+    const vendedor = await walletRepository.create({
+      owner_name: "Italo",
+      owner_id: "76561198015724229",
+      value: 0,
+    });
+
+    const comprador = await walletRepository.create({
+      owner_name: "Araujo",
+      owner_id: "76561198862407248",
+      value: 5000,
+    });
+
+    const createTransaction = await transactionRepository.create({
+      skin_id: skin.id,
+      seller_id: vendedor.owner_id,
+      buyer_id: comprador.owner_id,
+      balance: 500,
+    });
+
+    const createdTransactionHistory = await transactionHistoryRepository.create(
+      {
+        buyer_id: comprador.owner_id,
+        seller_id: vendedor.owner_id,
+        transaction_id: createTransaction.id,
+        asset_id: skin.asset_id,
+        dateProcess: addHours(1),
+        processTransaction: "Pending",
+      }
+    );
+    const notifications = notificationRepository.notifications;
+
+    await expect(() =>
+      sut.execute(createdTransactionHistory.transaction_id, mockData)
+    ).rejects.toBeInstanceOf(ValidateTransactionHistoryError);
+    expect(notifications.length).toBe(0);
+  });
+
+  it("Teste de erro na execução generico", async () => {
+    const mockData = JSON.parse(
+      fs.readFileSync("src/tests/fixures/getItensHistoric.json", "utf-8")
+    );
+
+    const [skin] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: "76561198015724229",
+        asset_id: "329584152",
+      }),
+      makeCreatePerfilRepository.execute(
+        "76561198015724229",
+        "DBBF677F1392F52023DC909D966F7516"
+      ),
+      makeCreatePerfilRepository.execute("76561198862407248"),
+    ]);
+
+    const vendedor = await walletRepository.create({
+      owner_name: "Italo",
+      owner_id: "76561198015724229",
+      value: 0,
+    });
+
+    const comprador = await walletRepository.create({
+      owner_name: "Araujo",
+      owner_id: "76561198862407248",
+      value: 5000,
+    });
+
+    const createTransaction = await transactionRepository.create({
+      skin_id: skin.id,
+      seller_id: vendedor.owner_id,
+      buyer_id: comprador.owner_id,
+      balance: 500,
+    });
+
+    const createdTransactionHistory = await transactionHistoryRepository.create(
+      {
+        buyer_id: comprador.owner_id,
+        seller_id: vendedor.owner_id,
+        transaction_id: createTransaction.id,
+        asset_id: skin.asset_id,
+        dateProcess: addHours(1),
+        processTransaction: "Pending",
+      }
+    );
+    const notifications = notificationRepository.notifications;
+
+    await expect(() =>
+      sut.execute(createdTransactionHistory.transaction_id, mockData)
+    ).rejects.toBeInstanceOf(Error);
+    expect(notifications.length).toBe(0);
   });
 });
