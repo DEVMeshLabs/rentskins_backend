@@ -143,7 +143,7 @@ export class CronJobProcessTransaction {
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
-        description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi reativado.`,
+        description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi excluído!`,
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.buyer_id,
@@ -154,10 +154,7 @@ export class CronJobProcessTransaction {
         "increment",
         transaction.balance
       ),
-      this.skinRepository.updateById(transaction.skin_id, {
-        status: null,
-        saledAt: null,
-      }),
+      this.skinRepository.deleteSkin(transaction.skin_id),
       this.perfilRepository.updateByUser(transactionHistory.seller_id, {
         total_exchanges_failed: perfilSeller.total_exchanges_failed + 1,
       }),
