@@ -40,7 +40,7 @@ export class CronJobProcessTransaction {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
       "Pending"
     );
-
+    console.log(allTransactions);
     if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
     }
