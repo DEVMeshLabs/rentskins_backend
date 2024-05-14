@@ -10,3 +10,8 @@ export function addMinutes(minutes: number) {
   );
   return newDate;
 }
+
+export function addHours(hours: number) {
+  const newDate = new Date(new Date().setHours(new Date().getHours() + hours));
+  return newDate;
+}

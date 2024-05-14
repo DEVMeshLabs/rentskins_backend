@@ -11,11 +11,12 @@ import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfi
 import { InMemoryNotificationRepository } from "@/repositories/in-memory/inMemoryNotificationRepository";
 import { formatBalance } from "@/utils/formatBalance";
 import { afterEach } from "node:test";
-import { addHours } from "@/utils/compareDates";
+// import { addHours } from "@/utils/compareDates";
 import { ValidateTransactionHistoryUseCase } from "@/useCases/ws/validateTransactionHistoryUseCase";
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
 import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
 import { ValidateTransactionHistoryError } from "@/useCases/@errors/ws/validateTransactionHistoryError";
+import { addMinutes } from "@/utils/compareDates";
 
 let transactionRepository: InMemoryTransactionRepository;
 let transactionHistoryRepository: ITransactionHistoryRepository;
@@ -101,7 +102,7 @@ describe("CronJobProcessTransaction Use Case", () => {
         seller_id: vendedor.owner_id,
         transaction_id: createTransaction.id,
         asset_id: skin.asset_id,
-        dateProcess: addHours(1),
+        dateProcess: addMinutes(10),
         processTransaction: "Pending",
       }
     );
@@ -161,7 +162,7 @@ describe("CronJobProcessTransaction Use Case", () => {
         seller_id: vendedor.owner_id,
         transaction_id: createTransaction.id,
         asset_id: skin.asset_id,
-        dateProcess: addHours(1),
+        dateProcess: addMinutes(10),
         processTransaction: "Pending",
       }
     );
@@ -215,7 +216,7 @@ describe("CronJobProcessTransaction Use Case", () => {
         seller_id: vendedor.owner_id,
         transaction_id: createTransaction.id,
         asset_id: skin.asset_id,
-        dateProcess: addHours(1),
+        dateProcess: addMinutes(10),
         processTransaction: "Pending",
       }
     );
