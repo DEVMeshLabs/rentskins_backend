@@ -154,7 +154,9 @@ export class CronJobProcessTransaction {
         "increment",
         transaction.balance
       ),
-      this.skinRepository.deleteSkin(transaction.skin_id),
+      this.skinRepository.updateById(transaction.skin_id, {
+        status: "Falhou",
+      }),
       this.perfilRepository.updateByUser(transactionHistory.seller_id, {
         total_exchanges_failed: perfilSeller.total_exchanges_failed + 1,
       }),
