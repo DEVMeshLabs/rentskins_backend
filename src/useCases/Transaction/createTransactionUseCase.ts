@@ -15,7 +15,7 @@ import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlrea
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 // ------------------ Outros -----------------
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
-import { addMinutes } from "@/utils/compareDates";
+import { addHours, addMinutes } from "@/utils/compareDates";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -114,7 +114,7 @@ export class CreateTransactionUseCase {
       seller_id,
       buyer_id,
       asset_id: findSkin.asset_id,
-      dateProcess: addMinutes(10),
+      dateProcess: addHours(2),
     });
 
     return createTransaction;
