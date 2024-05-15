@@ -32,7 +32,11 @@ export class UpdateConfirmTransactionUseCase {
     private configurationRepository: IConfigurationRepository
   ) {}
 
-  async execute(id: string, status: string, query: string) {
+  async execute(
+    id: string,
+    status: "Recusado" | "Aceito",
+    query: "buyer" | null
+  ) {
     const findTransaction = await this.findTransactionById(id);
     this.validateTransaction(findTransaction);
 

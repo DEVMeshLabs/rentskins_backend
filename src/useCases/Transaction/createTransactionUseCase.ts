@@ -112,7 +112,7 @@ export class CreateTransactionUseCase {
         status: "Em andamento",
       }),
     ]);
-    // O dateProcess tem que pegar a data atual e aumentar 2horas
+
     await this.transactionHisotry.create({
       transaction_id: createTransaction.id,
       seller_id,
