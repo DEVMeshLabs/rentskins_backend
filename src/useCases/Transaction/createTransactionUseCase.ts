@@ -15,7 +15,7 @@ import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlrea
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 // ------------------ Outros -----------------
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
-import { addHours, addMinutes } from "@/utils/compareDates";
+import { addHours } from "@/utils/compareDates";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -62,7 +62,11 @@ export class CreateTransactionUseCase {
       throw new InsufficientFundsError();
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
-    } else if (findSkinTransaction && findSkinTransaction.status !== null) {
+    } else if (
+      findSkinTransaction &&
+      findSkinTransaction.status !== null &&
+      findSkinTransaction.status !== "Falhou"
+    ) {
       throw new SkinHasAlreadyBeenSoldError(
         `${findSkin.skin_name} ${findSkin.asset_id}`
       );
