@@ -23,7 +23,7 @@ job.scheduleJob("*/50 * * * *", async () => {
 });
 
 app.register(cors, {
-  origin: true,
+  origin: "*",
 });
 
 app
