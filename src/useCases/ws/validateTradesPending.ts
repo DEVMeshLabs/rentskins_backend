@@ -33,10 +33,9 @@ export class ValidateTradesPending {
       const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
       const filterTransactionParticipantsId = tradeoffers.filter((item) => {
-        if (item.participantsteamid === transaction.buyer_id) {
-          console.log("Chegou aqui");
-          const filterItems = item.myitems.some((myitem) => {
-            if (myitem.market_hash_name === skin.skin_market_hash_name) {
+        if (item.participantsteamid.includes(transaction.buyer_id)) {
+          const filterItems = item.myitems.filter((myitem) => {
+            if (skin.skin_market_hash_name.includes(myitem.market_hash_name)) {
               console.log("Verificado");
               return true;
             }
