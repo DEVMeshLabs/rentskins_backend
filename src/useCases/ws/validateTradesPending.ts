@@ -18,6 +18,7 @@ export class ValidateTradesPending {
     const transaction = await this.transactionRepository.findById(
       transactionId
     );
+    console.log("Transaction: ", transaction);
     const skin = await this.skinRepository.findById(transaction.skin_id);
 
     if (!transaction) {
@@ -25,7 +26,7 @@ export class ValidateTradesPending {
     } else if (transaction.status === "NegotiationSend") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
-
+    console.log("Passou daqui");
     if (
       historic &&
       historic.jsonPayload.verified === true &&
