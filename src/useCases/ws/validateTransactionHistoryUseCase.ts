@@ -33,7 +33,6 @@ export class ValidateTransactionHistoryUseCase {
     const transactionHistory = await this.transactionHistory.findByTrasactionId(
       transactionId
     );
-
     if (!transactionHistory) {
       throw new TransactionHistoryNotExistError();
     }
@@ -89,9 +88,10 @@ export class ValidateTransactionHistoryUseCase {
       this.transactionHistory.updateId(transactionHistory.id, {
         processTransaction: "Completed",
       }),
-      this.transactionRepository.updateId(transaction.id, {
-        status: "Concluído",
-      }),
+      this.transactionRepository.updateStatus(
+        transaction.id,
+        "NegociationAccepted"
+      ),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
         description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,

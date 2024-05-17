@@ -22,6 +22,9 @@ export async function createSkinController(
         skin_price,
         skin_float,
         skin_paintseed,
+        skin_classid,
+        skin_instanceid,
+        skin_market_hash_name,
         skin_rarity,
         skin_link_game,
         skin_link_steam,
@@ -49,6 +52,9 @@ export async function createSkinController(
           sale_type,
           asset_id,
           stickers,
+          skin_classid,
+          skin_instanceid,
+          skin_market_hash_name,
         })
     );
 

@@ -15,12 +15,12 @@ export const { checkout, webhooks, customers } = require("stripe")(
   env.STRIPE_SECRET_KEY
 );
 
-const makeCronJobTransaction = makeCronJobProcessTransaction();
-// const makeCronJobRental = makeCronJobProcessRental();
+// const makeCronJobTransaction = makeCronJobProcessTransaction();
+// // const makeCronJobRental = makeCronJobProcessRental();
 
-job.scheduleJob("*/50 * * * *", async () => {
-  await Promise.all([makeCronJobTransaction.execute()]);
-});
+// job.scheduleJob("*/50 * * * *", async () => {
+//   await Promise.all([makeCronJobTransaction.execute()]);
+// });
 
 app.register(cors, {
   origin: "*",

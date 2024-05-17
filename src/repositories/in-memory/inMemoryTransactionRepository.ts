@@ -4,12 +4,13 @@ import { randomUUID } from "crypto";
 
 export class InMemoryTransactionRepository implements ITransactionRepository {
   public transactions: Transaction[] = [];
+
   private notImplemented(): Promise<any> {
     return this.notImplemented();
   }
 
   async create(data: Prisma.TransactionUncheckedCreateInput) {
-    const transaction = {
+    const transaction: Transaction = {
       id: data.id ?? randomUUID(),
       skin_id: data.skin_id,
       seller_id: data.seller_id,
@@ -17,13 +18,12 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
       seller_confirm: "Pending",
       buyer_confirm: "Pending",
       balance: data.balance,
-      status: "Em andamento",
+      status: "Default",
       salesAt: null,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
     };
-
     this.transactions.push(transaction);
     return transaction;
   }
@@ -74,6 +74,24 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     getTransaction[confirmField] = status;
 
     return getTransaction;
+  }
+
+  async updateStatus(
+    id: string,
+    status:
+      | "Default"
+      | "NegotiationSend"
+      | "NegociationAccepted"
+      | "NegociationRejected"
+  ) {
+    const index = this.transactions.findIndex(
+      (transaction) => transaction.id === id
+    );
+    if (index !== -1) {
+      this.transactions[index] = { ...this.transactions[index], status };
+      return this.transactions[index];
+    }
+    return this.transactions[index];
   }
 
   async updateId(id: string, data: any) {

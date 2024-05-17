@@ -17,4 +17,12 @@ export interface ITransactionRepository {
     id: string,
     data: Prisma.TransactionUncheckedUpdateInput
   ): Promise<Transaction>;
+  updateStatus(
+    id: string,
+    status:
+      | "Default"
+      | "NegotiationSend"
+      | "NegociationAccepted"
+      | "NegociationRejected"
+  ): Promise<Transaction>;
 }
