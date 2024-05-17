@@ -27,13 +27,8 @@ export class ValidateTradesPending {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
     console.log("Passou daqui");
-    if (
-      historic &&
-      historic.jsonPayload.verified === true &&
-      historic.jsonPayload.payload &&
-      historic.jsonPayload.payload.tradeoffers &&
-      transaction.status === "Default"
-    ) {
+    console.log("Skin", skin);
+    if (historic && transaction.status === "Default") {
       console.log("Entrou passo 1");
       const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
