@@ -29,6 +29,7 @@ export class ValidateTradesPending {
     console.log("Passou daqui");
     console.log("Skin", skin);
     if (transaction.status === "Default") {
+      console.log("Status: ", transaction.status);
       console.log("Entrou passo 1");
       const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
