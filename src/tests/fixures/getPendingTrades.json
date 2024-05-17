@@ -1,35 +1,35 @@
 {
-  "id": "8c0d8988-da2c-4002-95af-780e3d94e790",
+  "id": "a6836dfe-239d-486b-b1f5-1f34129b8c91",
   "jsonPayload": {
     "md5apikeyforverification": "6b0838fc4734ad3f698a5cb6c25aae51",
     "event": "tradesent",
-    "steamid": "76561198015724229",
+    "steamid": "76561198862407248",
     "info": "Webhook from www.steamwebapi.com - trust only the steamid/event on the top and not the steamid in the payload. And check the md5apikeyforverification - its your hashed apikey.",
     "payload": {
       "success": true,
       "status": 200,
-      "steamid": "76561198015724229",
+      "steamid": "76561198862407248",
       "tradeoffers": [
         {
           "participant": "https://steamcommunity.com/profiles/76561198086816961",
-          "participantsteamid": "76561198862407248",
+          "participantsteamid": "76561198086816961",
           "myitems": [
             {
-              "market_hash_name": "Paris 2023 Legends Sticker Capsule",
-              "image": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXU5A1PIYQNqhpOSV-fRPasw8rsQEl9Jg9SpIW1KgRr7OPJYzRRvozkx7-HkvDxPb_C2GpXsZEo0ryTo46kjAXj80dpY2Cmd4GTdAVrZw2GqFm3kLq-gsK_tJTXiSw0PgRQD7c",
+              "market_hash_name": "Sawed-Off | Snake Camo (Well-Worn)",
+              "image": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpopbuyLgNv1fX3Yi19_9K3n4W0mvLwOq7c2GpTsJV0ju-Qo4mm0QfjqUpsYWyiII6RdQQ6N1CD_wO8lO_ugMS4vZ_XiSw0eFPwbnM",
               "description": "",
-              "classid": "5316842944",
-              "instanceid": "1363818016",
+              "classid": "310777155",
+              "instanceid": "1363818010",
               "appid": "730",
               "safe": true,
-              "pricelatest": 0.17,
-              "pricelatestsell": 0.16,
-              "pricereal": 0.12
+              "pricelatest": 0.07,
+              "pricelatestsell": 0.05,
+              "pricereal": 0.03
             }
           ],
           "participantitems": [],
           "expire": null,
-          "tradeofferid": "7019744362",
+          "tradeofferid": "7023562945",
           "steamconfirmed": false
         }
       ]
