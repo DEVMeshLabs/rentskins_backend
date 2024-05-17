@@ -18,7 +18,6 @@ export class ValidateTradesPending {
     const transaction = await this.transactionRepository.findById(
       transactionId
     );
-    console.log("Transaction: ", transaction);
     const skin = await this.skinRepository.findById(transaction.skin_id);
 
     if (!transaction) {
@@ -27,28 +26,27 @@ export class ValidateTradesPending {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
     console.log("Passou daqui");
-    console.log("Skin", skin);
     if (transaction.status === "Default") {
       console.log("Entrou passo 1");
       const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
       const filterTransactionParticipantsId = tradeoffers.filter((item) => {
-        if (item.participantsteamid.includes(transaction.buyer_id)) {
-          const filterItems = item.myitems.filter((myitem) => {
-            if (skin.skin_market_hash_name.includes(myitem.market_hash_name)) {
-              console.log("Verificado");
-              return true;
+        if (item.participantsteamid === transaction.buyer_id) {
+          const filterItems = item.myitems.some((myitem) => {
+            if (
+              myitem.market_hash_name === skin.skin_market_hash_name &&
+              myitem.classid === skin.skin_classid &&
+              myitem.instanceid === skin.skin_instanceid
+            ) {
+              return this.handleSuccessTransaction(transactionId);
             }
-            console.log("Não Verificado");
             return false;
           });
           return filterItems;
         }
         return false;
       });
-      if (filterTransactionParticipantsId) {
-        return this.handleSuccessTransaction(transactionId);
-      }
+      return filterTransactionParticipantsId;
     }
   }
 
