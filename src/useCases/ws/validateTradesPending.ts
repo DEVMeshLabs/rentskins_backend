@@ -18,7 +18,7 @@ export class ValidateTradesPending {
     const transaction = await this.transactionRepository.findById(
       transactionId
     );
-    const skin = await this.skinRepository.findById(transaction.skin_id);
+    // const skin = await this.skinRepository.findById(transaction.skin_id);
 
     if (!transaction) {
       throw new TransactionHistoryNotExistError();
@@ -31,20 +31,7 @@ export class ValidateTradesPending {
       const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
       const filterTransactionParticipantsId = tradeoffers.filter((item) => {
-        if (item.participantsteamid === transaction.buyer_id) {
-          const filterItems = item.myitems.some((myitem) => {
-            if (
-              myitem.market_hash_name === skin.skin_market_hash_name &&
-              myitem.classid === skin.skin_classid &&
-              myitem.instanceid === skin.skin_instanceid
-            ) {
-              return this.handleSuccessTransaction(transactionId);
-            }
-            return false;
-          });
-          return filterItems;
-        }
-        return false;
+        return this.handleSuccessTransaction(transactionId);
       });
       return filterTransactionParticipantsId;
     }
