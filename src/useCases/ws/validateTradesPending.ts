@@ -34,14 +34,12 @@ export class ValidateTradesPending {
 
       const filterTransactionParticipantsId = tradeoffers.filter((item) => {
         if (item.participantsteamid === transaction.buyer_id) {
-          const filterItems = item.myitems.some(async (myitem) => {
+          const filterItems = item.myitems.some((myitem) => {
             if (
               myitem.market_hash_name === skin.skin_market_hash_name &&
               myitem.classid === skin.skin_classid &&
               myitem.instanceid === skin.skin_instanceid
             ) {
-              console.log("Entrou passo 2");
-              await this.handleSuccessTransaction(transactionId);
               return true;
             }
             return false;
@@ -50,7 +48,9 @@ export class ValidateTradesPending {
         }
         return false;
       });
-      return filterTransactionParticipantsId;
+      if (filterTransactionParticipantsId) {
+        return this.handleSuccessTransaction(transactionId);
+      }
     }
   }
 
