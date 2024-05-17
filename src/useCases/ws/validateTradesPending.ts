@@ -29,20 +29,18 @@ export class ValidateTradesPending {
     console.log("Passou daqui");
     console.log("Skin", skin);
     if (transaction.status === "Default") {
-      console.log("Status: ", transaction.status);
       console.log("Entrou passo 1");
       const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
       const filterTransactionParticipantsId = tradeoffers.filter((item) => {
         if (item.participantsteamid === transaction.buyer_id) {
+          console.log("Chegou aqui");
           const filterItems = item.myitems.some((myitem) => {
-            if (
-              myitem.market_hash_name === skin.skin_market_hash_name &&
-              myitem.classid === skin.skin_classid &&
-              myitem.instanceid === skin.skin_instanceid
-            ) {
+            if (myitem.market_hash_name === skin.skin_market_hash_name) {
+              console.log("Verificado");
               return true;
             }
+            console.log("Não Verificado");
             return false;
           });
           return filterItems;
