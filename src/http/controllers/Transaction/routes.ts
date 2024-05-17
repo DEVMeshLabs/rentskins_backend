@@ -11,6 +11,7 @@ import { isVacBanController } from "./isVacBanController";
 import { createPixTransactionController } from "./createPixTransactionController";
 import { createWebHookPixController } from "./createWebHookPixController";
 import { getIdTransactionController } from "./getIdTransactionController";
+import { updateStatusTransactionController } from "./updateStatusTransactionController";
 
 export async function transactionRouter(app: FastifyInstance) {
   app.get("/v1/transaction/:id", getUserTransactionController);
@@ -22,6 +23,7 @@ export async function transactionRouter(app: FastifyInstance) {
     { onRequest: verifyJwt },
     updateConfirmTransactionController
   );
+  app.patch("/v1/transaction/status/:id", updateStatusTransactionController);
   app.post(
     "/v1/transaction",
     { onRequest: verifyJwt },

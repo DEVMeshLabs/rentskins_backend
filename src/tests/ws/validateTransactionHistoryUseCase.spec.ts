@@ -63,7 +63,6 @@ describe("CronJobProcessTransaction Use Case", () => {
     const mockData = JSON.parse(
       fs.readFileSync("src/tests/fixures/getTradeHistorySucess.json", "utf-8")
     );
-    console.log(mockData);
 
     const [skin] = await Promise.all([
       makeCreateSkin.execute({
@@ -116,14 +115,15 @@ describe("CronJobProcessTransaction Use Case", () => {
     expect(walletRepository.wallet[0].value).toBe(porcentagem);
     expect(notifications[0].owner_id).toBe("76561198015724229");
     expect(notifications[1].owner_id).toBe("76561198862407248");
-    expect(transactionRepository.transactions[0].status).toBe("Concluído");
+    expect(transactionRepository.transactions[0].status).toBe(
+      "NegociationAccepted"
+    );
   });
 
   it("Teste de erro na execução com ValidateTransactionHistoryError", async () => {
     const mockData = JSON.parse(
       fs.readFileSync("src/tests/fixures/getTradeHistorySucess.json", "utf-8")
     );
-    console.log(mockData);
 
     const [skin] = await Promise.all([
       makeCreateSkin.execute({
@@ -172,6 +172,9 @@ describe("CronJobProcessTransaction Use Case", () => {
       sut.execute(createdTransactionHistory.transaction_id, mockData)
     ).rejects.toBeInstanceOf(ValidateTransactionHistoryError);
     expect(notifications.length).toBe(0);
+    expect(transactionRepository.transactions[0].status).not.toBe(
+      "NegociationAccepted"
+    );
   });
 
   it("Teste de erro na execução generico", async () => {

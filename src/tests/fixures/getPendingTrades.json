@@ -3,16 +3,16 @@
   "jsonPayload": {
     "md5apikeyforverification": "6b0838fc4734ad3f698a5cb6c25aae51",
     "event": "tradesent",
-    "steamid": "76561198862407248",
+    "steamid": "76561198015724229",
     "info": "Webhook from www.steamwebapi.com - trust only the steamid/event on the top and not the steamid in the payload. And check the md5apikeyforverification - its your hashed apikey.",
     "payload": {
       "success": true,
       "status": 200,
-      "steamid": "76561198862407248",
+      "steamid": "76561198015724229",
       "tradeoffers": [
         {
           "participant": "https://steamcommunity.com/profiles/76561198086816961",
-          "participantsteamid": "76561198086816961",
+          "participantsteamid": "76561198862407248",
           "myitems": [
             {
               "market_hash_name": "Paris 2023 Legends Sticker Capsule",
