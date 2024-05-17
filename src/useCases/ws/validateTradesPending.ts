@@ -14,6 +14,7 @@ export class ValidateTradesPending {
     transactionId: string,
     historic: IGetTradesPending
   ): Promise<void | string | Tradeoffer[]> {
+    console.log("Entrou no Use Case");
     const transaction = await this.transactionRepository.findById(
       transactionId
     );

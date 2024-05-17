@@ -8,7 +8,7 @@ export async function validateTradesPendingController(
 ): Promise<FastifyReply | void> {
   const { transactionId } = req.params as { transactionId: string };
   const body = req.body;
-  console.log(body);
+  console.log("Entrou validate Trades Pedding");
   try {
     const makeValidade = makeValidateTradesPendingUseCase();
     const response = await makeValidade.execute(transactionId, body as any);
