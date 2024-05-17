@@ -13,7 +13,7 @@ export class ValidateTradesPending {
   async execute(
     transactionId: string,
     historic: IGetTradesPending
-  ): Promise<void | string | Tradeoffer[]> {
+  ): Promise<any> {
     console.log("Entrou no Use Case");
     const transaction = await this.transactionRepository.findById(
       transactionId
@@ -28,17 +28,18 @@ export class ValidateTradesPending {
     console.log("Passou daqui");
     if (transaction.status === "Default") {
       console.log("Entrou passo 1");
-      const tradeoffers = historic.jsonPayload.payload.tradeoffers;
+      // const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
-      const filterTransactionParticipantsId = tradeoffers.filter((item) => {
-        return this.handleSuccessTransaction(transactionId);
-      });
-      return filterTransactionParticipantsId;
+      const response = await this.transactionRepository.updateStatus(
+        transactionId,
+        "NegotiationSend"
+      );
+      console.log("Response: ", response);
+      return response;
     }
   }
 
   async handleSuccessTransaction(id: string) {
     console.log("Entrouuuu");
-    await this.transactionRepository.updateStatus(id, "NegotiationSend");
   }
 }
