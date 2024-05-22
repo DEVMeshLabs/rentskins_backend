@@ -29,6 +29,18 @@ export class ValidateTradesPending {
     }
     console.log("Passou daqui");
     const tradeoffers = historic.jsonPayload.payload.tradeoffers;
+
+    console.log(
+      "Transaction Buyer: ",
+      transaction.buyer_id,
+      "Tradeoffers: ",
+      tradeoffers.participantsteamid
+    );
+
+    console.log(
+      "Validação:",
+      tradeoffers.participantsteamid === transaction.buyer_id
+    );
     if (
       transaction.status === "Default" &&
       tradeoffers.participantsteamid === transaction.buyer_id
