@@ -16,7 +16,7 @@ export async function validateTradesPendingController(
   try {
     const makeTransaction = makeGetIdTransactionUseCase();
     const makeSkin = makeGetSkinUseCase();
-    console.log(body);
+    console.log("ESSEEEE", body);
     console.log("Entrou no Use Case");
     const transaction = await makeTransaction.execute(transactionId);
 
@@ -28,7 +28,7 @@ export async function validateTradesPendingController(
       throw new StatusHasAlreadyBeenUpdatedError();
     }
     console.log("Passou daqui");
-    const tradeoffers = body.jsonPayload.payload.tradeoffers;
+    const tradeoffers = body.payload.tradeoffers;
     console.log("Tradeoffers: ", tradeoffers);
 
     console.log(
