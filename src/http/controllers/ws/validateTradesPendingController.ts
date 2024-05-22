@@ -2,11 +2,7 @@ import { TransactionHistoryNotExistError } from "@/useCases/@errors/TransactionH
 import { StatusHasAlreadyBeenUpdatedError } from "@/useCases/@errors/ws/StatusHasAlreadyBeenUpdatedError";
 import { makeGetSkinUseCase } from "@/useCases/@factories/Skin/makeGetSkinUseCase";
 import { makeGetIdTransactionUseCase } from "@/useCases/@factories/Transaction/makeGetIdTransactionUseCase";
-import {
-  JsonPayload,
-  Myitem,
-  Tradeoffer,
-} from "@/useCases/ws/interface/getTradesPending";
+import { Myitem, Tradeoffer } from "@/useCases/ws/interface/getTradesPending";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function validateTradesPendingController(
@@ -43,15 +39,17 @@ export async function validateTradesPendingController(
       const filterSkin = tradeoffers.filter(
         (item: Tradeoffer) => item.participantsteamid === transaction.buyer_id
       );
-      console.log("FilterSkin: ", filterSkin);
 
       if (filterSkin.length > 0) {
         const filterItem = filterSkin.filter((item: Myitem) => {
+          console.log(item);
           return (
             item.market_hash_name === skin.skin_market_hash_name &&
             item.instanceid === skin.skin_instanceid
           );
         });
+        console.log("FilterItem: ", filterItem);
+
         if (filterItem.length > 0) {
           const response = await this.transactionRepository.updateStatus(
             transactionId,
