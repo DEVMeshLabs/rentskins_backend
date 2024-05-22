@@ -48,18 +48,19 @@ export async function validateTradesPendingController(
             return item.market_hash_name === skin.skin_market_hash_name;
           });
         });
-        console.log("FilterItem: ", filterItem);
 
         if (filterItem.length > 0) {
+          console.log("FilterItem: ", filterItem);
+
           const response = await this.transactionRepository.updateStatus(
             transactionId,
             "NegotiationSend"
           );
           console.log("Response: ", response);
-          return response;
+          return reply.status(200).send(response);
         }
       }
-      return "Skin not found";
+      return reply.status(404).send({ message: "Item not found" });
     }
   } catch (error) {
     if (error instanceof StatusHasAlreadyBeenUpdatedError) {
