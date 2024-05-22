@@ -42,23 +42,22 @@ export async function validateTradesPendingController(
       console.log("FilterSkin: ", filterSkin);
 
       if (filterSkin.length > 0) {
-        const filterItem = filterSkin.filter((item: Myitem) => {
+        const filterItem = filterSkin.filter((item: Tradeoffer) => {
           console.log("AQUII", item);
-          return (
-            item.market_hash_name === skin.skin_market_hash_name &&
-            item.instanceid === skin.skin_instanceid
-          );
+          return item.myitems.filter((item: Myitem) => {
+            return item.market_hash_name === skin.skin_market_hash_name;
+          });
         });
         console.log("FilterItem: ", filterItem);
 
-        if (filterItem.length > 0) {
-          const response = await this.transactionRepository.updateStatus(
-            transactionId,
-            "NegotiationSend"
-          );
-          console.log("Response: ", response);
-          return response;
-        }
+        // if (filterItem.length > 0) {
+        //   const response = await this.transactionRepository.updateStatus(
+        //     transactionId,
+        //     "NegotiationSend"
+        //   );
+        //   console.log("Response: ", response);
+        //   return response;
+        // }
       }
       return "Skin not found";
     }
