@@ -46,13 +46,16 @@ export async function validateTradesPendingController(
         const filterItem = filterSkin.filter((item: Tradeoffer) => {
           console.log("AQUII", item);
           return item.myitems.filter((item: Myitem) => {
-            return item.market_hash_name === skin.skin_market_hash_name;
+            return (
+              item.market_hash_name === skin.skin_market_hash_name &&
+              item.instanceid === skin.skin_instanceid &&
+              item.classid === skin.skin_classid
+            );
           });
         });
 
         if (filterItem.length > 0) {
           console.log("FilterItem: ", filterItem);
-
           const response = await makeUpdate.execute(
             transactionId,
             "NegotiationSend"
