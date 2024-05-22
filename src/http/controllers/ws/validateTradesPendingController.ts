@@ -2,6 +2,7 @@ import { TransactionHistoryNotExistError } from "@/useCases/@errors/TransactionH
 import { StatusHasAlreadyBeenUpdatedError } from "@/useCases/@errors/ws/StatusHasAlreadyBeenUpdatedError";
 import { makeGetSkinUseCase } from "@/useCases/@factories/Skin/makeGetSkinUseCase";
 import { makeGetIdTransactionUseCase } from "@/useCases/@factories/Transaction/makeGetIdTransactionUseCase";
+import { makeUpdateStatusTransactionUseCase } from "@/useCases/@factories/Transaction/makeUpdateStatusTransactionUseCase";
 import { Myitem, Tradeoffer } from "@/useCases/ws/interface/getTradesPending";
 import { FastifyRequest, FastifyReply } from "fastify";
 
@@ -14,9 +15,9 @@ export async function validateTradesPendingController(
   console.log("Entrou validate Trades Pedding");
   try {
     const makeTransaction = makeGetIdTransactionUseCase();
+    const makeUpdate = makeUpdateStatusTransactionUseCase();
     const makeSkin = makeGetSkinUseCase();
-    console.log("ESSEEEE", body);
-    console.log("Entrou no Use Case");
+
     const transaction = await makeTransaction.execute(transactionId);
 
     const skin = await makeSkin.execute(transaction.skin_id);
@@ -52,7 +53,7 @@ export async function validateTradesPendingController(
         if (filterItem.length > 0) {
           console.log("FilterItem: ", filterItem);
 
-          const response = await this.transactionRepository.updateStatus(
+          const response = await makeUpdate.execute(
             transactionId,
             "NegotiationSend"
           );
