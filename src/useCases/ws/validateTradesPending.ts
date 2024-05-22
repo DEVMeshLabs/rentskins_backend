@@ -29,6 +29,7 @@ export class ValidateTradesPending {
     }
     console.log("Passou daqui");
     const tradeoffers = historic.jsonPayload.payload.tradeoffers;
+    console.log("Tradeoffers: ", tradeoffers);
 
     console.log(
       "Transaction Buyer: ",
@@ -60,9 +61,5 @@ export class ValidateTradesPending {
       }
       return "Skin not found";
     }
-  }
-
-  async handleSuccessTransaction(id: string) {
-    console.log("Entrouuuu");
   }
 }
