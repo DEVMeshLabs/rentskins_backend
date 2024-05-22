@@ -11,8 +11,8 @@ export async function validateTradesPendingController(
   reply: FastifyReply
 ): Promise<FastifyReply | void | String> {
   const { transactionId } = req.params as { transactionId: string };
-  const body = req.body;
-  console.log("Entrou validate Trades Pedding");
+  const body = req.body as any;
+
   try {
     const makeTransaction = makeGetIdTransactionUseCase();
     const makeUpdate = makeUpdateStatusTransactionUseCase();
@@ -30,17 +30,12 @@ export async function validateTradesPendingController(
     console.log("Passou daqui");
     const tradeoffers = body.payload.tradeoffers;
 
-    console.log(
-      "Validação:",
-      tradeoffers[0].participantsteamid === transaction.buyer_id
-    );
     if (transaction.status === "Default") {
       console.log("Entrou passo 1");
 
       const filterSkin = tradeoffers.filter(
         (item: Tradeoffer) => item.participantsteamid === transaction.buyer_id
       );
-      console.log("FilterSkin: ", filterSkin);
 
       if (filterSkin.length > 0) {
         const filterItem = filterSkin.filter((item: Tradeoffer) => {
@@ -60,7 +55,6 @@ export async function validateTradesPendingController(
             transactionId,
             "NegotiationSend"
           );
-          console.log("Response: ", response);
           return reply.status(200).send(response);
         }
       }
