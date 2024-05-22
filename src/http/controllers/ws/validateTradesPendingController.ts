@@ -50,14 +50,14 @@ export async function validateTradesPendingController(
         });
         console.log("FilterItem: ", filterItem);
 
-        // if (filterItem.length > 0) {
-        //   const response = await this.transactionRepository.updateStatus(
-        //     transactionId,
-        //     "NegotiationSend"
-        //   );
-        //   console.log("Response: ", response);
-        //   return response;
-        // }
+        if (filterItem.length > 0) {
+          const response = await this.transactionRepository.updateStatus(
+            transactionId,
+            "NegotiationSend"
+          );
+          console.log("Response: ", response);
+          return response;
+        }
       }
       return "Skin not found";
     }
