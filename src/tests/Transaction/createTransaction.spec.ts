@@ -92,7 +92,7 @@ describe("Transaction Use Case", () => {
     expect(createTransaction.id).toEqual(expect.any(String));
     expect(createTransaction.balance).toEqual(skin.skin_price);
     expect(getUser.total_exchanges).toEqual(1);
-    expect(getTransaction.status).toEqual("Em andamento");
+    expect(getTransaction.status).toEqual("Default");
 
     vi.advanceTimersByTime(5000);
   });

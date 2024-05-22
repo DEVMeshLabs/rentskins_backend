@@ -179,7 +179,7 @@ describe("CronJobProcessTransaction Use Case", () => {
 
   it("Teste de erro na execução generico", async () => {
     const mockData = JSON.parse(
-      fs.readFileSync("src/tests/fixures/getItensHistoric.json", "utf-8")
+      fs.readFileSync("src/tests/fixures/getSendTradeOffer.json", "utf-8")
     );
 
     const [skin] = await Promise.all([
