@@ -42,7 +42,7 @@ export async function validateTradesPendingController(
 
       if (filterSkin.length > 0) {
         const filterItem = filterSkin.filter((item: Myitem) => {
-          console.log(item);
+          console.log("AQUII", item);
           return (
             item.market_hash_name === skin.skin_market_hash_name &&
             item.instanceid === skin.skin_instanceid
