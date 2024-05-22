@@ -19,22 +19,32 @@ export class ValidateTradesPending {
       transactionId
     );
 
+    const skin = await this.skinRepository.findById(transaction.skin_id);
+
     if (!transaction) {
       throw new TransactionHistoryNotExistError();
     } else if (transaction.status === "NegotiationSend") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
     console.log("Passou daqui");
-    if (transaction.status === "Default") {
-      console.log("Entrou passo 1");
-      // const tradeoffers = historic.jsonPayload.payload.tradeoffers;
+    const tradeoffers = historic.jsonPayload.payload.tradeoffers;
+    if (
+      transaction.status === "Default" &&
+      tradeoffers.participantsteamid === transaction.buyer_id
+    ) {
+      const filterSkin = tradeoffers.myitems.filter((item) => {
+        return item.market_hash_name === skin.skin_market_hash_name;
+      });
 
-      const response = await this.transactionRepository.updateStatus(
-        transactionId,
-        "NegotiationSend"
-      );
-      console.log("Response: ", response);
-      return response;
+      if (filterSkin.length > 0) {
+        const response = await this.transactionRepository.updateStatus(
+          transactionId,
+          "NegotiationSend"
+        );
+        console.log("Response: ", response);
+        return response;
+      }
+      return "Skin not found";
     }
   }
 
