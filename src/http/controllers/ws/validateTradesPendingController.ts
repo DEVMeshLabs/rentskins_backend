@@ -35,12 +35,12 @@ export async function validateTradesPendingController(
       "Transaction Buyer: ",
       transaction.buyer_id,
       "Tradeoffers: ",
-      tradeoffers.participantsteamid
+      tradeoffers[0].participantsteamid
     );
 
     console.log(
       "Validação:",
-      tradeoffers.participantsteamid === transaction.buyer_id
+      tradeoffers[0].participantsteamid === transaction.buyer_id
     );
     if (
       transaction.status === "Default" &&
