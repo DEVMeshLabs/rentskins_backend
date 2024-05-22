@@ -39,9 +39,10 @@ export async function validateTradesPendingController(
       const filterSkin = tradeoffers.filter(
         (item: Tradeoffer) => item.participantsteamid === transaction.buyer_id
       );
+      console.log("FilterSkin: ", filterSkin);
 
       if (filterSkin.length > 0) {
-        const filterItem = filterSkin.myitems.filter((item: Myitem) => {
+        const filterItem = filterSkin.filter((item: Myitem) => {
           console.log("AQUII", item);
           return (
             item.market_hash_name === skin.skin_market_hash_name &&
