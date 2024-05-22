@@ -12,7 +12,7 @@ export async function validateTradesPendingController(
   try {
     const makeValidade = makeValidateTradesPendingUseCase();
     const response = await makeValidade.execute(transactionId, body as any);
-    console.log("AQUUI", response);
+    console.log("Controller Pending", response);
     return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof StatusHasAlreadyBeenUpdatedError) {

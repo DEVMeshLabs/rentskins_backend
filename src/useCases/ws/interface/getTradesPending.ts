@@ -38,7 +38,7 @@ export interface Payload {
   success: boolean;
   status: number;
   steamid: string;
-  tradeoffers: Tradeoffer[];
+  tradeoffers: Tradeoffer;
 }
 
 export interface JsonPayload {
