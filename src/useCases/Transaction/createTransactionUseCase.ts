@@ -64,7 +64,7 @@ export class CreateTransactionUseCase {
       throw new CannotAdvertiseSkinNotYour();
     } else if (
       findSkinTransaction &&
-      findSkinTransaction.status !== "Concluído"
+      findSkinTransaction.status !== "NegociationAccepted"
     ) {
       throw new SkinHasAlreadyBeenSoldError(
         `${findSkin.skin_name} ${findSkin.asset_id}`

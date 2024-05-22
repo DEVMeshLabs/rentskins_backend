@@ -1,6 +1,6 @@
 import { TransactionHistoryNotExistError } from "../@errors/TransactionHistory/TransactionHistoryNotExistError";
 import { StatusHasAlreadyBeenUpdatedError } from "../@errors/ws/StatusHasAlreadyBeenUpdatedError";
-import { IGetTradesPending, Tradeoffer } from "./interface/getTradesPending";
+import { IGetTradesPending } from "./interface/getTradesPending";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 
@@ -18,7 +18,6 @@ export class ValidateTradesPending {
     const transaction = await this.transactionRepository.findById(
       transactionId
     );
-    // const skin = await this.skinRepository.findById(transaction.skin_id);
 
     if (!transaction) {
       throw new TransactionHistoryNotExistError();

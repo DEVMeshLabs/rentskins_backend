@@ -64,51 +64,51 @@ export class ValidateTransactionHistoryUseCase {
         throw new ValidateTransactionHistoryError();
       }
 
-      await this.handleSuccessTransaction({
+      await handleSuccessTransaction({
         transactionHistory,
       });
     }
   }
+}
 
-  async handleSuccessTransaction({
-    transactionHistory,
-  }: IUpdateTransactionHistory) {
-    const perfilSeller = await this.perfilRepository.findByUser(
-      transactionHistory.seller_id
-    );
+async function handleSuccessTransaction({
+  transactionHistory,
+}: IUpdateTransactionHistory) {
+  const perfilSeller = await this.perfilRepository.findByUser(
+    transactionHistory.seller_id
+  );
 
-    const transaction = await this.transactionRepository.findById(
-      transactionHistory.transaction_id
-    );
-    const { porcentagem } = formatBalance(transaction.balance);
+  const transaction = await this.transactionRepository.findById(
+    transactionHistory.transaction_id
+  );
+  const { porcentagem } = formatBalance(transaction.balance);
 
-    await Promise.all([
-      this.perfilRepository.updateTotalExchanges(perfilSeller.id),
+  await Promise.all([
+    this.perfilRepository.updateTotalExchanges(perfilSeller.id),
 
-      this.transactionHistory.updateId(transactionHistory.id, {
-        processTransaction: "Completed",
-      }),
-      this.transactionRepository.updateStatus(
-        transaction.id,
-        "NegociationAccepted"
-      ),
-      this.notificationRepository.create({
-        owner_id: transactionHistory.seller_id,
-        description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
-      }),
-      this.notificationRepository.create({
-        owner_id: transactionHistory.buyer_id,
-        description: `Parabéns! Sua compra foi finalizada com sucesso.`,
-      }),
-      this.skinRepository.updateById(transaction.skin_id, {
-        status: "Concluído",
-        saledAt: new Date(),
-      }),
-      this.walletRepository.updateByUserValue(
-        transactionHistory.seller_id,
-        "increment",
-        porcentagem
-      ),
-    ]);
-  }
+    this.transactionHistory.updateId(transactionHistory.id, {
+      processTransaction: "Completed",
+    }),
+    this.transactionRepository.updateStatus(
+      transaction.id,
+      "NegociationAccepted"
+    ),
+    this.notificationRepository.create({
+      owner_id: transactionHistory.seller_id,
+      description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
+    }),
+    this.notificationRepository.create({
+      owner_id: transactionHistory.buyer_id,
+      description: `Parabéns! Sua compra foi finalizada com sucesso.`,
+    }),
+    this.skinRepository.updateById(transaction.skin_id, {
+      status: "Concluído",
+      saledAt: new Date(),
+    }),
+    this.walletRepository.updateByUserValue(
+      transactionHistory.seller_id,
+      "increment",
+      porcentagem
+    ),
+  ]);
 }
