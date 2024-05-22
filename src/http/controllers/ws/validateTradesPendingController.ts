@@ -2,7 +2,11 @@ import { TransactionHistoryNotExistError } from "@/useCases/@errors/TransactionH
 import { StatusHasAlreadyBeenUpdatedError } from "@/useCases/@errors/ws/StatusHasAlreadyBeenUpdatedError";
 import { makeGetSkinUseCase } from "@/useCases/@factories/Skin/makeGetSkinUseCase";
 import { makeGetIdTransactionUseCase } from "@/useCases/@factories/Transaction/makeGetIdTransactionUseCase";
-import { Myitem, Tradeoffer } from "@/useCases/ws/interface/getTradesPending";
+import {
+  JsonPayload,
+  Myitem,
+  Tradeoffer,
+} from "@/useCases/ws/interface/getTradesPending";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function validateTradesPendingController(
@@ -28,24 +32,14 @@ export async function validateTradesPendingController(
     }
     console.log("Passou daqui");
     const tradeoffers = body.payload.tradeoffers;
-    console.log("Tradeoffers: ", tradeoffers);
-
-    console.log(
-      "Transaction Buyer: ",
-      transaction.buyer_id,
-      "Tradeoffers: ",
-      tradeoffers[0].participantsteamid
-    );
 
     console.log(
       "Validação:",
       tradeoffers[0].participantsteamid === transaction.buyer_id
     );
-    if (
-      transaction.status === "Default" &&
-      tradeoffers.participantsteamid === transaction.buyer_id
-    ) {
+    if (transaction.status === "Default") {
       console.log("Entrou passo 1");
+
       const filterSkin = tradeoffers.filter(
         (item: Tradeoffer) => item.participantsteamid === transaction.buyer_id
       );
