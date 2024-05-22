@@ -16,12 +16,11 @@ export async function validateTradesPendingController(
   try {
     const makeTransaction = makeGetIdTransactionUseCase();
     const makeSkin = makeGetSkinUseCase();
-
+    console.log(body);
     console.log("Entrou no Use Case");
     const transaction = await makeTransaction.execute(transactionId);
 
     const skin = await makeSkin.execute(transaction.skin_id);
-    console.log("Skin: ", skin);
 
     if (!transaction) {
       throw new TransactionHistoryNotExistError();
