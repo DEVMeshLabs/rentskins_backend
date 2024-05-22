@@ -4,7 +4,7 @@ import { IGetTradesPending } from "./interface/getTradesPending";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 
-export class ValidateTradesPending {
+export class ValidatePendingTradeReceived {
   constructor(
     private transactionRepository: ITransactionRepository,
     private skinRepository: ISkinsRepository
@@ -19,34 +19,22 @@ export class ValidateTradesPending {
       transactionId
     );
 
-    const skin = await this.skinRepository.findById(transaction.skin_id);
-    console.log("Skin: ", skin);
-
     if (!transaction) {
       throw new TransactionHistoryNotExistError();
     } else if (transaction.status === "NegotiationSend") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
     console.log("Passou daqui");
-    const tradeoffers = historic.jsonPayload.payload.tradeoffers;
-    if (
-      transaction.status === "Default" &&
-      tradeoffers.participantsteamid === transaction.buyer_id
-    ) {
+    if (transaction.status === "Default") {
       console.log("Entrou passo 1");
-      const filterSkin = tradeoffers.myitems.filter((item) => {
-        return item.market_hash_name === skin.skin_market_hash_name;
-      });
-      console.log("FilterSkin: ", filterSkin);
-      if (filterSkin.length > 0) {
-        const response = await this.transactionRepository.updateStatus(
-          transactionId,
-          "NegotiationSend"
-        );
-        console.log("Response: ", response);
-        return response;
-      }
-      return "Skin not found";
+      // const tradeoffers = historic.jsonPayload.payload.tradeoffers;
+
+      const response = await this.transactionRepository.updateStatus(
+        transactionId,
+        "NegotiationSend"
+      );
+      console.log("Response: ", response);
+      return response;
     }
   }
 
