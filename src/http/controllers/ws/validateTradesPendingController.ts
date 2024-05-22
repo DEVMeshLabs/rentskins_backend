@@ -2,8 +2,7 @@ import { TransactionHistoryNotExistError } from "@/useCases/@errors/TransactionH
 import { StatusHasAlreadyBeenUpdatedError } from "@/useCases/@errors/ws/StatusHasAlreadyBeenUpdatedError";
 import { makeGetSkinUseCase } from "@/useCases/@factories/Skin/makeGetSkinUseCase";
 import { makeGetIdTransactionUseCase } from "@/useCases/@factories/Transaction/makeGetIdTransactionUseCase";
-import { makeValidateTradesPendingUseCase } from "@/useCases/@factories/ws/makeValidateTradesPendingUseCase";
-import { IGetTradesPending } from "@/useCases/ws/interface/getTradesPending";
+import { Myitem, Tradeoffer } from "@/useCases/ws/interface/getTradesPending";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function validateTradesPendingController(
@@ -47,17 +46,26 @@ export async function validateTradesPendingController(
       tradeoffers.participantsteamid === transaction.buyer_id
     ) {
       console.log("Entrou passo 1");
-      const filterSkin = tradeoffers.myitems.filter((item) => {
-        return item.market_hash_name === skin.skin_market_hash_name;
-      });
+      const filterSkin = tradeoffers.filter(
+        (item: Tradeoffer) => item.participantsteamid === transaction.buyer_id
+      );
       console.log("FilterSkin: ", filterSkin);
+
       if (filterSkin.length > 0) {
-        const response = await this.transactionRepository.updateStatus(
-          transactionId,
-          "NegotiationSend"
-        );
-        console.log("Response: ", response);
-        return response;
+        const filterItem = filterSkin.filter((item: Myitem) => {
+          return (
+            item.market_hash_name === skin.skin_market_hash_name &&
+            item.instanceid === skin.skin_instanceid
+          );
+        });
+        if (filterItem.length > 0) {
+          const response = await this.transactionRepository.updateStatus(
+            transactionId,
+            "NegotiationSend"
+          );
+          console.log("Response: ", response);
+          return response;
+        }
       }
       return "Skin not found";
     }
