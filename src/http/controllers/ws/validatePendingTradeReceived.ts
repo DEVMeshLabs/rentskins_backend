@@ -37,11 +37,9 @@ export async function validatePendingTradeReceived(
       const filterSkin = tradeoffers.filter(
         (item: Tradeoffer) => item.participantsteamid === transaction.seller_id
       );
-      console.log("filterSkin: ", filterSkin);
       if (filterSkin.length > 0) {
         const filterItem = filterSkin.filter((item: Tradeoffer) => {
           return item.participantitems.filter((item: Participantitem) => {
-            console.log("ParticipanteItems: ", item);
             return (
               item.market_hash_name === skin.skin_market_hash_name &&
               item.instanceid === skin.skin_instanceid &&
@@ -51,7 +49,6 @@ export async function validatePendingTradeReceived(
         });
 
         if (filterItem.length > 0) {
-          console.log("FilterItem: ", filterItem);
           const response = await makeUpdate.execute(
             transactionId,
             "NegotiationSend"
