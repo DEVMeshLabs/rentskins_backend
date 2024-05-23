@@ -107,7 +107,7 @@ export class CreateTransactionUseCase {
       this.perfilRepository.updateByUser(perfilSeller.owner_id, {
         total_exchanges: perfilSeller.total_exchanges + 1,
       }),
-      this.skinRepository.updateById(skin_id, {
+      this.skinRepository.updateById(findSkin.id, {
         status: "Em andamento",
       }),
     ]);
