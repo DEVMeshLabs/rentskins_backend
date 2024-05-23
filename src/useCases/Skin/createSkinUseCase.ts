@@ -38,7 +38,7 @@ export class CreateSkinUseCase {
       throw new KeySteamNotFoundError();
     }
 
-    if (duplicateSkins.length > 0 || findSkinTransaction.length > 0) {
+    if (duplicateSkins.length > 0) {
       const idSkin = duplicateSkins[0].id;
       const duplicateSkinName = duplicateSkins[0].skin_name;
       const duplicateSkinAssetId = duplicateSkins[0].asset_id;
@@ -47,6 +47,8 @@ export class CreateSkinUseCase {
         idSkin,
         duplicateSkinAssetId
       );
+    } else if (findSkinTransaction.length > 0) {
+      throw new SkinAlreadyExistsError();
     }
 
     const skinSlug = await slug(
