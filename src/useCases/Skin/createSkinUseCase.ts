@@ -24,10 +24,13 @@ export class CreateSkinUseCase {
     );
 
     const findSkinTransaction = existingTransaction.filter((item: any) => {
-      return item.skin.asset_id === data.asset_id;
+      return (
+        item.skin.asset_id === data.asset_id &&
+        (item.status === "Default" ||
+          item.status === "NegociationAccepted" ||
+          item.status === "NegotiationSend")
+      );
     });
-
-    console.log("Transação: ", findSkinTransaction);
 
     if (!configSeller) {
       throw new ConfigurationNotExistError();
