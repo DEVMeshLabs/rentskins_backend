@@ -14,6 +14,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     const transactionAll = await prisma.transaction.findMany({
       where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
+      include: { skin: true },
     });
     return transactionAll;
   }
