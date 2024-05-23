@@ -3,7 +3,10 @@ import { StatusHasAlreadyBeenUpdatedError } from "@/useCases/@errors/ws/StatusHa
 import { makeGetSkinUseCase } from "@/useCases/@factories/Skin/makeGetSkinUseCase";
 import { makeGetIdTransactionUseCase } from "@/useCases/@factories/Transaction/makeGetIdTransactionUseCase";
 import { makeUpdateStatusTransactionUseCase } from "@/useCases/@factories/Transaction/makeUpdateStatusTransactionUseCase";
-import { Myitem, Tradeoffer } from "@/useCases/ws/interface/getTradesPending";
+import {
+  Participantitem,
+  Tradeoffer,
+} from "@/useCases/ws/interface/getTradesPending";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function validatePendingTradeReceived(
@@ -32,12 +35,12 @@ export async function validatePendingTradeReceived(
 
     if (transaction.status === "Default") {
       const filterSkin = tradeoffers.filter(
-        (item: Tradeoffer) => item.participantsteamid === transaction.buyer_id
+        (item: Tradeoffer) => item.participantsteamid === transaction.seller_id
       );
-
+      console.log("filterSkin: ", filterSkin);
       if (filterSkin.length > 0) {
         const filterItem = filterSkin.filter((item: Tradeoffer) => {
-          return item.participantitems.filter((item: Myitem) => {
+          return item.participantitems.filter((item: Participantitem) => {
             console.log("ParticipanteItems: ", item);
             return (
               item.market_hash_name === skin.skin_market_hash_name &&
