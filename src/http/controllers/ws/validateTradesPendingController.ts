@@ -27,19 +27,15 @@ export async function validateTradesPendingController(
     } else if (transaction.status === "NegotiationSend") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
-    console.log("Passou daqui");
     const tradeoffers = body.payload.tradeoffers;
 
     if (transaction.status === "Default") {
-      console.log("Entrou passo 1");
-
       const filterSkin = tradeoffers.filter(
         (item: Tradeoffer) => item.participantsteamid === transaction.buyer_id
       );
 
       if (filterSkin.length > 0) {
         const filterItem = filterSkin.filter((item: Tradeoffer) => {
-          console.log("AQUII", item);
           return item.myitems.filter((item: Myitem) => {
             return (
               item.market_hash_name === skin.skin_market_hash_name &&
@@ -50,7 +46,6 @@ export async function validateTradesPendingController(
         });
 
         if (filterItem.length > 0) {
-          console.log("FilterItem: ", filterItem);
           const response = await makeUpdate.execute(
             transactionId,
             "NegotiationSend"
