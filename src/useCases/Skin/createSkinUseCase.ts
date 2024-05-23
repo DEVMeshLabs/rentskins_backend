@@ -6,6 +6,7 @@ import { KeySteamNotFoundError } from "../@errors/TransactionHistory/KeySteamNot
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
+import { SkinHasAlreadyBeenSoldOrAnnounced } from "../@errors/Skin/SkinHasAlreadyBeenSoldOrAnnounced";
 
 export class CreateSkinUseCase {
   constructor(
@@ -22,6 +23,7 @@ export class CreateSkinUseCase {
     const duplicateSkins = existingSkins.filter(
       (item) => item.asset_id === data.asset_id
     );
+    console.log(duplicateSkins);
 
     const findSkinTransaction = existingTransaction.filter((item: any) => {
       return (
@@ -48,7 +50,7 @@ export class CreateSkinUseCase {
         duplicateSkinAssetId
       );
     } else if (findSkinTransaction.length > 0) {
-      throw new SkinAlreadyExistsError();
+      throw new SkinHasAlreadyBeenSoldOrAnnounced();
     }
 
     const skinSlug = await slug(

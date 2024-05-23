@@ -30,7 +30,6 @@ export async function validatePendingTradeReceived(
     } else if (transaction.status === "NegotiationSend") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
-    console.log("Passou daqui");
     const tradeoffers = body.payload.tradeoffers;
 
     if (transaction.status === "Default") {
