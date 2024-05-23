@@ -3,7 +3,7 @@ import { ITransactionRepository } from "../interfaceRepository/ITransactionRepos
 import { randomUUID } from "crypto";
 
 export class InMemoryTransactionRepository implements ITransactionRepository {
-  public transactions: Transaction[] = [];
+  public transactions = [];
 
   private notImplemented(): Promise<any> {
     return this.notImplemented();
@@ -28,8 +28,8 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     return transaction;
   }
 
-  findByMany() {
-    return this.notImplemented();
+  async findByMany() {
+    return this.transactions;
   }
 
   findByUser(id: string, query?: string) {
@@ -103,15 +103,6 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
       this.transactions[index] = { ...this.transactions[index], ...data };
       return this.transactions[index];
     }
-    // const filter = this.transactions.find(
-    //   (transaction) => transaction.id === id
-    // );
-    // const update = { ...filter, ...data };
-
-    // const index = this.transactions.indexOf(filter);
-
-    // const updateTransaction = { ...this.transactions[index], ...update };
-
     return this.transactions[index];
   }
 }
