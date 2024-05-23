@@ -1,5 +1,5 @@
 {
-  "id": "8c0d8988-da2c-4002-95af-780e3d94e790",
+  "id": "a6836dfe-239d-486b-b1f5-1f34129b8c91",
   "jsonPayload": {
     "md5apikeyforverification": "6b0838fc4734ad3f698a5cb6c25aae51",
     "event": "tradereceived",
@@ -11,25 +11,25 @@
       "steamid": "76561198862407248",
       "tradeoffers": [
         {
-          "participant": "https://steamcommunity.com/id/brndourado",
-          "participantsteamid": null,
+          "participant": "https://steamcommunity.com/profiles/76561198086816961",
+          "participantsteamid": "76561198086816961",
           "myitems": [],
           "participantitems": [
             {
-              "market_hash_name": "MAC-10 | Light Box (Factory New)",
-              "image": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7umeldf3vLLIG195dC6gZOCmPnLP7LWnn8f7cR3ibuXp9WkiQO3_kM_Nm-hJYXDcQ9tMgrYqFTvk-vo0cDq6pqcm2wj5HfOKwrF1Q",
+              "market_hash_name": "Nova | Caged Steel (Minimal Wear)",
+              "image": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpouLWzKjhh3szHZzxO09SzjL-HnvD8J_WGwDJS6ZQo2-iWodih2QzgrkdqZ2CmIIfEelNrYFCDq1i2kL3vhsfoot2Xnu1dMzIh",
               "description": "",
-              "classid": "5721073505",
-              "instanceid": "188530139",
+              "classid": "469439976",
+              "instanceid": "302028390",
               "appid": "730",
               "safe": true,
-              "pricelatest": 0.92,
-              "pricelatestsell": 0.91,
-              "pricereal": 0.65
+              "pricelatest": 0.11,
+              "pricelatestsell": 0.1,
+              "pricereal": 0.08
             }
           ],
-          "expire": "2024-05-30T14:49:20+00:00",
-          "tradeofferid": "7019983205",
+          "expire": "2024-06-06T17:54:33+00:00",
+          "tradeofferid": "7040529668",
           "steamconfirmed": true
         }
       ]
