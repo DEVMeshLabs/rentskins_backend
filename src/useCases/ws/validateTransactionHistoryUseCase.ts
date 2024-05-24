@@ -8,7 +8,6 @@ import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRep
 import { TransactionHistory } from "@prisma/client";
 import { formatBalance } from "@/utils/formatBalance";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
-import { ValidateTransactionHistoryError } from "../@errors/ws/validateTransactionHistoryError";
 import { TransactionHistoryNotExistError } from "../@errors/TransactionHistory/TransactionHistoryNotExistError";
 
 interface IUpdateTransactionHistory {
@@ -36,21 +35,19 @@ export class ValidateTransactionHistoryUseCase {
     if (!transactionHistory) {
       throw new TransactionHistoryNotExistError();
     }
-
-    if (
-      historic &&
-      historic.jsonPayload.payload &&
-      historic.jsonPayload.payload.verified === true &&
-      historic.jsonPayload.payload.data &&
-      historic.jsonPayload.payload.data.length > 0 &&
-      transactionHistory.processTransaction === "Pending"
-    ) {
+    console.log("Passou aqui");
+    if (transactionHistory.processTransaction === "Pending") {
       const filterTransactionParticipantsId =
         historic.jsonPayload.payload.data.filter(
-          (data) =>
-            data.participantsteamid === transactionHistory.buyer_id &&
-            data.items.sent.length > 0
+          (item) =>
+            item.participantsteamid === transactionHistory.buyer_id &&
+            item.items.sent.length > 0
         );
+      console.log(
+        "filterTransactionParticipantsId",
+        filterTransactionParticipantsId
+      );
+      console.log("Passou aqui 2");
       const filterTransactionParticipantsItems = filterTransactionParticipantsId
         .map((sents) => {
           const filteredItems = sents.items.sent.some((item) => {
@@ -60,55 +57,60 @@ export class ValidateTransactionHistoryUseCase {
         })
         .filter(Boolean);
 
-      if (filterTransactionParticipantsItems.length === 0) {
-        throw new ValidateTransactionHistoryError();
+      console.log(
+        "filterTransactionParticipantsItems",
+        filterTransactionParticipantsItems
+      );
+      console.log("Passou aqui 3");
+      if (filterTransactionParticipantsItems.length > 0) {
+        console.log("Passou aqui 4");
+        await this.handleSuccessTransaction({
+          transactionHistory,
+        });
       }
-
-      await handleSuccessTransaction({
-        transactionHistory,
-      });
     }
   }
-}
 
-async function handleSuccessTransaction({
-  transactionHistory,
-}: IUpdateTransactionHistory) {
-  const perfilSeller = await this.perfilRepository.findByUser(
-    transactionHistory.seller_id
-  );
+  async handleSuccessTransaction({
+    transactionHistory,
+  }: IUpdateTransactionHistory) {
+    console.log("Iniciou a transação");
+    const perfilSeller = await this.perfilRepository.findByUser(
+      transactionHistory.seller_id
+    );
 
-  const transaction = await this.transactionRepository.findById(
-    transactionHistory.transaction_id
-  );
-  const { porcentagem } = formatBalance(transaction.balance);
+    const transaction = await this.transactionRepository.findById(
+      transactionHistory.transaction_id
+    );
+    const { porcentagem } = formatBalance(transaction.balance);
 
-  await Promise.all([
-    this.perfilRepository.updateTotalExchanges(perfilSeller.id),
+    await Promise.all([
+      this.perfilRepository.updateTotalExchanges(perfilSeller.id),
 
-    this.transactionHistory.updateId(transactionHistory.id, {
-      processTransaction: "Completed",
-    }),
-    this.transactionRepository.updateStatus(
-      transaction.id,
-      "NegociationAccepted"
-    ),
-    this.notificationRepository.create({
-      owner_id: transactionHistory.seller_id,
-      description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
-    }),
-    this.notificationRepository.create({
-      owner_id: transactionHistory.buyer_id,
-      description: `Parabéns! Sua compra foi finalizada com sucesso.`,
-    }),
-    this.skinRepository.updateById(transaction.skin_id, {
-      status: "Concluído",
-      saledAt: new Date(),
-    }),
-    this.walletRepository.updateByUserValue(
-      transactionHistory.seller_id,
-      "increment",
-      porcentagem
-    ),
-  ]);
+      this.transactionHistory.updateId(transactionHistory.id, {
+        processTransaction: "Completed",
+      }),
+      this.transactionRepository.updateStatus(
+        transaction.id,
+        "NegociationAccepted"
+      ),
+      this.notificationRepository.create({
+        owner_id: transactionHistory.seller_id,
+        description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
+      }),
+      this.notificationRepository.create({
+        owner_id: transactionHistory.buyer_id,
+        description: `Parabéns! Sua compra foi finalizada com sucesso.`,
+      }),
+      this.skinRepository.updateById(transaction.skin_id, {
+        status: "Concluído",
+        saledAt: new Date(),
+      }),
+      this.walletRepository.updateByUserValue(
+        transactionHistory.seller_id,
+        "increment",
+        porcentagem
+      ),
+    ]);
+  }
 }
