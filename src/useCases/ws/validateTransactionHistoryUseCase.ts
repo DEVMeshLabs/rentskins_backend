@@ -36,7 +36,7 @@ export class ValidateTransactionHistoryUseCase {
       throw new TransactionHistoryNotExistError();
     }
 
-    console.log("Passou aqui");
+    console.log(historic);
     if (transactionHistory.processTransaction === "Pending") {
       console.log("Chegou aqui");
       const filterTransactionParticipantsId = historic.payload.data.filter(
@@ -52,20 +52,24 @@ export class ValidateTransactionHistoryUseCase {
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran) => {
           return tran.items.sent.filter((item) => {
-            return item.assetid === transactionHistory.asset_id;
+            if (item.assetid === transactionHistory.asset_id) {
+              return true;
+            }
+            return false;
           });
         });
-
+      console.log("Esse", filterTransactionParticipantsItems);
       console.log("Passou aqui 3");
+
       if (filterTransactionParticipantsItems.length > 0) {
         console.log(
           "filterTransactionParticipantsItems",
           filterTransactionParticipantsItems
         );
         console.log("Passou aqui 4");
-        // await this.handleSuccessTransaction({
-        //   transactionHistory,
-        // });
+        await this.handleSuccessTransaction({
+          transactionHistory,
+        });
         return "Transação concluída com sucesso";
       }
       return "Nada a ser feito";
