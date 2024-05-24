@@ -66,7 +66,9 @@ describe("CronJobProcessTransaction Use Case", () => {
     const [skin] = await Promise.all([
       makeCreateSkin.execute({
         seller_id: "76561198862407248",
-        asset_id: "36352899008",
+        asset_id: "36352899007",
+        skin_market_hash_name: "Sticker | FURIA | Paris 2023",
+        skin_instanceid: "188530139",
       }),
       makeCreatePerfilRepository.execute(
         "76561198862407248",

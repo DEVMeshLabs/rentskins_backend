@@ -53,17 +53,17 @@ export class ValidateTransactionHistoryUseCase {
         }
       );
       console.log("Passou aqui 2");
+      console.log(skin);
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran: Daum) => {
-          return tran.items.sent.filter(
-            (item) =>
-              item.markethashname === skin.skin_market_hash_name &&
-              item.instanceid === skin.skin_instanceid
-          );
+          return tran.items.sent.some((item) => {
+            return item.markethashname === skin.skin_market_hash_name;
+          });
         });
+
       console.log("Passou aqui 3");
       console.log(filterTransactionParticipantsItems);
-      if (filterTransactionParticipantsItems.length > 0) {
+      if (filterTransactionParticipantsItems.length) {
         console.log(
           "filterTransactionParticipantsItems",
           filterTransactionParticipantsItems
