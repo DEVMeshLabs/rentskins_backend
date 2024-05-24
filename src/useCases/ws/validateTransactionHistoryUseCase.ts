@@ -33,7 +33,7 @@ export class ValidateTransactionHistoryUseCase {
     if (!transactionHistory) {
       throw new TransactionHistoryNotExistError();
     }
-    console.log(historic);
+
     console.log("Passou aqui");
     if (transactionHistory.processTransaction === "Pending") {
       console.log("Chegou aqui");
@@ -42,16 +42,20 @@ export class ValidateTransactionHistoryUseCase {
           item.participantsteamid === transactionHistory.buyer_id &&
           item.items.sent.length > 0
       );
-
+      console.log(filterTransactionParticipantsId);
       console.log("Passou aqui 2");
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran) => {
+          console.log(tran);
           return tran.items.sent.filter((item) => {
             console.log(item);
             return item.assetid === transactionHistory.asset_id;
           });
         });
-
+      console.log(
+        "filterTransactionParticipantsItems---------------------",
+        filterTransactionParticipantsItems
+      );
       console.log("Passou aqui 3");
       if (filterTransactionParticipantsItems.length > 0) {
         console.log(
