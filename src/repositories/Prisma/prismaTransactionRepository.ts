@@ -29,6 +29,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   async findById(id: string) {
     const findTransaction = await prisma.transaction.findFirst({
       where: { id, deletedAt: null },
+      include: { skin: true },
     });
     return findTransaction;
   }

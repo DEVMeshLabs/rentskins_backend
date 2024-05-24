@@ -20,7 +20,6 @@ export class ValidateTradesPending {
     );
 
     const skin = await this.skinRepository.findById(transaction.skin_id);
-    console.log("Skin: ", skin);
 
     if (!transaction) {
       throw new TransactionHistoryNotExistError();
@@ -48,7 +47,10 @@ export class ValidateTradesPending {
     ) {
       console.log("Entrou passo 1");
       const filterSkin = tradeoffers.myitems.filter((item) => {
-        return item.market_hash_name === skin.skin_market_hash_name;
+        return (
+          item.market_hash_name === skin.skin_market_hash_name &&
+          item.instanceid === skin.skin_instanceid
+        );
       });
       console.log("FilterSkin: ", filterSkin);
       if (filterSkin.length > 0) {
