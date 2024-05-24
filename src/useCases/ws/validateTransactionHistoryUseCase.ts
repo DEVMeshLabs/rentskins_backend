@@ -1,5 +1,5 @@
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
-import { IGetHistoricTrade } from "./interface/getHistoricTrade";
+import { Daum, IGetHistoricTrade } from "./interface/getHistoricTrade";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
@@ -32,12 +32,17 @@ export class ValidateTransactionHistoryUseCase {
     const transactionHistory = await this.transactionHistory.findByTrasactionId(
       transactionId
     );
+
     if (!transactionHistory) {
       throw new TransactionHistoryNotExistError();
     }
+    const transaction = await this.transactionRepository.findById(
+      transactionHistory.transaction_id
+    );
 
-    console.log(historic);
     if (transactionHistory.processTransaction === "Pending") {
+      const skin = await this.skinRepository.findById(transaction.skin_id);
+
       console.log("Chegou aqui");
       const filterTransactionParticipantsId = historic.payload.data.filter(
         (item) => {
@@ -47,20 +52,17 @@ export class ValidateTransactionHistoryUseCase {
           );
         }
       );
-      console.log(filterTransactionParticipantsId);
       console.log("Passou aqui 2");
       const filterTransactionParticipantsItems =
-        filterTransactionParticipantsId.filter((tran) => {
-          return tran.items.sent.filter((item) => {
-            if (item.assetid === transactionHistory.asset_id) {
-              return true;
-            }
-            return false;
-          });
+        filterTransactionParticipantsId.filter((tran: Daum) => {
+          return tran.items.sent.filter(
+            (item) =>
+              item.markethashname === skin.skin_market_hash_name &&
+              item.instanceid === skin.skin_instanceid
+          );
         });
-      console.log("Esse", filterTransactionParticipantsItems);
       console.log("Passou aqui 3");
-
+      console.log(filterTransactionParticipantsItems);
       if (filterTransactionParticipantsItems.length > 0) {
         console.log(
           "filterTransactionParticipantsItems",
