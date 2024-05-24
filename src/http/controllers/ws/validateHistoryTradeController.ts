@@ -16,7 +16,6 @@ export async function validateHistoryTradeController(
   try {
     const makeValidade = makeValidateTransactionHistoryUseCase();
     const validate = await makeValidade.execute(transactionId, body as any);
-    console.log(validate);
     return reply.status(200).send(validate);
   } catch (error) {
     if (error instanceof ValidateTransactionHistoryError) {

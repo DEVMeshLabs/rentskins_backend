@@ -53,7 +53,6 @@ export class ValidateTransactionHistoryUseCase {
         }
       );
       console.log("Passou aqui 2");
-      console.log(skin);
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran: Daum) => {
           return tran.items.sent.some((item) => {

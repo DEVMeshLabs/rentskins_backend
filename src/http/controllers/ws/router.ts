@@ -5,7 +5,7 @@ import { validatePendingTradeReceived } from "./validatePendingTradeReceived";
 
 export async function wsRouter(app: FastifyInstance) {
   app.post(
-    "/webhook/validate/trade/:historyId",
+    "/webhook/validate/trade/:transactionId",
     validateHistoryTradeController
   );
   app.post(
