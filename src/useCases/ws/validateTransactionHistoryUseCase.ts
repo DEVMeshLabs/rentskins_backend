@@ -40,7 +40,7 @@ export class ValidateTransactionHistoryUseCase {
       transactionHistory.transaction_id
     );
     console.log(transaction);
-    if (transactionHistory.processTransaction === "Pending") {
+    if (transactionHistory.processTransaction !== "Default") {
       const skin = await this.skinRepository.findById(transaction.skin_id);
 
       console.log("Chegou aqui");
