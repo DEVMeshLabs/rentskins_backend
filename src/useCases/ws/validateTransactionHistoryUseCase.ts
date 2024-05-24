@@ -39,37 +39,36 @@ export class ValidateTransactionHistoryUseCase {
     const transaction = await this.transactionRepository.findById(
       transactionHistory.transaction_id
     );
+    if (transactionHistory.processTransaction !== "Pending") {
+      const skin = await this.skinRepository.findById(transaction.skin_id);
 
-    const skin = await this.skinRepository.findById(transaction.skin_id);
-
-    const filterTransactionParticipantsId = historic.payload.data.filter(
-      (item) => {
-        return (
-          item.participantsteamid === transactionHistory.buyer_id &&
-          item.items.sent.length > 0
-        );
-      }
-    );
-    console.log(filterTransactionParticipantsId);
-    const filterTransactionParticipantsItems =
-      filterTransactionParticipantsId.filter((tran: Daum) => {
-        return tran.items.sent.some((item) => {
+      const filterTransactionParticipantsId = historic.payload.data.filter(
+        (item) => {
           return (
-            item.markethashname === skin.skin_market_hash_name &&
-            item.instanceid === skin.skin_instanceid &&
-            item.classid === skin.skin_classid
+            item.participantsteamid === transactionHistory.buyer_id &&
+            item.items.sent.length > 0
           );
+        }
+      );
+      const filterTransactionParticipantsItems =
+        filterTransactionParticipantsId.filter((tran: Daum) => {
+          return tran.items.sent.some((item) => {
+            return (
+              item.markethashname === skin.skin_market_hash_name &&
+              item.instanceid === skin.skin_instanceid &&
+              item.classid === skin.skin_classid
+            );
+          });
         });
-      });
 
-    if (filterTransactionParticipantsItems.length) {
-      console.log(filterTransactionParticipantsItems);
-      await this.handleSuccessTransaction({
-        transactionHistory,
-      });
-      return "Transação concluída com sucesso";
+      if (filterTransactionParticipantsItems.length) {
+        await this.handleSuccessTransaction({
+          transactionHistory,
+        });
+        return "Transação concluída com sucesso";
+      }
+      return "Nada a ser feito";
     }
-    return "Nada a ser feito";
   }
 
   async handleSuccessTransaction({
