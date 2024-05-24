@@ -42,19 +42,14 @@ export class ValidateTransactionHistoryUseCase {
           item.participantsteamid === transactionHistory.buyer_id &&
           item.items.sent.length > 0
       );
-      console.log(
-        "filterTransactionParticipantsId",
-        filterTransactionParticipantsId
-      );
+
       console.log("Passou aqui 2");
-      const filterTransactionParticipantsItems = filterTransactionParticipantsId
-        .map((sents) => {
-          const filteredItems = sents.items.sent.some((item) => {
+      const filterTransactionParticipantsItems =
+        filterTransactionParticipantsId.filter((tran) => {
+          return tran.items.sent.filter((item) => {
             return item.assetid === transactionHistory.asset_id;
           });
-          return filteredItems;
-        })
-        .filter(Boolean);
+        });
 
       console.log(
         "filterTransactionParticipantsItems",
@@ -66,7 +61,9 @@ export class ValidateTransactionHistoryUseCase {
         await this.handleSuccessTransaction({
           transactionHistory,
         });
+        return "Transação concluída com sucesso";
       }
+      return "Nada a ser feito";
     }
   }
 
