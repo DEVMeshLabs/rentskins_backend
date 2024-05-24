@@ -39,6 +39,7 @@ export class ValidateTransactionHistoryUseCase {
 
     console.log("Passou aqui");
     if (transactionHistory.processTransaction === "Pending") {
+      console.log("Chegou aqui");
       const filterTransactionParticipantsId =
         historic.jsonPayload.payload.data.filter(
           (item) =>
