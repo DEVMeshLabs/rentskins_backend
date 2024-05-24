@@ -32,16 +32,11 @@ export interface Payload {
   data: Daum[];
 }
 
-export interface jsonPayload {
+export interface IGetHistoricTrade {
   md5apikeyforverification: string;
   event: string;
   steamid: string;
   info: string;
   payload: Payload;
   verified: boolean;
-}
-
-export interface IGetHistoricTrade {
-  id: string;
-  jsonPayload: jsonPayload;
 }

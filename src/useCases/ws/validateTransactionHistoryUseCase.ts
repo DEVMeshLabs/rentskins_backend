@@ -25,21 +25,22 @@ export class ValidateTransactionHistoryUseCase {
     private skinRepository: ISkinsRepository
   ) {}
 
-  async execute(transactionId: string, historic: any): Promise<void | string> {
+  async execute(
+    transactionId: string,
+    historic: IGetHistoricTrade
+  ): Promise<void | string> {
     const transactionHistory = await this.transactionHistory.findByTrasactionId(
       transactionId
     );
     if (!transactionHistory) {
       throw new TransactionHistoryNotExistError();
     }
-    console.log(historic);
 
     console.log("Passou aqui");
     if (transactionHistory.processTransaction === "Pending") {
       console.log("Chegou aqui");
       const filterTransactionParticipantsId = historic.payload.data.filter(
         (item) => {
-          console.log("filterTransactionParticipantsId ITEMMMM", item);
           return (
             item.participantsteamid === transactionHistory.buyer_id &&
             item.items.sent.length > 0
@@ -50,16 +51,11 @@ export class ValidateTransactionHistoryUseCase {
       console.log("Passou aqui 2");
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran) => {
-          console.log(tran);
           return tran.items.sent.filter((item) => {
-            console.log(item);
             return item.assetid === transactionHistory.asset_id;
           });
         });
-      console.log(
-        "filterTransactionParticipantsItems---------------------",
-        filterTransactionParticipantsItems
-      );
+
       console.log("Passou aqui 3");
       if (filterTransactionParticipantsItems.length > 0) {
         console.log(
