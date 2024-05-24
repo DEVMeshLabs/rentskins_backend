@@ -25,10 +25,7 @@ export class ValidateTransactionHistoryUseCase {
     private skinRepository: ISkinsRepository
   ) {}
 
-  async execute(
-    transactionId: string,
-    historic: IGetHistoricTrade
-  ): Promise<void | string> {
+  async execute(transactionId: string, historic: any): Promise<void | string> {
     const transactionHistory = await this.transactionHistory.findByTrasactionId(
       transactionId
     );
@@ -40,12 +37,11 @@ export class ValidateTransactionHistoryUseCase {
     console.log("Passou aqui");
     if (transactionHistory.processTransaction === "Pending") {
       console.log("Chegou aqui");
-      const filterTransactionParticipantsId =
-        historic.jsonPayload.payload.data.filter(
-          (item) =>
-            item.participantsteamid === transactionHistory.buyer_id &&
-            item.items.sent.length > 0
-        );
+      const filterTransactionParticipantsId = historic.payload.data.filter(
+        (item) =>
+          item.participantsteamid === transactionHistory.buyer_id &&
+          item.items.sent.length > 0
+      );
       console.log(
         "filterTransactionParticipantsId",
         filterTransactionParticipantsId
