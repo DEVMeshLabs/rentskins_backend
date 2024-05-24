@@ -39,11 +39,9 @@ export class ValidateTransactionHistoryUseCase {
     const transaction = await this.transactionRepository.findById(
       transactionHistory.transaction_id
     );
-    console.log(transaction);
-    if (transactionHistory.processTransaction !== "Default") {
+    if (transactionHistory.processTransaction !== "Pending") {
       const skin = await this.skinRepository.findById(transaction.skin_id);
 
-      console.log("Chegou aqui");
       const filterTransactionParticipantsId = historic.payload.data.filter(
         (item) => {
           return (
@@ -52,7 +50,6 @@ export class ValidateTransactionHistoryUseCase {
           );
         }
       );
-      console.log("Passou aqui 2");
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran: Daum) => {
           return tran.items.sent.some((item) => {
@@ -64,14 +61,11 @@ export class ValidateTransactionHistoryUseCase {
           });
         });
 
-      console.log("Passou aqui 3");
-      console.log(filterTransactionParticipantsItems);
       if (filterTransactionParticipantsItems.length) {
         console.log(
           "filterTransactionParticipantsItems",
           filterTransactionParticipantsItems
         );
-        console.log("Passou aqui 4");
         await this.handleSuccessTransaction({
           transactionHistory,
         });
@@ -84,7 +78,6 @@ export class ValidateTransactionHistoryUseCase {
   async handleSuccessTransaction({
     transactionHistory,
   }: IUpdateTransactionHistory) {
-    console.log("Iniciou a transação");
     const perfilSeller = await this.perfilRepository.findByUser(
       transactionHistory.seller_id
     );
