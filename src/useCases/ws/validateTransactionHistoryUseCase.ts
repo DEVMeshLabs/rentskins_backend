@@ -39,7 +39,7 @@ export class ValidateTransactionHistoryUseCase {
     const transaction = await this.transactionRepository.findById(
       transactionHistory.transaction_id
     );
-
+    console.log(transaction);
     if (transactionHistory.processTransaction === "Pending") {
       const skin = await this.skinRepository.findById(transaction.skin_id);
 
