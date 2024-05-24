@@ -14,7 +14,6 @@ export class ValidateTradesPending {
     transactionId: string,
     historic: IGetTradesPending
   ): Promise<any> {
-    console.log("Entrou no Use Case");
     const transaction = await this.transactionRepository.findById(
       transactionId
     );
@@ -26,39 +25,23 @@ export class ValidateTradesPending {
     } else if (transaction.status === "NegotiationSend") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
-    console.log("Passou daqui");
     const tradeoffers = historic.jsonPayload.payload.tradeoffers;
-    console.log("Tradeoffers: ", tradeoffers);
 
-    console.log(
-      "Transaction Buyer: ",
-      transaction.buyer_id,
-      "Tradeoffers: ",
-      tradeoffers.participantsteamid
-    );
-
-    console.log(
-      "Validação:",
-      tradeoffers.participantsteamid === transaction.buyer_id
-    );
     if (
       transaction.status === "Default" &&
       tradeoffers.participantsteamid === transaction.buyer_id
     ) {
-      console.log("Entrou passo 1");
       const filterSkin = tradeoffers.myitems.filter((item) => {
         return (
           item.market_hash_name === skin.skin_market_hash_name &&
           item.instanceid === skin.skin_instanceid
         );
       });
-      console.log("FilterSkin: ", filterSkin);
       if (filterSkin.length > 0) {
         const response = await this.transactionRepository.updateStatus(
           transactionId,
           "NegotiationSend"
         );
-        console.log("Response: ", response);
         return response;
       }
       return "Skin not found";

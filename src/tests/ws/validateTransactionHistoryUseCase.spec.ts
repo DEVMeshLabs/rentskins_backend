@@ -28,7 +28,7 @@ let makeCreateSkin: MakeCreateSkinRepository;
 let makeCreatePerfilRepository: MakeCreatePerfilRepository;
 let sut: ValidateTransactionHistoryUseCase;
 
-describe("CronJobProcessTransaction Use Case", () => {
+describe("Validate Transaction History", () => {
   beforeEach(async () => {
     transactionRepository = new InMemoryTransactionRepository();
     transactionHistoryRepository = new InMemoryTransactionHistoryRepository();

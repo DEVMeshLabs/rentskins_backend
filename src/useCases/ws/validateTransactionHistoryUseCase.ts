@@ -62,10 +62,6 @@ export class ValidateTransactionHistoryUseCase {
         });
 
       if (filterTransactionParticipantsItems.length) {
-        console.log(
-          "filterTransactionParticipantsItems",
-          filterTransactionParticipantsItems
-        );
         await this.handleSuccessTransaction({
           transactionHistory,
         });
