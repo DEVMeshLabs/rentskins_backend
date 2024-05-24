@@ -52,16 +52,16 @@ export class ValidateTransactionHistoryUseCase {
           });
         });
 
-      console.log(
-        "filterTransactionParticipantsItems",
-        filterTransactionParticipantsItems
-      );
       console.log("Passou aqui 3");
       if (filterTransactionParticipantsItems.length > 0) {
+        console.log(
+          "filterTransactionParticipantsItems",
+          filterTransactionParticipantsItems
+        );
         console.log("Passou aqui 4");
-        await this.handleSuccessTransaction({
-          transactionHistory,
-        });
+        // await this.handleSuccessTransaction({
+        //   transactionHistory,
+        // });
         return "Transação concluída com sucesso";
       }
       return "Nada a ser feito";
@@ -107,6 +107,10 @@ export class ValidateTransactionHistoryUseCase {
         transactionHistory.seller_id,
         "increment",
         porcentagem
+      ),
+      this.transactionRepository.updateStatus(
+        transaction.id,
+        "NegociationAccepted"
       ),
     ]);
   }
