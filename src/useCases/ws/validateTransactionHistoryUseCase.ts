@@ -36,7 +36,7 @@ export class ValidateTransactionHistoryUseCase {
     if (!transactionHistory) {
       throw new TransactionHistoryNotExistError();
     }
-
+    console.log(historic);
     console.log("Passou aqui");
     if (transactionHistory.processTransaction === "Pending") {
       console.log("Chegou aqui");
