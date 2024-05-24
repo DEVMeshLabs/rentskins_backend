@@ -56,7 +56,11 @@ export class ValidateTransactionHistoryUseCase {
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran: Daum) => {
           return tran.items.sent.some((item) => {
-            return item.markethashname === skin.skin_market_hash_name;
+            return (
+              item.markethashname === skin.skin_market_hash_name &&
+              item.instanceid === skin.skin_instanceid &&
+              item.classid === skin.skin_classid
+            );
           });
         });
 
