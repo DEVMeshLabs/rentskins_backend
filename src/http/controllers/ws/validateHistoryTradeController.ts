@@ -75,6 +75,7 @@ export async function validateHistoryTradeController(
     if (!transactionHistory) {
       throw new TransactionHistoryNotExistError();
     }
+    console.log(transactionHistory);
     console.log("Passou aqui");
     if (transactionHistory.processTransaction === "Pending") {
       const filterTransactionParticipantsId =
