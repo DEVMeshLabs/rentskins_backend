@@ -54,7 +54,6 @@ export class CreateTransactionHistoryUseCase {
       asset_id,
       dateProcess: process,
     });
-    console.log(create);
     return create;
   }
 }

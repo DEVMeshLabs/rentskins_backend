@@ -23,7 +23,6 @@ export class CreateSkinUseCase {
     const duplicateSkins = existingSkins.filter(
       (item) => item.asset_id === data.asset_id
     );
-    console.log(duplicateSkins);
 
     const findSkinTransaction = existingTransaction.filter((item: any) => {
       return (
