@@ -14,7 +14,6 @@ export class ValidatePendingTradeReceived {
     transactionId: string,
     historic: IGetTradesPending
   ): Promise<any> {
-    console.log("Entrou no Use Case");
     const transaction = await this.transactionRepository.findById(
       transactionId
     );
@@ -24,21 +23,16 @@ export class ValidatePendingTradeReceived {
     } else if (transaction.status === "NegotiationSend") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
-    console.log("Passou daqui");
     if (transaction.status === "Default") {
-      console.log("Entrou passo 1");
       // const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
       const response = await this.transactionRepository.updateStatus(
         transactionId,
         "NegotiationSend"
       );
-      console.log("Response: ", response);
       return response;
     }
   }
 
-  async handleSuccessTransaction(id: string) {
-    console.log("Entrouuuu");
-  }
+  async handleSuccessTransaction(id: string) {}
 }
