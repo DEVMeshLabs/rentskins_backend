@@ -29,10 +29,10 @@ export class ValidateTransactionHistoryUseCase {
     const transactionHistory = await this.transactionHistory.findByTrasactionId(
       transactionId
     );
-    console.log(transactionHistory);
     if (!transactionHistory) {
       throw new TransactionHistoryNotExistError();
     }
+    console.log(historic);
 
     console.log("Passou aqui");
     if (transactionHistory.processTransaction === "Pending") {
