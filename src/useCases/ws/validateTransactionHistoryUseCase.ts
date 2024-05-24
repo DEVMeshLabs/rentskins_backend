@@ -47,6 +47,7 @@ export class ValidateTransactionHistoryUseCase {
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran) => {
           return tran.items.sent.filter((item) => {
+            console.log(item);
             return item.assetid === transactionHistory.asset_id;
           });
         });
