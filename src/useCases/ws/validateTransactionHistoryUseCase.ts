@@ -6,7 +6,6 @@ import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRep
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { TransactionHistory } from "@prisma/client";
-import { formatBalance } from "@/utils/formatBalance";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { TransactionHistoryNotExistError } from "../@errors/TransactionHistory/TransactionHistoryNotExistError";
 
@@ -73,44 +72,5 @@ export class ValidateTransactionHistoryUseCase {
 
   async handleSuccessTransaction({
     transactionHistory,
-  }: IUpdateTransactionHistory) {
-    console.log("Iniciou a transação");
-    const perfilSeller = await this.perfilRepository.findByUser(
-      transactionHistory.seller_id
-    );
-
-    const transaction = await this.transactionRepository.findById(
-      transactionHistory.transaction_id
-    );
-    const { porcentagem } = formatBalance(transaction.balance);
-
-    await Promise.all([
-      this.perfilRepository.updateTotalExchanges(perfilSeller.id),
-
-      this.transactionHistory.updateId(transactionHistory.id, {
-        processTransaction: "Completed",
-      }),
-      this.transactionRepository.updateStatus(
-        transaction.id,
-        "NegociationAccepted"
-      ),
-      this.notificationRepository.create({
-        owner_id: transactionHistory.seller_id,
-        description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
-      }),
-      this.notificationRepository.create({
-        owner_id: transactionHistory.buyer_id,
-        description: `Parabéns! Sua compra foi finalizada com sucesso.`,
-      }),
-      this.skinRepository.updateById(transaction.skin_id, {
-        status: "Concluído",
-        saledAt: new Date(),
-      }),
-      this.walletRepository.updateByUserValue(
-        transactionHistory.seller_id,
-        "increment",
-        porcentagem
-      ),
-    ]);
-  }
+  }: IUpdateTransactionHistory) {}
 }
