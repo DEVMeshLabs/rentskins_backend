@@ -50,6 +50,7 @@ export class ValidateTransactionHistoryUseCase {
         );
       }
     );
+    console.log(filterTransactionParticipantsId);
     const filterTransactionParticipantsItems =
       filterTransactionParticipantsId.filter((tran: Daum) => {
         return tran.items.sent.some((item) => {
@@ -62,6 +63,7 @@ export class ValidateTransactionHistoryUseCase {
       });
 
     if (filterTransactionParticipantsItems.length) {
+      console.log(filterTransactionParticipantsItems);
       await this.handleSuccessTransaction({
         transactionHistory,
       });
