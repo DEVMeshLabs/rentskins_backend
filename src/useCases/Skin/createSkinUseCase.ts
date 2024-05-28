@@ -39,17 +39,22 @@ export class CreateSkinUseCase {
       throw new KeySteamNotFoundError();
     }
 
+    const idSkin = duplicateSkins[0].id;
+    const duplicateSkinName = duplicateSkins[0].skin_name;
+    const duplicateSkinAssetId = duplicateSkins[0].asset_id;
+
     if (duplicateSkins.length > 0) {
-      const idSkin = duplicateSkins[0].id;
-      const duplicateSkinName = duplicateSkins[0].skin_name;
-      const duplicateSkinAssetId = duplicateSkins[0].asset_id;
       throw new SkinAlreadyExistsError(
         duplicateSkinName,
         idSkin,
         duplicateSkinAssetId
       );
     } else if (findSkinTransaction.length > 0) {
-      throw new SkinHasAlreadyBeenSoldOrAnnounced();
+      throw new SkinHasAlreadyBeenSoldOrAnnounced(
+        duplicateSkinName,
+        idSkin,
+        duplicateSkinAssetId
+      );
     }
 
     const skinSlug = await slug(
