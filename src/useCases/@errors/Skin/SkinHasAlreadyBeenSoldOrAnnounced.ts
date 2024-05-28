@@ -1,5 +1,9 @@
 export class SkinHasAlreadyBeenSoldOrAnnounced extends Error {
-  constructor() {
-    super("Essa skin já foi anunciada.");
+  public id: string;
+  public asset_id: string;
+  constructor(message?: string, id?: string, asset_id?: string) {
+    super(`O item ${message !== undefined ? message : ""} já foi anunciado.`);
+    this.asset_id = asset_id;
+    this.id = id;
   }
 }
