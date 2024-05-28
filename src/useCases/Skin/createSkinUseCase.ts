@@ -24,7 +24,7 @@ export class CreateSkinUseCase {
       (item) => item.asset_id === data.asset_id
     );
 
-    const findSkinTransaction = existingTransaction.filter((item: any) => {
+    const findSkinTransaction: any = existingTransaction.filter((item: any) => {
       return (
         item.skin.asset_id === data.asset_id &&
         (item.status === "Default" ||
@@ -39,22 +39,18 @@ export class CreateSkinUseCase {
       throw new KeySteamNotFoundError();
     }
 
-    const idSkin = duplicateSkins[0].id;
-    const duplicateSkinName = duplicateSkins[0].skin_name;
-    const duplicateSkinAssetId = duplicateSkins[0].asset_id;
-
     if (duplicateSkins.length > 0) {
+      const idSkin = duplicateSkins[0].id;
+      const duplicateSkinName = duplicateSkins[0].skin_name;
+      const duplicateSkinAssetId = duplicateSkins[0].asset_id;
       throw new SkinAlreadyExistsError(
         duplicateSkinName,
         idSkin,
         duplicateSkinAssetId
       );
     } else if (findSkinTransaction.length > 0) {
-      throw new SkinHasAlreadyBeenSoldOrAnnounced(
-        duplicateSkinName,
-        idSkin,
-        duplicateSkinAssetId
-      );
+      const transactionDuplicate = findSkinTransaction[0].skin.skin_name;
+      throw new SkinHasAlreadyBeenSoldOrAnnounced(transactionDuplicate);
     }
 
     const skinSlug = await slug(
