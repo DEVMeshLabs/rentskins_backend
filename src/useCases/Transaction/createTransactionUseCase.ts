@@ -117,7 +117,7 @@ export class CreateTransactionUseCase {
       seller_id,
       buyer_id,
       asset_id: findSkin.asset_id,
-      dateProcess: addHours(2),
+      dateProcess: addHours(12),
     });
 
     return createTransaction;
