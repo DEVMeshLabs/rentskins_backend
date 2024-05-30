@@ -99,7 +99,7 @@ export class CronJobProcessTransaction {
         processTransaction: "Completed",
       }),
       this.transactionRepository.updateId(transaction.id, {
-        status: "Concluído",
+        status: "NegociationAccepted",
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
@@ -139,7 +139,7 @@ export class CronJobProcessTransaction {
         processTransaction: "Failed",
       }),
       this.transactionRepository.updateId(transaction.id, {
-        status: "Falhou",
+        status: "NegociationRejected",
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
