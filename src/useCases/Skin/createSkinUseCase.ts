@@ -40,6 +40,8 @@ export class CreateSkinUseCase {
     }
 
     if (duplicateSkins.length > 0) {
+      console.log(duplicateSkins);
+
       const idSkin = duplicateSkins[0].id;
       const duplicateSkinName = duplicateSkins[0].skin_name;
       const duplicateSkinAssetId = duplicateSkins[0].asset_id;
