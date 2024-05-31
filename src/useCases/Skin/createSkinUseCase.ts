@@ -7,6 +7,7 @@ import { IConfigurationRepository } from "@/repositories/interfaceRepository/ICo
 import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
 import { SkinHasAlreadyBeenSoldOrAnnounced } from "../@errors/Skin/SkinHasAlreadyBeenSoldOrAnnounced";
+import { makeGetMedianPriceUseCase } from "../@factories/Skin/makeGetMedianPriceUseCase";
 
 export class CreateSkinUseCase {
   constructor(
@@ -53,6 +54,11 @@ export class CreateSkinUseCase {
       throw new SkinHasAlreadyBeenSoldOrAnnounced(transactionDuplicate);
     }
 
+    const getMediaPrice = makeGetMedianPriceUseCase();
+    const mediaPrice = await getMediaPrice.execute([
+      data.skin_market_hash_name,
+    ]);
+
     const skinSlug = await slug(
       data.skin_category,
       data.skin_weapon,
@@ -61,6 +67,8 @@ export class CreateSkinUseCase {
 
     const skin = {
       ...data,
+      skin_media_price_steam:
+        mediaPrice[0].replace(/R\$\s*/, "") || "Indisponível",
       slug: skinSlug,
     };
 

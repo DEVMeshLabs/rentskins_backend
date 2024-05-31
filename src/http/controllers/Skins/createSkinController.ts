@@ -18,6 +18,7 @@ export async function createSkinController(
       async ({
         skin_image,
         skin_name,
+        skin_market_hash_name,
         skin_category,
         skin_weapon,
         skin_price,
@@ -25,7 +26,6 @@ export async function createSkinController(
         skin_paintseed,
         skin_classid,
         skin_instanceid,
-        skin_market_hash_name,
         skin_rarity,
         skin_link_game,
         skin_link_steam,
@@ -39,6 +39,7 @@ export async function createSkinController(
         await skinRepository.execute({
           skin_image,
           skin_name,
+          skin_market_hash_name,
           skin_category,
           skin_weapon,
           skin_price,
@@ -55,7 +56,6 @@ export async function createSkinController(
           stickers,
           skin_classid,
           skin_instanceid,
-          skin_market_hash_name,
         })
     );
 

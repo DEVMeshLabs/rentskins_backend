@@ -11,35 +11,36 @@ datasource db {
 }
 
 model Skin {
-  id                    String         @id @default(uuid()) @db.VarChar(36)
-  asset_id              String         @db.VarChar(255)
-  skin_image            String         @db.VarChar(255)
-  skin_name             String         @db.VarChar(255)
-  skin_market_hash_name String         @db.VarChar(255)
-  skin_category         String         @db.VarChar(255)
-  skin_weapon           String         @db.VarChar(255)
-  skin_price            Float
-  skin_float            String         @db.VarChar(255)
-  skin_paintseed        Float
-  skin_classid          String         @db.VarChar(255)
-  skin_instanceid       String         @db.VarChar(255)
-  skin_rarity           String         @db.VarChar(255)
-  skin_link_game        String         @db.VarChar(255)
-  skin_link_steam       String         @db.VarChar(255)
-  seller_name           String         @db.VarChar(255)
-  seller_id             String         @db.VarChar(255)
-  status                String?        @db.VarChar(255)
-  status_float          String         @db.VarChar(255)
-  slug                  String?        @db.VarChar(255)
-  sale_type             String?        @db.VarChar(255)
-  stickers              Json?
-  saledAt               DateTime?
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime?
-  deletedAt             DateTime?
-  Notification          Notification[]
-  skinToCart            SkinToCart[]
-  Transaction           Transaction[]
+  id                     String         @id @default(uuid()) @db.VarChar(36)
+  asset_id               String         @db.VarChar(255)
+  skin_image             String         @db.VarChar(255)
+  skin_name              String         @db.VarChar(255)
+  skin_market_hash_name  String         @db.VarChar(255)
+  skin_category          String         @db.VarChar(255)
+  skin_weapon            String         @db.VarChar(255)
+  skin_price             Float
+  skin_media_price_steam String?        @db.VarChar(255)
+  skin_float             String         @db.VarChar(255)
+  skin_paintseed         Float
+  skin_classid           String         @db.VarChar(255)
+  skin_instanceid        String         @db.VarChar(255)
+  skin_rarity            String         @db.VarChar(255)
+  skin_link_game         String         @db.VarChar(255)
+  skin_link_steam        String         @db.VarChar(255)
+  seller_name            String         @db.VarChar(255)
+  seller_id              String         @db.VarChar(255)
+  status                 String?        @db.VarChar(255)
+  status_float           String         @db.VarChar(255)
+  slug                   String?        @db.VarChar(255)
+  sale_type              String?        @db.VarChar(255)
+  stickers               Json?
+  saledAt                DateTime?
+  createdAt              DateTime       @default(now())
+  updatedAt              DateTime?
+  deletedAt              DateTime?
+  Notification           Notification[]
+  skinToCart             SkinToCart[]
+  Transaction            Transaction[]
 }
 
 model SkinToCart {
