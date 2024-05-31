@@ -40,6 +40,8 @@ export class ValidateTransactionHistoryUseCase {
       transactionHistory.transaction_id
     );
     if (transactionHistory.processTransaction === "Pending") {
+      console.log("Entrou aqui");
+
       const skin = await this.skinRepository.findById(transaction.skin_id);
 
       const filterTransactionParticipantsId = historic.payload.data.filter(
@@ -50,9 +52,14 @@ export class ValidateTransactionHistoryUseCase {
           );
         }
       );
+      console.log(
+        "filterTransactionParticipantsId",
+        filterTransactionParticipantsId
+      );
       const filterTransactionParticipantsItems =
         filterTransactionParticipantsId.filter((tran: Daum) => {
           return tran.items.sent.some((item) => {
+            console.log("Items", item);
             return (
               item.markethashname === skin.skin_market_hash_name &&
               item.instanceid === skin.skin_instanceid &&
@@ -60,8 +67,12 @@ export class ValidateTransactionHistoryUseCase {
             );
           });
         });
-
+      console.log(
+        "filterTransactionParticipantsItems",
+        filterTransactionParticipantsItems
+      );
       if (filterTransactionParticipantsItems.length) {
+        console.log("Entrou aqui 2");
         await this.handleSuccessTransaction({
           transactionHistory,
         });
