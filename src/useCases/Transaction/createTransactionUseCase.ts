@@ -21,6 +21,7 @@ interface ITransactionRequest {
   seller_id: string;
   buyer_id: string;
   skin_id: string;
+  status?: string;
 }
 
 export class CreateTransactionUseCase {
@@ -34,7 +35,7 @@ export class CreateTransactionUseCase {
     private configurationRepository: IConfigurationRepository
   ) {}
 
-  async execute({ seller_id, buyer_id, skin_id }: ITransactionRequest) {
+  async execute({ seller_id, buyer_id, skin_id, status }: ITransactionRequest) {
     const [
       perfilBuyer,
       perfilSeller,
@@ -62,17 +63,14 @@ export class CreateTransactionUseCase {
       throw new InsufficientFundsError();
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
-    } else if (
-      findSkinTransaction.status === "Default" ||
-      findSkinTransaction.status === "NegotiationSend"
-    ) {
-      throw new SkinHasAlreadyBeenSoldError(
-        `${findSkin.skin_name} ${findSkin.asset_id}`
-      );
+    } else if (findSkinTransaction) {
+      if (
+        (findSkinTransaction && findSkinTransaction.status === "InProgress") ||
+        findSkinTransaction.status === "NegotiationSend"
+      ) {
+        throw new SkinHasAlreadyBeenSoldError();
+      }
     }
-
-    // Default
-    // NegotiationSend
 
     const formattedBalance = findSkin.skin_price.toLocaleString("pt-BR", {
       style: "currency",

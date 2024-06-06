@@ -77,7 +77,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   async updateStatus(
     id: string,
     status:
-      | "Default"
+      | "InProgress"
       | "NegotiationSend"
       | "NegociationAccepted"
       | "NegociationRejected"

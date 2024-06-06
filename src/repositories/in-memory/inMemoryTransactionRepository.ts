@@ -18,7 +18,7 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
       seller_confirm: "Pending",
       buyer_confirm: "Pending",
       balance: data.balance,
-      status: "Default",
+      status: data.status ?? "InProgress",
       salesAt: null,
       createdAt: new Date(),
       updatedAt: null,
@@ -47,6 +47,7 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     const getSkinTransaction = this.transactions.find(
       (item) => item.skin_id === skin_id
     );
+
     return getSkinTransaction;
   }
 
@@ -79,7 +80,7 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
   async updateStatus(
     id: string,
     status:
-      | "Default"
+      | "InProgress"
       | "NegotiationSend"
       | "NegociationAccepted"
       | "NegociationRejected"
