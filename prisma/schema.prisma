@@ -131,6 +131,7 @@ model Perfil {
 }
 
 enum TransactionStatus {
+  Default
   InProgress
   NegotiationSend
   NegociationAccepted
