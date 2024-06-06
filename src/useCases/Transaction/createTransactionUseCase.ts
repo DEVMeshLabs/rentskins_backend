@@ -63,14 +63,16 @@ export class CreateTransactionUseCase {
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
     } else if (
-      (findSkinTransaction &&
-        findSkinTransaction.status !== "NegociationAccepted") ||
-      findSkinTransaction.status !== "NegociationRejected"
+      findSkinTransaction.status === "Default" ||
+      findSkinTransaction.status === "NegotiationSend"
     ) {
       throw new SkinHasAlreadyBeenSoldError(
         `${findSkin.skin_name} ${findSkin.asset_id}`
       );
     }
+
+    // Default
+    // NegotiationSend
 
     const formattedBalance = findSkin.skin_price.toLocaleString("pt-BR", {
       style: "currency",
