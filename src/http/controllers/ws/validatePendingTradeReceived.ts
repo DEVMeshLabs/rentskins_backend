@@ -32,7 +32,7 @@ export async function validatePendingTradeReceived(
     }
     const tradeoffers = body.payload.tradeoffers;
 
-    if (transaction.status === "Default") {
+    if (transaction.status === "InProgress") {
       const filterSkin = tradeoffers.filter(
         (item: Tradeoffer) => item.participantsteamid === transaction.seller_id
       );

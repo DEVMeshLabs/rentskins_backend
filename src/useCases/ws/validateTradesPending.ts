@@ -28,7 +28,7 @@ export class ValidateTradesPending {
     const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
     if (
-      transaction.status === "Default" &&
+      transaction.status === "InProgress" &&
       tradeoffers.participantsteamid === transaction.buyer_id
     ) {
       const filterSkin = tradeoffers.myitems.filter((item) => {

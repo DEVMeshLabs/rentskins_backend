@@ -28,7 +28,7 @@ export class CreateSkinUseCase {
     const findSkinTransaction: any = existingTransaction.filter((item: any) => {
       return (
         item.skin.asset_id === data.asset_id &&
-        (item.status === "Default" ||
+        (item.status === "InProgress" ||
           item.status === "NegociationAccepted" ||
           item.status === "NegotiationSend")
       );

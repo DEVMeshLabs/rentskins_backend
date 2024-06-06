@@ -10,7 +10,7 @@ export async function updateStatusTransactionController(
     const { id } = req.params as { id: string };
     const { status } = req.body as {
       status:
-        | "Default"
+        | "InProgress"
         | "NegotiationSend"
         | "NegociationAccepted"
         | "NegociationRejected";
