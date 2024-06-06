@@ -64,7 +64,7 @@ export class CreateTransactionUseCase {
       throw new CannotAdvertiseSkinNotYour();
     } else if (findSkinTransaction) {
       if (
-        (findSkinTransaction && findSkinTransaction.status === "InProgress") ||
+        (findSkinTransaction && findSkinTransaction.status === "Default") ||
         findSkinTransaction.status === "NegotiationSend"
       ) {
         throw new SkinHasAlreadyBeenSoldError();
@@ -82,7 +82,6 @@ export class CreateTransactionUseCase {
       seller_id,
       buyer_id,
       balance: findSkin.skin_price,
-      status: "InProgress",
     });
 
     if (!createTransaction) {

@@ -95,7 +95,7 @@ describe("Transaction Use Case", () => {
     expect(createTransaction.id).toEqual(expect.any(String));
     expect(createTransaction.balance).toEqual(skin.skin_price);
     expect(getUser.total_exchanges).toEqual(1);
-    expect(getTransaction.status).toEqual("InProgress");
+    expect(getTransaction.status).toEqual("Default");
     expect(skinRepository.skins[0].status).toEqual("Em andamento");
     vi.advanceTimersByTime(5000);
   });
@@ -273,6 +273,6 @@ describe("Transaction Use Case", () => {
     });
     console.log("ESSE", createTransaction2);
 
-    expect(createTransaction2.status).toEqual("InProgress");
+    expect(createTransaction2.status).toEqual("Default");
   });
 });

@@ -18,7 +18,7 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
       seller_confirm: "Pending",
       buyer_confirm: "Pending",
       balance: data.balance,
-      status: data.status ?? "InProgress",
+      status: data.status ?? "Default",
       salesAt: null,
       createdAt: new Date(),
       updatedAt: null,
@@ -80,7 +80,7 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
   async updateStatus(
     id: string,
     status:
-      | "InProgress"
+      | "Default"
       | "NegotiationSend"
       | "NegociationAccepted"
       | "NegociationRejected"
