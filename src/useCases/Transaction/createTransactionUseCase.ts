@@ -62,15 +62,14 @@ export class CreateTransactionUseCase {
       throw new InsufficientFundsError();
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
+    } else if (findSkinTransaction) {
+      if (
+        (findSkinTransaction && findSkinTransaction.status === "InProgress") ||
+        findSkinTransaction.status === "NegotiationSend"
+      ) {
+        throw new SkinHasAlreadyBeenSoldError();
+      }
     }
-    // } else if (findSkinTransaction) {
-    //   if (
-    //     (findSkinTransaction && findSkinTransaction.status === "InProgress") ||
-    //     findSkinTransaction.status === "NegotiationSend"
-    //   ) {
-    //     throw new SkinHasAlreadyBeenSoldError();
-    //   }
-    // }
 
     const formattedBalance = findSkin.skin_price.toLocaleString("pt-BR", {
       style: "currency",
@@ -84,6 +83,7 @@ export class CreateTransactionUseCase {
         seller_id,
         buyer_id,
         balance: findSkin.skin_price,
+        status: "InProgress",
       }),
 
       this.notificationsRepository.create({
