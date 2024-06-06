@@ -31,6 +31,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
       where: { id, deletedAt: null },
       include: { skin: true },
     });
+
     return findTransaction;
   }
 
