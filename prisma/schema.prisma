@@ -131,7 +131,7 @@ model Perfil {
 }
 
 enum TransactionStatus {
-  Default
+  InProgress
   NegotiationSend
   NegociationAccepted
   NegociationRejected
@@ -145,7 +145,7 @@ model Transaction {
   seller_confirm     String?              @default("Pendente") @db.VarChar(255)
   buyer_confirm      String?              @default("Pendente") @db.VarChar(255)
   balance            Float
-  status             TransactionStatus    @default(Default)
+  status             TransactionStatus    @default(InProgress)
   createdAt          DateTime             @default(now())
   salesAt            DateTime?
   updatedAt          DateTime?

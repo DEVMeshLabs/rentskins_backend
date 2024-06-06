@@ -20,7 +20,7 @@ export interface ITransactionRepository {
   updateStatus(
     id: string,
     status:
-      | "Default"
+      | "InProgress"
       | "NegotiationSend"
       | "NegociationAccepted"
       | "NegociationRejected"
