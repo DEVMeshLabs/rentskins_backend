@@ -5,10 +5,7 @@ import { prisma } from "@/lib/prisma";
 export class PrismaTransactionRepository implements ITransactionRepository {
   async create(data: Prisma.TransactionUncheckedCreateInput) {
     const create = await prisma.transaction.create({
-      data: {
-        status: "InProgress",
-        ...data,
-      },
+      data,
     });
     return create;
   }
@@ -81,7 +78,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   async updateStatus(
     id: string,
     status:
-      | "InProgress"
+      | "Default"
       | "NegotiationSend"
       | "NegociationAccepted"
       | "NegociationRejected"

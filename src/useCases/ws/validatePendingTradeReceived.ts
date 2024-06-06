@@ -23,7 +23,7 @@ export class ValidatePendingTradeReceived {
     } else if (transaction.status === "NegotiationSend") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
-    if (transaction.status === "InProgress") {
+    if (transaction.status === "Default") {
       // const tradeoffers = historic.jsonPayload.payload.tradeoffers;
 
       const response = await this.transactionRepository.updateStatus(

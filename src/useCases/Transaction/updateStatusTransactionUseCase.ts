@@ -6,7 +6,7 @@ export class UpdateStatusTransactionUseCase {
   async execute(
     id: string,
     status:
-      | "InProgress"
+      | "Default"
       | "NegotiationSend"
       | "NegociationAccepted"
       | "NegociationRejected"
