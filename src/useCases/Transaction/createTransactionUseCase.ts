@@ -21,7 +21,6 @@ interface ITransactionRequest {
   seller_id: string;
   buyer_id: string;
   skin_id: string;
-  status?: string;
 }
 
 export class CreateTransactionUseCase {
@@ -35,7 +34,7 @@ export class CreateTransactionUseCase {
     private configurationRepository: IConfigurationRepository
   ) {}
 
-  async execute({ seller_id, buyer_id, skin_id, status }: ITransactionRequest) {
+  async execute({ seller_id, buyer_id, skin_id }: ITransactionRequest) {
     const [
       perfilBuyer,
       perfilSeller,
