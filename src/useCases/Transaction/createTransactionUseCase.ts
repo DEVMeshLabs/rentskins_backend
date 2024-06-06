@@ -77,15 +77,19 @@ export class CreateTransactionUseCase {
       minimumFractionDigits: 2,
     });
 
-    const [createTransaction] = await Promise.all([
-      this.transactionRepository.create({
-        skin_id,
-        seller_id,
-        buyer_id,
-        balance: findSkin.skin_price,
-        status: "InProgress",
-      }),
+    const createTransaction = await this.transactionRepository.create({
+      skin_id,
+      seller_id,
+      buyer_id,
+      balance: findSkin.skin_price,
+      status: "InProgress",
+    });
 
+    if (!createTransaction) {
+      throw new Error("Transaction not created");
+    }
+
+    await Promise.all([
       this.notificationsRepository.create({
         owner_id: perfilSeller.owner_id,
         description: `A transação do item ${findSkin.skin_name} foi iniciada por ${formattedBalance}.`,
@@ -111,15 +115,14 @@ export class CreateTransactionUseCase {
       this.skinRepository.updateById(findSkin.id, {
         status: "Em andamento",
       }),
+      this.transactionHisotry.create({
+        transaction_id: createTransaction.id,
+        seller_id,
+        buyer_id,
+        asset_id: findSkin.asset_id,
+        dateProcess: addHours(12),
+      }),
     ]);
-
-    await this.transactionHisotry.create({
-      transaction_id: createTransaction.id,
-      seller_id,
-      buyer_id,
-      asset_id: findSkin.asset_id,
-      dateProcess: addHours(12),
-    });
 
     return createTransaction;
   }
