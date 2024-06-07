@@ -7,7 +7,7 @@ export class GetManyTransactionHistoryUseCase {
 
   async execute() {
     const allTransactionHistory =
-      await this.transactionHistoryRepository.findByMany();
+      await this.transactionHistoryRepository.findByMany("false");
     return allTransactionHistory;
   }
 }
