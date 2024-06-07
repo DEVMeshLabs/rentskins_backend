@@ -56,11 +56,11 @@ export async function getInventoryUserController(
 
           const filterInventorySkins = inventory.filter(
             (item) =>
-              !skinsManySet.has(item.assetid) &&
+              !skinsManySet.has(item.assetid) ||
               !transactionsSet.has(item.assetid)
           );
           console.log(filterInventorySkins);
-          return reply.status(200).send(filterInventorySkins);
+          return reply.status(200).send(inventory);
         }
       }
     );
