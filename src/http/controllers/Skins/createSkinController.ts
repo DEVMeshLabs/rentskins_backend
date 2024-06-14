@@ -35,6 +35,8 @@ export async function createSkinController(
         status_float,
         sale_type,
         pricesafe7d,
+        borderColor,
+        color,
         slug,
         stickers,
       }) =>
@@ -57,6 +59,8 @@ export async function createSkinController(
           asset_id,
           stickers,
           pricesafe7d,
+          borderColor,
+          color,
           slug,
           skin_classid,
           skin_instanceid,
