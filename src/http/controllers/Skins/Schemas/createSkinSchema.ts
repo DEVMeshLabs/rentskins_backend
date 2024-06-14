@@ -21,6 +21,8 @@ const createSkinSchema = z.array(
     status: z.string(),
     slug: z.string(),
     pricesafe7d: z.number(),
+    borderColor: z.string(),
+    color: z.string(),
     status_float: z.string(),
     sale_type: z.string(),
     stickers: z

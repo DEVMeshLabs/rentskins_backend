@@ -19,7 +19,7 @@ model Skin {
   skin_category         String         @db.VarChar(255)
   skin_weapon           String         @db.VarChar(255)
   skin_price            Float
-  pricesafe7d           Float?
+  pricesafe7d           Float
   skin_float            String         @db.VarChar(255)
   skin_paintseed        Float
   skin_classid          String         @db.VarChar(255)
@@ -32,6 +32,8 @@ model Skin {
   status                String?        @db.VarChar(255)
   status_float          String         @db.VarChar(255)
   slug                  String?        @db.VarChar(255)
+  borderColor           String?        @db.VarChar(255)
+  color                 String?        @db.VarChar(255)
   sale_type             String?        @db.VarChar(255)
   stickers              Json?
   saledAt               DateTime?
