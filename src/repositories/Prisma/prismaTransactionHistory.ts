@@ -12,7 +12,7 @@ export class PrismaTransactionHistoryRepository
     return createdTransaction;
   }
 
-  async findByMany(isProcess: false) {
+  async findByMany(isProcess: "Default" | "Pending" | "Completed" | "Failed") {
     const allTransactionsHistory = await prisma.transactionHistory.findMany({
       where: { deletedAt: null, processTransaction: isProcess },
       orderBy: { createdAt: "desc" },
@@ -23,6 +23,13 @@ export class PrismaTransactionHistoryRepository
   async findById(id: string) {
     const findTransaction = await prisma.transactionHistory.findFirst({
       where: { id, deletedAt: null },
+    });
+    return findTransaction;
+  }
+
+  async findByTrasactionId(transactionId: string) {
+    const findTransaction = await prisma.transactionHistory.findFirst({
+      where: { transaction_id: transactionId, deletedAt: null },
     });
     return findTransaction;
   }

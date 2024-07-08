@@ -16,6 +16,8 @@ import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsE
 import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
 import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
 import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
+import { SkinHasAlreadyBeenSoldError } from "@/useCases/@errors/Transaction/SkinHasAlreadyBeenSoldError";
+import { CannotAdvertiseSkinNotYour } from "@/useCases/@errors/Transaction/CannotAdvertiseSkinNotYour";
 
 let transactionRepository: InMemoryTransactionRepository;
 let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
@@ -61,6 +63,7 @@ describe("Transaction Use Case", () => {
     const [skin] = await Promise.all([
       makeCreateSkin.execute({
         seller_id: "76561199205585878",
+        asset_id: "123456",
       }),
       makeCreatePerfilRepository.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561198195920183"),
@@ -92,8 +95,8 @@ describe("Transaction Use Case", () => {
     expect(createTransaction.id).toEqual(expect.any(String));
     expect(createTransaction.balance).toEqual(skin.skin_price);
     expect(getUser.total_exchanges).toEqual(1);
-    expect(getTransaction.status).toEqual("Em andamento");
-
+    expect(getTransaction.status).toEqual("Default");
+    expect(skinRepository.skins[0].status).toEqual("Em andamento");
     vi.advanceTimersByTime(5000);
   });
 
@@ -169,66 +172,107 @@ describe("Transaction Use Case", () => {
     ).rejects.toBeInstanceOf(InsufficientFundsError);
   });
 
-  // it("Verificando se consigo vender skins que não são minhas", async () => {
-  //   const [skin] = await Promise.all([
-  //     makeCreateSkin.execute({
-  //       seller_id: "76561199205585878",
-  //     }),
-  //     makeCreatePerfilRepository.execute("76561199205585878"),
-  //     makeCreatePerfilRepository.execute("76561198195920183"),
-  //     makeCreatePerfilRepository.execute("76561199205585877"),
+  it("Verificando se consigo vender skins que não são minhas", async () => {
+    const [skin] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
+      makeCreatePerfilRepository.execute("76561199205585877"),
 
-  //     walletRepository.create({
-  //       owner_name: "Italo",
-  //       owner_id: "76561199205585878",
-  //     }),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
 
-  //     walletRepository.create({
-  //       owner_name: "Araujo",
-  //       owner_id: "76561198195920183",
-  //       value: 1000,
-  //     }),
-  //   ]);
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 1000,
+      }),
+    ]);
 
-  //   await expect(() =>
-  //     sut.execute({
-  //       skin_id: skin.id,
-  //       seller_id: "76561199205585877",
-  //       buyer_id: "76561198195920183",
-  //     })
-  //   ).rejects.toBeInstanceOf(CannotAdvertiseSkinNotYour);
-  // });
+    await expect(() =>
+      sut.execute({
+        skin_id: skin.id,
+        seller_id: "76561199205585877",
+        buyer_id: "76561198195920183",
+      })
+    ).rejects.toBeInstanceOf(CannotAdvertiseSkinNotYour);
+  });
 
-  // it("Verificando a duplicação de anúncios da mesma skin", async () => {
-  //   const [skin] = await Promise.all([
-  //     makeCreateSkin.execute({
-  //       seller_id: "76561199205585878",
-  //     }),
-  //     makeCreatePerfilRepository.execute("76561199205585878"),
-  //     makeCreatePerfilRepository.execute("76561198195920183"),
-  //     walletRepository.create({
-  //       owner_name: "Italo",
-  //       owner_id: "76561199205585878",
-  //     }),
+  it("Verificando a duplicação de anúncios da mesma skin", async () => {
+    const [skin] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
 
-  //     walletRepository.create({
-  //       owner_name: "Araujo",
-  //       owner_id: "76561198195920183",
-  //       value: 10000,
-  //     }),
-  //   ]);
-  //   await sut.execute({
-  //     skin_id: skin.id,
-  //     seller_id: "76561199205585878",
-  //     buyer_id: "76561198195920183",
-  //   });
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 10000,
+      }),
+    ]);
+    await sut.execute({
+      skin_id: skin.id,
+      seller_id: "76561199205585878",
+      buyer_id: "76561198195920183",
+    });
 
-  //   await expect(() =>
-  //     sut.execute({
-  //       skin_id: skin.id,
-  //       seller_id: "76561199205585878",
-  //       buyer_id: "76561198195920183",
-  //     })
-  //   ).rejects.toBeInstanceOf(SkinHasAlreadyBeenSoldError);
-  // });
+    await expect(() =>
+      sut.execute({
+        skin_id: skin.id,
+        seller_id: "76561199205585878",
+        buyer_id: "76561198195920183",
+      })
+    ).rejects.toBeInstanceOf(SkinHasAlreadyBeenSoldError);
+  });
+
+  it("Verificando se consigo vender uma skin em fase de transação", async () => {
+    const [skin] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: "76561199205585878",
+      }),
+      makeCreatePerfilRepository.execute("76561199205585878"),
+      makeCreatePerfilRepository.execute("76561198195920183"),
+      walletRepository.create({
+        owner_name: "Italo",
+        owner_id: "76561199205585878",
+      }),
+
+      walletRepository.create({
+        owner_name: "Araujo",
+        owner_id: "76561198195920183",
+        value: 10000,
+      }),
+    ]);
+
+    const createTransaction = await sut.execute({
+      skin_id: skin.id,
+      seller_id: "76561199205585878",
+      buyer_id: "76561198195920183",
+      status: "NegociationRejected",
+    });
+
+    await transactionRepository.updateStatus(
+      createTransaction.id,
+      "NegociationRejected"
+    );
+
+    const createTransaction2 = await sut.execute({
+      skin_id: skin.id,
+      seller_id: "76561199205585878",
+      buyer_id: "76561198195920183",
+    });
+    console.log("ESSE", createTransaction2);
+
+    expect(createTransaction2.status).toEqual("Default");
+  });
 });

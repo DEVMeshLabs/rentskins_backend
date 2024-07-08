@@ -1,7 +1,4 @@
-import { env } from "@/env";
-
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
-import axios from "axios";
 import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { TransactionHistory } from "@prisma/client";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
@@ -39,35 +36,11 @@ export class CronJobProcessTransaction {
   }
 
   // --------------------------------------------------------------------------------------------
-  async fetchInventory(
-    steamcommunityapikey: string,
-    partnersteamid: string,
-    assetid: string
-  ) {
-    try {
-      const baseUrl = "https://www.steamwebapi.com";
-
-      const inventorySeller = await axios
-        .post(
-          `${baseUrl}/steam/api/trade/status?key=${env.KEY_STEAM_WEB_API}`,
-          {
-            steamcommunityapikey,
-            partnersteamid,
-            assetid,
-          }
-        )
-        .then((response) => response.data);
-      return inventorySeller;
-    } catch (error) {
-      return error.response.data;
-    }
-  }
-
-  // --------------------------------------------------------------------------------------------
   async processPendingTransactions() {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
-      false
+      "Pending"
     );
+    console.log(allTransactions);
     if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
     }
@@ -77,59 +50,35 @@ export class CronJobProcessTransaction {
       if (!datesCompare || transaction.transaction_id === null) {
         return;
       }
-      const inventorySeller = await this.processTransaction(transaction);
-
-      if (inventorySeller && inventorySeller.length > 0) {
-        const { completed, partnersteamid, sentassetids, sent } =
-          inventorySeller[0];
-
-        const { buyer_id, asset_id } = transaction;
-        if (
-          completed &&
-          partnersteamid === buyer_id &&
-          sentassetids !== undefined &&
-          sentassetids[0] === asset_id &&
-          sent
-        ) {
-          await this.handleSuccessTransaction({
-            transactionHistory: transaction,
-          });
-        } else {
-          await this.handleFailedTransaction({
-            transactionHistory: transaction,
-          });
-        }
-      } else {
-        await this.handleFailedTransaction({ transactionHistory: transaction });
-      }
+      await this.handleFailedTransaction({ transactionHistory: transaction });
     }
     return "Transação processada com sucesso.";
   }
 
-  // --------------------------------------------------------------------------------------------
-  async processTransaction(transaction: TransactionHistory) {
-    if (!transaction) {
-      return;
-    }
-    const config = await this.configurationRepository.findByUser(
-      transaction.seller_id
-    );
+  // --------- Ai fudeu -----------------------------------------------------------------------------------
+  // async processTransaction(transaction: TransactionHistory) {
+  //   if (!transaction) {
+  //     return;
+  //   }
+  //   const config = await this.configurationRepository.findByUser(
+  //     transaction.seller_id
+  //   );
 
-    if (!config.key) {
-      return "Key steam not found";
-    }
+  //   if (!config.key) {
+  //     return "Key steam not found";
+  //   }
 
-    if (config && config.key && config.key !== " ") {
-      const inventorySeller = await this.fetchInventory(
-        config.key,
-        transaction.buyer_id,
-        transaction.asset_id
-      );
-      return inventorySeller;
-    } else {
-      return false;
-    }
-  }
+  //   if (config && config.key && config.key !== " ") {
+  //     const inventorySeller = await this.fetchInventory(
+  //       config.key,
+  //       transaction.buyer_id,
+  //       transaction.asset_id
+  //     );
+  //     return inventorySeller;
+  //   } else {
+  //     return false;
+  //   }
+  // }
 
   async handleSuccessTransaction({
     transactionHistory,
@@ -147,10 +96,10 @@ export class CronJobProcessTransaction {
       this.perfilRepository.updateTotalExchanges(perfilSeller.id),
 
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
-        processTransaction: true,
+        processTransaction: "Completed",
       }),
       this.transactionRepository.updateId(transaction.id, {
-        status: "Concluído",
+        status: "NegociationAccepted",
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
@@ -187,14 +136,14 @@ export class CronJobProcessTransaction {
 
     await Promise.all([
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
-        processTransaction: true,
+        processTransaction: "Failed",
       }),
       this.transactionRepository.updateId(transaction.id, {
-        status: "Falhou",
+        status: "NegociationRejected",
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.seller_id,
-        description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi reativado.`,
+        description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi excluído!`,
       }),
       this.notificationRepository.create({
         owner_id: transactionHistory.buyer_id,
@@ -206,8 +155,7 @@ export class CronJobProcessTransaction {
         transaction.balance
       ),
       this.skinRepository.updateById(transaction.skin_id, {
-        status: null,
-        saledAt: null,
+        status: "Falhou",
       }),
       this.perfilRepository.updateByUser(transactionHistory.seller_id, {
         total_exchanges_failed: perfilSeller.total_exchanges_failed + 1,
