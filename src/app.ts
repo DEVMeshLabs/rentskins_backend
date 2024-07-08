@@ -14,7 +14,6 @@ import jwt from "@fastify/jwt";
 import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/router";
 import { Server } from "node:http";
 import { wsRouter } from "./http/controllers/ws/router";
-import fastifyWebsocket from "@fastify/websocket";
 import { transactionHistoryRouter } from "./http/controllers/TransactionHistory/routes";
 
 export const app = fastify();
