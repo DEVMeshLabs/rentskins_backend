@@ -20,7 +20,6 @@ import { transactionHistoryRouter } from "./http/controllers/TransactionHistory/
 export const app = fastify();
 
 app.register(jwt, { secret: env.JWT_SECRET });
-app.register(fastifyWebsocket);
 app.register(skinRouter);
 app.register(walletRouter);
 app.register(configurationRouter);
