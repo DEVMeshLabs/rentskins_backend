@@ -79,9 +79,22 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return findName;
   }
 
-  async findByMany(page: number, pageSize: number) {
+  async findByMany(page: number, pageSize: number, type: string) {
+    const condition = {
+      deletedAt: null,
+      status: null,
+      saledAt: null,
+      sale_type: { hasSome: [type] },
+    };
+
+    const condition2 = {
+      deletedAt: null,
+      status: null,
+      saledAt: null,
+    };
+
     const skinAll = await prisma.skin.findMany({
-      where: { deletedAt: null, status: null, saledAt: null },
+      where: type ? condition : condition2,
       orderBy: { createdAt: "desc" },
       take: pageSize,
       skip: (page - 1) * pageSize,
