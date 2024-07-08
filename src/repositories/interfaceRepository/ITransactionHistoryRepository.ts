@@ -4,7 +4,7 @@ export interface ITransactionHistoryRepository {
   create(
     data: Prisma.TransactionHistoryUncheckedCreateInput
   ): Promise<TransactionHistory>;
-  findByMany(isProcess: boolean): Promise<TransactionHistory[]>;
+  findByMany(isProcess: string): Promise<TransactionHistory[]>;
   findById(id: string): Promise<TransactionHistory | null>;
   findByTrasactionId(transactionId: string): Promise<TransactionHistory | null>;
   updateId(
