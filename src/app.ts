@@ -10,14 +10,12 @@ import { skinToCartRouter } from "./http/controllers/SkinToCart/routes";
 import { env } from "process";
 import { ZodError } from "zod";
 import jwt from "@fastify/jwt";
-import fastifySocketIO from "fastify-socket.io";
 import { Server } from "socket.io";
 import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/router";
 
 export const app = fastify();
 
 app.register(jwt, { secret: env.JWT_SECRET });
-app.register(fastifySocketIO);
 app.register(skinRouter);
 app.register(walletRouter);
 app.register(configurationRouter);
