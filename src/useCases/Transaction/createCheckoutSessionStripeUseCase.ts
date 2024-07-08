@@ -81,7 +81,6 @@ export class CreateCheckoutSessionStripeUseCase {
         .then((res) => res.data)
         .catch((err) => {
           console.log(err);
-          console.log(err.response.data.cause);
         });
       const link = await response;
       const ticket = link.point_of_interaction.transaction_data.ticket_url;

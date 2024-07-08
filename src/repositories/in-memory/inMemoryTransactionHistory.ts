@@ -5,6 +5,12 @@ import { ITransactionHistoryRepository } from "../interfaceRepository/ITransacti
 export class InMemoryTransactionHistoryRepository
   implements ITransactionHistoryRepository
 {
+  findByTrasactionId(
+    transactionId: string
+  ): Promise<TransactionHistory | null> {
+    throw new Error("Method not implemented.");
+  }
+
   public transactionsHistory: TransactionHistory[] = [];
 
   private notImplemented(): Promise<any> {
@@ -17,8 +23,8 @@ export class InMemoryTransactionHistoryRepository
       transaction_id: data.transaction_id ?? null,
       buyer_id: data.buyer_id,
       seller_id: data.seller_id,
-      processTransaction: data.processTransaction ?? "Default",
-      dateProcess: new Date(data.dateProcess), // Convert the value to a Date object
+      processTransaction: data.processTransaction ?? false,
+      dateProcess: new Date(data.dateProcess),
       asset_id: data.asset_id,
       rentalTransaction_id: data.rentalTransaction_id ?? null,
       rental: data.rental ?? false,
@@ -26,7 +32,6 @@ export class InMemoryTransactionHistoryRepository
       updatedAt: null,
       deletedAt: null,
     };
-
     this.transactionsHistory.push(transactionHistory);
     return transactionHistory;
   }
@@ -38,16 +43,9 @@ export class InMemoryTransactionHistoryRepository
     return getTransaction;
   }
 
-  async findByMany(isProcess: string) {
+  async findByMany(isProcess: boolean) {
     const getTransaction = this.transactionsHistory.filter((transaction) => {
       return transaction.processTransaction === isProcess;
-    });
-    return getTransaction;
-  }
-
-  async findByTrasactionId(historyId: string) {
-    const getTransaction = this.transactionsHistory.find((transaction) => {
-      return transaction.transaction_id === historyId;
     });
     return getTransaction;
   }

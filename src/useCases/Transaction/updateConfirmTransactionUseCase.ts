@@ -35,7 +35,7 @@
 //   async execute(
 //     id: string,
 //     status: "Recusado" | "Aceito",
-//     query: "buyer" | null
+//     query: "buyer" | "seller"
 //   ) {
 //     const findTransaction = await this.findTransactionById(id);
 //     this.validateTransaction(findTransaction);
@@ -68,7 +68,7 @@
 //   }
 
 //   private validateTransaction(transaction: Transaction) {
-//     if (transaction.status === "NegociationAccepted") {
+//     if (transaction.status === "Concluído") {
 //       throw new NotUpdateTransaction();
 //     }
 //   }
@@ -77,10 +77,10 @@
 
 //   private async determineStatus(updateConfirm: any): Promise<string> {
 //     return updateConfirm.buyer_confirm === "Aceito"
-//       ? "NegociationAccepted"
+//       ? "Concluído"
 //       : updateConfirm.buyer_confirm === "Recusado"
-//       ? "NegociationRejected"
-//       : "Default";
+//       ? "Falhou"
+//       : "Em andamento";
 //   }
 
 //   private isPending(updateConfirm: any) {
@@ -143,6 +143,12 @@
 //         ? configurationSeller.key
 //         : configurationBuyer.key;
 
+//       // const steamIdOther = "76561198862407248";
+//       // const assetId = "34489117389";
+//       // const key = "C3B106395E5E2FCD39B30DF5E85C28E0";
+//       // assets_received
+//       // assets_given
+
 //       if (hasSellerKey || hasBuyerKey) {
 //         const trade = await Trades.filterTradeHistory(
 //           tradeUserId,
@@ -180,7 +186,7 @@
 //           skin_id: findTransaction.skin_id,
 //         }),
 //         this.transactionRepository.updateId(findTransaction.id, {
-//           status: "NegociationAccepted",
+//           status: "Falhou",
 //         }),
 //         this.skinRepository.updateById(updateConfirm.skin_id, {
 //           status: "Falhou",
@@ -195,7 +201,7 @@
 
 //     // STATUS TRANSACTION CONCLUÍDO
 
-//     if (findTransaction.status === "NegociationAccepted") {
+//     if (findTransaction.status === "Concluído") {
 //       // Atualizar o vendedor e envia as notificações
 //       const sellerUpdates = await this.composeOwnerIdUpdates(
 //         updateConfirm.seller_id,
@@ -226,7 +232,7 @@
 
 //     // STATUS TRANSACTION FALHOU
 
-//     if (findTransaction.status === "NegociationRejected") {
+//     if (findTransaction.status === "Falhou") {
 //       await Promise.all([
 //         this.composeOwnerIdUpdates(findTransaction.buyer_id, true, {
 //           id,
@@ -357,7 +363,7 @@
 //         }),
 //         this.notificationsRepository.create(sellerNotification),
 //         this.transactionRepository.updateId(data.findTransaction.id, {
-//           status: "NegociationRejected",
+//           status: "Falhou",
 //         }),
 //         this.notificationsRepository.create(buyerNotification),
 //         this.skinRepository.updateById(data.updateConfirm.skin_id, {
@@ -384,7 +390,7 @@
 
 //       this.transactionRepository.updateId(data.id, {
 //         salesAt: new Date(),
-//         status: "NegociationAccepted",
+//         status: "Concluído",
 //       }),
 //       this.perfilRepository.updateByUser(ownerId, {
 //         delivery_time: data.mediaDate,
