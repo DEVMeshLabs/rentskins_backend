@@ -12,7 +12,6 @@ export async function createSkinController(
   try {
     const skins = createSkinSchema.parse(req.body);
     const skinRepository = makeCreateUseCase();
-
     const response = skins.map(
       async ({
         skin_image,
