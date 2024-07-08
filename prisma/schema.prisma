@@ -132,6 +132,13 @@ model Perfil {
   configuration             Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
 }
 
+enum TransactionStatus {
+  Default
+  NegotiationSend
+  NegociationAccepted
+  NegociationRejected
+}
+
 model Transaction {
   id                 String               @id @default(uuid()) @db.VarChar(36)
   skin_id            String               @db.VarChar(255)
@@ -140,7 +147,7 @@ model Transaction {
   seller_confirm     String?              @default("Pendente") @db.VarChar(255)
   buyer_confirm      String?              @default("Pendente") @db.VarChar(255)
   balance            Float
-  status             String?              @default("Em andamento") @db.VarChar(255)
+  status             TransactionStatus    @default(Default)
   createdAt          DateTime             @default(now())
   salesAt            DateTime?
   updatedAt          DateTime?
@@ -149,21 +156,28 @@ model Transaction {
   TransactionHistory TransactionHistory[]
 }
 
+enum ProcessTransactionStatus {
+  Default
+  Pending
+  Completed
+  Failed
+}
+
 model TransactionHistory {
-  id                   String             @id @default(uuid()) @db.VarChar(36)
-  buyer_id             String             @db.VarChar(255)
-  seller_id            String             @db.VarChar(255)
-  asset_id             String             @db.VarChar(255)
-  processTransaction   Boolean            @default(false)
+  id                   String                   @id @default(uuid()) @db.VarChar(36)
+  buyer_id             String                   @db.VarChar(255)
+  seller_id            String                   @db.VarChar(255)
+  asset_id             String                   @db.VarChar(255)
+  processTransaction   ProcessTransactionStatus @default(Pending)
   dateProcess          DateTime
-  createdAt            DateTime           @default(now())
-  rental               Boolean            @default(false)
+  createdAt            DateTime                 @default(now())
+  rental               Boolean                  @default(false)
   updatedAt            DateTime?
   deletedAt            DateTime?
-  transaction_id       String?            @db.VarChar(255)
-  rentalTransaction_id String?            @db.VarChar(255)
-  transaction          Transaction?       @relation(fields: [transaction_id], references: [id])
-  rentalTransaction    RentalTransaction? @relation(fields: [rentalTransaction_id], references: [id])
+  transaction_id       String?                  @db.VarChar(255)
+  rentalTransaction_id String?                  @db.VarChar(255)
+  transaction          Transaction?             @relation(fields: [transaction_id], references: [id])
+  rentalTransaction    RentalTransaction?       @relation(fields: [rentalTransaction_id], references: [id])
 }
 
 model RentalTransaction {

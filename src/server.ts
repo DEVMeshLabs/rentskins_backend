@@ -6,7 +6,7 @@ import SteamUser from "steam-user";
 import SteamCommunity from "steamcommunity";
 import job from "node-schedule";
 import { makeCronJobProcessTransaction } from "./useCases/@factories/TransactionHistory/makeCronJobProcessTransaction";
-import { makeCronJobProcessRental } from "./useCases/@factories/RentalTransaction/makeCronJobRental";
+// import { makeCronJobProcessRental } from "./useCases/@factories/RentalTransaction/makeCronJobRental";
 
 export const user = new SteamUser();
 export const csgo = new GlobalOffensive(user);
@@ -16,17 +16,14 @@ export const { checkout, webhooks, customers } = require("stripe")(
 );
 
 const makeCronJobTransaction = makeCronJobProcessTransaction();
-const makeCronJobRental = makeCronJobProcessRental();
+// const makeCronJobRental = makeCronJobProcessRental();
 
-job.scheduleJob("*/1 * * * *", async () => {
-  await Promise.all([
-    makeCronJobTransaction.execute(),
-    makeCronJobRental.execute(),
-  ]);
+job.scheduleJob("*/50 * * * *", async () => {
+  await Promise.all([makeCronJobTransaction.execute()]);
 });
 
 app.register(cors, {
-  origin: true,
+  origin: "*",
 });
 
 app

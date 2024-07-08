@@ -13,7 +13,6 @@ export class CreateWebHookPixUseCase {
     if (req.body) {
       switch (req.body.type) {
         case "payment": {
-          console.log("Tipo: pagamento");
           if (req.body.action === "payment.created") {
             console.log("Pix create");
           }

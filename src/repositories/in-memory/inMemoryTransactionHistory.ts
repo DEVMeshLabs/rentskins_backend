@@ -17,7 +17,7 @@ export class InMemoryTransactionHistoryRepository
       transaction_id: data.transaction_id ?? null,
       buyer_id: data.buyer_id,
       seller_id: data.seller_id,
-      processTransaction: data.processTransaction ?? false,
+      processTransaction: data.processTransaction ?? "Default",
       dateProcess: new Date(data.dateProcess), // Convert the value to a Date object
       asset_id: data.asset_id,
       rentalTransaction_id: data.rentalTransaction_id ?? null,
@@ -26,7 +26,7 @@ export class InMemoryTransactionHistoryRepository
       updatedAt: null,
       deletedAt: null,
     };
-    console.log(transactionHistory);
+
     this.transactionsHistory.push(transactionHistory);
     return transactionHistory;
   }
@@ -38,9 +38,16 @@ export class InMemoryTransactionHistoryRepository
     return getTransaction;
   }
 
-  async findByMany(isProcess: boolean) {
+  async findByMany(isProcess: string) {
     const getTransaction = this.transactionsHistory.filter((transaction) => {
       return transaction.processTransaction === isProcess;
+    });
+    return getTransaction;
+  }
+
+  async findByTrasactionId(historyId: string) {
+    const getTransaction = this.transactionsHistory.find((transaction) => {
+      return transaction.transaction_id === historyId;
     });
     return getTransaction;
   }

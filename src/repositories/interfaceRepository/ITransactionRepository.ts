@@ -10,11 +10,19 @@ export interface ITransactionRepository {
   findByManyUser(seller_id: string): Promise<Transaction[]>;
   updateConfirm(
     id: string,
-    status: string,
-    query: string
+    status: "Recusado" | "Aceito",
+    query: "buyer" | null
   ): Promise<Transaction>;
   updateId(
     id: string,
     data: Prisma.TransactionUncheckedUpdateInput
+  ): Promise<Transaction>;
+  updateStatus(
+    id: string,
+    status:
+      | "Default"
+      | "NegotiationSend"
+      | "NegociationAccepted"
+      | "NegociationRejected"
   ): Promise<Transaction>;
 }

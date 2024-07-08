@@ -4,6 +4,7 @@ import createSkinSchema from "./Schemas/createSkinSchema";
 import { SkinAlreadyExistsError } from "@/useCases/@errors/Skin/SkinAlreadyExistsError";
 import { ZodError } from "zod";
 import { KeySteamNotFoundError } from "@/useCases/@errors/TransactionHistory/KeySteamNotFoundError";
+import { SkinHasAlreadyBeenSoldOrAnnounced } from "@/useCases/@errors/Skin/SkinHasAlreadyBeenSoldOrAnnounced";
 
 export async function createSkinController(
   req: FastifyRequest,
@@ -75,6 +76,8 @@ export async function createSkinController(
       return reply.status(400).send({ error: error.message });
     } else if (error instanceof ZodError) {
       return reply.status(400).send({ error: error.message });
+    } else if (error instanceof SkinHasAlreadyBeenSoldOrAnnounced) {
+      return reply.status(409).send({ error: error.message });
     }
     return reply.status(500).send({ error: error.message });
   }

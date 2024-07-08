@@ -66,7 +66,7 @@ export class CronJobProcessRental {
   // --------------------------------------------------------------------------------------------
   async processPendingTransactions() {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
-      false
+      "Pending"
     );
     console.log(allTransactions);
     if (!allTransactions.length) {
@@ -153,7 +153,7 @@ export class CronJobProcessRental {
       this.perfilRepository.updateTotalExchanges(perfilSeller.id),
 
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
-        processTransaction: true,
+        processTransaction: "Completed",
       }),
       this.rentalTransaction.updateId(rentalTransaction.id, {
         status: "Concluído",
@@ -198,7 +198,7 @@ export class CronJobProcessRental {
 
     await Promise.all([
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
-        processTransaction: true,
+        processTransaction: "Failed",
       }),
       this.rentalTransaction.updateId(rentalTransaction.id, {
         status: "Concluído",

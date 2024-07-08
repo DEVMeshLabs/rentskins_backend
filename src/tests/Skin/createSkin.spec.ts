@@ -7,10 +7,14 @@ import { SkinAlreadyExistsError } from "@/useCases/@errors/Skin/SkinAlreadyExist
 import { InMemoryConfigurationRepository } from "@/repositories/in-memory/inMemoryConfigurationRepository";
 import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfilRepository";
 import { InMemoryPerfilRepository } from "@/repositories/in-memory/inMemoryPerfilRepository";
+import { InMemoryTransactionRepository } from "@/repositories/in-memory/inMemoryTransactionRepository";
+import { InMemoryWalletRepository } from "@/repositories/in-memory/inMemoryWalletRepository";
 
 let skinRepository: InMemorySkinRepository;
 let configRepostiory: InMemoryConfigurationRepository;
 let perfilRepository: InMemoryPerfilRepository;
+let transactionRepository: InMemoryTransactionRepository;
+let walletRepository: InMemoryWalletRepository;
 let makeCreatePerfilRepository: MakeCreatePerfilRepository;
 let sut: CreateSkinUseCase;
 
@@ -19,12 +23,18 @@ describe("Skin Use Case", () => {
     skinRepository = new InMemorySkinRepository();
     configRepostiory = new InMemoryConfigurationRepository();
     perfilRepository = new InMemoryPerfilRepository();
+    transactionRepository = new InMemoryTransactionRepository();
+    walletRepository = new InMemoryWalletRepository();
     makeCreatePerfilRepository = new MakeCreatePerfilRepository(
       perfilRepository,
       configRepostiory
     );
 
-    sut = new CreateSkinUseCase(skinRepository, configRepostiory);
+    sut = new CreateSkinUseCase(
+      skinRepository,
+      configRepostiory,
+      transactionRepository
+    );
   });
 
   it("Deve ser capaz de criar uma skin", async () => {
@@ -51,6 +61,10 @@ describe("Skin Use Case", () => {
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
+      skin_paintseed: 123456,
+      skin_market_hash_name: "",
+      skin_classid: "",
+      skin_instanceid: "",
     });
     expect(skin.id).toEqual(expect.any(String));
   });
@@ -80,6 +94,10 @@ describe("Skin Use Case", () => {
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
+      skin_market_hash_name: "",
+      skin_classid: "",
+      skin_instanceid: "",
+      skin_paintseed: 123457,
     };
 
     await sut.execute(data);
@@ -94,7 +112,10 @@ describe("Skin Use Case", () => {
         "76561198015724229",
         "DBBF677F1392F52023DC909D966F7516"
       ),
-      makeCreatePerfilRepository.execute("76561198862407248"),
+      makeCreatePerfilRepository.execute(
+        "76561198862407248",
+        "DBBF677F1392F52023DC909D966F7517"
+      ),
     ]);
 
     const data = {
@@ -113,6 +134,10 @@ describe("Skin Use Case", () => {
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
+      skin_market_hash_name: "",
+      skin_classid: "",
+      skin_instanceid: "",
+      skin_paintseed: 123458,
     };
 
     const data2 = {
@@ -131,9 +156,95 @@ describe("Skin Use Case", () => {
       status_float: "Muito usada",
       skin_link_game: "/",
       skin_link_steam: "/",
+      skin_market_hash_name: "A New Skin | Trigger Discipline hash name",
+      skin_classid: "",
+      skin_instanceid: "",
+      skin_paintseed: 123459,
     };
 
     const skin1 = await sut.execute(data);
+    const skin2 = await sut.execute(data2);
+
+    expect(skin1.id).toEqual(expect.any(String));
+    expect(skin2.id).toEqual(expect.any(String));
+  });
+
+  it("Não deve ser possível criar uma skin em transação", async () => {
+    await Promise.all([
+      makeCreatePerfilRepository.execute(
+        "76561198015724229",
+        "DBBF677F1392F52023DC909D966F7516"
+      ),
+      makeCreatePerfilRepository.execute(
+        "76561198862407248",
+        "DBBF677F1392F52023DC909D966F7517"
+      ),
+    ]);
+
+    const vendedor = await walletRepository.create({
+      owner_name: "Italo",
+      owner_id: "76561198015724229",
+    });
+
+    const comprador = await walletRepository.create({
+      owner_name: "Araujo",
+      owner_id: "76561198862407248",
+      value: 5000,
+    });
+
+    const data = {
+      asset_id: "20828436604",
+      skin_image: "https://bit.ly/3Jn6aqn",
+      skin_name: "A New Skin | Trigger Discipline",
+      skin_category: "Teste skin secundaria",
+      skin_weapon: "Test skin secundaria",
+      skin_price: 550,
+      skin_float: "0,10072",
+      median_price: 253,
+      seller_name: "Caçadora de demonios",
+      seller_id: "76561198015724229",
+      skin_rarity: "8650AC",
+      sale_type: "Caçadora",
+      status_float: "Muito usada",
+      skin_link_game: "/",
+      skin_link_steam: "/",
+      skin_market_hash_name: "A New Skin | Trigger Discipline hash name",
+      skin_classid: "",
+      skin_instanceid: "",
+      skin_paintseed: 123459,
+    };
+
+    const skin1 = await sut.execute(data);
+
+    await transactionRepository.create({
+      skin_id: skin1.id,
+      seller_id: vendedor.owner_id,
+      buyer_id: comprador.owner_id,
+      balance: skin1.skin_price,
+    });
+
+    const data2 = {
+      asset_id: "20828436604",
+      skin_image: "https://bit.ly/3Jn6aqn",
+      skin_name: "A New Skin | Trigger Discipline",
+      skin_category: "Teste skin secundaria",
+      skin_weapon: "Test skin secundaria",
+      skin_price: 550,
+      skin_float: "0,10072",
+      median_price: 253,
+      seller_name: "Caçadora de demonios",
+      seller_id: "76561198015724229",
+      skin_rarity: "8650AC",
+      sale_type: "Caçadora",
+      status_float: "Muito usada",
+      skin_link_game: "/",
+      skin_link_steam: "/",
+      skin_market_hash_name: "A New Skin | Trigger Discipline hash name",
+      skin_classid: "",
+      skin_instanceid: "",
+      skin_paintseed: 123459,
+    };
+
     const skin2 = await sut.execute(data2);
 
     expect(skin1.id).toEqual(expect.any(String));

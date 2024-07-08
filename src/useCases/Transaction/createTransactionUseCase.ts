@@ -62,10 +62,13 @@ export class CreateTransactionUseCase {
       throw new InsufficientFundsError();
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
-    } else if (findSkinTransaction && findSkinTransaction.status !== null) {
-      throw new SkinHasAlreadyBeenSoldError(
-        `${findSkin.skin_name} ${findSkin.asset_id}`
-      );
+    } else if (findSkinTransaction) {
+      if (
+        (findSkinTransaction && findSkinTransaction.status === "Default") ||
+        findSkinTransaction.status === "NegotiationSend"
+      ) {
+        throw new SkinHasAlreadyBeenSoldError();
+      }
     }
 
     const formattedBalance = findSkin.skin_price.toLocaleString("pt-BR", {
@@ -74,14 +77,18 @@ export class CreateTransactionUseCase {
       minimumFractionDigits: 2,
     });
 
-    const [createTransaction] = await Promise.all([
-      this.transactionRepository.create({
-        skin_id,
-        seller_id,
-        buyer_id,
-        balance: findSkin.skin_price,
-      }),
+    const createTransaction = await this.transactionRepository.create({
+      skin_id,
+      seller_id,
+      buyer_id,
+      balance: findSkin.skin_price,
+    });
 
+    if (!createTransaction) {
+      throw new Error("Transaction not created");
+    }
+
+    await Promise.all([
       this.notificationsRepository.create({
         owner_id: perfilSeller.owner_id,
         description: `A transação do item ${findSkin.skin_name} foi iniciada por ${formattedBalance}.`,
@@ -104,18 +111,17 @@ export class CreateTransactionUseCase {
       this.perfilRepository.updateByUser(perfilSeller.owner_id, {
         total_exchanges: perfilSeller.total_exchanges + 1,
       }),
-      this.skinRepository.updateById(skin_id, {
+      this.skinRepository.updateById(findSkin.id, {
         status: "Em andamento",
       }),
+      this.transactionHisotry.create({
+        transaction_id: createTransaction.id,
+        seller_id,
+        buyer_id,
+        asset_id: findSkin.asset_id,
+        dateProcess: addHours(12),
+      }),
     ]);
-    // O dateProcess tem que pegar a data atual e aumentar 2horas
-    await this.transactionHisotry.create({
-      transaction_id: createTransaction.id,
-      seller_id,
-      buyer_id,
-      asset_id: findSkin.asset_id,
-      dateProcess: addHours(1),
-    });
 
     return createTransaction;
   }
