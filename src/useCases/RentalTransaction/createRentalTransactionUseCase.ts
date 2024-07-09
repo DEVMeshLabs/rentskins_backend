@@ -1,17 +1,17 @@
-import { IRentalTransactionRepository } from "@/repositories/interfaceRepository/IRentalTransactionRepository";
 import { Prisma } from "@prisma/client";
+import dayjs from "dayjs";
+import { addHours } from "@/utils/compareDates";
+// ----------------------------------- Importando Repositórios -----------------------------------//
+import { IRentalTransactionRepository } from "@/repositories/interfaceRepository/IRentalTransactionRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
-import { SkinHasAlreadyBeenAnnounced } from "../@errors/RentalTransaction/SkinHasAlreadyBeenAnnounced";
-import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
-import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
+import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
+// ----------------------------------- Importando Errors -----------------------------------//
+import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
-import dayjs from "dayjs";
-import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
-import { addHours } from "@/utils/compareDates";
-import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 
 export class CreateRentalTransactionUseCase {
   constructor(
@@ -24,84 +24,72 @@ export class CreateRentalTransactionUseCase {
   ) {}
 
   async execute(data: Prisma.RentalTransactionCreateInput) {
-    const [
-      skin,
-      skinRentalTransaction,
-      perfilComprador,
-      perfilSeller,
-      walletComprador,
-    ] = await Promise.all([
-      this.skinRepository.findById(data.skin_id),
-      this.rentalTransactionRepository.findBySkinRentalTransaction(
-        data.skin_id
-      ),
-      this.perfilRepository.findByUser(data.buyer_id),
-      this.perfilRepository.findByUser(data.seller_id),
-      this.walletRepository.findByUser(data.buyer_id),
+    const [perfilComprador, walletComprador] = await Promise.all([
+      this.perfilRepository.findByUser(data.buyerId),
+      this.walletRepository.findByUser(data.buyerId),
+      this.perfilRepository.findByUser(data.sellerId),
     ]);
 
-    if (!skin) {
-      throw new SkinNotExistError();
-    } else if (skinRentalTransaction) {
-      throw new SkinHasAlreadyBeenAnnounced();
-    } else if (!perfilComprador) {
+    if (!perfilComprador) {
       throw new PerfilNotExistError();
     } else if (!walletComprador) {
       throw new WalletNotExistsError();
-    } else if (walletComprador.value < skin.skin_price) {
+    } else if (walletComprador.value < data.totalPriceRent) {
       throw new InsufficientFundsError();
     }
 
-    const { remainder, fee_total_price } = this.calculateFee(
-      data.days_quantity,
-      skin.skin_price
-    );
+    // const { remainder, fee_total_price } = this.calculateFee(
+    //   data.daysQuantity,
+    //   skin.skin_price
+    // );
+
     const endDateNew = dayjs(new Date())
-      .add(Number(data.days_quantity), "day")
+      .add(Number(data.daysQuantity), "day")
       .format();
 
     const [rental] = await Promise.all([
       this.rentalTransactionRepository.create({
         ...data,
-        total_price: skin.skin_price,
-        remainder,
-        fee_total_price,
-        start_date: new Date(),
-        end_date: endDateNew,
+        totalPriceRent: data.totalPriceRent,
+        remainder: 10,
+        feePrice: 20,
+        startDate: new Date(),
+        endDate: endDateNew,
+        skins: data.skins,
       }),
 
-      this.notificationsRepository.create({
-        owner_id: perfilSeller.id,
-        description: `A transação do item ${skin.skin_name} foi iniciada.`,
-        type: "Input",
-        skin_id: skin.id,
-      }),
+      // this.notificationsRepository.create({
+      //   owner_id: perfilSeller.id,
+      //   description: `A transação do item ${skin.skin_name} foi iniciada.`,
+      //   type: "Input",
+      //   skin_id: skin.id,
+      // }),
 
-      this.notificationsRepository.create({
-        owner_id: perfilComprador.id,
-        description: `A transação do item ${skin.skin_name} foi iniciada.`,
-        type: "Input",
-        skin_id: skin.id,
-      }),
+      // this.notificationsRepository.create({
+      //   owner_id: perfilComprador.id,
+      //   description: `A transação do item ${skin.skin_name} foi iniciada.`,
+      //   type: "Input",
+      //   skin_id: skin.id,
+      // }),
 
-      this.walletRepository.updateByUserValue(
-        data.buyer_id,
-        "decrement",
-        skin.skin_price
-      ),
-      this.perfilRepository.updateByUser(perfilSeller.owner_id, {
-        total_exchanges: perfilSeller.total_exchanges + 1,
-      }),
-      this.skinRepository.updateById(data.skin_id, {
-        status: "Em andamento",
-      }),
+      // this.walletRepository.updateByUserValue(
+      //   data.buyerId,
+      //   "decrement",
+      //   data.totalPriceRent
+      // ),
+      // this.perfilRepository.updateByUser(perfilSeller.owner_id, {
+      //   total_exchanges: perfilSeller.total_exchanges + 1,
+      // }),
+      // this.skinRepository.updateById(data.skin_id, {
+      //   status: "Em andamento",
+      // }),
     ]);
     await this.transactionHistory.create({
       rentalTransaction_id: rental.id,
-      seller_id: data.seller_id,
-      buyer_id: data.buyer_id,
-      asset_id: skin.asset_id,
-      dateProcess: addHours(24 * (Number(rental.days_quantity) + 1)),
+      seller_id: data.sellerId,
+      buyer_id: data.buyerId,
+      asset_id: data.buyerId,
+      dateProcess: addHours(24 * Number(rental.daysQuantity)),
     });
     return rental;
   }
@@ -110,9 +98,9 @@ export class CreateRentalTransactionUseCase {
 
   calculateFee(days_quantity: string, skin_price: number) {
     const feeQuantityDays = {
-      7: 10,
-      14: 18,
-      21: 23,
+      10: 10,
+      20: 18,
+      30: 23,
     };
 
     const fee = feeQuantityDays[days_quantity];
