@@ -258,7 +258,6 @@ describe("Transaction Use Case", () => {
       skin_id: skin.id,
       seller_id: "76561199205585878",
       buyer_id: "76561198195920183",
-      status: "NegociationRejected",
     });
 
     await transactionRepository.updateStatus(
@@ -271,7 +270,6 @@ describe("Transaction Use Case", () => {
       seller_id: "76561199205585878",
       buyer_id: "76561198195920183",
     });
-    console.log("ESSE", createTransaction2);
 
     expect(createTransaction2.status).toEqual("Default");
   });

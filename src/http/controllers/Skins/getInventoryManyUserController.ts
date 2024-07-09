@@ -1,4 +1,3 @@
-import { community } from "@/server";
 import { makeGetManySellerUseCase } from "@/useCases/@factories/Skin/makeGetManySellerUseCase";
 import { makeGetManyTransactionUseCase } from "@/useCases/@factories/Transaction/makeGetManyTransactionUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
@@ -9,12 +8,6 @@ export async function getInventoryManyUserController(
   reply: FastifyReply
 ) {
   const { id } = req.params as { id: string };
-
-  const inventorySchema = z.object({
-    filterType: z.string().array(),
-  });
-
-  // const { filterType } = inventorySchema.parse(req.body);
   try {
     const makeSkins = makeGetManySellerUseCase();
     const skinsMany = await makeSkins.execute(id, "false");
@@ -44,7 +37,6 @@ export async function getInventoryManyUserController(
         (item) =>
           !skinsManySet.has(item.assetid) || !transactionsSet.has(item.assetid)
       );
-      console.log(filterInventorySkins);
 
       return reply.status(200).send(filterInventorySkins);
     }
