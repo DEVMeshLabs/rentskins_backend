@@ -7,19 +7,22 @@ export class InMemoryRentalTransactionRepository
 {
   public rentalTransactions = [];
 
-  async create(data: Prisma.RentalTransactionCreateInput) {
+  async create(
+    data: Prisma.RentalTransactionCreateInput & { skins: Prisma.JsonValue[] }
+  ) {
     const rentalTransaction = {
       id: data.id ?? randomUUID(),
-      seller_id: data.seller_id,
-      buyer_id: data.buyer_id,
-      skin_id: data.skin_id,
-      total_price: data.total_price ?? null,
+      sellerId: data.sellerId,
+      buyerId: data.buyerId,
+      skins: data.skins ?? [],
+      totalPriceRent: data.totalPriceRent ?? null,
+      totalGuarantee: data.totalGuarantee ?? null,
       remainder: data.remainder ?? null,
-      fee_total_price: data.fee_total_price ?? null,
-      days_quantity: data.days_quantity,
-      status: data.status ?? "Em andamento",
-      start_date: new Date(data.start_date) ?? null,
-      end_date: new Date(data.end_date) ?? null,
+      feePrice: data.feePrice ?? null,
+      daysQuantity: data.daysQuantity,
+      status: data.status ?? "Default",
+      startDate: new Date(data.startDate) ?? null,
+      endDate: new Date(data.endDate) ?? null,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,

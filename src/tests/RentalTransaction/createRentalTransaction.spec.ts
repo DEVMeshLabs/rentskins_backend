@@ -17,6 +17,7 @@ import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfi
 import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
 import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
 import { InMemoryNotificationRepository } from "@/repositories/in-memory/inMemoryNotificationRepository";
+import { skinsMock } from "@/Mock/skins";
 
 let rentalTransactionRepository: InMemoryRentalTransactionRepository;
 let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
@@ -84,12 +85,13 @@ describe("Rental Transaction Use Case", () => {
     ]);
 
     const createRentalTransaction = await sut.execute({
-      seller_id: "76561199205585878",
-      buyer_id: "76561199205585873",
-      skin_id: "124",
-      days_quantity: "7",
+      sellerId: "76561199205585878",
+      buyerId: "76561199205585873",
+      skins: [...skinsMock],
+      daysQuantity: "10",
     });
 
     expect(createRentalTransaction.id).toEqual(expect.any(String));
+    expect(createRentalTransaction.skins.length).toBeGreaterThan(0);
   });
 });

@@ -163,6 +163,26 @@ enum ProcessTransactionStatus {
   Failed
 }
 
+model RentalTransaction {
+  id             String            @id @default(uuid()) @db.VarChar(36)
+  sellerId       String            @db.VarChar(255)
+  buyerId        String            @db.VarChar(255)
+  skins          Json[]
+  totalPriceRent Float?
+  totalGuarantee Float?
+  remainder      Float?
+  feePrice       Float?
+  daysQuantity   String            @db.VarChar(5)
+  status         TransactionStatus @default(Default)
+  startDate      DateTime?
+  endDate        DateTime?
+
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime?            @updatedAt
+  deletedAt          DateTime?
+  transactionHistory TransactionHistory[]
+}
+
 model TransactionHistory {
   id                   String                   @id @default(uuid()) @db.VarChar(36)
   buyer_id             String                   @db.VarChar(255)
@@ -178,22 +198,4 @@ model TransactionHistory {
   rentalTransaction_id String?                  @db.VarChar(255)
   transaction          Transaction?             @relation(fields: [transaction_id], references: [id])
   rentalTransaction    RentalTransaction?       @relation(fields: [rentalTransaction_id], references: [id])
-}
-
-model RentalTransaction {
-  id                 String               @id @default(uuid()) @db.VarChar(36)
-  seller_id          String               @db.VarChar(255)
-  buyer_id           String               @db.VarChar(255)
-  skin_id            String               @db.VarChar(255)
-  total_price        Float?
-  remainder          Float?
-  fee_total_price    Float?
-  days_quantity      String               @db.VarChar(5)
-  status             String?              @default("Em andamento") @db.VarChar(255)
-  start_date         DateTime?
-  end_date           DateTime?
-  createdAt          DateTime             @default(now())
-  updatedAt          DateTime?
-  deletedAt          DateTime?
-  TransactionHistory TransactionHistory[]
 }
