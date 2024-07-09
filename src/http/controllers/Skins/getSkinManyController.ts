@@ -9,7 +9,6 @@ export async function getSkinManyController(
 ): Promise<FastifyReply | void> {
   try {
     const { page, pageSize, type } = paginationSkinsSchema.parse(req.query);
-    console.log(type);
     const getSkinMany = makeGetSkinMany();
 
     const response = await getSkinMany.execute(page, pageSize, type);

@@ -23,7 +23,7 @@ export class InMemoryTransactionHistoryRepository
       transaction_id: data.transaction_id ?? null,
       buyer_id: data.buyer_id,
       seller_id: data.seller_id,
-      processTransaction: data.processTransaction ?? false,
+      processTransaction: data.processTransaction ?? "Pending",
       dateProcess: new Date(data.dateProcess),
       asset_id: data.asset_id,
       rentalTransaction_id: data.rentalTransaction_id ?? null,
@@ -43,7 +43,7 @@ export class InMemoryTransactionHistoryRepository
     return getTransaction;
   }
 
-  async findByMany(isProcess: boolean) {
+  async findByMany(isProcess: string) {
     const getTransaction = this.transactionsHistory.filter((transaction) => {
       return transaction.processTransaction === isProcess;
     });
