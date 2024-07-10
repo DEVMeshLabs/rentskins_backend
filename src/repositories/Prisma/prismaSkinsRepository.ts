@@ -102,6 +102,18 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return skinAll;
   }
 
+  async findManySkins(skinsIds: string[]) {
+    const skinAll = await prisma.skin.findMany({
+      where: {
+        id: { in: skinsIds },
+        deletedAt: null,
+        status: null,
+        saledAt: null,
+      },
+    });
+    return skinAll;
+  }
+
   async findManyAssent() {
     const skinAllAssent = await prisma.skin.findMany({
       where: { deletedAt: null, status: null, saledAt: null },
