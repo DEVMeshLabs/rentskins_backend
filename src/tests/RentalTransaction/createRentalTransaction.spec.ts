@@ -109,7 +109,7 @@ describe("Rental Transaction Use Case", () => {
       makeCreatePerfil.execute(SELLER_ID, "9DE77D4A568AE81B8975E54BFE1DC8C9"),
       makeCreateSkinRepository.execute(skinsMock[0]),
     ]);
-    console.log(walletRepository.wallet);
+
     const rentalTransaction = await sut.execute({
       sellerId: SELLER_ID,
       buyerId: BUYER_ID,
