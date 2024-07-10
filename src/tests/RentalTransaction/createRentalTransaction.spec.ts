@@ -88,7 +88,7 @@ describe("Rental Transaction Use Case", () => {
       skins: [skinsMock[0]],
       daysQuantity: RENTAL_DAYS,
     });
-    console.log(createRentalTransaction);
+
     expect(createRentalTransaction.id).toEqual(expect.any(String));
     expect(createRentalTransaction.skins.length).toBeGreaterThan(0);
   });
@@ -113,7 +113,7 @@ describe("Rental Transaction Use Case", () => {
     const rentalTransaction = await sut.execute({
       sellerId: SELLER_ID,
       buyerId: BUYER_ID,
-      skins: [...skinsMock],
+      skins: [skinsMock[0]],
       daysQuantity: RENTAL_DAYS,
       totalPriceRent: TOTAL_RENTAL_PRICE,
     });
