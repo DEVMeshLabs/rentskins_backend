@@ -115,9 +115,9 @@ export class InMemorySkinRepository implements ISkinsRepository {
     return skin;
   }
 
-  updateMany(skins: [], status: string): Promise<any> {
+  updateMany(skinsIds: string[], status: string): Promise<any> {
     return new Promise((resolve) => {
-      const updatedSkins = skins.map((item) => {
+      const updatedSkins = skinsIds.map((item) => {
         const skinsIndex = this.skins.findIndex((skin) => skin.id === item);
         return (this.skins[skinsIndex] = {
           ...this.skins[skinsIndex],
@@ -126,6 +126,11 @@ export class InMemorySkinRepository implements ISkinsRepository {
       });
       resolve(updatedSkins);
     });
+  }
+
+  findManySkins(skinsIds: string[]): Promise<Skin[]> {
+    const foundSkins = this.skins.filter((skin) => skinsIds.includes(skin.id));
+    return Promise.resolve(foundSkins);
   }
 
   deleteSkin(id: string): Promise<any> {
