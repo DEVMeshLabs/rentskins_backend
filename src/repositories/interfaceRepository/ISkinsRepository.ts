@@ -11,6 +11,7 @@ export interface ISkinsRepository {
   findBySlug(slug: string): Promise<Skin | null>;
   findBySeller(seller_id: string): Promise<Skin | null>;
   findByMany(page: number, pageSize: number, type: string): Promise<Skin[]>;
+  findManySkins(skinsIds: string[]): Promise<Skin[]>;
   findByManyWeapon(skin_weapon: string): Promise<Skin[] | null>;
   findByManyCategory(skin_category: string): Promise<Skin[] | null>;
   findManyAssent(): Promise<Skin[]>;
