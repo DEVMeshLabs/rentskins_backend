@@ -20,6 +20,7 @@ export interface ISkinsRepository {
   findByCountSearch(search: string): Promise<number>;
   findLastSellerSkins(name: string): Promise<Skin[]>;
   updateById(id: string, data: Prisma.SkinUpdateInput): Promise<Skin>;
+  updateMany(skinsIds: string[], status: string): Promise<any>;
   create(data: Prisma.SkinCreateManyInput): Promise<any>;
   deleteSkin(id: string): Promise<Skin>;
 }

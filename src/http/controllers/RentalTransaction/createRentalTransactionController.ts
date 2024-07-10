@@ -8,15 +8,26 @@ export async function createRentalTransactionController(
 ): Promise<FastifyReply | void> {
   try {
     const bodySchema = createRentalTransactionSchema;
-    const { sellerId, buyerId, skins, daysQuantity } = bodySchema.parse(
-      req.body
-    );
+    const {
+      sellerId,
+      buyerId,
+      skins,
+      daysQuantity,
+      totalPriceRent,
+      totalGuarantee,
+      remainder,
+      feePrice,
+    } = bodySchema.parse(req.body);
 
     const createTransactionRental = makeCreateRentalTransactionUseCase();
 
     const transaction = await createTransactionRental.execute({
       sellerId,
       buyerId,
+      totalPriceRent,
+      totalGuarantee,
+      remainder,
+      feePrice,
       skins: [...skins],
       daysQuantity,
     });

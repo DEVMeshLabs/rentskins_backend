@@ -31,6 +31,12 @@ let makeCreatePerfil: MakeCreatePerfilRepository;
 let sut: CreateRentalTransactionUseCase;
 
 describe("Rental Transaction Use Case", () => {
+  const SELLER_ID = "76561199205585878";
+  const BUYER_ID = "76561199205585873";
+  const INITIAL_WALLET_VALUE = 10000;
+  const RENTAL_DAYS = "10";
+  const TOTAL_RENTAL_PRICE = 180;
+
   beforeEach(async () => {
     rentalTransactionRepository = new InMemoryRentalTransactionRepository();
     skinRepository = new InMemorySkinRepository();
@@ -61,37 +67,59 @@ describe("Rental Transaction Use Case", () => {
 
   it("Deve ser capaz de criar uma Rental Transaction", async () => {
     await Promise.all([
-      makeCreatePerfil.execute(
-        "76561199205585878",
-        "9DE77D4A568AE81B8975E54BFE1DC8C9"
-      ),
-      makeCreatePerfil.execute("76561199205585873"),
-      makeCreateSkinRepository.execute({
-        id: "124",
-        skin_price: 200,
-        asset_id: "32981477239",
-        seller_id: "76561199205585878",
-      }),
+      makeCreatePerfil.execute(SELLER_ID, "9DE77D4A568AE81B8975E54BFE1DC8C9"),
+      makeCreatePerfil.execute(BUYER_ID),
+      makeCreateSkinRepository.execute(skinsMock[0]),
       walletRepository.create({
-        owner_id: "76561199205585873",
+        owner_id: BUYER_ID,
         owner_name: "Comprador",
-        value: 10000,
+        value: INITIAL_WALLET_VALUE,
       }),
       walletRepository.create({
-        owner_id: "76561199205585878",
+        owner_id: SELLER_ID,
         owner_name: "Vendedor",
-        value: 10000,
+        value: INITIAL_WALLET_VALUE,
       }),
     ]);
 
     const createRentalTransaction = await sut.execute({
-      sellerId: "76561199205585878",
-      buyerId: "76561199205585873",
-      skins: [...skinsMock],
-      daysQuantity: "10",
+      sellerId: SELLER_ID,
+      buyerId: BUYER_ID,
+      skins: [skinsMock[0]],
+      daysQuantity: RENTAL_DAYS,
     });
-
+    console.log(createRentalTransaction);
     expect(createRentalTransaction.id).toEqual(expect.any(String));
     expect(createRentalTransaction.skins.length).toBeGreaterThan(0);
+  });
+
+  it("Deve ser capaz de subtrair o saldo da carteira do comprador", async () => {
+    const [walletComprador] = await Promise.all([
+      walletRepository.create({
+        owner_id: BUYER_ID,
+        owner_name: "Comprador",
+        value: 10000,
+      }),
+      walletRepository.create({
+        owner_id: SELLER_ID,
+        owner_name: "Vendedor",
+        value: 10000,
+      }),
+      makeCreatePerfil.execute(BUYER_ID),
+      makeCreatePerfil.execute(SELLER_ID, "9DE77D4A568AE81B8975E54BFE1DC8C9"),
+      makeCreateSkinRepository.execute(skinsMock[0]),
+    ]);
+    console.log(walletRepository.wallet);
+    const rentalTransaction = await sut.execute({
+      sellerId: SELLER_ID,
+      buyerId: BUYER_ID,
+      skins: [...skinsMock],
+      daysQuantity: RENTAL_DAYS,
+      totalPriceRent: TOTAL_RENTAL_PRICE,
+    });
+
+    expect(walletRepository.wallet[0].value).toBe(
+      walletComprador.value - rentalTransaction.totalPriceRent
+    );
   });
 });
