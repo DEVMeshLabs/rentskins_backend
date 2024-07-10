@@ -79,7 +79,7 @@ export class InMemorySkinRepository implements ISkinsRepository {
   }
 
   async create(data: Prisma.SkinCreateManyInput) {
-    const skin = {
+    const skin: Skin = {
       id: data.id ?? randomUUID(),
       asset_id: data.asset_id,
       skin_image: data.skin_image,
@@ -98,7 +98,10 @@ export class InMemorySkinRepository implements ISkinsRepository {
       status: null,
       saledAt: null,
       slug: "",
-      sale_type: data.sale_type,
+      sale_type: [],
+      borderColor: data.borderColor ?? "",
+      color: data.color ?? "",
+      pricesafe7d: data.pricesafe7d ?? 0,
       status_float: data.status_float,
       stickers: [],
       skin_link_game: "/",
@@ -109,8 +112,20 @@ export class InMemorySkinRepository implements ISkinsRepository {
     };
 
     this.skins.push(skin);
-
     return skin;
+  }
+
+  updateMany(skins: [], status: string): Promise<any> {
+    return new Promise((resolve) => {
+      const updatedSkins = skins.map((item) => {
+        const skinsIndex = this.skins.findIndex((skin) => skin.id === item);
+        return (this.skins[skinsIndex] = {
+          ...this.skins[skinsIndex],
+          status,
+        });
+      });
+      resolve(updatedSkins);
+    });
   }
 
   deleteSkin(id: string): Promise<any> {

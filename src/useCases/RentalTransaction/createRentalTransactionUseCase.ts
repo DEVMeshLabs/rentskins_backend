@@ -1,4 +1,4 @@
-import { Prisma } from "@prisma/client";
+import { Prisma, type Skin } from "@prisma/client";
 import dayjs from "dayjs";
 import { addHours } from "@/utils/compareDates";
 // ----------------------------------- Importando Repositórios -----------------------------------//
@@ -24,7 +24,7 @@ export class CreateRentalTransactionUseCase {
   ) {}
 
   async execute(data: Prisma.RentalTransactionCreateInput) {
-    const [perfilComprador, walletComprador] = await Promise.all([
+    const [perfilComprador, walletComprador, perfilSeller] = await Promise.all([
       this.perfilRepository.findByUser(data.buyerId),
       this.walletRepository.findByUser(data.buyerId),
       this.perfilRepository.findByUser(data.sellerId),
@@ -37,11 +37,12 @@ export class CreateRentalTransactionUseCase {
     } else if (walletComprador.value < data.totalPriceRent) {
       throw new InsufficientFundsError();
     }
-
-    // const { remainder, fee_total_price } = this.calculateFee(
-    //   data.daysQuantity,
-    //   skin.skin_price
-    // );
+    const newSkins: string[] = [];
+    for (let i = 0; i < (data.skins as Skin[]).length; i++) {
+      const asset = data.skins[i].id;
+      newSkins.push(asset);
+    }
+    console.log("Aquii", newSkins);
 
     const endDateNew = dayjs(new Date())
       .add(Number(data.daysQuantity), "day")
@@ -51,38 +52,29 @@ export class CreateRentalTransactionUseCase {
       this.rentalTransactionRepository.create({
         ...data,
         totalPriceRent: data.totalPriceRent,
-        remainder: 10,
-        feePrice: 20,
         startDate: new Date(),
         endDate: endDateNew,
         skins: data.skins,
       }),
 
-      // this.notificationsRepository.create({
-      //   owner_id: perfilSeller.id,
-      //   description: `A transação do item ${skin.skin_name} foi iniciada.`,
-      //   type: "Input",
-      //   skin_id: skin.id,
-      // }),
+      this.notificationsRepository.create({
+        owner_id: perfilSeller.id,
+        description: `A locação dos itens foi iniciada.`,
+      }),
 
-      // this.notificationsRepository.create({
-      //   owner_id: perfilComprador.id,
-      //   description: `A transação do item ${skin.skin_name} foi iniciada.`,
-      //   type: "Input",
-      //   skin_id: skin.id,
-      // }),
-
-      // this.walletRepository.updateByUserValue(
-      //   data.buyerId,
-      //   "decrement",
-      //   data.totalPriceRent
-      // ),
-      // this.perfilRepository.updateByUser(perfilSeller.owner_id, {
-      //   total_exchanges: perfilSeller.total_exchanges + 1,
-      // }),
-      // this.skinRepository.updateById(data.skin_id, {
-      //   status: "Em andamento",
-      // }),
+      this.notificationsRepository.create({
+        owner_id: perfilComprador.id,
+        description: `A locação dos itens foi iniciada.`,
+      }),
+      this.walletRepository.updateByUserValue(
+        data.buyerId,
+        "decrement",
+        data.totalPriceRent
+      ),
+      this.perfilRepository.updateByUser(perfilSeller.owner_id, {
+        total_exchanges: perfilSeller.total_exchanges + 1,
+      }),
+      this.skinRepository.updateMany(newSkins, "Em andamento"),
     ]);
     await this.transactionHistory.create({
       rentalTransaction_id: rental.id,
@@ -91,6 +83,7 @@ export class CreateRentalTransactionUseCase {
       asset_id: data.buyerId,
       dateProcess: addHours(24 * Number(rental.daysQuantity)),
     });
+
     return rental;
   }
 

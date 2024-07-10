@@ -17,7 +17,7 @@ export const skinsMock = [
     skin_link_game: "http://example.com/dragon_lore_game",
     skin_link_steam: "http://example.com/dragon_lore_steam",
     seller_name: "seller-001",
-    seller_id: "seller-001",
+    seller_id: "76561199205585878",
     status: "Pending",
     status_float: "0.01",
     slug: "awp-dragon-lore",
