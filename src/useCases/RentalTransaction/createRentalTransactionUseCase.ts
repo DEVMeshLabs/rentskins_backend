@@ -12,7 +12,7 @@ import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 // ----------------------------------- Importando Utils -----------------------------------//
-import { addHours } from "@/utils/compareDates";
+// import { addHours } from "@/utils/compareDates";
 import dayjs from "dayjs";
 
 export class CreateRentalTransactionUseCase {
@@ -41,7 +41,10 @@ export class CreateRentalTransactionUseCase {
       throw new WalletNotExistsError();
     } else if (walletComprador.value < data.totalPriceRent) {
       throw new InsufficientFundsError();
-    } else if (skins.length !== (data.skins as Skin[]).length) {
+    } else if (
+      skins.length !== (data.skins as Skin[]).length ||
+      (data.skins as Skin[]).length < 1
+    ) {
       throw new SkinNotExistError();
     }
 
@@ -61,11 +64,13 @@ export class CreateRentalTransactionUseCase {
       this.notificationsRepository.create({
         owner_id: perfilSeller.id,
         description: `A locação do(s) item(ns) foi iniciada.`,
+        type: "input",
       }),
 
       this.notificationsRepository.create({
         owner_id: perfilComprador.id,
         description: `A locação do(s) item(ns) foi iniciada.`,
+        type: "input",
       }),
       this.walletRepository.updateByUserValue(
         data.buyerId,
@@ -80,13 +85,13 @@ export class CreateRentalTransactionUseCase {
         "Em andamento"
       ),
     ]);
-    await this.transactionHistory.create({
-      rentalTransaction_id: rental.id,
-      seller_id: data.sellerId,
-      buyer_id: data.buyerId,
-      asset_id: data.buyerId,
-      dateProcess: addHours(24 * Number(rental.daysQuantity)),
-    });
+    // await this.transactionHistory.create({
+    //   rentalTransaction_id: rental.id,
+    //   seller_id: data.sellerId,
+    //   buyer_id: data.buyerId,
+    //   asset_id: data.buyerId,
+    //   dateProcess: addHours(24 * Number(rental.daysQuantity)),
+    // });
 
     return rental;
   }

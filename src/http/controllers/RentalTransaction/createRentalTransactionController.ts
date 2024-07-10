@@ -18,7 +18,7 @@ export async function createRentalTransactionController(
       remainder,
       feePrice,
     } = bodySchema.parse(req.body);
-
+    console.log(skins[0]);
     const createTransactionRental = makeCreateRentalTransactionUseCase();
 
     const transaction = await createTransactionRental.execute({

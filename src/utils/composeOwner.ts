@@ -115,7 +115,7 @@ export class ComposeOwner {
         }),
         this.notificationsRepository.create(sellerNotification),
         this.transactionRepository.updateId(data.findTransaction.id, {
-          status: "Falhou",
+          status: "NegociationRejected",
         }),
         this.notificationsRepository.create(buyerNotification),
         this.skinRepository.updateById(data.updateConfirm.skin_id, {
@@ -142,7 +142,7 @@ export class ComposeOwner {
 
       this.transactionRepository.updateId(data.id, {
         salesAt: new Date(),
-        status: "Concluído",
+        status: "NegociationAccepted",
       }),
       this.perfilRepository.updateByUser(ownerId, {
         delivery_time: data.mediaDate,
