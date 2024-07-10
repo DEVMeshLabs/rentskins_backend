@@ -167,7 +167,7 @@ model RentalTransaction {
   id             String            @id @default(uuid()) @db.VarChar(36)
   sellerId       String            @db.VarChar(255)
   buyerId        String            @db.VarChar(255)
-  skins          Json[]
+  skins          Json[]            @default([])
   totalPriceRent Float?
   totalGuarantee Float?
   remainder      Float?
