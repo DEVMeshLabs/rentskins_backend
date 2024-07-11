@@ -24,6 +24,8 @@ job.scheduleJob("*/50 * * * *", async () => {
 
 app.register(cors, {
   origin: "*",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization", "Acc"],
 });
 
 app
