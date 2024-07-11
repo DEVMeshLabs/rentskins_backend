@@ -39,7 +39,7 @@ import { z } from "zod";
 const createRentalTransactionSchema = z.object({
   sellerId: z.string(),
   buyerId: z.string(),
-  skins: z.array(z.any()),
+  skins: z.any(),
   daysQuantity: z.enum(["10", "20", "30"]),
   totalPriceRent: z.number(),
   totalGuarantee: z.number(),
