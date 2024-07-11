@@ -1,5 +1,4 @@
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
-import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { TransactionHistory } from "@prisma/client";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
@@ -17,7 +16,6 @@ export class CronJobProcessTransaction {
   constructor(
     private transactionHistoryRepository: ITransactionHistoryRepository,
     private transactionRepository: ITransactionRepository,
-    private configurationRepository: IConfigurationRepository,
     private notificationRepository: INotificationRepository,
     private walletRepository: IWalletRepository,
     private perfilRepository: IPerfilRepository,
@@ -55,31 +53,6 @@ export class CronJobProcessTransaction {
     return "Transação processada com sucesso.";
   }
 
-  // --------- Ai fudeu -----------------------------------------------------------------------------------
-  // async processTransaction(transaction: TransactionHistory) {
-  //   if (!transaction) {
-  //     return;
-  //   }
-  //   const config = await this.configurationRepository.findByUser(
-  //     transaction.seller_id
-  //   );
-
-  //   if (!config.key) {
-  //     return "Key steam not found";
-  //   }
-
-  //   if (config && config.key && config.key !== " ") {
-  //     const inventorySeller = await this.fetchInventory(
-  //       config.key,
-  //       transaction.buyer_id,
-  //       transaction.asset_id
-  //     );
-  //     return inventorySeller;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-
   async handleSuccessTransaction({
     transactionHistory,
   }: IUpdateTransactionHistory) {
@@ -92,7 +65,7 @@ export class CronJobProcessTransaction {
     );
     const { porcentagem } = formatBalance(transaction.balance);
 
-    await Promise.all([
+    await Promise.allSettled([
       this.perfilRepository.updateTotalExchanges(perfilSeller.id),
 
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
@@ -134,7 +107,7 @@ export class CronJobProcessTransaction {
     const skin = await this.skinRepository.findById(transaction.skin_id);
     const { formattedBalance } = formatBalance(transaction.balance);
 
-    await Promise.all([
+    await Promise.allSettled([
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
         processTransaction: "Failed",
       }),
