@@ -1,3 +1,4 @@
+import type { Skin } from "@prisma/client";
 // ------------------ Repositorys -----------------
 import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
@@ -14,6 +15,7 @@ interface ITransactionRequest {
   asset_id: string;
   seller_id: string;
   buyer_id: string;
+  skins: Skin[];
 }
 
 export class CreateTransactionHistoryUseCase {
@@ -29,7 +31,7 @@ export class CreateTransactionHistoryUseCase {
     buyer_id,
     seller_id,
     rental,
-    asset_id,
+    skins,
   }: ITransactionRequest) {
     const findTransaction = await this.transactionRepository.findById(
       transaction_id
@@ -44,16 +46,22 @@ export class CreateTransactionHistoryUseCase {
       throw new TransactionHistoryNotExistError();
     }
     const process = findRentalTransaction
-      ? addHours(24 * Number(findRentalTransaction.days_quantity + 1))
+      ? addHours(24 * Number(findRentalTransaction.daysQuantity + 1))
       : addHours(1);
+
     const create = await this.transactionHistoryRepository.create({
       transaction_id: findTransaction.id && null,
       rentalTransaction_id: findRentalTransaction.id && null,
       buyer_id,
       seller_id,
-      asset_id,
+      skins: {
+        connect: (skins as Skin[]).map((skin) => ({
+          id: skin.id,
+        })),
+      },
       dateProcess: process,
     });
+
     return create;
   }
 }
