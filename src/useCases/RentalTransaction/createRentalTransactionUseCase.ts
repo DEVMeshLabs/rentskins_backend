@@ -12,8 +12,9 @@ import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 // ----------------------------------- Importando Utils -----------------------------------//
-// import { addHours } from "@/utils/compareDates";
+import { addHours } from "@/utils/compareDates";
 import dayjs from "dayjs";
+import { prisma } from "@/lib/prisma";
 
 export class CreateRentalTransactionUseCase {
   constructor(
@@ -26,6 +27,8 @@ export class CreateRentalTransactionUseCase {
   ) {}
 
   async execute(data: Prisma.RentalTransactionCreateInput) {
+    console.log(data.skins);
+
     const skinIds = (data.skins as Skin[]).map((skin: Skin) => skin.id);
     const [skins, perfilComprador, walletComprador, perfilSeller] =
       await Promise.all([
@@ -52,47 +55,63 @@ export class CreateRentalTransactionUseCase {
       .add(Number(data.daysQuantity), "day")
       .format();
 
-    const [rental] = await Promise.all([
-      this.rentalTransactionRepository.create({
-        ...data,
-        totalPriceRent: data.totalPriceRent,
-        startDate: new Date(),
-        endDate: endDateNew,
-        skins: data.skins,
-      }),
+    const rentalTransaction = await prisma.$transaction(async (prisma) => {
+      await Promise.all([
+        this.rentalTransactionRepository.create({
+          ...data,
+          totalPriceRent: data.totalPriceRent,
+          startDate: new Date(),
+          endDate: endDateNew,
+          skins: {
+            connect: (data.skins as Skin[]).map((skin) => ({
+              id: skin.id,
+            })),
+          },
+          notification: {
+            createMany: {
+              data: [
+                {
+                  description: `A locação do(s) item(ns) foi iniciada.`,
+                  type: "input",
+                  owner_id: data.buyerId,
+                },
+                {
+                  description: `A locação do(s) item(ns) foi iniciada.`,
+                  type: "input",
+                  owner_id: data.sellerId,
+                },
+              ],
+            },
+          },
+          transactionHistory: {
+            create: {
+              seller_id: data.sellerId,
+              buyer_id: data.buyerId,
+              skins: {
+                connect: (data.skins as Skin[]).map((skin) => ({
+                  id: skin.id,
+                })),
+              },
+              dateProcess: addHours(24 * Number(data.daysQuantity)),
+            },
+          },
+        }),
 
-      this.notificationsRepository.create({
-        owner_id: perfilSeller.id,
-        description: `A locação do(s) item(ns) foi iniciada.`,
-        type: "input",
-      }),
+        this.walletRepository.updateByUserValue(
+          data.buyerId,
+          "decrement",
+          data.totalPriceRent
+        ),
+        this.perfilRepository.updateByUser(perfilSeller.owner_id, {
+          total_exchanges: perfilSeller.total_exchanges + 1,
+        }),
+        this.skinRepository.updateMany(
+          skins.map((skin) => skin.id),
+          "Em andamento"
+        ),
+      ]);
+    });
 
-      this.notificationsRepository.create({
-        owner_id: perfilComprador.id,
-        description: `A locação do(s) item(ns) foi iniciada.`,
-        type: "input",
-      }),
-      this.walletRepository.updateByUserValue(
-        data.buyerId,
-        "decrement",
-        data.totalPriceRent
-      ),
-      this.perfilRepository.updateByUser(perfilSeller.owner_id, {
-        total_exchanges: perfilSeller.total_exchanges + 1,
-      }),
-      this.skinRepository.updateMany(
-        skins.map((skin) => skin.id),
-        "Em andamento"
-      ),
-    ]);
-    // await this.transactionHistory.create({
-    //   rentalTransaction_id: rental.id,
-    //   seller_id: data.sellerId,
-    //   buyer_id: data.buyerId,
-    //   asset_id: data.buyerId,
-    //   dateProcess: addHours(24 * Number(rental.daysQuantity)),
-    // });
-
-    return rental;
+    return rentalTransaction;
   }
 }
