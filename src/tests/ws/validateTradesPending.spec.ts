@@ -88,7 +88,9 @@ describe("CronJobProcessTransaction Use Case", () => {
       buyer_id: comprador.owner_id,
       seller_id: vendedor.owner_id,
       transaction_id: createTransaction.id,
-      asset_id: skin.asset_id,
+      skins: {
+        connect: [skin],
+      },
       dateProcess: addMinutes(10),
       processTransaction: "Pending",
     });
