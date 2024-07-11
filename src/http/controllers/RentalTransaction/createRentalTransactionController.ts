@@ -11,16 +11,14 @@ export async function createRentalTransactionController(
     const {
       sellerId,
       buyerId,
-      skins,
       daysQuantity,
       totalPriceRent,
       totalGuarantee,
       remainder,
       feePrice,
+      skins,
     } = bodySchema.parse(req.body);
-
     const createTransactionRental = makeCreateRentalTransactionUseCase();
-
     const transaction = await createTransactionRental.execute({
       sellerId,
       buyerId,
