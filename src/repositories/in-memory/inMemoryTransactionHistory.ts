@@ -1,4 +1,4 @@
-import { Prisma, TransactionHistory, Skin } from "@prisma/client";
+import { Prisma, TransactionHistory } from "@prisma/client";
 import { randomUUID } from "crypto";
 import { ITransactionHistoryRepository } from "../interfaceRepository/ITransactionHistoryRepository";
 
@@ -17,17 +17,15 @@ export class InMemoryTransactionHistoryRepository
     return this.notImplemented();
   }
 
-  async create(
-    data: Prisma.TransactionHistoryUncheckedCreateInput & { skins: Skin[] }
-  ) {
-    const transactionHistory: TransactionHistory = {
+  async create(data: Prisma.TransactionHistoryUncheckedCreateInput) {
+    const transactionHistory: any = {
       id: data.id ?? randomUUID(),
       transaction_id: data.transaction_id ?? null,
       buyer_id: data.buyer_id,
       seller_id: data.seller_id,
       processTransaction: data.processTransaction ?? "Pending",
-      dateProcess: new Date(data.dateProcess),
       skins: data.skins ?? [],
+      dateProcess: new Date(data.dateProcess),
       rentalTransaction_id: data.rentalTransaction_id ?? null,
       rental: data.rental ?? false,
       createdAt: new Date(),
