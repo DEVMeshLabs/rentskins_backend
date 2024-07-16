@@ -88,17 +88,18 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
     return this.perfil[userProfileIndex];
   }
 
-  async updateTotalExchanges(id: string) {
-    const perfil = this.perfil.find((item) => item.id === id);
-    const userProfileIndex = this.perfil.findIndex((item) => item.id === id);
+  async updateTotalExchanges(buyerIds: string[]) {
+    buyerIds.forEach((id) => {
+      const perfil = this.perfil.find((item) => item.id === id);
+      const userProfileIndex = this.perfil.findIndex((item) => item.id === id);
 
-    if (userProfileIndex !== -1) {
-      this.perfil[userProfileIndex] = {
-        ...this.perfil[userProfileIndex],
-        total_exchanges_completed: perfil.total_exchanges_completed + 1,
-      };
-    }
-    return this.perfil[userProfileIndex];
+      if (userProfileIndex !== -1) {
+        this.perfil[userProfileIndex] = {
+          ...this.perfil[userProfileIndex],
+          total_exchanges_completed: perfil.total_exchanges_completed + 1,
+        };
+      }
+    });
   }
 
   updateByIdUser(id: string, data: any): Promise<any> {

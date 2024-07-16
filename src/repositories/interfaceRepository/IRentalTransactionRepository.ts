@@ -6,6 +6,7 @@ export interface IRentalTransactionRepository {
   findBySkinRentalTransaction(
     skin_id: string
   ): Promise<RentalTransaction | null>;
+  findByMany(): Promise<RentalTransaction[]>;
   updateId(
     id: string,
     data: Prisma.RentalTransactionUncheckedUpdateInput

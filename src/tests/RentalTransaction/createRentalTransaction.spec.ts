@@ -83,14 +83,14 @@ describe("Rental Transaction Use Case", () => {
     ]);
 
     const createRentalTransaction = await sut.execute({
-      sellerId: SELLER_ID,
       buyerId: BUYER_ID,
-      skins: [skinsMock[0]],
+      skinsRent: [skinsMock[0]],
+      skinsGuarantee: [],
       daysQuantity: RENTAL_DAYS,
     });
-
+    console.log(createRentalTransaction);
     expect(createRentalTransaction.id).toEqual(expect.any(String));
-    expect(createRentalTransaction.skins.length).toBeGreaterThan(0);
+    expect(createRentalTransaction.skinsRent.length).toBeGreaterThan(0);
   });
 
   it("Deve ser capaz de subtrair o saldo da carteira do comprador", async () => {
@@ -111,9 +111,9 @@ describe("Rental Transaction Use Case", () => {
     ]);
 
     const rentalTransaction = await sut.execute({
-      sellerId: SELLER_ID,
       buyerId: BUYER_ID,
-      skins: [skinsMock[0]],
+      skinsRent: [skinsMock[0]],
+      skinsGuarantee: [],
       daysQuantity: RENTAL_DAYS,
       totalPriceRent: TOTAL_RENTAL_PRICE,
     });

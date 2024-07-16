@@ -171,9 +171,9 @@ enum ProcessTransactionStatus {
 
 model RentalTransaction {
   id             String            @id @default(uuid()) @db.VarChar(36)
-  sellerId       String            @db.VarChar(255)
   buyerId        String            @db.VarChar(255)
-  skins          Skin[]
+  skinsRent      Skin[]
+  skinsGuarantee Json[]
   totalPriceRent Float?
   totalGuarantee Float?
   remainder      Float?
@@ -193,7 +193,7 @@ model RentalTransaction {
 model TransactionHistory {
   id                 String                   @id @default(uuid()) @db.VarChar(36)
   buyer_id           String                   @db.VarChar(255)
-  seller_id          String                   @db.VarChar(255)
+  seller_id          String[]                 @db.VarChar(255)
   skins              Skin[]
   processTransaction ProcessTransactionStatus @default(Pending)
   dateProcess        DateTime
