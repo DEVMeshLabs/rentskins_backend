@@ -9,25 +9,25 @@ export async function createRentalTransactionController(
   try {
     const bodySchema = createRentalTransactionSchema;
     const {
-      sellerId,
       buyerId,
       daysQuantity,
       totalPriceRent,
       totalGuarantee,
       remainder,
       feePrice,
-      skins,
+      skinsRent,
+      skinsGuarantee,
     } = bodySchema.parse(req.body);
     const createTransactionRental = makeCreateRentalTransactionUseCase();
     const transaction = await createTransactionRental.execute({
-      sellerId,
       buyerId,
       totalPriceRent,
       totalGuarantee,
       remainder,
       feePrice,
-      skins,
+      skinsRent,
       daysQuantity,
+      skinsGuarantee,
     });
 
     return reply.status(201).send(transaction);

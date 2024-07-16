@@ -86,18 +86,18 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     });
     return updateUser;
   }
+  // async updateMany(skinsIds: string[], status: string) {
+  //   const updateId = await prisma.skin.updateMany({
+  //     where: { id: { in: skinsIds } },
+  //     data: { status, updatedAt: new Date() },
+  //   });
+  //   return updateId;
+  // }
 
-  async updateTotalExchanges(id: string) {
-    const perfil = await prisma.perfil.findUnique({
-      where: { id },
-    });
-
-    const updateTotalExchanges = await prisma.perfil.update({
-      where: { id },
-      data: {
-        total_exchanges_completed: perfil.total_exchanges_completed + 1,
-        updatedAt: new Date(),
-      },
+  async updateTotalExchanges(buyerIds: string[]) {
+    const updateTotalExchanges = await prisma.perfil.updateMany({
+      where: { owner_id: { in: buyerIds } },
+      data: { total_exchanges: { increment: 1 }, updatedAt: new Date() },
     });
 
     return updateTotalExchanges;

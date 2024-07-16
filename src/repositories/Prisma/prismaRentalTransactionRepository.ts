@@ -24,6 +24,13 @@ export class PrismaRentalTransactionRepository
     return createRental;
   }
 
+  async findByMany() {
+    const skins = await prisma.rentalTransaction.findMany({
+      include: { skinsRent: true },
+    });
+    return skins;
+  }
+
   async updateId(
     id: string,
     data: Prisma.RentalTransactionUncheckedUpdateInput

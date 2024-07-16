@@ -19,7 +19,10 @@ export class InMemoryNotificationRepository implements INotificationRepository {
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
+
+      rentalTransactionId: data.rentalTransactionId ?? null,
     };
+
     this.notifications.push(createNotification);
     return createNotification;
   }

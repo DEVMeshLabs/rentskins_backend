@@ -109,6 +109,8 @@ export class InMemorySkinRepository implements ISkinsRepository {
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
+      rentalTransactionId: data.rentalTransactionId ?? "",
+      transactionHistoryId: data.transactionHistoryId ?? "",
     };
 
     this.skins.push(skin);

@@ -27,16 +27,14 @@ export class CreateRentalTransactionUseCase {
   ) {}
 
   async execute(data: Prisma.RentalTransactionCreateInput) {
-    console.log(data.skins);
+    console.log("Esse", data.skinsRent);
 
-    const skinIds = (data.skins as Skin[]).map((skin: Skin) => skin.id);
-    const [skins, perfilComprador, walletComprador, perfilSeller] =
-      await Promise.all([
-        this.skinRepository.findManySkins(skinIds),
-        this.perfilRepository.findByUser(data.buyerId),
-        this.walletRepository.findByUser(data.buyerId),
-        this.perfilRepository.findByUser(data.sellerId),
-      ]);
+    const skinIds = (data.skinsRent as Skin[]).map((skin: Skin) => skin.id);
+    const [skins, perfilComprador, walletComprador] = await Promise.all([
+      this.skinRepository.findManySkins(skinIds),
+      this.perfilRepository.findByUser(data.buyerId),
+      this.walletRepository.findByUser(data.buyerId),
+    ]);
 
     if (!perfilComprador) {
       throw new PerfilNotExistError();
@@ -45,8 +43,8 @@ export class CreateRentalTransactionUseCase {
     } else if (walletComprador.value < data.totalPriceRent) {
       throw new InsufficientFundsError();
     } else if (
-      skins.length !== (data.skins as Skin[]).length ||
-      (data.skins as Skin[]).length < 1
+      skins.length !== (data.skinsRent as Skin[]).length ||
+      (data.skinsRent as Skin[]).length < 1
     ) {
       throw new SkinNotExistError();
     }
@@ -62,39 +60,45 @@ export class CreateRentalTransactionUseCase {
           totalPriceRent: data.totalPriceRent,
           startDate: new Date(),
           endDate: endDateNew,
-          skins: {
-            connect: (data.skins as Skin[]).map((skin) => ({
+          skinsRent: {
+            connect: (data.skinsRent as Skin[]).map((skin) => ({
               id: skin.id,
             })),
           },
-          notification: {
-            createMany: {
-              data: [
-                {
-                  description: `A locação do(s) item(ns) foi iniciada.`,
-                  type: "input",
-                  owner_id: data.buyerId,
-                },
-                {
-                  description: `A locação do(s) item(ns) foi iniciada.`,
-                  type: "input",
-                  owner_id: data.sellerId,
-                },
-              ],
-            },
-          },
-          transactionHistory: {
-            create: {
-              seller_id: data.sellerId,
-              buyer_id: data.buyerId,
-              skins: {
-                connect: (data.skins as Skin[]).map((skin) => ({
-                  id: skin.id,
-                })),
-              },
-              dateProcess: addHours(24 * Number(data.daysQuantity)),
-            },
-          },
+          // notification: {
+          //   createMany: {
+          //     data: [
+          //       {
+          //         description: `A locação do(s) item(ns) foi iniciada.`,
+          //         type: "input",
+          //         owner_id: [data.buyerId],
+          //       },
+          //       {
+          //         description: `A locação do(s) item(ns) foi iniciada.`,
+          //         type: "input",
+          //         owner_id: skins.map((skin) => skin.seller_id),
+          //       },
+          //     ],
+          //   },
+          // },
+          // transactionHistory: {
+          //   createMany: {
+          //     data: skins.map((skin) => ({
+          //       seller_id: skin.seller_id,
+          //       buyer_id: data.buyerId,
+          //       skins: {
+          //         connect: [{ seller_id: skin.seller_id }],
+          //       },
+          //       dateProcess: addHours(24 * Number(data.daysQuantity)),
+          //     })),
+          //   },
+          // },
+        }),
+
+        this.notificationsRepository.create({
+          description: `A locação do(s) item(ns) foi iniciada.`,
+          type: "input",
+          owner_id: [data.buyerId],
         }),
 
         this.walletRepository.updateByUserValue(
@@ -102,9 +106,9 @@ export class CreateRentalTransactionUseCase {
           "decrement",
           data.totalPriceRent
         ),
-        this.perfilRepository.updateByUser(perfilSeller.owner_id, {
-          total_exchanges: perfilSeller.total_exchanges + 1,
-        }),
+        this.perfilRepository.updateTotalExchanges(
+          skins.map((skin) => skin.seller_id)
+        ),
         this.skinRepository.updateMany(
           skins.map((skin) => skin.id),
           "Em andamento"

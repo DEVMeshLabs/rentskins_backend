@@ -8,13 +8,16 @@ export class InMemoryRentalTransactionRepository
   public rentalTransactions = [];
 
   async create(
-    data: Prisma.RentalTransactionCreateInput & { skins: Prisma.JsonValue[] }
+    data: Prisma.RentalTransactionCreateInput & {
+      skinsRent: Prisma.JsonValue[];
+      skinsGuarantee: Prisma.JsonValue[];
+    }
   ) {
     const rentalTransaction = {
       id: data.id ?? randomUUID(),
-      sellerId: data.sellerId,
       buyerId: data.buyerId,
-      skins: data.skins ?? [],
+      skinsRent: data.skinsRent ?? [],
+      skinsGuarantee: data.skinsGuarantee ?? [],
       totalPriceRent: data.totalPriceRent ?? null,
       totalGuarantee: data.totalGuarantee ?? null,
       remainder: data.remainder ?? null,
@@ -60,5 +63,9 @@ export class InMemoryRentalTransactionRepository
     }
 
     return this.rentalTransactions[index];
+  }
+
+  async findByMany() {
+    return this.rentalTransactions;
   }
 }
