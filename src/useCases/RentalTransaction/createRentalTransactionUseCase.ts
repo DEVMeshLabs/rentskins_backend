@@ -14,7 +14,6 @@ import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 // ----------------------------------- Importando Utils -----------------------------------//
 import { addHours } from "@/utils/compareDates";
 import dayjs from "dayjs";
-import { prisma } from "@/lib/prisma";
 
 export class CreateRentalTransactionUseCase {
   constructor(
@@ -27,7 +26,7 @@ export class CreateRentalTransactionUseCase {
   ) {}
 
   async execute(data: Prisma.RentalTransactionCreateInput) {
-    console.log("Esse", data.skinsRent);
+    const sellerItemsMap = new Map<string, string[]>();
 
     const skinIds = (data.skinsRent as Skin[]).map((skin: Skin) => skin.id);
     const [skins, perfilComprador, walletComprador] = await Promise.all([
@@ -53,69 +52,62 @@ export class CreateRentalTransactionUseCase {
       .add(Number(data.daysQuantity), "day")
       .format();
 
-    const rentalTransaction = await prisma.$transaction(async (prisma) => {
-      await Promise.all([
-        this.rentalTransactionRepository.create({
-          ...data,
-          totalPriceRent: data.totalPriceRent,
-          startDate: new Date(),
-          endDate: endDateNew,
-          skinsRent: {
+    skins.forEach((skin) => {
+      if (!sellerItemsMap.has(skin.seller_id)) {
+        sellerItemsMap.set(skin.seller_id, []);
+      }
+      sellerItemsMap.get(skin.seller_id)?.push(skin.skin_name);
+    });
+
+    const [rent] = await Promise.all([
+      this.rentalTransactionRepository.create({
+        ...data,
+        totalPriceRent: data.totalPriceRent,
+        startDate: new Date(),
+        endDate: endDateNew,
+        skinsRent: {
+          connect: (data.skinsRent as Skin[]).map((skin) => ({
+            id: skin.id,
+          })),
+        },
+      }),
+
+      sellerItemsMap.forEach((itemNames, sellerId) => {
+        const description = `A locação dos itens ${itemNames.join(
+          ", "
+        )} foi iniciada.`;
+        this.notificationsRepository.create({
+          description,
+          type: "input",
+          owner_id: sellerId,
+        });
+
+        this.transactionHistory.create({
+          seller_id: sellerId,
+          buyer_id: data.buyerId,
+          skins: {
             connect: (data.skinsRent as Skin[]).map((skin) => ({
               id: skin.id,
             })),
           },
-          // notification: {
-          //   createMany: {
-          //     data: [
-          //       {
-          //         description: `A locação do(s) item(ns) foi iniciada.`,
-          //         type: "input",
-          //         owner_id: [data.buyerId],
-          //       },
-          //       {
-          //         description: `A locação do(s) item(ns) foi iniciada.`,
-          //         type: "input",
-          //         owner_id: skins.map((skin) => skin.seller_id),
-          //       },
-          //     ],
-          //   },
-          // },
-          // transactionHistory: {
-          //   createMany: {
-          //     data: skins.map((skin) => ({
-          //       seller_id: skin.seller_id,
-          //       buyer_id: data.buyerId,
-          //       skins: {
-          //         connect: [{ seller_id: skin.seller_id }],
-          //       },
-          //       dateProcess: addHours(24 * Number(data.daysQuantity)),
-          //     })),
-          //   },
-          // },
-        }),
+          dateProcess: addHours(24 * Number(data.daysQuantity)),
+        });
+      }),
 
-        this.notificationsRepository.create({
-          description: `A locação do(s) item(ns) foi iniciada.`,
-          type: "input",
-          owner_id: [data.buyerId],
-        }),
+      this.walletRepository.updateByUserValue(
+        data.buyerId,
+        "decrement",
+        data.totalPriceRent
+      ),
+      this.perfilRepository.updateTotalExchanges(
+        skins.map((skin) => skin.seller_id)
+      ),
+      this.skinRepository.updateMany(
+        skins.map((skin) => skin.id),
+        "Em andamento"
+      ),
+    ]);
 
-        this.walletRepository.updateByUserValue(
-          data.buyerId,
-          "decrement",
-          data.totalPriceRent
-        ),
-        this.perfilRepository.updateTotalExchanges(
-          skins.map((skin) => skin.seller_id)
-        ),
-        this.skinRepository.updateMany(
-          skins.map((skin) => skin.id),
-          "Em andamento"
-        ),
-      ]);
-    });
-
-    return rentalTransaction;
+    return rent;
   }
 }

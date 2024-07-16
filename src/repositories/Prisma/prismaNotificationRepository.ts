@@ -26,6 +26,13 @@ export class PrismaNotificationRepository implements INotificationRepository {
     return createNot;
   }
 
+  async createMany(data: Prisma.NotificationCreateInput) {
+    const createNot = await prisma.notification.createMany({
+      data,
+    });
+    return createNot;
+  }
+
   async findByMany() {
     const findMany = await prisma.notification.findMany({
       where: { deletedAt: null },

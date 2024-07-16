@@ -88,7 +88,7 @@ export class CreateTransactionUseCase {
       throw new Error("Transaction not created");
     }
 
-    await Promise.all([
+    await Promise.allSettled([
       this.notificationsRepository.create({
         owner_id: perfilSeller.owner_id,
         description: `A transação do item ${findSkin.skin_name} foi iniciada por ${formattedBalance}.`,
@@ -118,7 +118,6 @@ export class CreateTransactionUseCase {
         transaction_id: createTransaction.id,
         seller_id,
         buyer_id,
-        asset_id: findSkin.asset_id,
         dateProcess: addHours(12),
       }),
     ]);
