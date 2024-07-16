@@ -27,6 +27,7 @@ export class PrismaRentalTransactionRepository
   async findByMany() {
     const skins = await prisma.rentalTransaction.findMany({
       include: { skinsRent: true },
+      orderBy: { createdAt: "desc" },
     });
     return skins;
   }

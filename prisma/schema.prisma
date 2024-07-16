@@ -176,8 +176,7 @@ model RentalTransaction {
   skinsGuarantee Json[]
   totalPriceRent Float?
   totalGuarantee Float?
-  remainder      Float?
-  feePrice       Float?
+  fee            Float?
   daysQuantity   String            @db.VarChar(5)
   status         TransactionStatus @default(Default)
   startDate      DateTime?
