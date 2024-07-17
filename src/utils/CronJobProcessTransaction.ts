@@ -38,7 +38,7 @@ export class CronJobProcessTransaction {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
       "Pending"
     );
-
+    console.log(allTransactions);
     if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
     }
@@ -48,6 +48,10 @@ export class CronJobProcessTransaction {
       if (!datesCompare || transaction.transaction_id === null) {
         return;
       }
+      const perfilSeller = await this.perfilRepository.findByUser(
+        transaction.seller_id[0]
+      );
+      console.log(perfilSeller);
       await this.handleFailedTransaction({ transactionHistory: transaction });
     }
     return "Transação processada com sucesso.";
@@ -57,16 +61,17 @@ export class CronJobProcessTransaction {
     transactionHistory,
   }: IUpdateTransactionHistory) {
     const perfilSeller = await this.perfilRepository.findByUser(
-      transactionHistory.seller_id
+      transactionHistory.seller_id[0]
     );
 
     const transaction = await this.transactionRepository.findById(
       transactionHistory.transaction_id
     );
     const { porcentagem } = formatBalance(transaction.balance);
+    console.log(transaction);
 
     await Promise.allSettled([
-      this.perfilRepository.updateTotalExchanges(perfilSeller.id),
+      this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
 
       this.transactionHistoryRepository.updateId(transactionHistory.id, {
         processTransaction: "Completed",
@@ -75,7 +80,7 @@ export class CronJobProcessTransaction {
         status: "NegociationAccepted",
       }),
       this.notificationRepository.create({
-        owner_id: transactionHistory.seller_id,
+        owner_id: transactionHistory.seller_id[0],
         description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
       }),
       this.notificationRepository.create({
@@ -87,7 +92,7 @@ export class CronJobProcessTransaction {
         saledAt: new Date(),
       }),
       this.walletRepository.updateByUserValue(
-        transactionHistory.seller_id,
+        transactionHistory.seller_id[0],
         "increment",
         porcentagem
       ),
@@ -98,7 +103,7 @@ export class CronJobProcessTransaction {
     transactionHistory,
   }: IUpdateTransactionHistory) {
     const perfilSeller = await this.perfilRepository.findByUser(
-      transactionHistory.seller_id
+      transactionHistory.seller_id[0]
     );
 
     const transaction = await this.transactionRepository.findById(
@@ -115,7 +120,7 @@ export class CronJobProcessTransaction {
         status: "NegociationRejected",
       }),
       this.notificationRepository.create({
-        owner_id: transactionHistory.seller_id,
+        owner_id: transactionHistory.seller_id[0],
         description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi excluído!`,
       }),
       this.notificationRepository.create({
@@ -130,7 +135,7 @@ export class CronJobProcessTransaction {
       this.skinRepository.updateById(transaction.skin_id, {
         status: "Falhou",
       }),
-      this.perfilRepository.updateByUser(transactionHistory.seller_id, {
+      this.perfilRepository.updateByUser(transactionHistory.seller_id[0], {
         total_exchanges_failed: perfilSeller.total_exchanges_failed + 1,
       }),
     ]);
