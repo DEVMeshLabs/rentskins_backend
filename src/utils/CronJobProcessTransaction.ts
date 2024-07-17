@@ -48,10 +48,8 @@ export class CronJobProcessTransaction {
       if (!datesCompare || transaction.transaction_id === null) {
         return;
       }
-      const perfilSeller = await this.perfilRepository.findByUser(
-        transaction.seller_id[0]
-      );
-      console.log(perfilSeller);
+      console.log("AQuiui");
+
       await this.handleFailedTransaction({ transactionHistory: transaction });
     }
     return "Transação processada com sucesso.";
@@ -68,7 +66,6 @@ export class CronJobProcessTransaction {
       transactionHistory.transaction_id
     );
     const { porcentagem } = formatBalance(transaction.balance);
-    console.log(transaction);
 
     await Promise.allSettled([
       this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
