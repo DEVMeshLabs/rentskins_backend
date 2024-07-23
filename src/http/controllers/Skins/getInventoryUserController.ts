@@ -37,7 +37,6 @@ export async function getInventoryUserController(
         (item) =>
           !skinsManySet.has(item.assetid) || !transactionsSet.has(item.assetid)
       );
-      console.log(filterInventorySkins);
 
       return reply.status(200).send(filterInventorySkins);
     }
