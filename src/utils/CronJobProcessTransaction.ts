@@ -7,6 +7,7 @@ import { ITransactionRepository } from "@/repositories/interfaceRepository/ITran
 import { formatBalance } from "./formatBalance";
 import { compareDates } from "./compareDates";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
+import { prisma } from "@/lib/prisma";
 
 interface IUpdateTransactionHistory {
   transactionHistory: TransactionHistory;
@@ -96,45 +97,54 @@ export class CronJobProcessTransaction {
     ]);
   }
 
-  async handleFailedTransaction({
+  private async handleFailedTransaction({
     transactionHistory,
   }: IUpdateTransactionHistory) {
     const perfilSeller = await this.perfilRepository.findByUser(
       transactionHistory.seller_id[0]
     );
-
     const transaction = await this.transactionRepository.findById(
       transactionHistory.transaction_id
     );
     const skin = await this.skinRepository.findById(transaction.skin_id);
     const { formattedBalance } = formatBalance(transaction.balance);
 
-    await Promise.allSettled([
-      this.transactionHistoryRepository.updateId(transactionHistory.id, {
-        processTransaction: "Failed",
-      }),
-      this.transactionRepository.updateId(transaction.id, {
-        status: "NegociationRejected",
-      }),
-      this.notificationRepository.create({
-        owner_id: transactionHistory.seller_id[0],
-        description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi excluído!`,
-      }),
-      this.notificationRepository.create({
-        owner_id: transactionHistory.buyer_id,
-        description: `O vendedor não enviou a skin. O valor de ${formattedBalance} foi devolvido para sua carteira.`,
-      }),
-      this.walletRepository.updateByUserValue(
-        transactionHistory.buyer_id,
-        "increment",
-        transaction.balance
-      ),
-      this.skinRepository.updateById(transaction.skin_id, {
-        status: "Falhou",
-      }),
-      this.perfilRepository.updateByUser(transactionHistory.seller_id[0], {
-        total_exchanges_failed: perfilSeller.total_exchanges_failed + 1,
-      }),
-    ]);
+    try {
+      await prisma.$transaction(async (prisma) => {
+        await this.transactionHistoryRepository.updateId(
+          transactionHistory.id,
+          { processTransaction: "Failed" }
+        );
+        await this.transactionRepository.updateId(transaction.id, {
+          status: "NegociationRejected",
+        });
+        await this.notificationRepository.create({
+          owner_id: transactionHistory.seller_id[0],
+          description: `A venda da skin ${skin.skin_name} foi cancelada por falta de entrega. Isso pode prejudicar sua reputação como vendedor. Seu anúncio foi excluído!`,
+        });
+        await this.notificationRepository.create({
+          owner_id: transactionHistory.buyer_id,
+          description: `O vendedor não enviou a skin. O valor de ${formattedBalance} foi devolvido para sua carteira.`,
+        });
+
+        await this.walletRepository.updateByUserValue(
+          transactionHistory.buyer_id,
+          "increment",
+          transaction.balance
+        );
+        await this.skinRepository.updateById(transaction.skin_id, {
+          status: "Falhou",
+        });
+        await this.perfilRepository.updateByUser(
+          transactionHistory.seller_id[0],
+          {
+            total_exchanges_failed: perfilSeller.total_exchanges_failed + 1,
+          }
+        );
+      });
+    } catch (error) {
+      console.error("Erro ao processar transação falhada:", error);
+      throw error;
+    }
   }
 }

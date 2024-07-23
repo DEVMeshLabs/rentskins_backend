@@ -1,4 +1,3 @@
-import { PrismaConfigurationRepository } from "@/repositories/Prisma/prismaConfigurationRepository";
 import { PrismaNotificationRepository } from "@/repositories/Prisma/prismaNotificationRepository";
 import { PrismaPerfilRepository } from "@/repositories/Prisma/prismaPerfilRepository";
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
@@ -10,7 +9,6 @@ import { CronJobProcessTransaction } from "@/utils/CronJobProcessTransaction";
 export function makeCronJobProcessTransaction() {
   const transactionHistoryRepository = new PrismaTransactionHistoryRepository();
   const transactionRepository = new PrismaTransactionRepository();
-  const configurationRepository = new PrismaConfigurationRepository();
   const notificationRepository = new PrismaNotificationRepository();
   const walletRepository = new PrismaWalletRepository();
   const perfilRepository = new PrismaPerfilRepository();
@@ -18,7 +16,6 @@ export function makeCronJobProcessTransaction() {
   const functionCron = new CronJobProcessTransaction(
     transactionHistoryRepository,
     transactionRepository,
-    configurationRepository,
     notificationRepository,
     walletRepository,
     perfilRepository,
