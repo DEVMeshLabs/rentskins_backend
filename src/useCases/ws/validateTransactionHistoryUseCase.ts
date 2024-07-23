@@ -87,7 +87,7 @@ export class ValidateTransactionHistoryUseCase {
     transactionHistory,
   }: IUpdateTransactionHistory) {
     const perfilSeller = await this.perfilRepository.findByUser(
-      transactionHistory.seller_id
+      transactionHistory.seller_id[0]
     );
 
     const transaction = await this.transactionRepository.findById(
@@ -96,7 +96,7 @@ export class ValidateTransactionHistoryUseCase {
     const { porcentagem } = formatBalance(transaction.balance);
 
     await Promise.all([
-      this.perfilRepository.updateTotalExchanges(perfilSeller.id),
+      this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
 
       this.transactionHistory.updateId(transactionHistory.id, {
         processTransaction: "Completed",
@@ -106,7 +106,7 @@ export class ValidateTransactionHistoryUseCase {
         "NegociationAccepted"
       ),
       this.notificationRepository.create({
-        owner_id: transactionHistory.seller_id,
+        owner_id: transactionHistory.seller_id[0],
         description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
       }),
       this.notificationRepository.create({
@@ -118,7 +118,7 @@ export class ValidateTransactionHistoryUseCase {
         saledAt: new Date(),
       }),
       this.walletRepository.updateByUserValue(
-        transactionHistory.seller_id,
+        transactionHistory.seller_id[0],
         "increment",
         porcentagem
       ),
