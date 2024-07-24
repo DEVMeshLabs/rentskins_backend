@@ -1,8 +1,8 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import createRentalTransactionSchema from "./schemas/createRentalTransactionSchema";
-import { makeCreateRentalTransactionUseCase } from "@/useCases/@factories/RentalTransaction/makeCreateRentalTransaction";
+import { makeCreateTransactionRentalUseCase } from "@/useCases/@factories/RentalTransaction/makeCreateRentalTransaction";
 
-export async function createRentalTransactionController(
+export async function createTransactionRentalController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
@@ -17,7 +17,7 @@ export async function createRentalTransactionController(
       skinsRent,
       skinsGuarantee,
     } = bodySchema.parse(req.body);
-    const createTransactionRental = makeCreateRentalTransactionUseCase();
+    const createTransactionRental = makeCreateTransactionRentalUseCase();
     const transaction = await createTransactionRental.execute({
       buyerId,
       totalPriceRent,

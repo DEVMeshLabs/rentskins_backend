@@ -1,11 +1,11 @@
 import { PrismaRentalTransactionRepository } from "@/repositories/Prisma/prismaRentalTransactionRepository";
-import { GetManyTransactionRentalUseCase } from "@/useCases/TransactionRental/getManyTransactionRentalUseCase";
+import { GetManyUserTransactionRentalUseCase } from "@/useCases/TransactionRental/getManyUserTransactionRentUseCase";
 
-export function makeGetManyTransactionRental() {
+export function makeGetManyUserTransactionRental() {
   const prismaRentalTransactionRepository =
     new PrismaRentalTransactionRepository();
 
-  const getManyRentalTransaction = new GetManyTransactionRentalUseCase(
+  const getManyRentalTransaction = new GetManyUserTransactionRentalUseCase(
     prismaRentalTransactionRepository
   );
   return getManyRentalTransaction;

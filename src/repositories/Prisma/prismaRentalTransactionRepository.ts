@@ -5,13 +5,6 @@ import { prisma } from "@/lib/prisma";
 export class PrismaRentalTransactionRepository
   implements IRentalTransactionRepository
 {
-  async findBySkinRentalTransaction(skin_id: string) {
-    const findSkinRentalTransaction = await prisma.rentalTransaction.findFirst({
-      where: { skin_id, deletedAt: null },
-    });
-    return findSkinRentalTransaction;
-  }
-
   async findById(id: string) {
     const findRentalTransaction = await prisma.rentalTransaction.findFirst({
       where: { id, deletedAt: null },
@@ -26,6 +19,22 @@ export class PrismaRentalTransactionRepository
 
   async findByMany() {
     const skins = await prisma.rentalTransaction.findMany({
+      include: { skinsRent: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return skins;
+  }
+
+  // Quero filtrar todas as transações que o seller_id seja igual ao steamId
+  async findByManyUser(steamId: string) {
+    const skins = await prisma.rentalTransaction.findMany({
+      where: {
+        skinsRent: {
+          some: {
+            seller_id: steamId,
+          },
+        },
+      },
       include: { skinsRent: true },
       orderBy: { createdAt: "desc" },
     });

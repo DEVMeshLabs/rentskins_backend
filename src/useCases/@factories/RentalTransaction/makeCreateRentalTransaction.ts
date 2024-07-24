@@ -4,9 +4,9 @@ import { PrismaRentalTransactionRepository } from "@/repositories/Prisma/prismaR
 import { PrismaSkinRepository } from "@/repositories/Prisma/prismaSkinsRepository";
 import { PrismaTransactionHistoryRepository } from "@/repositories/Prisma/prismaTransactionHistory";
 import { PrismaWalletRepository } from "@/repositories/Prisma/prismaWalletRepository";
-import { CreateRentalTransactionUseCase } from "@/useCases/RentalTransaction/createRentalTransactionUseCase";
+import { CreateTransactionRentalUseCase } from "@/useCases/TransactionRental/createTransactionRentalUseCase";
 
-export function makeCreateRentalTransactionUseCase() {
+export function makeCreateTransactionRentalUseCase() {
   const prismaRentalTransactionRepository =
     new PrismaRentalTransactionRepository();
 
@@ -17,7 +17,7 @@ export function makeCreateRentalTransactionUseCase() {
     new PrismaTransactionHistoryRepository();
   const prismaNotificationRepository = new PrismaNotificationRepository();
 
-  const createRentalTransaction = new CreateRentalTransactionUseCase(
+  const createRentalTransaction = new CreateTransactionRentalUseCase(
     prismaRentalTransactionRepository,
     prismaTransactionHistoryRepository,
     prismaSkinRepository,

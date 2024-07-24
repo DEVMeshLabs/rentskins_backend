@@ -15,7 +15,7 @@ import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 import { addHours } from "@/utils/compareDates";
 import dayjs from "dayjs";
 
-export class CreateRentalTransactionUseCase {
+export class CreateTransactionRentalUseCase {
   constructor(
     private rentalTransactionRepository: IRentalTransactionRepository,
     private transactionHistory: ITransactionHistoryRepository,

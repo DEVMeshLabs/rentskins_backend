@@ -1,5 +1,5 @@
 import { expect, describe, beforeEach, it, vi, afterEach } from "vitest";
-import { CreateRentalTransactionUseCase } from "@/useCases/RentalTransaction/createRentalTransactionUseCase";
+import { CreateRentalTransactionUseCase } from "@/useCases/TransactionRental/createRentalTransactionUseCase";
 // import nock from "nock";
 // import getHistoric from "../fixures/getItensHistoric.json";
 // -------------- InMemory --------------

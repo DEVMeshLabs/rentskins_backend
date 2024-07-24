@@ -1,14 +1,19 @@
 import { FastifyInstance } from "fastify";
-import { createRentalTransactionController } from "./createRentalTransactionController";
 import { verifyJwt } from "@/http/middlewares/verifyJwt";
-import { getManyRentalTransactionController } from "./getManyRentalTransactionController";
+import { createTransactionRentalController } from "./createTransactionRentalController";
+import { getManyTransactionRentalController } from "./getManyTransactionRentalController";
+import { getManyUserTransactionRentalController } from "./getManyUserTransactionRentalController";
 
 export async function rentalTransactionRouter(app: FastifyInstance) {
   app.post(
     "/v1/rentalTransaction",
     { onRequest: verifyJwt },
-    createRentalTransactionController
+    createTransactionRentalController
   );
 
-  app.get("/v1/rentalTransaction", getManyRentalTransactionController);
+  app.get("/v1/rentalTransaction", getManyTransactionRentalController);
+  app.get(
+    "/v1/rentalTransaction/:steamId",
+    getManyUserTransactionRentalController
+  );
 }
