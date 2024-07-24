@@ -1,12 +1,12 @@
-import { makeGetManyRentalTransaction } from "@/useCases/@factories/RentalTransaction/makeGetManyRentalTransaction";
+import { makeGetManyTransactionRental } from "@/useCases/@factories/RentalTransaction/makeGetManyRentalTransaction";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export async function getManyRentalTransactionController(
+export async function getManyTransactionRentalController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const getManyRentalTransaction = makeGetManyRentalTransaction();
+    const getManyRentalTransaction = makeGetManyTransactionRental();
 
     const findAll = await getManyRentalTransaction.execute();
     return reply.status(200).send(findAll);
