@@ -42,7 +42,7 @@ const createRentalTransactionSchema = z.object({
   skinsGuarantee: z.any(),
   daysQuantity: z.enum(["10", "20", "30"]),
   totalPriceRent: z.number(),
-  totalGuarantee: z.number(),
+  totalPriceSkins: z.number(),
   fee: z.number(),
 });
 

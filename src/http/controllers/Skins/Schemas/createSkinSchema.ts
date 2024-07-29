@@ -21,11 +21,12 @@ const createSkinSchema = z.array(
     status: z.string(),
     slug: z.string(),
     pricesafe7d: z.number(),
-    borderColor: z.string(),
-    color: z.string(),
+    skin_border_color: z.string(),
+    skin_wear: z.string(),
+    skin_color: z.string(),
     status_float: z.string(),
     sale_type: z.array(z.string()),
-    stickers: z
+    skin_stickers: z
       .array(
         z.object({
           name: z.string(),

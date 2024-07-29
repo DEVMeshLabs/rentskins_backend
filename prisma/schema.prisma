@@ -25,6 +25,10 @@ model Skin {
   skin_classid          String              @db.VarChar(255)
   skin_instanceid       String              @db.VarChar(255)
   skin_rarity           String              @db.VarChar(255)
+  skin_wear             String?             @db.VarChar(255)
+  skin_stickers         Json?
+  skin_color            String?             @db.VarChar(255)
+  skin_border_color     String?             @db.VarChar(255)
   skin_link_game        String              @db.VarChar(255)
   skin_link_steam       String              @db.VarChar(255)
   seller_name           String              @db.VarChar(255)
@@ -32,10 +36,7 @@ model Skin {
   status                String?             @db.VarChar(255)
   status_float          String              @db.VarChar(255)
   slug                  String?             @db.VarChar(255)
-  borderColor           String?             @db.VarChar(255)
-  color                 String?             @db.VarChar(255)
   sale_type             String[]            @db.VarChar(255)
-  stickers              Json?
   saledAt               DateTime?
   createdAt             DateTime            @default(now())
   updatedAt             DateTime?
@@ -170,17 +171,17 @@ enum ProcessTransactionStatus {
 }
 
 model RentalTransaction {
-  id             String            @id @default(uuid()) @db.VarChar(36)
-  buyerId        String            @db.VarChar(255)
-  skinsRent      Skin[]
-  skinsGuarantee Json[]
-  totalPriceRent Float?
-  totalGuarantee Float?
-  fee            Float?
-  daysQuantity   String            @db.VarChar(5)
-  status         TransactionStatus @default(Default)
-  startDate      DateTime?
-  endDate        DateTime?
+  id              String            @id @default(uuid()) @db.VarChar(36)
+  buyerId         String            @db.VarChar(255)
+  skinsRent       Skin[]
+  skinsGuarantee  Json[]
+  totalPriceRent  Float?
+  totalPriceSkins Float?
+  fee             Float?
+  daysQuantity    String            @db.VarChar(5)
+  status          TransactionStatus @default(Default)
+  startDate       DateTime?
+  endDate         DateTime?
 
   createdAt          DateTime             @default(now())
   updatedAt          DateTime?            @updatedAt

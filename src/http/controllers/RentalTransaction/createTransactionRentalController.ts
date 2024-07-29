@@ -12,7 +12,7 @@ export async function createTransactionRentalController(
       buyerId,
       daysQuantity,
       totalPriceRent,
-      totalGuarantee,
+      totalPriceSkins,
       fee,
       skinsRent,
       skinsGuarantee,
@@ -21,7 +21,7 @@ export async function createTransactionRentalController(
     const transaction = await createTransactionRental.execute({
       buyerId,
       totalPriceRent,
-      totalGuarantee,
+      totalPriceSkins,
       fee,
       skinsRent,
       daysQuantity,
