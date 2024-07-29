@@ -14,6 +14,7 @@ import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 // ----------------------------------- Importando Utils -----------------------------------//
 import { addHours } from "@/utils/compareDates";
 import dayjs from "dayjs";
+import { SameUsersError } from "../@errors/Skin/SameUsersError";
 
 export class CreateTransactionRentalUseCase {
   constructor(
@@ -35,6 +36,10 @@ export class CreateTransactionRentalUseCase {
       this.walletRepository.findByUser(data.buyerId),
     ]);
 
+    const isSellerToBuyer = (data.skinsRent as Skin[]).some((item: Skin) => {
+      return item.seller_id === data.buyerId;
+    });
+
     if (!perfilComprador) {
       throw new PerfilNotExistError();
     } else if (!walletComprador) {
@@ -46,6 +51,8 @@ export class CreateTransactionRentalUseCase {
       (data.skinsRent as Skin[]).length < 1
     ) {
       throw new SkinNotExistError();
+    } else if (isSellerToBuyer) {
+      throw new SameUsersError();
     }
 
     const endDateNew = dayjs(new Date())
