@@ -29,11 +29,18 @@ export class PrismaRentalTransactionRepository
   async findByManyUser(steamId: string) {
     const skins = await prisma.rentalTransaction.findMany({
       where: {
-        skinsRent: {
-          some: {
-            seller_id: steamId,
+        OR: [
+          {
+            skinsRent: {
+              some: {
+                seller_id: steamId,
+              },
+            },
           },
-        },
+          {
+            buyerId: steamId,
+          },
+        ],
       },
       include: { skinsRent: true },
       orderBy: { createdAt: "desc" },
