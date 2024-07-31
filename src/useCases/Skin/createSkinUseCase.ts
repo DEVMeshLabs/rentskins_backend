@@ -22,7 +22,6 @@ export class CreateSkinUseCase {
     const duplicateSkins = existingSkins.filter(
       (item) => item.asset_id === data.asset_id
     );
-    console.log(existingTransaction);
 
     const findSkinTransaction: any = existingTransaction.filter((item: any) => {
       return (
@@ -52,7 +51,6 @@ export class CreateSkinUseCase {
       const transactionDuplicate = findSkinTransaction[0].skin.skin_name;
       throw new SkinHasAlreadyBeenSoldOrAnnounced(transactionDuplicate);
     }
-
     const createdSkins = await this.skinsRepository.create(data);
 
     return createdSkins;

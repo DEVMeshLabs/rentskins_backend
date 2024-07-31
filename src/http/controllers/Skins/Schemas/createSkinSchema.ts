@@ -25,7 +25,9 @@ const createSkinSchema = z.array(
     skin_wear: z.string(),
     skin_color: z.string(),
     status_float: z.string(),
-    sale_type: z.array(z.string()),
+    sale_type: z.array(z.string()).refine((arr) => arr.includes("sale"), {
+      message: "É necessário informar o tipo de venda",
+    }),
     skin_stickers: z
       .array(
         z.object({
