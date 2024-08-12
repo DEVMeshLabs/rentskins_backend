@@ -17,6 +17,7 @@ export async function rentValidateTradesPendingController(
     const makeUpdate = makeUpdateStatusTransactionRentalUseCase();
 
     const transactionRent = await makeTransactionRentId.execute(transactionId);
+    console.log(transactionRent);
 
     if (!transactionRent) {
       throw new TransactionHistoryNotExistError();
