@@ -92,6 +92,7 @@ export class InMemorySkinRepository implements ISkinsRepository {
       skin_weapon: data.skin_weapon,
       skin_price: data.skin_price,
       skin_float: data.skin_float,
+      skin_wear: data.skin_wear ?? "", // Add the skin_wear property
       seller_name: data.seller_name,
       seller_id: data.seller_id,
       skin_rarity: data.skin_rarity,
@@ -99,11 +100,11 @@ export class InMemorySkinRepository implements ISkinsRepository {
       saledAt: null,
       slug: "",
       sale_type: [],
-      borderColor: data.borderColor ?? "",
-      color: data.color ?? "",
+      skin_border_color: data.skin_border_color ?? "",
+      skin_color: data.skin_color ?? "",
       pricesafe7d: data.pricesafe7d ?? 0,
       status_float: data.status_float,
-      stickers: [],
+      skin_stickers: (data.skin_stickers as any) ?? null,
       skin_link_game: "/",
       skin_link_steam: "/",
       createdAt: new Date(),
@@ -126,6 +127,7 @@ export class InMemorySkinRepository implements ISkinsRepository {
           status,
         });
       });
+      console.log("ESSe", updatedSkins);
       resolve(updatedSkins);
     });
   }

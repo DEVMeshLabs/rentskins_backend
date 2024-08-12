@@ -41,6 +41,13 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
     return getUser;
   }
 
+  async findByUsers(owner_ids: string[]): Promise<Perfil | null> {
+    const getUser = this.perfil.find((item) =>
+      owner_ids.includes(item.owner_id)
+    );
+    return getUser;
+  }
+
   findById(id: string) {
     return this.notImplemented();
   }

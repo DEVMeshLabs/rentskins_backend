@@ -19,13 +19,34 @@ export class PrismaRentalTransactionRepository
 
   async findByMany() {
     const skins = await prisma.rentalTransaction.findMany({
-      include: { skinsRent: true },
+      include: { skinsRent: true, skinsGuarantee: true },
       orderBy: { createdAt: "desc" },
     });
     return skins;
   }
 
-  // Quero filtrar todas as transações que o seller_id seja igual ao steamId
+  async findByManyStatus(status: any) {
+    const skins = await prisma.rentalTransaction.findMany({
+      where: { status },
+      include: { skinsRent: true, skinsGuarantee: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return skins;
+  }
+
+  async checkPendingGuarantee() {
+    const findManyRentalStatus = await prisma.rentalTransaction.findMany({
+      where: {
+        status: "WaitingForGuaranteeConfirmation",
+        createdAt: {
+          lt: new Date(new Date().getTime() - 20 * 60 * 10000), // há mais de 20 minutos
+        },
+      },
+      include: { skinsRent: true, skinsGuarantee: true },
+    });
+    return findManyRentalStatus;
+  }
+
   async findByManyUser(steamId: string) {
     const skins = await prisma.rentalTransaction.findMany({
       where: {
@@ -42,10 +63,29 @@ export class PrismaRentalTransactionRepository
           },
         ],
       },
-      include: { skinsRent: true },
+      include: { skinsRent: true, skinsGuarantee: true },
       orderBy: { createdAt: "desc" },
     });
     return skins;
+  }
+
+  async updateStatus(
+    id: string,
+    status:
+      | "WaitingForGuaranteeConfirmation"
+      | "WaitingForSellerOffer"
+      | "WaitingForSellerConfirmation"
+      | "TrialPeriodStarted"
+      | "WaitingForReturn"
+      | "WaitingForUserDecision"
+      | "Completed"
+      | "Failed"
+  ) {
+    const updateStatus = prisma.rentalTransaction.update({
+      where: { id },
+      data: { status, updatedAt: new Date() },
+    });
+    return updateStatus;
   }
 
   async updateId(

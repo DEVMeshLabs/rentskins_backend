@@ -1,5 +1,5 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import createRentalTransactionSchema from "./schemas/createRentalTransactionSchema";
+import { createRentalTransactionSchema } from "./schemas/createRentalTransactionSchema";
 import { makeCreateTransactionRentalUseCase } from "@/useCases/@factories/RentalTransaction/makeCreateRentalTransaction";
 
 export async function createTransactionRentalController(
@@ -24,10 +24,10 @@ export async function createTransactionRentalController(
       totalPriceSkins,
       fee,
       skinsRent,
-      daysQuantity,
-      skinsGuarantee,
+      daysQuantity: Number(daysQuantity),
+      skinsGuarantee: skinsGuarantee as any,
     });
-
+    console.log(transaction);
     return reply.status(201).send(transaction);
   } catch (error) {
     const errorMappings = {
