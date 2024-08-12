@@ -3,7 +3,7 @@ import { rentValidateHistoryTradeController } from "./validateHistoryTradeContro
 import { rentValidateTradesPendingController } from "./validateTradesPendingController";
 import { rentValidatePendingTradeReceived } from "./validatePendingTradeReceived";
 
-export async function wsRouter(app: FastifyInstance) {
+export async function wsRentRouter(app: FastifyInstance) {
   app.post(
     "rent/webhook/validate/trade/:transactionId",
     rentValidateHistoryTradeController

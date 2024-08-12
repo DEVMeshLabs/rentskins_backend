@@ -15,6 +15,7 @@ import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/ro
 import { Server } from "node:http";
 import { wsRouter } from "./http/controllers/ws/router";
 import { transactionHistoryRouter } from "./http/controllers/TransactionHistory/routes";
+import { wsRentRouter } from "./http/controllers/wsRent/router";
 
 export const app = fastify();
 
@@ -30,6 +31,7 @@ app.register(transactionRouter);
 app.register(transactionHistoryRouter);
 app.register(rentalTransactionRouter);
 app.register(wsRouter);
+app.register(wsRentRouter);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
