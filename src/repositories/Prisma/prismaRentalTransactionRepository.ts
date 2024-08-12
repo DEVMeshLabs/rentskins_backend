@@ -95,6 +95,7 @@ export class PrismaRentalTransactionRepository
     const updateId = await prisma.rentalTransaction.update({
       where: { id },
       data: { ...data },
+      include: { skinsRent: true, skinsGuarantee: true },
     });
     return updateId;
   }
