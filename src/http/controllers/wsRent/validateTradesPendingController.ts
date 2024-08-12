@@ -30,8 +30,9 @@ export async function rentValidateTradesPendingController(
         (item: Tradeoffer) =>
           item.participantsteamid === transactionRent.buyerId
       );
-
+      console.log(tradeoffers);
       if (filterSkin.length > 0) {
+        console.log("Entrou no if");
         const filterItem = filterSkin.filter((item: Tradeoffer) => {
           return item.myitems.filter((item: Myitem) => {
             return transactionRent.skinsGuarantee.filter((garante) => {
@@ -49,6 +50,7 @@ export async function rentValidateTradesPendingController(
             transactionId,
             "WaitingForSellerConfirmation"
           );
+          console.log("Caiu na responde", response);
           return reply.status(200).send(response);
         }
       }
