@@ -8,6 +8,7 @@ export class PrismaRentalTransactionRepository
   async findById(id: string) {
     const findRentalTransaction = await prisma.rentalTransaction.findFirst({
       where: { id, deletedAt: null },
+      include: { skinsRent: true, skinsGuarantee: true },
     });
     return findRentalTransaction;
   }
