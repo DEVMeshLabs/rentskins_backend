@@ -22,7 +22,7 @@ const makeCronJobRental = makeCronJobProcessRental();
 job.scheduleJob("*/2 * * * *", async () => {
   await Promise.all([
     makeCronJobTransaction.execute(),
-    // makeCronJobRental.execute(),
+    makeCronJobRental.execute(),
   ]);
 });
 
