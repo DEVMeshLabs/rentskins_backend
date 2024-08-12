@@ -1,5 +1,5 @@
 import { expect, describe, beforeEach, it, vi, afterEach } from "vitest";
-import { CreateRentalTransactionUseCase } from "@/useCases/TransactionRental/createRentalTransactionUseCase";
+import { CreateTransactionRentalUseCase } from "@/useCases/TransactionRental/createTransactionRentalUseCase";
 // import nock from "nock";
 // import getHistoric from "../fixures/getItensHistoric.json";
 // -------------- InMemory --------------
@@ -17,7 +17,6 @@ import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfi
 import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
 import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
 import { InMemoryNotificationRepository } from "@/repositories/in-memory/inMemoryNotificationRepository";
-import { skinsMock } from "@/Mock/skins";
 
 let rentalTransactionRepository: InMemoryRentalTransactionRepository;
 let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
@@ -28,7 +27,7 @@ let walletRepository: InMemoryWalletRepository;
 let notificationRepository: InMemoryNotificationRepository;
 let makeCreateSkinRepository: MakeCreateSkinRepository;
 let makeCreatePerfil: MakeCreatePerfilRepository;
-let sut: CreateRentalTransactionUseCase;
+let sut: CreateTransactionRentalUseCase;
 
 describe("Rental Transaction Use Case", () => {
   const SELLER_ID = "76561199205585878";
@@ -51,7 +50,7 @@ describe("Rental Transaction Use Case", () => {
       configurationRepository
     );
 
-    sut = new CreateRentalTransactionUseCase(
+    sut = new CreateTransactionRentalUseCase(
       rentalTransactionRepository,
       transactionHistoryRepository,
       skinRepository,
@@ -69,7 +68,7 @@ describe("Rental Transaction Use Case", () => {
     const [, , skin] = await Promise.all([
       makeCreatePerfil.execute(SELLER_ID, "9DE77D4A568AE81B8975E54BFE1DC8C9"),
       makeCreatePerfil.execute(BUYER_ID),
-      makeCreateSkinRepository.execute(skinsMock[0]),
+      makeCreateSkinRepository.execute(),
       walletRepository.create({
         owner_id: BUYER_ID,
         owner_name: "Comprador",
@@ -85,15 +84,13 @@ describe("Rental Transaction Use Case", () => {
     const createRentalTransaction = await sut.execute({
       buyerId: BUYER_ID,
       skinsRent: [skin] as any,
-      skinsGuarantee: [],
-      daysQuantity: RENTAL_DAYS,
+      skinsGuarantee: [] as any,
+      daysQuantity: Number(RENTAL_DAYS),
       totalPriceRent: TOTAL_RENTAL_PRICE,
-      totalGuarantee: 0,
-      remainder: 0,
-      feePrice: 0,
+      totalPriceSkins: 0,
+      fee: 0,
     });
-
-    console.log("AQIOIO", createRentalTransaction);
+    console.log(createRentalTransaction);
     expect(createRentalTransaction.id).toEqual(expect.any(String));
     // expect(createRentalTransaction.skinsRent.length).toBeGreaterThan(0);
   });

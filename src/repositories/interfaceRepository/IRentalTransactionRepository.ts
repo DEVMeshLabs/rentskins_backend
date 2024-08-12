@@ -5,9 +5,23 @@ export interface IRentalTransactionRepository {
   findById(id: string): Promise<RentalTransaction | null>;
 
   findByMany(): Promise<RentalTransaction[]>;
+  findByManyStatus(status: string): Promise<RentalTransaction[]>;
+  checkPendingGuarantee(): Promise<RentalTransaction[]>;
   findByManyUser(steamId: string): Promise<RentalTransaction[]>;
   updateId(
     id: string,
     data: Prisma.RentalTransactionUncheckedUpdateInput
+  ): Promise<RentalTransaction>;
+  updateStatus(
+    id: string,
+    status:
+      | "WaitingForGuaranteeConfirmation"
+      | "WaitingForSellerOffer"
+      | "WaitingForSellerConfirmation"
+      | "TrialPeriodStarted"
+      | "WaitingForReturn"
+      | "WaitingForUserDecision"
+      | "Completed"
+      | "Failed"
   ): Promise<RentalTransaction>;
 }

@@ -1,6 +1,5 @@
 export const skinsMock = [
   {
-    id: "skin-001",
     asset_id: "asset-001",
     skin_image: "http://example.com/dragon_lore.png",
     skin_name: "AWP | Dragon Lore",
@@ -21,12 +20,12 @@ export const skinsMock = [
     status: "Pending",
     status_float: "0.01",
     slug: "awp-dragon-lore",
-    borderColor: "red",
-    color: "red",
-    sale_type: ["rental", "sale"],
-    stickers: ["sticker-001", "sticker-002"],
+    skin_border_color: "red",
+    skin_color: "red",
+    skin_stickers: ["sticker-001", "sticker-002"],
     saledAt: null,
   },
+
   {
     id: "skin-002",
     asset_id: "asset-002",

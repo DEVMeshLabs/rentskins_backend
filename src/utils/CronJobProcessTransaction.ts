@@ -39,7 +39,7 @@ export class CronJobProcessTransaction {
     const allTransactions = await this.transactionHistoryRepository.findByMany(
       "Pending"
     );
-    console.log(allTransactions);
+
     if (!allTransactions.length) {
       return "Nenhuma transação pendente.";
     }
@@ -49,7 +49,6 @@ export class CronJobProcessTransaction {
       if (!datesCompare || transaction.transaction_id === null) {
         return;
       }
-      console.log("AQuiui");
 
       await this.handleFailedTransaction({ transactionHistory: transaction });
     }

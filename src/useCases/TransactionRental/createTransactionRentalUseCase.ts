@@ -66,55 +66,66 @@ export class CreateTransactionRentalUseCase {
       sellerItemsMap.get(skin.seller_id)?.push(skin.skin_name);
     });
 
-    const [rent] = await Promise.all([
-      this.rentalTransactionRepository.create({
-        ...data,
-        totalPriceRent: data.totalPriceRent,
-        startDate: new Date(),
-        endDate: endDateNew,
-        skinsRent: {
-          connect: (data.skinsRent as Skin[]).map((skin) => ({
-            id: skin.id,
-          })),
-        },
-      }),
-
-      sellerItemsMap.forEach((itemNames, sellerId) => {
-        const description = `A locação dos itens ${itemNames.join(
-          ", "
-        )} foi iniciada.`;
-        this.notificationsRepository.create({
-          description,
-          type: "input",
-          owner_id: sellerId,
-        });
-
-        this.transactionHistory.create({
-          seller_id: sellerId,
-          buyer_id: data.buyerId,
-          skins: {
+    try {
+      const [rent] = await Promise.all([
+        this.rentalTransactionRepository.create({
+          ...data,
+          totalPriceRent: data.totalPriceRent,
+          startDate: new Date(),
+          endDate: endDateNew,
+          skinsRent: {
             connect: (data.skinsRent as Skin[]).map((skin) => ({
               id: skin.id,
             })),
           },
-          dateProcess: addHours(24 * Number(data.daysQuantity)),
-        });
-      }),
+          skinsGuarantee: {
+            createMany: {
+              data: (data.skinsGuarantee as Skin[]).map((skin) => ({
+                ...skin,
+                owner_id: data.buyerId,
+              })),
+            },
+          },
+        }),
 
-      this.walletRepository.updateByUserValue(
-        data.buyerId,
-        "decrement",
-        data.totalPriceRent
-      ),
-      this.perfilRepository.updateTotalExchanges(
-        skins.map((skin) => skin.seller_id)
-      ),
-      this.skinRepository.updateMany(
-        skins.map((skin) => skin.id),
-        "Em andamento"
-      ),
-    ]);
+        sellerItemsMap.forEach((itemNames, sellerId) => {
+          const description = `A locação dos itens ${itemNames.join(
+            ", "
+          )} foi iniciada.`;
+          this.notificationsRepository.create({
+            description,
+            type: "input",
+            owner_id: sellerId,
+          });
 
-    return rent;
+          this.transactionHistory.create({
+            seller_id: sellerId,
+            buyer_id: data.buyerId,
+            skins: {
+              connect: (data.skinsRent as Skin[]).map((skin) => ({
+                id: skin.id,
+              })),
+            },
+            dateProcess: addHours(24 * Number(data.daysQuantity)),
+          });
+        }),
+
+        this.walletRepository.updateByUserValue(
+          data.buyerId,
+          "decrement",
+          data.totalPriceRent
+        ),
+        this.perfilRepository.updateTotalExchanges(
+          skins.map((skin) => skin.seller_id)
+        ),
+        this.skinRepository.updateMany(
+          skins.map((skin) => skin.id),
+          "Em andamento"
+        ),
+      ]);
+      return rent;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }
