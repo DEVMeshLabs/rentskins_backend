@@ -43,8 +43,6 @@
     "zod": "^3.21.4"
   },
   "devDependencies": {
-    "@commitlint/cli": "^18.4.1",
-    "@commitlint/config-conventional": "^18.4.0",
     "@faker-js/faker": "^8.3.1",
     "@rocketseat/eslint-config": "^1.2.0",
     "@types/globaloffensive": "^2.3.1",
