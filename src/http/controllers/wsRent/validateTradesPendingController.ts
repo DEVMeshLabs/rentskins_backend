@@ -38,7 +38,7 @@ export async function rentValidateTradesPendingController(
       if (filteredSkins.length > 0) {
         const matchingItems = filteredSkins.some((offer: Tradeoffer) =>
           offer.myitems.some((item: Myitem) =>
-            transactionRent.skinsGuarantee.some(
+            (transactionRent as any).skinsGuarantee.some(
               (guarantee) =>
                 item.market_hash_name === guarantee.skin_market_hash_name &&
                 item.instanceid === guarantee.skin_instanceid &&
@@ -62,7 +62,7 @@ export async function rentValidateTradesPendingController(
           });
 
           await Promise.all(
-            transactionRent.skinsRent.map((skin) =>
+            (transactionRent as any).skinsRent.map((skin) =>
               createNotification.execute({
                 owner_id: skin.seller_id,
                 description:
