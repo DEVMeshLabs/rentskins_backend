@@ -9,70 +9,72 @@ import { FastifyRequest, FastifyReply } from "fastify";
 export async function rentValidateTradesPendingController(
   req: FastifyRequest,
   reply: FastifyReply
-): Promise<FastifyReply | void | String> {
+): Promise<FastifyReply | void | string> {
   const { transactionId } = req.params as { transactionId: string };
-  const body = req.body as any;
+  const {
+    payload: { tradeoffers },
+  } = req.body as any;
 
   try {
-    const makeTransactionRentId = makeGetTransactionRent();
-    const makeCreateNotifications = makeCreateNotificationUseCase();
-    const makeUpdate = makeUpdateStatusTransactionRentalUseCase();
-
-    const transactionRent = await makeTransactionRentId.execute(transactionId);
+    const transactionRent = await makeGetTransactionRent().execute(
+      transactionId
+    );
 
     if (!transactionRent) {
       throw new TransactionHistoryNotExistError();
-    } else if (transactionRent.status === "WaitingForSellerConfirmation") {
+    }
+
+    if (transactionRent.status === "WaitingForSellerConfirmation") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
-    const tradeoffers = body.payload.tradeoffers;
 
     if (transactionRent.status === "WaitingForGuaranteeConfirmation") {
       const rentId = "76561198862407248";
-      const filterSkin = tradeoffers.filter((item: Tradeoffer) => {
-        console.log("Item", item);
-        return item.participantsteamid === rentId;
-      });
-      console.log("Fitler skin", filterSkin);
 
-      if (filterSkin.length > 0) {
-        console.log("Entrou no if");
-        const filterItem = filterSkin.filter((item: Tradeoffer) => {
-          return item.myitems.filter((item: Myitem) => {
-            console.log("MyItem", item);
-            return transactionRent.skinsGuarantee.filter((garante) => {
-              console.log("Garante", garante);
-              return (
-                item.market_hash_name === garante.skin_market_hash_name &&
-                item.instanceid === garante.skin_instanceid &&
-                item.classid === garante.skin_classid
-              );
-            });
-          });
-        });
-        console.log(filterItem);
-        if (filterItem.length > 0) {
-          const response = await makeUpdate.execute(
-            transactionId,
-            "WaitingForAdministrators"
-          );
-          await makeCreateNotifications.execute({
+      const filteredSkins = tradeoffers.filter(
+        (offer: Tradeoffer) => offer.participantsteamid === rentId
+      );
+
+      if (filteredSkins.length > 0) {
+        const matchingItems = filteredSkins.some((offer: Tradeoffer) =>
+          offer.myitems.some((item: Myitem) =>
+            transactionRent.skinsGuarantee.some(
+              (guarantee) =>
+                item.market_hash_name === guarantee.skin_market_hash_name &&
+                item.instanceid === guarantee.skin_instanceid &&
+                item.classid === guarantee.skin_classid
+            )
+          )
+        );
+
+        if (matchingItems) {
+          const response =
+            await makeUpdateStatusTransactionRentalUseCase().execute(
+              transactionId,
+              "WaitingForAdministrators"
+            );
+
+          const createNotification = makeCreateNotificationUseCase();
+          await createNotification.execute({
             owner_id: transactionRent.buyerId,
             description:
               "A garantia foi confirmada, aguarde a confirmação dos administradores",
           });
-          for (skinsRent of transactionRent.skinsRent) {
-            await makeCreateNotifications.execute({
-              owner_id: skinsRent.seller_id,
-              description:
-                "A garantia foi confirmada, aguarde a confirmação dos administradores",
-            });
-          }
 
-          console.log("Caiu na responde", response);
+          await Promise.all(
+            transactionRent.skinsRent.map((skin) =>
+              createNotification.execute({
+                owner_id: skin.seller_id,
+                description:
+                  "A garantia foi confirmada, aguarde a confirmação dos administradores",
+              })
+            )
+          );
+
           return reply.status(200).send(response);
         }
       }
+
       return reply.status(404).send({ message: "Item not found" });
     }
   } catch (error) {
@@ -81,6 +83,7 @@ export async function rentValidateTradesPendingController(
         message: error.message,
       });
     }
+
     return reply.status(500).send({
       message: "Error",
       err: error.message,
