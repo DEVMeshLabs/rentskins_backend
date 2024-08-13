@@ -61,9 +61,9 @@ export async function rentValidateTradesPendingController(
             description:
               "A garantia foi confirmada, aguarde a confirmação dos administradores",
           });
-          for (skinsGuarantee of transactionRent.skinsGuarantee) {
+          for (skinsRent of transactionRent.skinsRent) {
             await makeCreateNotifications.execute({
-              owner_id: skinsGuarantee.seller_id,
+              owner_id: skinsRent.seller_id,
               description:
                 "A garantia foi confirmada, aguarde a confirmação dos administradores",
             });
