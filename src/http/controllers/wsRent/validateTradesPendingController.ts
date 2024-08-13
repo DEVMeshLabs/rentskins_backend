@@ -26,10 +26,10 @@ export async function rentValidateTradesPendingController(
     const tradeoffers = body.payload.tradeoffers;
 
     if (transactionRent.status === "WaitingForGuaranteeConfirmation") {
-      const filterSkin = tradeoffers.filter(
-        (item: Tradeoffer) =>
-          item.participantsteamid === transactionRent.buyerId
-      );
+      const filterSkin = tradeoffers.filter((item: Tradeoffer) => {
+        console.log("Item", item);
+        return item.participantsteamid === transactionRent.buyerId;
+      });
       console.log("Fitler skin", filterSkin);
       console.log("TradeOffers", tradeoffers);
 
