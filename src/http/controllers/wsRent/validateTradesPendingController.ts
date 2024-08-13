@@ -32,7 +32,6 @@ export async function rentValidateTradesPendingController(
         return item.participantsteamid === rentId;
       });
       console.log("Fitler skin", filterSkin);
-      console.log("TradeOffers", tradeoffers);
 
       if (filterSkin.length > 0) {
         console.log("Entrou no if");
