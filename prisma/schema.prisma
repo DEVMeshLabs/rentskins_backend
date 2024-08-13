@@ -102,6 +102,7 @@ model Transaction {
 
 enum RentalTransactionStatus {
   WaitingForGuaranteeConfirmation // "Esperando confirmação da garantia",
+  WaitingForAdministrators // Esperando administradores
   WaitingForSellerOffer // "Esperando o envio da oferta do vendedor",
   WaitingForSellerConfirmation // "Esperando a confirmação do vendedor",
   TrialPeriodStarted // "Periodo de teste iniciado",
