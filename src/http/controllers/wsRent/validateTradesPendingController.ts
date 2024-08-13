@@ -17,7 +17,6 @@ export async function rentValidateTradesPendingController(
     const makeUpdate = makeUpdateStatusTransactionRentalUseCase();
 
     const transactionRent = await makeTransactionRentId.execute(transactionId);
-    console.log(transactionRent);
 
     if (!transactionRent) {
       throw new TransactionHistoryNotExistError();
@@ -31,7 +30,9 @@ export async function rentValidateTradesPendingController(
         (item: Tradeoffer) =>
           item.participantsteamid === transactionRent.buyerId
       );
-      console.log(tradeoffers);
+      console.log("Fitler skin", filterSkin);
+      console.log("TradeOffers", tradeoffers);
+
       if (filterSkin.length > 0) {
         console.log("Entrou no if");
         const filterItem = filterSkin.filter((item: Tradeoffer) => {
