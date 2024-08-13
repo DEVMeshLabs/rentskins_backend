@@ -59,66 +59,65 @@ describe("Validate Transaction History", () => {
   });
 
   it("Deve ser capaz de criar notificações, pagar valor, aumentar o total de transações completas", async () => {
-    expect(true).toBe(true);
-    // const mockData = JSON.parse(
-    //   fs.readFileSync("src/tests/fixures/getTradeHistorySucess.json", "utf-8")
-    // );
+    const mockData = JSON.parse(
+      fs.readFileSync("src/tests/fixures/getTradeHistorySucess.json", "utf-8")
+    );
 
-    // const [skin] = await Promise.all([
-    //   makeCreateSkin.execute("76561198862407248", "34957127940", {
-    //     skin_name: "Sawed-Off | Snake Camo (Well-Worn)",
-    //     skin_market_hash_name: "Sawed-Off | Snake Camo (Well-Worn)",
-    //     skin_classid: "310777155",
-    //     skin_instanceid: "1363818010",
-    //   }),
-    //   makeCreatePerfilRepository.execute(
-    //     "76561198862407248",
-    //     "DBBF677F1392F52023DC909D966F7516"
-    //   ),
-    //   makeCreatePerfilRepository.execute("76561198086816961"),
-    // ]);
+    const [skin] = await Promise.all([
+      makeCreateSkin.execute({
+        seller_id: "76561198862407248",
+        asset_id: "36352899007",
+        skin_market_hash_name: "Sticker | FURIA | Paris 2023",
+        skin_instanceid: "188530139",
+      }),
+      makeCreatePerfilRepository.execute(
+        "76561198862407248",
+        "DBBF677F1392F52023DC909D966F7516"
+      ),
+      makeCreatePerfilRepository.execute("76561198086816961"),
+    ]);
 
-    // const vendedor = await walletRepository.create({
-    //   owner_name: "Italo",
-    //   owner_id: "76561198862407248",
-    //   value: 0,
-    // });
+    const vendedor = await walletRepository.create({
+      owner_name: "Italo",
+      owner_id: "76561198862407248",
+      value: 0,
+    });
 
-    // const comprador = await walletRepository.create({
-    //   owner_name: "Araujo",
-    //   owner_id: "76561198086816961",
-    //   value: 5000,
-    // });
+    const comprador = await walletRepository.create({
+      owner_name: "Araujo",
+      owner_id: "76561198086816961",
+      value: 5000,
+    });
 
-    // const createTransaction = await transactionRepository.create({
-    //   skin_id: skin.id,
-    //   seller_id: vendedor.owner_id,
-    //   buyer_id: comprador.owner_id,
-    //   balance: 500,
-    // });
+    const createTransaction = await transactionRepository.create({
+      skin_id: skin.id,
+      seller_id: vendedor.owner_id,
+      buyer_id: comprador.owner_id,
+      balance: 500,
+    });
 
-    // const createdTransactionHistory = await transactionHistoryRepository.create(
-    //   {
-    //     buyer_id: comprador.owner_id,
-    //     seller_id: vendedor.owner_id,
-    //     transaction_id: createTransaction.id,
-    //     asset_id: skin.asset_id,
-    //     dateProcess: addMinutes(10),
-    //     processTransaction: "Pending",
-    //   }
-    // );
+    const createdTransactionHistory = await transactionHistoryRepository.create(
+      {
+        buyer_id: comprador.owner_id,
+        seller_id: vendedor.owner_id,
+        transaction_id: createTransaction.id,
+        asset_id: skin.asset_id,
+        dateProcess: addMinutes(10),
+        processTransaction: "Pending",
+      }
+    );
 
-    // await sut.execute(createdTransactionHistory.transaction_id, mockData);
-    // const notifications = notificationRepository.notifications;
-    // const { porcentagem } = formatBalance(skin.skin_price);
-    // expect(createdTransactionHistory.id).toEqual(expect.any(String));
-    // expect(perfilRepository.perfil[0].total_exchanges_completed).toBe(1);
-    // expect(walletRepository.wallet[0].value).toBe(porcentagem);
-    // expect(notifications[0].owner_id).toBe("76561198862407248");
-    // expect(notifications[1].owner_id).toBe("76561198086816961");
-    // expect(transactionRepository.transactions[0].status).toBe(
-    //   "NegociationAccepted"
-    // );
+    await sut.execute(createdTransactionHistory.transaction_id, mockData);
+    const notifications = notificationRepository.notifications;
+    const { porcentagem } = formatBalance(skin.skin_price);
+    expect(createdTransactionHistory.id).toEqual(expect.any(String));
+    expect(perfilRepository.perfil[0].total_exchanges_completed).toBe(1);
+    expect(walletRepository.wallet[0].value).toBe(porcentagem);
+    expect(notifications[0].owner_id).toBe("76561198862407248");
+    expect(notifications[1].owner_id).toBe("76561198086816961");
+    expect(transactionRepository.transactions[0].status).toBe(
+      "NegociationAccepted"
+    );
   });
 
   // it("Teste de erro na execução com ValidateTransactionHistoryError", async () => {

@@ -7,8 +7,8 @@ export class MakeCreateSkinRepository {
   constructor(private skinRepository: InMemorySkinRepository) {}
 
   async execute(
-    seller_id?: string,
     asset_id?: string,
+    seller_id?: string,
     override: Partial<Prisma.SkinCreateInput> = {}
   ) {
     return this.skinRepository.create({
