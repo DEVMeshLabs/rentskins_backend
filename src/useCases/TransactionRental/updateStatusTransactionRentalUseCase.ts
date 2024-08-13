@@ -7,6 +7,7 @@ export class UpdateStatusTransactionRentalUseCase {
     id: string,
     status:
       | "WaitingForGuaranteeConfirmation"
+      | "WaitingForAdministrators"
       | "WaitingForSellerOffer"
       | "WaitingForSellerConfirmation"
       | "TrialPeriodStarted"

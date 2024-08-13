@@ -16,6 +16,7 @@ export interface IRentalTransactionRepository {
     id: string,
     status:
       | "WaitingForGuaranteeConfirmation"
+      | "WaitingForAdministrators"
       | "WaitingForSellerOffer"
       | "WaitingForSellerConfirmation"
       | "TrialPeriodStarted"

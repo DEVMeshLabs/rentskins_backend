@@ -105,6 +105,7 @@ export class InMemoryRentalTransactionRepository
     id: string,
     status:
       | "WaitingForGuaranteeConfirmation"
+      | "WaitingForAdministrators"
       | "WaitingForSellerOffer"
       | "WaitingForSellerConfirmation"
       | "TrialPeriodStarted"

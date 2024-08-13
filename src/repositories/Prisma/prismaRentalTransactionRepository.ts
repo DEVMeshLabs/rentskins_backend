@@ -74,6 +74,7 @@ export class PrismaRentalTransactionRepository
     id: string,
     status:
       | "WaitingForGuaranteeConfirmation"
+      | "WaitingForAdministrators"
       | "WaitingForSellerOffer"
       | "WaitingForSellerConfirmation"
       | "TrialPeriodStarted"

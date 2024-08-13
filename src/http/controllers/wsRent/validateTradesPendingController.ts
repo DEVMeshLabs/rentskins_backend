@@ -36,7 +36,9 @@ export async function rentValidateTradesPendingController(
         console.log("Entrou no if");
         const filterItem = filterSkin.filter((item: Tradeoffer) => {
           return item.myitems.filter((item: Myitem) => {
+            console.log("MyItem", item);
             return transactionRent.skinsGuarantee.filter((garante) => {
+              console.log("Garante", garante);
               return (
                 item.market_hash_name === garante.skin_market_hash_name &&
                 item.instanceid === garante.skin_instanceid &&
@@ -45,11 +47,11 @@ export async function rentValidateTradesPendingController(
             });
           });
         });
-
+        console.log(filterItem);
         if (filterItem.length > 0) {
           const response = await makeUpdate.execute(
             transactionId,
-            "WaitingForSellerConfirmation"
+            "WaitingForAdministrators"
           );
           console.log("Caiu na responde", response);
           return reply.status(200).send(response);
