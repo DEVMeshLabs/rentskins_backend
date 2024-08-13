@@ -1,5 +1,6 @@
 import { TransactionHistoryNotExistError } from "@/useCases/@errors/TransactionHistory/TransactionHistoryNotExistError";
 import { StatusHasAlreadyBeenUpdatedError } from "@/useCases/@errors/ws/StatusHasAlreadyBeenUpdatedError";
+import { makeCreateNotificationUseCase } from "@/useCases/@factories/Notification/makeCreateNotificationUseCase";
 import { makeGetTransactionRent } from "@/useCases/@factories/RentalTransaction/makeGetRentalTransaction";
 import { makeUpdateStatusTransactionRentalUseCase } from "@/useCases/@factories/RentalTransaction/makeUpdateStatusTransactionRentalUseCase";
 import { Myitem, Tradeoffer } from "@/useCases/ws/interface/getTradesPending";
@@ -14,6 +15,7 @@ export async function rentValidateTradesPendingController(
 
   try {
     const makeTransactionRentId = makeGetTransactionRent();
+    const makeCreateNotifications = makeCreateNotificationUseCase();
     const makeUpdate = makeUpdateStatusTransactionRentalUseCase();
 
     const transactionRent = await makeTransactionRentId.execute(transactionId);
@@ -54,6 +56,19 @@ export async function rentValidateTradesPendingController(
             transactionId,
             "WaitingForAdministrators"
           );
+          await makeCreateNotifications.execute({
+            owner_id: transactionRent.buyerId,
+            description:
+              "A garantia foi confirmada, aguarde a confirmação dos administradores",
+          });
+          for (skinsGuarantee of transactionRent.skinsGuarantee) {
+            await makeCreateNotifications.execute({
+              owner_id: skinsGuarantee.seller_id,
+              description:
+                "A garantia foi confirmada, aguarde a confirmação dos administradores",
+            });
+          }
+
           console.log("Caiu na responde", response);
           return reply.status(200).send(response);
         }
