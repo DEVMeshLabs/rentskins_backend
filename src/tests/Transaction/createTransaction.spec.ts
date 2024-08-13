@@ -61,10 +61,7 @@ describe("Transaction Use Case", () => {
     vi.useFakeTimers();
 
     const [skin] = await Promise.all([
-      makeCreateSkin.execute({
-        seller_id: "76561199205585878",
-        asset_id: "123456",
-      }),
+      makeCreateSkin.execute("76561199205585878", "123456"),
       makeCreatePerfilRepository.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561198195920183"),
     ]);
@@ -127,9 +124,7 @@ describe("Transaction Use Case", () => {
 
   it("Verificando a Existência da Carteira", async () => {
     const [skin] = await Promise.all([
-      makeCreateSkin.execute({
-        seller_id: "76561199205585878",
-      }),
+      makeCreateSkin.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561198195920183"),
     ]);
@@ -145,9 +140,7 @@ describe("Transaction Use Case", () => {
 
   it("Verificando Saldo Insuficiente", async () => {
     const [skin] = await Promise.all([
-      makeCreateSkin.execute({
-        seller_id: "76561199205585878",
-      }),
+      makeCreateSkin.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561198195920183"),
 
@@ -174,9 +167,7 @@ describe("Transaction Use Case", () => {
 
   it("Verificando se consigo vender skins que não são minhas", async () => {
     const [skin] = await Promise.all([
-      makeCreateSkin.execute({
-        seller_id: "76561199205585878",
-      }),
+      makeCreateSkin.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561198195920183"),
       makeCreatePerfilRepository.execute("76561199205585877"),
@@ -204,9 +195,7 @@ describe("Transaction Use Case", () => {
 
   it("Verificando a duplicação de anúncios da mesma skin", async () => {
     const [skin] = await Promise.all([
-      makeCreateSkin.execute({
-        seller_id: "76561199205585878",
-      }),
+      makeCreateSkin.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561198195920183"),
       walletRepository.create({
@@ -237,9 +226,8 @@ describe("Transaction Use Case", () => {
 
   it("Verificando se consigo vender uma skin em fase de transação", async () => {
     const [skin] = await Promise.all([
-      makeCreateSkin.execute({
-        seller_id: "76561199205585878",
-      }),
+      makeCreateSkin.execute("76561199205585878"),
+
       makeCreatePerfilRepository.execute("76561199205585878"),
       makeCreatePerfilRepository.execute("76561198195920183"),
       walletRepository.create({
