@@ -4,6 +4,7 @@ import { createTransactionRentalController } from "./createTransactionRentalCont
 import { getManyTransactionRentalController } from "./getManyTransactionRentalController";
 import { getManyUserTransactionRentalController } from "./getManyUserTransactionRentalController";
 import { updateStatusTransactionRentalController } from "./updateStatusTransactionRentalController";
+import { updateGuaranteeConfirmedController } from "./updateGuaranteeConfirmedController";
 
 export async function rentalTransactionRouter(app: FastifyInstance) {
   app.post(
@@ -17,6 +18,8 @@ export async function rentalTransactionRouter(app: FastifyInstance) {
     { onRequest: verifyJwt },
     updateStatusTransactionRentalController
   );
+
+  app.put("/v1/rentalTransaction/:id", updateGuaranteeConfirmedController);
 
   app.get("/v1/rentalTransaction", getManyTransactionRentalController);
   app.get(

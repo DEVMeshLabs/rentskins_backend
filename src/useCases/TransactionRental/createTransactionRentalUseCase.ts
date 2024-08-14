@@ -13,7 +13,6 @@ import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 // ----------------------------------- Importando Utils -----------------------------------//
 import { addHours } from "@/utils/compareDates";
-import dayjs from "dayjs";
 import { SameUsersError } from "../@errors/Skin/SameUsersError";
 
 export class CreateTransactionRentalUseCase {
@@ -55,10 +54,6 @@ export class CreateTransactionRentalUseCase {
       throw new SameUsersError();
     }
 
-    const endDateNew = dayjs(new Date())
-      .add(Number(data.daysQuantity), "day")
-      .format();
-
     skins.forEach((skin) => {
       if (!sellerItemsMap.has(skin.seller_id)) {
         sellerItemsMap.set(skin.seller_id, []);
@@ -71,8 +66,6 @@ export class CreateTransactionRentalUseCase {
         this.rentalTransactionRepository.create({
           ...data,
           totalPriceRent: data.totalPriceRent,
-          startDate: new Date(),
-          endDate: endDateNew,
           skinsRent: {
             connect: (data.skinsRent as Skin[]).map((skin) => ({
               id: skin.id,
