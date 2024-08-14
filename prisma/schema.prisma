@@ -57,17 +57,17 @@ model GuaranteeSkin {
   skin_name             String    @db.VarChar(255)
   skin_market_hash_name String    @db.VarChar(255)
   skin_color            String    @db.VarChar(255)
-  skin_wear             String    @db.VarChar(255)
+  skin_wear             String?   @db.VarChar(255)
   skin_image            String    @db.VarChar(255)
   skin_weapon           String    @db.VarChar(255)
-  skin_float            String    @db.VarChar(255)
-  skin_paintseed        Float
+  skin_float            String?   @db.VarChar(255)
+  skin_paintseed        Float?
   skin_classid          String    @db.VarChar(255)
   skin_instanceid       String    @db.VarChar(255)
   skin_rarity           String    @db.VarChar(255)
   skin_stickers         Json?
-  skin_link_steam       String    @db.VarChar(255)
-  skin_link_game        String    @db.VarChar(255)
+  skin_link_steam       String?   @db.VarChar(255)
+  skin_link_game        String?   @db.VarChar(255)
   createdAt             DateTime  @default(now())
   updatedAt             DateTime? @updatedAt
 
@@ -103,7 +103,6 @@ model Transaction {
 enum RentalTransactionStatus {
   WaitingForGuaranteeConfirmation // "Esperando confirmação da garantia",
   WaitingForAdministrators // Esperando administradores
-  WaitingForSellerOffer // "Esperando o envio da oferta do vendedor",
   WaitingForSellerConfirmation // "Esperando a confirmação do vendedor",
   TrialPeriodStarted // "Periodo de teste iniciado",
   WaitingForReturn // "Aguardando devolução",
