@@ -36,11 +36,12 @@ export class PrismaRentalTransactionRepository
   }
 
   async checkPendingGuarantee() {
+    const now = new Date();
     const findManyRentalStatus = await prisma.rentalTransaction.findMany({
       where: {
         status: "WaitingForGuaranteeConfirmation",
         createdAt: {
-          lt: new Date(new Date().getTime() - 20 * 60 * 10000), // há mais de 20 minutos
+          lt: new Date(now.getTime() - 20 * 60 * 1000),
         },
       },
       include: { skinsRent: true, skinsGuarantee: true },
@@ -75,7 +76,6 @@ export class PrismaRentalTransactionRepository
     status:
       | "WaitingForGuaranteeConfirmation"
       | "WaitingForAdministrators"
-      | "WaitingForSellerOffer"
       | "WaitingForSellerConfirmation"
       | "TrialPeriodStarted"
       | "WaitingForReturn"
