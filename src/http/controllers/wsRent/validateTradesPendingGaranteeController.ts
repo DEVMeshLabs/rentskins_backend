@@ -3,13 +3,10 @@ import { StatusHasAlreadyBeenUpdatedError } from "@/useCases/@errors/ws/StatusHa
 import { makeCreateNotificationUseCase } from "@/useCases/@factories/Notification/makeCreateNotificationUseCase";
 import { makeGetTransactionRent } from "@/useCases/@factories/RentalTransaction/makeGetRentalTransaction";
 import { makeUpdateStatusTransactionRentalUseCase } from "@/useCases/@factories/RentalTransaction/makeUpdateStatusTransactionRentalUseCase";
-import {
-  Tradeoffer,
-  type Participantitem,
-} from "@/useCases/ws/interface/getTradesPending";
+import { Myitem, Tradeoffer } from "@/useCases/ws/interface/getTradesPending";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export async function rentValidateTradesPendingController(
+export async function rentValidateTradesPendingGaranteeController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void | string> {
@@ -27,43 +24,41 @@ export async function rentValidateTradesPendingController(
       throw new TransactionNotExistError();
     }
 
-    if (transactionRent.status === "TrialPeriodStarted") {
+    if (transactionRent.status === "WaitingForBuyerConfirmation") {
       throw new StatusHasAlreadyBeenUpdatedError();
     }
 
-    if (transactionRent.status === "WaitingForBuyerConfirmation") {
+    if (transactionRent.status === "WaitingForGuaranteeConfirmation") {
+      const rentId = "76561198862407248";
+
       const filteredSkins = tradeoffers.filter(
-        (offer: Tradeoffer) =>
-          offer.participantsteamid ===
-          (transactionRent as any).skinsRent[0].seller_id
+        (offer: Tradeoffer) => offer.participantsteamid === rentId
       );
-      console.log("filteredSkins", filteredSkins);
+
       if (filteredSkins.length > 0) {
-        console.log("Caiu no if");
-        // Preciso verificar se todos os itens de participantims estão em skinsRent
-        const matchingItems = filteredSkins.every((offer: Tradeoffer) =>
-          offer.participantitems.every((item: Participantitem) =>
-            (transactionRent as any).skinsRent.every(
-              (skin) =>
-                item.market_hash_name === skin.skin_market_hash_name &&
-                item.instanceid === skin.skin_instanceid &&
-                item.classid === skin.skin_classid
+        const matchingItems = filteredSkins.some((offer: Tradeoffer) =>
+          offer.myitems.some((item: Myitem) =>
+            (transactionRent as any).skinsGuarantee.some(
+              (guarantee) =>
+                item.market_hash_name === guarantee.skin_market_hash_name &&
+                item.instanceid === guarantee.skin_instanceid &&
+                item.classid === guarantee.skin_classid
             )
           )
         );
-        console.log("MatchItems", matchingItems);
+
         if (matchingItems) {
           const response =
             await makeUpdateStatusTransactionRentalUseCase().execute(
               transactionId,
-              "WaitingForSellerConfirmation"
+              "WaitingForAdministrators"
             );
 
           const createNotification = makeCreateNotificationUseCase();
           await createNotification.execute({
             owner_id: transactionRent.buyerId,
             description:
-              "A skin(s) foi confirmada, aguarde a confirmação do vendedor.",
+              "A garantia foi confirmada, aguarde a confirmação dos administradores",
           });
 
           await Promise.all(
@@ -71,7 +66,7 @@ export async function rentValidateTradesPendingController(
               createNotification.execute({
                 owner_id: skin.seller_id,
                 description:
-                  "Locatário confirmou a skin(s), está aguardando sua confirmação.",
+                  "A garantia foi confirmada, aguarde a confirmação dos administradores",
               })
             )
           );

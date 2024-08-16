@@ -2,7 +2,7 @@
 CREATE TYPE "TransactionStatus" AS ENUM ('Default', 'NegotiationSend', 'NegociationAccepted', 'NegociationRejected');
 
 -- CreateEnum
-CREATE TYPE "RentalTransactionStatus" AS ENUM ('WaitingForGuaranteeConfirmation', 'WaitingForSellerOffer', 'WaitingForSellerConfirmation', 'TrialPeriodStarted', 'WaitingForReturn', 'WaitingForUserDecision', 'Completed', 'Failed');
+CREATE TYPE "RentalTransactionStatus" AS ENUM ('WaitingForGuaranteeConfirmation', 'WaitingForAdministrators', 'WaitingForBuyerConfirmation', 'WaitingForSellerConfirmation', 'TrialPeriodStarted', 'WaitingForReturn', 'WaitingForUserDecision', 'Completed', 'Failed');
 
 -- CreateEnum
 CREATE TYPE "ProcessTransactionStatus" AS ENUM ('Default', 'Pending', 'Completed', 'Failed');
@@ -53,17 +53,17 @@ CREATE TABLE "GuaranteeSkin" (
     "skin_name" VARCHAR(255) NOT NULL,
     "skin_market_hash_name" VARCHAR(255) NOT NULL,
     "skin_color" VARCHAR(255) NOT NULL,
-    "skin_wear" VARCHAR(255) NOT NULL,
+    "skin_wear" VARCHAR(255),
     "skin_image" VARCHAR(255) NOT NULL,
     "skin_weapon" VARCHAR(255) NOT NULL,
-    "skin_float" VARCHAR(255) NOT NULL,
-    "skin_paintseed" DOUBLE PRECISION NOT NULL,
+    "skin_float" VARCHAR(255),
+    "skin_paintseed" DOUBLE PRECISION,
     "skin_classid" VARCHAR(255) NOT NULL,
     "skin_instanceid" VARCHAR(255) NOT NULL,
     "skin_rarity" VARCHAR(255) NOT NULL,
     "skin_stickers" JSONB,
-    "skin_link_steam" VARCHAR(255) NOT NULL,
-    "skin_link_game" VARCHAR(255) NOT NULL,
+    "skin_link_steam" VARCHAR(255),
+    "skin_link_game" VARCHAR(255),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
     "rentalTransactionId" VARCHAR(36),

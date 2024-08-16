@@ -49,6 +49,24 @@ export class PrismaRentalTransactionRepository
     return findManyRentalStatus;
   }
 
+  async sendDeadlineNotification() {
+    const now = new Date();
+    const twelveHoursFromNow = new Date(now.getTime() + 12 * 60 * 60 * 1000);
+
+    const transactionsToNotify = await prisma.rentalTransaction.findMany({
+      where: {
+        status: "TrialPeriodStarted",
+        deadlineNotified: false,
+        endDate: {
+          gte: now, // maior ou igual a agora
+          lte: twelveHoursFromNow, // menor ou igual a 12 horas a partir de agora
+        },
+      },
+    });
+
+    return transactionsToNotify;
+  }
+
   async findByManyUser(steamId: string) {
     const skins = await prisma.rentalTransaction.findMany({
       where: {
@@ -76,6 +94,7 @@ export class PrismaRentalTransactionRepository
     status:
       | "WaitingForGuaranteeConfirmation"
       | "WaitingForAdministrators"
+      | "WaitingForBuyerConfirmation"
       | "WaitingForSellerConfirmation"
       | "TrialPeriodStarted"
       | "WaitingForReturn"
@@ -100,5 +119,16 @@ export class PrismaRentalTransactionRepository
       include: { skinsRent: true, skinsGuarantee: true },
     });
     return updateId;
+  }
+
+  async updateMany(
+    ids: string[],
+    data: Prisma.RentalTransactionUncheckedUpdateManyInput
+  ) {
+    const updateMany = await prisma.rentalTransaction.updateMany({
+      where: { id: { in: ids } },
+      data,
+    });
+    return updateMany;
   }
 }

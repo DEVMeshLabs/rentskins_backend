@@ -8,8 +8,8 @@ export class UpdateStatusTransactionRentalUseCase {
     status:
       | "WaitingForGuaranteeConfirmation"
       | "WaitingForAdministrators"
-      | "WaitingForSellerOffer"
       | "WaitingForSellerConfirmation"
+      | "WaitingForBuyerConfirmation"
       | "TrialPeriodStarted"
       | "WaitingForReturn"
       | "WaitingForUserDecision"
