@@ -42,15 +42,16 @@ export async function rentValidateTradesPendingController(
         console.log("Caiu no if");
         // Preciso verificar se todos os itens de participantims estão em skinsRent
         const matchingItems = filteredSkins.filter((offer: Tradeoffer) => {
-          console.log("Offer", offer);
-          return offer.participantitems.every((item: Participantitem) => {
+          return offer.participantitems.filter((item: Participantitem) => {
             console.log("Item", item);
-            return (transactionRent as any).skinsRent.every(
-              (skin) =>
+            return (transactionRent as any).skinsRent.filter((skin) => {
+              console.log("Skin", skin);
+              return (
                 item.market_hash_name === skin.skin_market_hash_name &&
                 item.instanceid === skin.skin_instanceid &&
                 item.classid === skin.skin_classid
-            );
+              );
+            });
           });
         });
         console.log("MatchItems", matchingItems);
