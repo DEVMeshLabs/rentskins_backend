@@ -42,8 +42,8 @@ export async function rentValidateTradesPendingController(
         console.log("Caiu no if");
         // Preciso verificar se todos os itens de participantims estão em skinsRent
         const matchingItems = filteredSkins.filter((offer: Tradeoffer) =>
-          offer.participantitems.every((item: Participantitem) =>
-            (transactionRent as any).skinsRent.every(
+          offer.participantitems.filter((item: Participantitem) =>
+            (transactionRent as any).skinsRent.filter(
               (skin) =>
                 item.market_hash_name === skin.skin_market_hash_name &&
                 item.instanceid === skin.skin_instanceid &&
@@ -51,7 +51,10 @@ export async function rentValidateTradesPendingController(
             )
           )
         );
-        console.log("MatchItems", matchingItems);
+        console.log(
+          "MatchItems",
+          matchingItems.length === transactionRent.skinsRent.length
+        );
         if (matchingItems) {
           const response =
             await makeUpdateStatusTransactionRentalUseCase().execute(
