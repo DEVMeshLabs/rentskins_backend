@@ -51,6 +51,7 @@ export async function rentValidateTradesPendingController(
             )
           )
         );
+        console.log("matchingItems", matchingItems);
         console.log(
           "MatchItems",
           matchingItems.length === transactionRent.skinsRent.length
