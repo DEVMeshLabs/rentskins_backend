@@ -27,6 +27,13 @@ export class InMemoryNotificationRepository implements INotificationRepository {
     return createNotification;
   }
 
+  async createMany(data: Prisma.NotificationCreateManyInput[]) {
+    const createMany = data.map((notification) => {
+      return this.create(notification);
+    });
+    return createMany;
+  }
+
   findByMany() {
     return this.notImplemented();
   }

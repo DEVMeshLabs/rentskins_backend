@@ -120,4 +120,63 @@ describe("CronJobProcessRental Use Case", () => {
     expect(notificationRepository.notifications.length).toBeGreaterThan(1);
     expect(skinRepository.skins[0].status).toBeNull();
   });
+
+  it("Deve enviar notificações quando o prazo de aluguel estiver prestes a expirar", async () => {
+    const buyerId: string = "76561198862407248";
+    const sellerId: string = "76561198015724229";
+
+    const guaranteeSkin = {
+      id: "skin-001",
+      owner_id: sellerId,
+      asset_id: "asset-001",
+      skin_name: "AWP | Dragon Lore",
+      skin_color: "8650AC",
+      skin_wear: "FN",
+      skin_image: "http://example.com/dragon_lore.png",
+      skin_weapon: "AWP",
+      skin_float: "0.01",
+      skin_paintseed: 45,
+      skin_rarity: "Covert",
+      skin_stickers: [],
+      skin_link_game: "http://example.com/dragon_lore_game",
+      skin_link_steam: "http://example.com/dragon_lore_steam",
+    };
+
+    await Promise.all([
+      makeCreatePerfilRepository.execute(sellerId),
+      makeCreatePerfilRepository.execute(buyerId),
+      walletRepository.create({
+        owner_id: buyerId,
+        owner_name: "Comprador",
+        value: 1000,
+      }),
+    ]);
+
+    const [skin1] = await Promise.all([
+      makeCreateSkin.execute(sellerId, sellerId),
+    ]);
+
+    const transaction = {
+      buyerId,
+      daysQuantity: 10,
+      totalPriceRent: 100,
+      skinsRent: [skin1],
+      skinsGuarantee: guaranteeSkin as any,
+      endDate: new Date(new Date().getTime() + 11 * 60 * 60 * 1000), // Faltam 11 horas para expirar
+      status: "TrialPeriodStarted",
+    };
+
+    await rentalTransaction.create(transaction as any);
+    await sut.execute();
+
+    const transactionsRental = rentalTransaction.rentalTransactions;
+    console.log(transactionsRental);
+
+    expect(transactionsRental[0]?.deadlineNotified).toBe(true);
+    expect(notificationRepository.notifications.length).toBe(1);
+    expect(notificationRepository.notifications[0].owner_id).toBe(buyerId);
+    expect(notificationRepository.notifications[0].description).toBe(
+      "Seu período de aluguel está prestes a terminar. Por favor, devolva a skin."
+    );
+  });
 });

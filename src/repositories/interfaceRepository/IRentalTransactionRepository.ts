@@ -8,6 +8,7 @@ export interface IRentalTransactionRepository {
   findByManyStatus(status: string): Promise<RentalTransaction[]>;
   checkPendingGuarantee(): Promise<RentalTransaction[]>;
   findByManyUser(steamId: string): Promise<RentalTransaction[]>;
+  sendDeadlineNotification(): Promise<RentalTransaction[]>;
   updateId(
     id: string,
     data: Prisma.RentalTransactionUncheckedUpdateInput
@@ -17,12 +18,17 @@ export interface IRentalTransactionRepository {
     status:
       | "WaitingForGuaranteeConfirmation"
       | "WaitingForAdministrators"
-      | "WaitingForSellerOffer"
       | "WaitingForSellerConfirmation"
+      | "WaitingForBuyerConfirmation"
       | "TrialPeriodStarted"
       | "WaitingForReturn"
       | "WaitingForUserDecision"
       | "Completed"
       | "Failed"
   ): Promise<RentalTransaction>;
+
+  updateMany(
+    ids: string[],
+    data: Prisma.RentalTransactionUncheckedUpdateManyInput
+  ): Promise<any>;
 }

@@ -24,7 +24,7 @@ export class InMemoryRentalTransactionRepository
       daysQuantity: data.daysQuantity,
       status: data.status ?? "WaitingForGuaranteeConfirmation",
       startDate: new Date(),
-      endDate: new Date(),
+      endDate: (data.endDate as Date) ?? new Date(),
       guaranteeSentAt: new Date(data.guaranteeSentAt) ?? null,
       deadlineNotified: false,
       returnNotified: false,
@@ -106,8 +106,8 @@ export class InMemoryRentalTransactionRepository
     status:
       | "WaitingForGuaranteeConfirmation"
       | "WaitingForAdministrators"
-      | "WaitingForSellerOffer"
       | "WaitingForSellerConfirmation"
+      | "WaitingForBuyerConfirmation"
       | "TrialPeriodStarted"
       | "WaitingForReturn"
       | "WaitingForUserDecision"
@@ -125,5 +125,48 @@ export class InMemoryRentalTransactionRepository
       return this.rentalTransactions[index];
     }
     return this.rentalTransactions[index];
+  }
+
+  async sendDeadlineNotification() {
+    const currentDate = new Date();
+    const twelveHoursFromNow = new Date(
+      currentDate.getTime() + 12 * 60 * 60 * 1000
+    );
+
+    const transactionsToNotify = this.rentalTransactions.filter(
+      (transaction) =>
+        transaction.status === "TrialPeriodStarted" &&
+        transaction.deadlineNotified === false &&
+        transaction.endDate >= currentDate && // endDate é maior ou igual à data atual
+        transaction.endDate <= twelveHoursFromNow // endDate é menor ou igual a 12 horas a partir de agora
+    );
+
+    return transactionsToNotify;
+  }
+
+  async updateMany(
+    ids: string[],
+    data: Prisma.RentalTransactionUncheckedUpdateManyInput
+  ): Promise<Prisma.BatchPayload> {
+    const transactions = this.rentalTransactions.filter((transaction) =>
+      ids.includes(transaction.id)
+    );
+
+    transactions.forEach((rental) => {
+      const index = this.rentalTransactions.findIndex(
+        (transaction) => rental.id === transaction.id
+      );
+
+      if (index !== -1) {
+        this.rentalTransactions[index] = {
+          ...this.rentalTransactions[index],
+          ...data,
+        };
+      }
+    });
+
+    return {
+      count: transactions.length,
+    };
   }
 }

@@ -76,6 +76,7 @@ export class CreateTransactionRentalUseCase {
               data: (data.skinsGuarantee as Skin[]).map((skin) => ({
                 ...skin,
                 owner_id: data.buyerId,
+                skin_wear: skin.skin_wear ?? "",
               })),
             },
           },

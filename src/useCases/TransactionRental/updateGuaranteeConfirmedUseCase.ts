@@ -31,7 +31,7 @@ export class UpdateGuaranteeConfirmedUseCase {
     const endDateNew = dayjs().add(Number(daysQuantity), "day").format();
 
     const updatedTransaction = await this.transactionRepository.updateId(id, {
-      status: "WaitingForSellerConfirmation",
+      status: "WaitingForBuyerConfirmation",
       startDate: new Date(),
       endDate: endDateNew,
     });
