@@ -1,13 +1,13 @@
 import { FastifyInstance } from "fastify";
-import { rentValidateHistoryTradeController } from "./validateHistoryTradeController";
 import { rentValidateTradesPendingGaranteeController } from "./validateTradesPendingGaranteeController";
 import { rentValidatePendingTradeReceived } from "./validatePendingTradeReceived";
 import { rentValidateTradesPendingController } from "./validateTradesPendingController";
+import { validateHistoryTransactionRentController } from "./validateHistoryTransactionRentController";
 
 export async function wsRentRouter(app: FastifyInstance) {
   app.post(
-    "/rent/webhook/validate/trade/:transactionId",
-    rentValidateHistoryTradeController
+    "/rent/webhook/validate/trade/history:transactionId",
+    validateHistoryTransactionRentController
   );
   app.post(
     "/rent/webhook/validate/trade/pending/garantee/:transactionId",

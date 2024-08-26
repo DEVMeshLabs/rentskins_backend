@@ -10,7 +10,7 @@ export async function updateGuaranteeConfirmedController(
 
     const makeUpdateStatus = makeUpdateGuaranteeConfirmedUseCase();
     const updateStatus = await makeUpdateStatus.execute(id);
-
+    console.log(makeUpdateStatus);
     return reply.status(200).send(updateStatus);
   } catch (error) {
     const errorMappings = {
