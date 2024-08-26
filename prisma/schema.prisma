@@ -55,6 +55,7 @@ model GuaranteeSkin {
   owner_id              String    @db.VarChar(255)
   asset_id              String    @db.VarChar(255)
   skin_name             String    @db.VarChar(255)
+  skin_price            Float
   skin_market_hash_name String    @db.VarChar(255)
   skin_color            String    @db.VarChar(255)
   skin_wear             String?   @db.VarChar(255)
@@ -68,8 +69,13 @@ model GuaranteeSkin {
   skin_stickers         Json?
   skin_link_steam       String?   @db.VarChar(255)
   skin_link_game        String?   @db.VarChar(255)
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime? @updatedAt
+  isSolicited           Boolean   @default(false)
+  returnedAt            DateTime?
+  addedToBackpackAt     DateTime?
+  withdrawAfter         DateTime?
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
 
   owner               Perfil             @relation(fields: [owner_id], references: [owner_id])
   RentalTransaction   RentalTransaction? @relation(fields: [rentalTransactionId], references: [id])
@@ -113,25 +119,28 @@ enum RentalTransactionStatus {
 }
 
 model RentalTransaction {
-  id                 String                  @id @default(uuid()) @db.VarChar(36)
-  buyerId            String                  @db.VarChar(255)
-  skinsRent          Skin[]
-  skinsGuarantee     GuaranteeSkin[]
-  totalPriceRent     Float?
-  totalPriceSkins    Float?
-  fee                Float?
-  daysQuantity       Int
-  status             RentalTransactionStatus @default(WaitingForGuaranteeConfirmation)
-  startDate          DateTime?
-  endDate            DateTime?
-  guaranteeSentAt    DateTime?
-  deadlineNotified   Boolean                 @default(false)
-  returnNotified     Boolean                 @default(false)
-  createdAt          DateTime                @default(now())
-  updatedAt          DateTime?               @updatedAt
-  deletedAt          DateTime?
-  notification       Notification[]
-  transactionHistory TransactionHistory[]
+  id                   String                  @id @default(uuid()) @db.VarChar(36)
+  buyerId              String                  @db.VarChar(255)
+  skinsRent            Skin[]
+  skinsGuarantee       GuaranteeSkin[]
+  totalPriceRent       Float?
+  totalPriceSkins      Float?
+  fee                  Float?
+  daysQuantity         Int
+  status               RentalTransactionStatus @default(WaitingForGuaranteeConfirmation)
+  deadlineNotified     Boolean                 @default(false)
+  returnNotified       Boolean                 @default(false)
+  startDate            DateTime?
+  endDate              DateTime?
+  guaranteeSentAt      DateTime?
+  sellerConfirmedAt    DateTime?
+  trialPeriodStartedAt DateTime?
+  returnDueAt          DateTime?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime?               @updatedAt
+  deletedAt            DateTime?
+  notification         Notification[]
+  transactionHistory   TransactionHistory[]
 }
 
 enum ProcessTransactionStatus {

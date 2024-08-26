@@ -1,4 +1,4 @@
-import { Prisma, type Skin } from "@prisma/client";
+import { Prisma, type GuaranteeSkin, type Skin } from "@prisma/client";
 // ----------------------------------- Importando Repositórios -----------------------------------//
 import { IRentalTransactionRepository } from "@/repositories/interfaceRepository/IRentalTransactionRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
@@ -73,11 +73,13 @@ export class CreateTransactionRentalUseCase {
           },
           skinsGuarantee: {
             createMany: {
-              data: (data.skinsGuarantee as Skin[]).map((skin) => ({
-                ...skin,
-                owner_id: data.buyerId,
-                skin_wear: skin.skin_wear ?? "",
-              })),
+              data: (data.skinsGuarantee as GuaranteeSkin[]).map((skin) => {
+                return {
+                  ...skin,
+                  owner_id: data.buyerId,
+                  skin_wear: skin.skin_wear ?? "",
+                };
+              }),
             },
           },
         }),

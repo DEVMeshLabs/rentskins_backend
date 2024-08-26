@@ -1,10 +1,10 @@
 import { TransactionHistoryNotExistError } from "@/useCases/@errors/TransactionHistory/TransactionHistoryNotExistError";
 import { ValidateTransactionHistoryError } from "@/useCases/@errors/ws/validateTransactionHistoryError";
-import { makeValidateTransactionHistoryUseCase } from "@/useCases/@factories/ws/makeValidateTransactionHistoryUseCase";
+import { makeValidateTransactionRentHistoryUseCase } from "@/useCases/@factories/wsRent/makeValidateTransactionRentHistoryUseCase";
 import { IGetHistoricTrade } from "@/useCases/ws/interface/getHistoricTrade";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export async function rentValidateHistoryTradeController(
+export async function validateHistoryTransactionRentController(
   req: FastifyRequest<{
     Body: { historic: IGetHistoricTrade };
   }>,
@@ -14,7 +14,7 @@ export async function rentValidateHistoryTradeController(
   const { transactionId } = req.params as { transactionId: string };
 
   try {
-    const makeValidade = makeValidateTransactionHistoryUseCase();
+    const makeValidade = makeValidateTransactionRentHistoryUseCase();
     const validate = await makeValidade.execute(transactionId, body as any);
     return reply.status(200).send(validate);
   } catch (error) {

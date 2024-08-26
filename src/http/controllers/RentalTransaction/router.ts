@@ -5,6 +5,7 @@ import { getManyTransactionRentalController } from "./getManyTransactionRentalCo
 import { getManyUserTransactionRentalController } from "./getManyUserTransactionRentalController";
 import { updateStatusTransactionRentalController } from "./updateStatusTransactionRentalController";
 import { updateGuaranteeConfirmedController } from "./updateGuaranteeConfirmedController";
+import { getTransactionRentUserController } from "./getTransactionRentUserController";
 
 export async function rentalTransactionRouter(app: FastifyInstance) {
   app.post(
@@ -25,5 +26,9 @@ export async function rentalTransactionRouter(app: FastifyInstance) {
   app.get(
     "/v1/rentalTransaction/:steamId",
     getManyUserTransactionRentalController
+  );
+  app.get(
+    "/v1/rentalTransaction/rent/:steamId",
+    getTransactionRentUserController
   );
 }

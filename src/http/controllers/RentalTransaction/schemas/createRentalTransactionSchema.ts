@@ -14,6 +14,7 @@ const skinsGuaranteeSchema = z.object({
   skin_classid: z.string(),
   skin_float: z.string().nullable().optional(),
   skin_rarity: z.string(),
+  skin_price: z.number(),
   skin_stickers: z
     .array(
       z.object({

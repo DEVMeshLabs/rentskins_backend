@@ -89,6 +89,17 @@ export class PrismaRentalTransactionRepository
     return skins;
   }
 
+  async findByManyUserRent(steamId: string) {
+    const skins = await prisma.rentalTransaction.findMany({
+      where: {
+        buyerId: steamId,
+      },
+      include: { skinsRent: true, skinsGuarantee: true },
+      orderBy: { createdAt: "desc" },
+    });
+    return skins;
+  }
+
   async updateStatus(
     id: string,
     status:
