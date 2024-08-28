@@ -21,6 +21,14 @@ export class PrismaSkinGuaranteeRepository implements ISkinGuaranteeRepository {
     return skin;
   }
 
+  async findByAssets(assetIds: string[]): Promise<GuaranteeSkin[]> {
+    const skins = await prisma.guaranteeSkin.findMany({
+      where: { asset_id: { in: assetIds } },
+      include: { RentalTransaction: true },
+    });
+    return skins;
+  }
+
   async findManySend(): Promise<GuaranteeSkin[]> {
     const skins = await prisma.guaranteeSkin.findMany({
       where: {

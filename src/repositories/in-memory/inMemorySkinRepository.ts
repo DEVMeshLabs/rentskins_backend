@@ -127,7 +127,6 @@ export class InMemorySkinRepository implements ISkinsRepository {
           status,
         });
       });
-      console.log("ESSe", updatedSkins);
       resolve(updatedSkins);
     });
   }

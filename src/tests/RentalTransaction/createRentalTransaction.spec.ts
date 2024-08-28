@@ -17,10 +17,12 @@ import { MakeCreatePerfilRepository } from "../@factories/Perfil/makeCreatePerfi
 import { MakeCreateSkinRepository } from "../@factories/Skin/makeCreateSkinRepository";
 import { InMemoryTransactionHistoryRepository } from "@/repositories/in-memory/inMemoryTransactionHistory";
 import { InMemoryNotificationRepository } from "@/repositories/in-memory/inMemoryNotificationRepository";
+import { InMemorySkinGuaranteeRepository } from "@/repositories/in-memory/inMemorySkinGuaranteeRepository";
 
 let rentalTransactionRepository: InMemoryRentalTransactionRepository;
 let transactionHistoryRepository: InMemoryTransactionHistoryRepository;
 let skinRepository: InMemorySkinRepository;
+let skinGuaranteeRepository: InMemorySkinGuaranteeRepository;
 let perfilRepository: InMemoryPerfilRepository;
 let configurationRepository: InMemoryConfigurationRepository;
 let walletRepository: InMemoryWalletRepository;
@@ -39,6 +41,7 @@ describe("Rental Transaction Use Case", () => {
   beforeEach(async () => {
     rentalTransactionRepository = new InMemoryRentalTransactionRepository();
     skinRepository = new InMemorySkinRepository();
+    skinGuaranteeRepository = new InMemorySkinGuaranteeRepository();
     perfilRepository = new InMemoryPerfilRepository();
     walletRepository = new InMemoryWalletRepository();
     configurationRepository = new InMemoryConfigurationRepository();
@@ -54,6 +57,7 @@ describe("Rental Transaction Use Case", () => {
       rentalTransactionRepository,
       transactionHistoryRepository,
       skinRepository,
+      skinGuaranteeRepository,
       perfilRepository,
       walletRepository,
       notificationRepository
