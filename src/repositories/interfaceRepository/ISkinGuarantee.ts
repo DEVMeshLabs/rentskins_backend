@@ -6,5 +6,6 @@ export interface ISkinGuaranteeRepository {
     data: Prisma.GuaranteeSkinUncheckedUpdateManyInput
   ): Promise<GuaranteeSkin>;
   findById(id: string): Promise<GuaranteeSkin | null>;
+  findByAssets(assetIds: string[]): Promise<GuaranteeSkin[]>;
   findManySend(): Promise<GuaranteeSkin[]>;
 }

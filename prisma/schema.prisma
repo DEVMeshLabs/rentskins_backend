@@ -112,8 +112,8 @@ enum RentalTransactionStatus {
   WaitingForBuyerConfirmation // "Esperando a confirmação do comprador",
   WaitingForSellerConfirmation // "Esperando a confirmação do vendedor",
   TrialPeriodStarted // "Periodo de teste iniciado",
-  WaitingForReturn // "Aguardando devolução",
   WaitingForUserDecision // "Esperando decisão do usuário",
+  WaitingForReturn // "Aguardando devolução",
   Completed // "Completed",
   Failed // "Failed"
 }

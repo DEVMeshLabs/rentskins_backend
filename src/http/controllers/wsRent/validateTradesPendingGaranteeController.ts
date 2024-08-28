@@ -37,7 +37,7 @@ export async function rentValidateTradesPendingGaranteeController(
 
       if (filteredSkins.length > 0) {
         const matchingItems = filteredSkins.some((offer: Tradeoffer) =>
-          offer.myitems.some((item: Myitem) =>
+          offer.myitems.every((item: Myitem) =>
             (transactionRent as any).skinsGuarantee.some(
               (guarantee) =>
                 item.market_hash_name === guarantee.skin_market_hash_name &&

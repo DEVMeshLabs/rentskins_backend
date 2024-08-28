@@ -1,4 +1,9 @@
-import { Prisma, type GuaranteeSkin, type Skin } from "@prisma/client";
+import {
+  Prisma,
+  type GuaranteeSkin,
+  type RentalTransaction,
+  type Skin,
+} from "@prisma/client";
 // ----------------------------------- Importando Repositórios -----------------------------------//
 import { IRentalTransactionRepository } from "@/repositories/interfaceRepository/IRentalTransactionRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
@@ -14,12 +19,18 @@ import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 // ----------------------------------- Importando Utils -----------------------------------//
 import { addHours } from "@/utils/compareDates";
 import { SameUsersError } from "../@errors/Skin/SameUsersError";
+import type { ISkinGuaranteeRepository } from "@/repositories/interfaceRepository/ISkinGuarantee";
+
+interface SkinGuaranteWithRentalTransaction extends GuaranteeSkin {
+  RentalTransaction: RentalTransaction;
+}
 
 export class CreateTransactionRentalUseCase {
   constructor(
     private rentalTransactionRepository: IRentalTransactionRepository,
     private transactionHistory: ITransactionHistoryRepository,
     private skinRepository: ISkinsRepository,
+    private skinGuaranteeRepository: ISkinGuaranteeRepository,
     private perfilRepository: IPerfilRepository,
     private walletRepository: IWalletRepository,
     private notificationsRepository: INotificationRepository
@@ -27,6 +38,12 @@ export class CreateTransactionRentalUseCase {
 
   async execute(data: Prisma.RentalTransactionCreateInput) {
     const sellerItemsMap = new Map<string, string[]>();
+    // const assetIds = (data.skinsGuarantee as GuaranteeSkin[]).map(
+    //   (item) => item.asset_id
+    // );
+    // const skinsGuarantee = await this.skinGuaranteeRepository.findByAssets(
+    //   assetIds
+    // );
 
     const skinIds = (data.skinsRent as Skin[]).map((skin: Skin) => skin.id);
     const [skins, perfilComprador, walletComprador] = await Promise.all([
@@ -53,6 +70,26 @@ export class CreateTransactionRentalUseCase {
     } else if (isSellerToBuyer) {
       throw new SameUsersError();
     }
+
+    // const skinsGuaranteeFiltered = [];
+
+    // if (skinsGuarantee.length > 0) {
+    //   const filterFailedOrCompleted = skinsGuarantee.filter(
+    //     (item: SkinGuaranteWithRentalTransaction) => {
+    //       if (
+    //         item.RentalTransaction.status !== "Failed" &&
+    //         item.RentalTransaction.status !== "Completed"
+    //       ) {
+    //         throw new Error(
+    //           `A garantia do item ${item.skin_name} já está em andamento.`
+    //         );
+    //       }
+    //       return true;
+    //     }
+    //   );
+    //   skinsGuaranteeFiltered.push(...filterFailedOrCompleted);
+    //   return skinsGuaranteeFiltered;
+    // }
 
     skins.forEach((skin) => {
       if (!sellerItemsMap.has(skin.seller_id)) {

@@ -39,8 +39,9 @@ export async function rentValidateTradesPendingController(
       );
 
       if (filteredSkins.length > 0) {
-        const matchingItems = filteredSkins.some((offer: Tradeoffer) =>
-          (transactionRent as any).skinsRent.every((skin) => {
+        const matchingItems = filteredSkins.some((offer: Tradeoffer) => {
+          return (transactionRent as any).skinsRent.every((skin) => {
+            console.log(skin);
             return offer.participantitems.some((item: Participantitem) => {
               return (
                 item.market_hash_name === skin.skin_market_hash_name &&
@@ -48,9 +49,9 @@ export async function rentValidateTradesPendingController(
                 item.classid === skin.skin_classid
               );
             });
-          })
-        );
-
+          });
+        });
+        console.log(matchingItems);
         if (matchingItems) {
           const response =
             await makeUpdateStatusTransactionRentalUseCase().execute(

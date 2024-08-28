@@ -35,6 +35,14 @@ export class PrismaRentalTransactionRepository
     return skins;
   }
 
+  // async findByManyIds(ids: string[]) {
+  //   const skin = await prisma.rentalTransaction.findMany({
+  //     where: { id: { in: ids } },
+  //     include: { skinsRent: true, skinsGuarantee: true },
+  //   });
+  //   return skin;
+  // }
+
   async checkPendingGuarantee() {
     const now = new Date();
     const findManyRentalStatus = await prisma.rentalTransaction.findMany({
