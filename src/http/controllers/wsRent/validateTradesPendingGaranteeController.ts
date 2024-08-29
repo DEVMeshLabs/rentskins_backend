@@ -35,7 +35,12 @@ export async function rentValidateTradesPendingGaranteeController(
         (offer: Tradeoffer) => offer.participantsteamid === rentId
       );
 
+      console.log(filteredSkins);
+
       if (filteredSkins.length > 0) {
+        console.log(
+          "Verifica se encontrou itens correspondentes ao participante"
+        );
         const matchingItems = filteredSkins.some((offer: Tradeoffer) =>
           offer.myitems.every((item: Myitem) =>
             (transactionRent as any).skinsGuarantee.some(
@@ -46,7 +51,7 @@ export async function rentValidateTradesPendingGaranteeController(
             )
           )
         );
-
+        console.log("Verificar o valor de matchingItems", matchingItems);
         if (matchingItems) {
           const response =
             await makeUpdateStatusTransactionRentalUseCase().execute(
