@@ -5,7 +5,7 @@ import { makeGetTransactionRent } from "@/useCases/@factories/RentalTransaction/
 import { makeUpdateStatusTransactionRentalUseCase } from "@/useCases/@factories/RentalTransaction/makeUpdateStatusTransactionRentalUseCase";
 import {
   Tradeoffer,
-  type Participantitem,
+  type Myitem,
 } from "@/useCases/ws/interface/getTradesPending";
 import { FastifyRequest, FastifyReply } from "fastify";
 
@@ -37,21 +37,22 @@ export async function rentValidateTradesPendingController(
           offer.participantsteamid ===
           (transactionRent as any).skinsRent[0].seller_id
       );
-
+      console.log("filteredSkins", filteredSkins);
       if (filteredSkins.length > 0) {
-        const matchingItems = filteredSkins.some((offer: Tradeoffer) => {
-          return (transactionRent as any).skinsRent.every((skin) => {
-            console.log(skin);
-            return offer.participantitems.some((item: Participantitem) => {
-              return (
-                item.market_hash_name === skin.skin_market_hash_name &&
-                item.instanceid === skin.skin_instanceid &&
-                item.classid === skin.skin_classid
-              );
-            });
-          });
-        });
-        console.log(matchingItems);
+        console.log(
+          "Verifica se encontrou itens correspondentes ao participante"
+        );
+        const matchingItems = filteredSkins.some((offer: Tradeoffer) =>
+          offer.participantitems.every((item: Myitem) =>
+            (transactionRent as any).skinsRent.some(
+              (skinItem) =>
+                item.market_hash_name === skinItem.skin_market_hash_name &&
+                item.instanceid === skinItem.skin_instanceid &&
+                item.classid === skinItem.skin_classid
+            )
+          )
+        );
+        console.log("Verificar o valor de matchingItems", matchingItems);
         if (matchingItems) {
           const response =
             await makeUpdateStatusTransactionRentalUseCase().execute(
