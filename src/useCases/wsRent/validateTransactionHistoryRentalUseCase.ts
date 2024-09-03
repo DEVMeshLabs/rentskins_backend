@@ -32,6 +32,7 @@ export class ValidateTransactionHistoryRentalUseCase {
       throw new TransactionNotExistError();
     }
     console.log("Iniciando!");
+    console.log(transactionRental);
     if (transactionRental.status === "WaitingForSellerConfirmation") {
       const filterTransactionParticipantsId = historic.payload.data.filter(
         (item) => {
@@ -41,7 +42,7 @@ export class ValidateTransactionHistoryRentalUseCase {
           );
         }
       );
-      console.log("Entro no 1");
+      console.log("Entro no 1", filterTransactionParticipantsId);
       const matchingItems = filterTransactionParticipantsId.some(
         (offer: Daum) => {
           return (transactionRental as any).skinsRent.every((skin) => {
