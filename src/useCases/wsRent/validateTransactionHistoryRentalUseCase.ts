@@ -31,6 +31,7 @@ export class ValidateTransactionHistoryRentalUseCase {
     if (!transactionRental) {
       throw new TransactionNotExistError();
     }
+    console.log(historic);
     console.log("Iniciando!");
     console.log(transactionRental);
     if (transactionRental.status === "WaitingForSellerConfirmation") {
