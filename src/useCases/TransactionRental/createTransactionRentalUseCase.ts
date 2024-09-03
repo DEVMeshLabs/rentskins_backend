@@ -1,9 +1,4 @@
-import {
-  Prisma,
-  type GuaranteeSkin,
-  type RentalTransaction,
-  type Skin,
-} from "@prisma/client";
+import { Prisma, type GuaranteeSkin, type Skin } from "@prisma/client";
 // ----------------------------------- Importando Repositórios -----------------------------------//
 import { IRentalTransactionRepository } from "@/repositories/interfaceRepository/IRentalTransactionRepository";
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
@@ -21,9 +16,9 @@ import { addHours } from "@/utils/compareDates";
 import { SameUsersError } from "../@errors/Skin/SameUsersError";
 import type { ISkinGuaranteeRepository } from "@/repositories/interfaceRepository/ISkinGuarantee";
 
-interface SkinGuaranteWithRentalTransaction extends GuaranteeSkin {
-  RentalTransaction: RentalTransaction;
-}
+// interface SkinGuaranteWithRentalTransaction extends GuaranteeSkin {
+//   RentalTransaction: RentalTransaction;
+// }
 
 export class CreateTransactionRentalUseCase {
   constructor(

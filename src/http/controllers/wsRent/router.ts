@@ -6,7 +6,7 @@ import { validateHistoryTransactionRentController } from "./validateHistoryTrans
 
 export async function wsRentRouter(app: FastifyInstance) {
   app.post(
-    "/rent/webhook/validate/trade/history:transactionId",
+    "/rent/webhook/validate/trade/history/:transactionId",
     validateHistoryTransactionRentController
   );
   app.post(
