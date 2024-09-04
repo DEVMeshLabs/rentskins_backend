@@ -75,9 +75,10 @@ export class ValidateTransactionHistoryRentalUseCase {
       const perfilSeller = await this.perfilRepository.findByUser(
         transactionRental.skinsRent![0].seller_id
       );
+      console.log("-------------------------------------------------------");
       console.log("Entro na parte de sucesso");
       console.log("Perfil", perfilSeller);
-      console.log("Perfil", perfilSeller);
+      console.log("Perfil", perfilSeller.id);
       console.log(transactionRental.skinsRent![0].seller_id);
       console.log("-------------------------------------------------------");
       const skinIds = transactionRental.skinsRent!.map((skin) => skin.id);
@@ -86,7 +87,7 @@ export class ValidateTransactionHistoryRentalUseCase {
       console.log("Segundo", transactionRental.skinsRent![0].seller_id);
       console.log("-------------------------------------------------------");
       await Promise.all([
-        this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
+        this.perfilRepository.updateTotalExchanges((perfilSeller as any).id),
         this.transactionRentalRepository.updateId(transactionRental.id, {
           status: "TrialPeriodStarted",
         }),
