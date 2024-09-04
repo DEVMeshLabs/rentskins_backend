@@ -76,9 +76,15 @@ export class ValidateTransactionHistoryRentalUseCase {
         transactionRental.skinsRent![0].seller_id
       );
       console.log("Entro na parte de sucesso");
-
+      console.log("Perfil", perfilSeller);
+      console.log("Perfil", perfilSeller);
+      console.log(transactionRental.skinsRent![0].seller_id);
+      console.log("-------------------------------------------------------");
       const skinIds = transactionRental.skinsRent!.map((skin) => skin.id);
-
+      console.log("Skins ids", skinIds);
+      console.log("primeiro", transactionRental.id);
+      console.log("Segundo", transactionRental.skinsRent![0].seller_id);
+      console.log("-------------------------------------------------------");
       await Promise.all([
         this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
         this.transactionRentalRepository.updateId(transactionRental.id, {
@@ -96,7 +102,7 @@ export class ValidateTransactionHistoryRentalUseCase {
       ]);
     } catch (error) {
       console.error("Erro na handleSuccessTransaction", error);
-      throw error; // Para propagar o erro para o chamador.
+      throw error;
     }
   }
 }
