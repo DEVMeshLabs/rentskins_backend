@@ -71,28 +71,32 @@ export class ValidateTransactionHistoryRentalUseCase {
   async handleSuccessTransaction(
     transactionRental: RentalTransaction
   ): Promise<void> {
-    const perfilSeller = await this.perfilRepository.findByUser(
-      transactionRental.skinsRent[0].seller_id
-    );
-    console.log("Entro na parte de sucesso");
-    const skinIds = transactionRental.skinsRent.map((skin) => skin.id);
+    try {
+      const perfilSeller = await this.perfilRepository.findByUser(
+        transactionRental.skinsRent![0].seller_id
+      );
+      console.log("Entro na parte de sucesso");
 
-    await Promise.all([
-      this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
+      const skinIds = transactionRental.skinsRent!.map((skin) => skin.id);
 
-      this.transactionRentalRepository.updateId(transactionRental.id, {
-        status: "TrialPeriodStarted",
-      }),
-      this.skinRepository.updateMany(skinIds, "Completed"),
-
-      this.notificationRepository.create({
-        owner_id: transactionRental.skinsRent[0].seller_id,
-        description: `Parabéns! A partir de agora o locatário iniciará o período de teste da skin.`,
-      }),
-      this.notificationRepository.create({
-        owner_id: transactionRental.buyerId,
-        description: `Parabéns! A partir de agora você iniciará o período de teste da skin.`,
-      }),
-    ]);
+      await Promise.all([
+        this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
+        this.transactionRentalRepository.updateId(transactionRental.id, {
+          status: "TrialPeriodStarted",
+        }),
+        this.skinRepository.updateMany(skinIds, "Completed"),
+        this.notificationRepository.create({
+          owner_id: transactionRental.skinsRent![0].seller_id,
+          description: `Parabéns! A partir de agora o locatário iniciará o período de teste da skin.`,
+        }),
+        this.notificationRepository.create({
+          owner_id: transactionRental.buyerId,
+          description: `Parabéns! A partir de agora você iniciará o período de teste da skin.`,
+        }),
+      ]);
+    } catch (error) {
+      console.error("Erro na handleSuccessTransaction", error);
+      throw error; // Para propagar o erro para o chamador.
+    }
   }
 }
