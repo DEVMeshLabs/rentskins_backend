@@ -31,9 +31,8 @@ export class ValidateTransactionHistoryRentalUseCase {
     if (!transactionRental) {
       throw new TransactionNotExistError();
     }
-    console.log(historic);
+    console.log((historic as any).data);
     console.log("Iniciando!");
-    console.log(transactionRental);
     if (transactionRental.status === "WaitingForSellerConfirmation") {
       const filterTransactionParticipantsId = historic.payload.data.filter(
         (item) => {
@@ -62,10 +61,7 @@ export class ValidateTransactionHistoryRentalUseCase {
 
       if (matchingItems) {
         console.log("Entrou aqui 2");
-        await this.handleSuccessTransaction(
-          transactionRental,
-          transactionRental.id
-        );
+        await this.handleSuccessTransaction(transactionRental);
         return "Transação concluída com sucesso";
       }
       return "Nada a ser feito";
@@ -73,19 +69,18 @@ export class ValidateTransactionHistoryRentalUseCase {
   }
 
   async handleSuccessTransaction(
-    transactionRental: RentalTransaction,
-    transactionId: string
+    transactionRental: RentalTransaction
   ): Promise<void> {
     const perfilSeller = await this.perfilRepository.findByUser(
       transactionRental.skinsRent[0].seller_id
     );
-
+    console.log("Entro na parte de sucesso");
     const skinIds = transactionRental.skinsRent.map((skin) => skin.id);
 
     await Promise.all([
       this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
 
-      this.transactionRentalRepository.updateId(transactionId, {
+      this.transactionRentalRepository.updateId(transactionRental.id, {
         status: "TrialPeriodStarted",
       }),
       this.skinRepository.updateMany(skinIds, "Completed"),
