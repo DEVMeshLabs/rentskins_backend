@@ -94,13 +94,6 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     });
     return updateUser;
   }
-  // async updateMany(skinsIds: string[], status: string) {
-  //   const updateId = await prisma.skin.updateMany({
-  //     where: { id: { in: skinsIds } },
-  //     data: { status, updatedAt: new Date() },
-  //   });
-  //   return updateId;
-  // }
 
   async updateTotalExchanges(buyerIds: string[]) {
     const updateTotalExchanges = await prisma.perfil.updateMany({
@@ -108,6 +101,16 @@ export class PrismaPerfilRepository implements IPerfilRepository {
       data: { total_exchanges: { increment: 1 }, updatedAt: new Date() },
     });
 
+    return updateTotalExchanges;
+  }
+
+  async updateTotalExchangesFailed(steamIds: string) {
+    const updateTotalExchanges = await prisma.perfil.update({
+      where: { owner_id: steamIds },
+      data: { total_exchanges_failed: { increment: 1 }, updatedAt: new Date() },
+    });
+    console.log(updateTotalExchanges);
+    console.log(updateTotalExchanges.total_exchanges_failed);
     return updateTotalExchanges;
   }
 

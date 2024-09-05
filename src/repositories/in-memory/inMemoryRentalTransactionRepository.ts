@@ -130,7 +130,7 @@ export class InMemoryRentalTransactionRepository
   async sendDeadlineNotification() {
     const currentDate = new Date();
     const twelveHoursFromNow = new Date(
-      currentDate.getTime() + 12 * 60 * 60 * 1000
+      currentDate.getTime() + 12 * 60 * 60 * 1000 // 12 horas em milissegundos
     );
 
     const transactionsToNotify = this.rentalTransactions.filter(

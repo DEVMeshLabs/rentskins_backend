@@ -19,7 +19,7 @@ export const { checkout, webhooks, customers } = require("stripe")(
 const makeCronJobTransaction = makeCronJobProcessTransaction();
 const makeCronJobRental = makeCronJobProcessRental();
 
-job.scheduleJob("*/2 * * * *", async () => {
+job.scheduleJob("*/1 * * * *", async () => {
   await Promise.all([
     makeCronJobTransaction.execute(),
     makeCronJobRental.execute(),

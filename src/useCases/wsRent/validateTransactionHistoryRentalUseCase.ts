@@ -87,6 +87,7 @@ export class ValidateTransactionHistoryRentalUseCase {
           status: "TrialPeriodStarted",
           startDate: new Date(),
           endDate: endDateNew,
+          sellerConfirmedAt: new Date(),
         }),
         this.skinRepository.updateMany(skinIds, "Completed"),
         this.notificationRepository.create({

@@ -49,7 +49,23 @@ export class PrismaRentalTransactionRepository
       where: {
         status: "WaitingForGuaranteeConfirmation",
         createdAt: {
-          lt: new Date(now.getTime() - 20 * 60 * 1000),
+          lt: new Date(now.getTime() - 20 * 60 * 1000), // menor que 20 minutos atrás
+        },
+      },
+      include: { skinsRent: true, skinsGuarantee: true },
+    });
+    return findManyRentalStatus;
+  }
+
+  async checkSendSkinSeller() {
+    const now = new Date();
+    const twelveHoursFromNow = new Date(now.getTime() + 12 * 60 * 60 * 1000); // 12 horas a partir de agora
+    // const twelveHoursFromNow = new Date(now.getTime() + 1 * 60);
+    const findManyRentalStatus = await prisma.rentalTransaction.findMany({
+      where: {
+        status: "WaitingForSellerConfirmation",
+        buyerConfirmedAt: {
+          gte: twelveHoursFromNow, // maior ou igual a 12 horas a partir de agora
         },
       },
       include: { skinsRent: true, skinsGuarantee: true },
@@ -59,7 +75,7 @@ export class PrismaRentalTransactionRepository
 
   async sendDeadlineNotification() {
     const now = new Date();
-    const twelveHoursFromNow = new Date(now.getTime() + 12 * 60 * 60 * 1000);
+    const twelveHoursFromNow = new Date(now.getTime() + 12 * 60 * 60 * 1000); // 12 horas a partir de agora
 
     const transactionsToNotify = await prisma.rentalTransaction.findMany({
       where: {

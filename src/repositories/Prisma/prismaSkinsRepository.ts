@@ -185,7 +185,7 @@ export class PrismaSkinRepository implements ISkinsRepository {
     return updateId;
   }
 
-  async updateMany(skinsIds: string[], status: string) {
+  async updateMany(skinsIds: string[], status: string | null) {
     const updateId = await prisma.skin.updateMany({
       where: { id: { in: skinsIds } },
       data: { status, updatedAt: new Date() },

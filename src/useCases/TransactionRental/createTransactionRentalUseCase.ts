@@ -101,6 +101,7 @@ export class CreateTransactionRentalUseCase {
           skinsRent: {
             connect: (data.skinsRent as Skin[]).map((skin) => ({
               id: skin.id,
+              status: "Em andamento",
             })),
           },
           skinsGuarantee: {

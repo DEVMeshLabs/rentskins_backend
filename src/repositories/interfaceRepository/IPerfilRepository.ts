@@ -20,6 +20,7 @@ export interface IPerfilRepository {
   ): Promise<Perfil>;
   updateByIdUser(id: string, data: any): Promise<any>;
   updateTotalExchanges(buyerIds: string[]): Promise<any>;
+  updateTotalExchangesFailed(steamId: string): Promise<any>;
   deletePerfil(id: string): Promise<Perfil>;
   deletePerfilBanco(id: string): Promise<Perfil>;
 }
