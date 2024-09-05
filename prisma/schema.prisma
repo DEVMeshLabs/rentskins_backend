@@ -134,6 +134,7 @@ model RentalTransaction {
   endDate              DateTime?
   guaranteeSentAt      DateTime?
   sellerConfirmedAt    DateTime?
+  buyerConfirmedAt     DateTime?
   trialPeriodStartedAt DateTime?
   returnDueAt          DateTime?
   createdAt            DateTime                @default(now())

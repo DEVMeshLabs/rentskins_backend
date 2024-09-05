@@ -2,7 +2,7 @@ import { TransactionNotExistError } from "@/useCases/@errors/Transaction/Transac
 import { StatusHasAlreadyBeenUpdatedError } from "@/useCases/@errors/ws/StatusHasAlreadyBeenUpdatedError";
 import { makeCreateNotificationUseCase } from "@/useCases/@factories/Notification/makeCreateNotificationUseCase";
 import { makeGetTransactionRent } from "@/useCases/@factories/RentalTransaction/makeGetRentalTransaction";
-import { makeUpdateStatusTransactionRentalUseCase } from "@/useCases/@factories/RentalTransaction/makeUpdateStatusTransactionRentalUseCase";
+import { makeUpdateByIdTransactionRentalUseCase } from "@/useCases/@factories/RentalTransaction/makeUpdateByIdTransactionRentalUseCase";
 import {
   Tradeoffer,
   type Myitem,
@@ -37,7 +37,7 @@ export async function rentValidateTradesPendingController(
           offer.participantsteamid ===
           (transactionRent as any).skinsRent[0].seller_id
       );
-      console.log("filteredSkins", filteredSkins);
+
       if (filteredSkins.length > 0) {
         console.log(
           "Verifica se encontrou itens correspondentes ao participante"
@@ -52,12 +52,15 @@ export async function rentValidateTradesPendingController(
             )
           )
         );
-        console.log("Verificar o valor de matchingItems", matchingItems);
+
         if (matchingItems) {
           const response =
-            await makeUpdateStatusTransactionRentalUseCase().execute(
+            await makeUpdateByIdTransactionRentalUseCase().execute(
               transactionId,
-              "WaitingForSellerConfirmation"
+              {
+                status: "WaitingForSellerConfirmation",
+                buyerConfirmedAt: new Date(),
+              }
             );
 
           const createNotification = makeCreateNotificationUseCase();

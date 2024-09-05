@@ -6,19 +6,21 @@ import { PrismaWalletRepository } from "@/repositories/Prisma/prismaWalletReposi
 // import { PrismaTransactionHistoryRepository } from "@/repositories/Prisma/prismaTransactionHistory";
 import { PrismaRentalTransactionRepository } from "@/repositories/Prisma/prismaRentalTransactionRepository";
 import { CronJobProcessRental } from "@/utils/CronJobProcessRental";
+import { PrismaPerfilRepository } from "@/repositories/Prisma/prismaPerfilRepository";
 
 export function makeCronJobProcessRental() {
   const rentalRepository = new PrismaRentalTransactionRepository();
   // const configurationRepository = new PrismaConfigurationRepository();
   const notificationRepository = new PrismaNotificationRepository();
   const walletRepository = new PrismaWalletRepository();
-  // const perfilRepository = new PrismaPerfilRepository();
+  const perfilRepository = new PrismaPerfilRepository();
   const skinRepository = new PrismaSkinRepository();
   const functionCron = new CronJobProcessRental(
     rentalRepository,
     walletRepository,
     notificationRepository,
-    skinRepository
+    skinRepository,
+    perfilRepository
   );
   return functionCron;
 }
