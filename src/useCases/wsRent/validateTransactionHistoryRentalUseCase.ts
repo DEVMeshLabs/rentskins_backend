@@ -25,6 +25,7 @@ export class ValidateTransactionHistoryRentalUseCase {
     transactionId: string,
     historic: IGetHistoricTrade
   ): Promise<void | string> {
+    let dateStart: string;
     const transactionRental: RentalTransaction =
       await this.transactionRentalRepository.findById(transactionId);
 
@@ -45,7 +46,8 @@ export class ValidateTransactionHistoryRentalUseCase {
       console.log("Entro no 1", filterTransactionParticipantsId);
       const matchingItems = filterTransactionParticipantsId.some(
         (offer: Daum) => {
-          return (transactionRental as any).skinsRent.every((skin) => {
+          dateStart = offer.date;
+          return transactionRental.skinsRent.every((skin) => {
             return offer.items.sent.some((item) => {
               return (
                 item.markethashname === skin.skin_market_hash_name &&
@@ -61,7 +63,7 @@ export class ValidateTransactionHistoryRentalUseCase {
 
       if (matchingItems) {
         console.log("Entrou aqui 2");
-        await this.handleSuccessTransaction(transactionRental);
+        await this.handleSuccessTransaction(transactionRental, dateStart);
         return "Transação concluída com sucesso";
       }
       return "Nada a ser feito";
@@ -69,7 +71,8 @@ export class ValidateTransactionHistoryRentalUseCase {
   }
 
   async handleSuccessTransaction(
-    transactionRental: RentalTransaction
+    transactionRental: RentalTransaction,
+    dateStart: string
   ): Promise<void> {
     try {
       const perfilSeller = await this.perfilRepository.findByUser(
@@ -77,17 +80,26 @@ export class ValidateTransactionHistoryRentalUseCase {
       );
       const skinIds = transactionRental.skinsRent!.map((skin) => skin.id);
 
-      const daysToAdd = Math.max(transactionRental.daysQuantity, 7);
-      const endDateNew = new Date();
-      endDateNew.setDate(endDateNew.getDate() + daysToAdd);
+      // Convertendo dateStart para um objeto Date
+      const startDate = new Date(dateStart);
+      // Garantindo que endDate seja pelo menos 7 dias após startDate
+      const minEndDate = new Date(startDate);
+      minEndDate.setDate(minEndDate.getDate() + 7);
+
+      // Calculando endDate com base em daysQuantity
+      const endDateNew = new Date(minEndDate);
+      endDateNew.setDate(
+        endDateNew.getDate() + Math.max(transactionRental.daysQuantity, 7)
+      );
 
       await Promise.all([
         this.perfilRepository.updateTotalExchanges((perfilSeller as any).id),
         this.transactionRentalRepository.updateId(transactionRental.id, {
           status: "TrialPeriodStarted",
-          startDate: new Date(),
+          startDate,
           endDate: endDateNew,
           sellerConfirmedAt: new Date(),
+          trialPeriodStartedAt: new Date(),
         }),
         this.skinRepository.updateMany(skinIds, "Completed"),
         this.notificationRepository.create({

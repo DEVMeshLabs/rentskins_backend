@@ -8,6 +8,7 @@ export interface IRentalTransactionRepository {
   findByManyStatus(status: string): Promise<RentalTransaction[]>;
   checkPendingGuarantee(): Promise<RentalTransaction[]>;
   checkSendSkinSeller(): Promise<RentalTransaction[]>;
+  checkTrialPeriod(): Promise<RentalTransaction[]>;
   findByManyUser(steamId: string): Promise<RentalTransaction[]>;
   findByManyUserRent(steamId: string): Promise<RentalTransaction[]>;
   sendDeadlineNotification(): Promise<RentalTransaction[]>;
