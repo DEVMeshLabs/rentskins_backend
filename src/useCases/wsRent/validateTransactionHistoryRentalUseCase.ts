@@ -83,14 +83,9 @@ export class ValidateTransactionHistoryRentalUseCase {
       // Convertendo dateStart para um objeto Date
       const startDate = new Date(dateStart);
       // Garantindo que endDate seja pelo menos 7 dias após startDate
-      const minEndDate = new Date(startDate);
-      minEndDate.setDate(minEndDate.getDate() + 7);
-
-      // Calculando endDate com base em daysQuantity
-      const endDateNew = new Date(minEndDate);
-      endDateNew.setDate(
-        endDateNew.getDate() + Math.max(transactionRental.daysQuantity, 7)
-      );
+      const daysToAdd = Math.max(transactionRental.daysQuantity, 7);
+      const endDateNew = new Date(startDate);
+      endDateNew.setDate(endDateNew.getDate() + daysToAdd);
 
       await Promise.all([
         this.perfilRepository.updateTotalExchanges((perfilSeller as any).id),
