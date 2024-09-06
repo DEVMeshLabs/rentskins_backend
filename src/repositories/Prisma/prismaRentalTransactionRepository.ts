@@ -91,6 +91,20 @@ export class PrismaRentalTransactionRepository
     return transactionsToNotify;
   }
 
+  async checkTrialPeriod() {
+    const now = new Date();
+    const findManyRentalStatus = await prisma.rentalTransaction.findMany({
+      where: {
+        status: "TrialPeriodStarted",
+        endDate: {
+          lte: now, // maior ou igual a agora
+        },
+      },
+      include: { skinsRent: true, skinsGuarantee: true },
+    });
+    return findManyRentalStatus;
+  }
+
   async findByManyUser(steamId: string) {
     const skins = await prisma.rentalTransaction.findMany({
       where: {

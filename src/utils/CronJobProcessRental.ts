@@ -26,6 +26,7 @@ export class CronJobProcessRental {
         this.checkPendingGuarantee(),
         this.sendDeadlineNotification(),
         this.checkSendSkinSeller(),
+        this.checkTrialPeriod(),
       ]);
     } catch (error) {
       console.error("Erro durante a execução do cronjob de aluguel:", error);
@@ -39,20 +40,14 @@ export class CronJobProcessRental {
       const pendingTransactions =
         await this.rentalTransactionRepository.checkSendSkinSeller();
 
-      if (pendingTransactions.length === 0) {
+      if (!pendingTransactions.length) {
         console.log("Nenhum envio de skin pendente encontrado.");
         return;
       }
 
-      const skinsIds = [];
-
       const transactionPromises = pendingTransactions.map(
         async (transaction: RentalTransactionWithSkinRent) => {
-          for (const skinsRent of transaction.skinsRent) {
-            skinsIds.push(skinsRent.id);
-          }
-          console.log(transaction);
-          console.log(transaction.skinsRent[0].seller_id);
+          const skinsIds = transaction.skinsRent.map((skin) => skin.id);
           const steamId = transaction.skinsRent[0].seller_id;
 
           await Promise.all([
@@ -67,7 +62,7 @@ export class CronJobProcessRental {
             ),
             this.skinsRepository.updateMany(skinsIds, null),
             this.notificationRepository.create({
-              owner_id: transaction.skinsRent[0].seller_id,
+              owner_id: steamId,
               description:
                 "Você não enviou a skin a tempo e a transação foi cancelada.",
             }),
@@ -91,7 +86,7 @@ export class CronJobProcessRental {
       const pendingTransactions =
         await this.rentalTransactionRepository.checkPendingGuarantee();
 
-      if (pendingTransactions.length === 0) {
+      if (!pendingTransactions.length) {
         console.log("Nenhuma transação pendente encontrada.");
         return;
       }
@@ -99,13 +94,11 @@ export class CronJobProcessRental {
       const sellerIds = new Set<string>();
 
       const transactionPromises = pendingTransactions.map(
-        async (transaction) => {
-          for (const skinsRent of (transaction as any).skinsRent) {
-            sellerIds.add(skinsRent.seller_id);
-            await this.skinsRepository.updateById(skinsRent.id, {
-              status: null,
-            });
-          }
+        async (transaction: RentalTransactionWithSkinRent) => {
+          transaction.skinsRent.forEach((skin) => {
+            sellerIds.add(skin.seller_id);
+            this.skinsRepository.updateById(skin.id, { status: null });
+          });
 
           await Promise.all([
             this.rentalTransactionRepository.updateId(transaction.id, {
@@ -141,27 +134,55 @@ export class CronJobProcessRental {
     }
   }
 
+  private async checkTrialPeriod(): Promise<void> {
+    try {
+      const period = await this.rentalTransactionRepository.checkTrialPeriod();
+      if (!period.length) return;
+
+      const transactionIds = period.map((transaction) => transaction.id);
+
+      const notifications = period.map((transaction) => ({
+        owner_id: transaction.buyerId,
+        description:
+          "Seu período de aluguel terminou. Por favor, faça a devolução da skin ou compre a skin.",
+      }));
+
+      await Promise.all([
+        this.notificationRepository.createMany(notifications),
+        this.rentalTransactionRepository.updateMany(transactionIds, {
+          status: "WaitingForUserDecision",
+        }),
+      ]);
+    } catch (error) {
+      console.error("Erro ao verificar o período de teste:", error);
+    }
+  }
+
   private async sendDeadlineNotification(): Promise<void> {
-    const transactionsToNotify =
-      await this.rentalTransactionRepository.sendDeadlineNotification();
+    try {
+      const transactionsToNotify =
+        await this.rentalTransactionRepository.sendDeadlineNotification();
 
-    if (transactionsToNotify.length === 0) return;
+      if (!transactionsToNotify.length) return;
 
-    const transactionIds = transactionsToNotify.map(
-      (transaction) => transaction.id
-    );
+      const transactionIds = transactionsToNotify.map(
+        (transaction) => transaction.id
+      );
 
-    const notifications = transactionsToNotify.map((transaction) => ({
-      owner_id: transaction.buyerId,
-      description:
-        "Seu período de aluguel está prestes a terminar. Por favor, devolva a skin.",
-    }));
+      const notifications = transactionsToNotify.map((transaction) => ({
+        owner_id: transaction.buyerId,
+        description:
+          "Seu período de aluguel está prestes a terminar. Por favor, devolva a skin.",
+      }));
 
-    await Promise.all([
-      this.notificationRepository.createMany(notifications),
-      this.rentalTransactionRepository.updateMany(transactionIds, {
-        deadlineNotified: true,
-      }),
-    ]);
+      await Promise.all([
+        this.notificationRepository.createMany(notifications),
+        this.rentalTransactionRepository.updateMany(transactionIds, {
+          deadlineNotified: true,
+        }),
+      ]);
+    } catch (error) {
+      console.error("Erro ao enviar notificações de prazo:", error);
+    }
   }
 }
