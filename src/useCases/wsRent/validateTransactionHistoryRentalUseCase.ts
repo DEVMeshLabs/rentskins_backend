@@ -43,7 +43,7 @@ export class ValidateTransactionHistoryRentalUseCase {
           );
         }
       );
-      console.log("Entro no 1", filterTransactionParticipantsId);
+
       const matchingItems = filterTransactionParticipantsId.some(
         (offer: Daum) => {
           dateStart = offer.date;
@@ -78,11 +78,10 @@ export class ValidateTransactionHistoryRentalUseCase {
       const perfilSeller = await this.perfilRepository.findByUser(
         transactionRental.skinsRent![0].seller_id
       );
+
       const skinIds = transactionRental.skinsRent!.map((skin) => skin.id);
 
-      // Convertendo dateStart para um objeto Date
       const startDate = new Date(dateStart);
-      // Garantindo que endDate seja pelo menos 7 dias após startDate
       const daysToAdd = Math.max(transactionRental.daysQuantity, 7);
       const endDateNew = new Date(startDate);
       endDateNew.setDate(endDateNew.getDate() + daysToAdd);

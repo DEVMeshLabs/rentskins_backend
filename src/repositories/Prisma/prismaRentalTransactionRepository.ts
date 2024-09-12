@@ -35,14 +35,6 @@ export class PrismaRentalTransactionRepository
     return skins;
   }
 
-  // async findByManyIds(ids: string[]) {
-  //   const skin = await prisma.rentalTransaction.findMany({
-  //     where: { id: { in: ids } },
-  //     include: { skinsRent: true, skinsGuarantee: true },
-  //   });
-  //   return skin;
-  // }
-
   async checkPendingGuarantee() {
     const now = new Date();
     const findManyRentalStatus = await prisma.rentalTransaction.findMany({
@@ -102,6 +94,22 @@ export class PrismaRentalTransactionRepository
       },
       include: { skinsRent: true, skinsGuarantee: true },
     });
+    return findManyRentalStatus;
+  }
+
+  async checkResponseUser() {
+    const now = new Date();
+
+    const findManyRentalStatus = await prisma.rentalTransaction.findMany({
+      where: {
+        status: "WaitingForUserDecision",
+        waitUserDecisionAt: {
+          lte: new Date(now.getTime() - 6 * 60 * 60 * 1000), // Verifica se já passaram 6h desde waitUserDecisionAt
+        },
+      },
+      include: { skinsRent: true, skinsGuarantee: true },
+    });
+
     return findManyRentalStatus;
   }
 

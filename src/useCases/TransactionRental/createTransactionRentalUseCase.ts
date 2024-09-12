@@ -12,7 +12,6 @@ import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 // ----------------------------------- Importando Utils -----------------------------------//
-import { addHours } from "@/utils/compareDates";
 import { SameUsersError } from "../@errors/Skin/SameUsersError";
 import type { ISkinGuaranteeRepository } from "@/repositories/interfaceRepository/ISkinGuarantee";
 
@@ -33,12 +32,6 @@ export class CreateTransactionRentalUseCase {
 
   async execute(data: Prisma.RentalTransactionCreateInput) {
     const sellerItemsMap = new Map<string, string[]>();
-    // const assetIds = (data.skinsGuarantee as GuaranteeSkin[]).map(
-    //   (item) => item.asset_id
-    // );
-    // const skinsGuarantee = await this.skinGuaranteeRepository.findByAssets(
-    //   assetIds
-    // );
 
     const skinIds = (data.skinsRent as Skin[]).map((skin: Skin) => skin.id);
     const [skins, perfilComprador, walletComprador] = await Promise.all([
@@ -66,26 +59,6 @@ export class CreateTransactionRentalUseCase {
       throw new SameUsersError();
     }
 
-    // const skinsGuaranteeFiltered = [];
-
-    // if (skinsGuarantee.length > 0) {
-    //   const filterFailedOrCompleted = skinsGuarantee.filter(
-    //     (item: SkinGuaranteWithRentalTransaction) => {
-    //       if (
-    //         item.RentalTransaction.status !== "Failed" &&
-    //         item.RentalTransaction.status !== "Completed"
-    //       ) {
-    //         throw new Error(
-    //           `A garantia do item ${item.skin_name} já está em andamento.`
-    //         );
-    //       }
-    //       return true;
-    //     }
-    //   );
-    //   skinsGuaranteeFiltered.push(...filterFailedOrCompleted);
-    //   return skinsGuaranteeFiltered;
-    // }
-
     skins.forEach((skin) => {
       if (!sellerItemsMap.has(skin.seller_id)) {
         sellerItemsMap.set(skin.seller_id, []);
@@ -101,7 +74,6 @@ export class CreateTransactionRentalUseCase {
           skinsRent: {
             connect: (data.skinsRent as Skin[]).map((skin) => ({
               id: skin.id,
-              status: "Em andamento",
             })),
           },
           skinsGuarantee: {
@@ -126,17 +98,6 @@ export class CreateTransactionRentalUseCase {
             type: "input",
             owner_id: sellerId,
           });
-
-          this.transactionHistory.create({
-            seller_id: sellerId,
-            buyer_id: data.buyerId,
-            skins: {
-              connect: (data.skinsRent as Skin[]).map((skin) => ({
-                id: skin.id,
-              })),
-            },
-            dateProcess: addHours(24 * Number(data.daysQuantity)),
-          });
         }),
 
         this.walletRepository.updateByUserValue(
@@ -147,11 +108,9 @@ export class CreateTransactionRentalUseCase {
         this.perfilRepository.updateTotalExchanges(
           skins.map((skin) => skin.seller_id)
         ),
-        this.skinRepository.updateMany(
-          skins.map((skin) => skin.id),
-          "Em andamento"
-        ),
+        this.skinRepository.updateMany(skinIds, "Em andamento"),
       ]);
+      console.log(rent);
       return rent;
     } catch (error) {
       console.log(error);
