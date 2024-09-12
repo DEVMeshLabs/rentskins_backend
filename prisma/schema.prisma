@@ -114,8 +114,14 @@ enum RentalTransactionStatus {
   TrialPeriodStarted // "Periodo de teste iniciado",
   WaitingForUserDecision // "Esperando decisão do usuário",
   WaitingForReturn // "Aguardando devolução",
+  WaitingForAdministratorsReturnConfirmation // "Esperando confirmação de devolução dos administradores",
   Completed // "Completed",
   Failed // "Failed"
+}
+
+enum DecisionUser {
+  buy
+  return
 }
 
 model RentalTransaction {
@@ -130,12 +136,14 @@ model RentalTransaction {
   status               RentalTransactionStatus @default(WaitingForGuaranteeConfirmation)
   deadlineNotified     Boolean                 @default(false)
   returnNotified       Boolean                 @default(false)
+  decisionUser         DecisionUser?
   startDate            DateTime?
   endDate              DateTime?
   guaranteeSentAt      DateTime?
   sellerConfirmedAt    DateTime?
   buyerConfirmedAt     DateTime?
   trialPeriodStartedAt DateTime?
+  waitUserDecisionAt   DateTime?
   returnDueAt          DateTime?
   createdAt            DateTime                @default(now())
   updatedAt            DateTime?               @updatedAt

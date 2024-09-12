@@ -13,6 +13,7 @@ export class UpdateStatusTransactionRentalUseCase {
       | "TrialPeriodStarted"
       | "WaitingForReturn"
       | "WaitingForUserDecision"
+      | "WaitingForAdministratorsReturnConfirmation"
       | "Completed"
       | "Failed"
   ) {
