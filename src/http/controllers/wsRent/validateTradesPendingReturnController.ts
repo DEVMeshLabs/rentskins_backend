@@ -6,7 +6,7 @@ import { makeUpdateStatusTransactionRentalUseCase } from "@/useCases/@factories/
 import { Myitem, Tradeoffer } from "@/useCases/ws/interface/getTradesPending";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export async function rentValidateTradesPendingGaranteeController(
+export async function rentValidateTradesPendingReturnController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void | string> {
