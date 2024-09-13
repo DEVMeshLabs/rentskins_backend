@@ -14,6 +14,7 @@ export class UpdateStatusTransactionRentalUseCase {
       | "WaitingForReturn"
       | "WaitingForUserDecision"
       | "WaitingForAdministratorsReturnConfirmation"
+      | "WaitingForReturnConfirmation"
       | "Completed"
       | "Failed"
   ) {

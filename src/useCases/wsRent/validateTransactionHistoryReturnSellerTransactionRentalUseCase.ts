@@ -35,9 +35,7 @@ export class ValidateTransactionHistoryReturnSellerTransactionRentalUseCase {
     }
     console.log((historic as any).data);
     console.log("Iniciando! ------ Seller");
-    if (
-      transactionRental.status === "WaitingForAdministratorsReturnConfirmation"
-    ) {
+    if (transactionRental.status === "WaitingForReturnConfirmation") {
       const filterTransactionParticipantsId = historic.payload.data.filter(
         (item) => {
           return (

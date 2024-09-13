@@ -46,7 +46,7 @@ export class UpdateTransactionRentalBuyUseCase {
         status: "Completed",
         updatedAt: new Date(),
       }),
-      this.skinRepository.updateMany(skinids, "Completo"),
+      this.skinRepository.updateMany(skinids, "Completed"),
       this.walletRepository.updateByUserValue(
         sellerId,
         "increment",

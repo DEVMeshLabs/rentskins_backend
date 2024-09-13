@@ -102,9 +102,7 @@ export class PrismaRentalTransactionRepository
 
     const findManyRentalStatus = await prisma.rentalTransaction.findMany({
       where: {
-        status:
-          "WaitingForUserDecision" ||
-          "WaitingForAdministratorsReturnConfirmation",
+        status: "WaitingForUserDecision" || "WaitingForReturnConfirmation",
         waitUserDecisionAt: {
           lte: new Date(now.getTime() - 6 * 60 * 60 * 1000), // Verifica se já passaram 6h desde waitUserDecisionAt
         },
@@ -158,6 +156,7 @@ export class PrismaRentalTransactionRepository
       | "TrialPeriodStarted"
       | "WaitingForReturn"
       | "WaitingForUserDecision"
+      | "WaitingForReturnConfirmation"
       | "Completed"
       | "Failed"
   ) {
