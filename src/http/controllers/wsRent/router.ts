@@ -13,23 +13,10 @@ export async function wsRentRouter(app: FastifyInstance) {
     "/rent/webhook/validate/trade/history/:transactionId",
     validateHistoryTransactionRentController
   );
-  app.post(
-    "/rent/webhook/validate/trade/history/return/seller/:transactionId",
-    validateHistoryTransactionRentReturnSellerController
-  );
 
-  app.post(
-    "/rent/webhook/validate/trade/history/return/buyer/:transactionId",
-    validateHistoryTransactionRentReturnBuyerController
-  );
   app.post(
     "/rent/webhook/validate/trade/pending/garantee/:transactionId",
     rentValidateTradesPendingGaranteeController
-  );
-
-  app.post(
-    "/rent/webhook/validate/trade/pending/admin/:transactionId",
-    rentValidateTradesPendingAdminController
   );
 
   app.post(
@@ -45,5 +32,21 @@ export async function wsRentRouter(app: FastifyInstance) {
   app.post(
     "/rent/webhook/validate/trade/pending/return/:transactionId",
     rentValidateTradesPendingReturnController
+  );
+
+  // ---------------------------
+  app.post(
+    "/rent/webhook/validate/trade/history/return/seller/:transactionId",
+    validateHistoryTransactionRentReturnSellerController
+  );
+
+  app.post(
+    "/rent/webhook/validate/trade/history/return/buyer/:transactionId",
+    validateHistoryTransactionRentReturnBuyerController
+  );
+
+  app.post(
+    "/rent/webhook/validate/trade/pending/admin/:transactionId",
+    rentValidateTradesPendingAdminController
   );
 }
