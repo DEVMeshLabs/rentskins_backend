@@ -39,6 +39,8 @@ export class ValidateTransactionHistoryReturnBuyerTransactionRentalUseCase {
     if (transactionRental.status === "WaitingForReturnConfirmation") {
       const filterTransactionParticipantsId = historic.payload.data.filter(
         (item) => {
+          console.log(item);
+
           return (
             item.participantsteamid === transactionRental.buyerId &&
             item.items.sent.length > 0
