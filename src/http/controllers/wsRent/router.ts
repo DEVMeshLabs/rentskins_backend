@@ -6,6 +6,7 @@ import { validateHistoryTransactionRentController } from "./validateHistoryTrans
 import { rentValidateTradesPendingReturnController } from "./validateTradesPendingReturnController";
 import { validateHistoryTransactionRentReturnSellerController } from "./validateHistoryTransactionRentReturnSellerController";
 import { validateHistoryTransactionRentReturnBuyerController } from "./validateHistoryTransactionRentReturnBuyerController";
+import { rentValidateTradesPendingAdminController } from "./validateTradesPendingAdminController";
 
 export async function wsRentRouter(app: FastifyInstance) {
   app.post(
@@ -24,6 +25,11 @@ export async function wsRentRouter(app: FastifyInstance) {
   app.post(
     "/rent/webhook/validate/trade/pending/garantee/:transactionId",
     rentValidateTradesPendingGaranteeController
+  );
+
+  app.post(
+    "/rent/webhook/validate/trade/pending/admin/:transactionId",
+    rentValidateTradesPendingAdminController
   );
 
   app.post(

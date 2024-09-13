@@ -222,7 +222,7 @@ export class CronJobProcessRental {
         this.notificationRepository.createMany(notifications),
         this.notificationRepository.createMany(notificationSeller),
         this.rentalTransactionRepository.updateMany(transactionIds, {
-          status: "WaitingForAdministratorsReturnConfirmation",
+          status: "WaitingForBuyerReturnConfirm",
         }),
       ]);
     } catch (error) {
