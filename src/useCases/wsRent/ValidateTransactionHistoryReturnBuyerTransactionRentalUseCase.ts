@@ -48,8 +48,10 @@ export class ValidateTransactionHistoryReturnBuyerTransactionRentalUseCase {
 
       const matchingItems = filterTransactionParticipantsId.some(
         (offer: Daum) => {
+          console.log(offer);
           return transactionRental.skinsRent.every((skin) => {
             return offer.items.sent.some((item) => {
+              console.log(item);
               return (
                 item.markethashname === skin.skin_market_hash_name &&
                 item.instanceid === skin.skin_instanceid &&
@@ -59,6 +61,17 @@ export class ValidateTransactionHistoryReturnBuyerTransactionRentalUseCase {
           });
         }
       );
+
+      // const matchingItems = filteredSkins.some((offer: Tradeoffer) =>
+      //   offer.myitems.every((item: Myitem) =>
+      //     (transactionRent as any).skinsRent.some(
+      //       (itemSkin) =>
+      //         item.market_hash_name === itemSkin.skin_market_hash_name &&
+      //         item.instanceid === itemSkin.skin_instanceid &&
+      //         item.classid === itemSkin.skin_classid
+      //     )
+      //   )
+      // );
 
       console.log(
         "filterTransactionParticipantsItems ------- BUYER",
