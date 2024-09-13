@@ -27,7 +27,7 @@ export class CronJobProcessRental {
         this.sendDeadlineNotification(),
         this.checkSendSkinSeller(),
         this.checkTrialPeriod(),
-        this.checkResponseUser(),
+        this.checkReturn(),
       ]);
     } catch (error) {
       console.error("Erro durante a execução do cronjob de aluguel:", error);
@@ -159,12 +159,11 @@ export class CronJobProcessRental {
     }
   }
 
-  private async checkResponseUser(): Promise<void> {
+  private async checkReturn(): Promise<void> {
     const commissionRate = 0.05; // 5% de comissão
     console.log("Check Check");
     try {
-      const transactions =
-        await this.rentalTransactionRepository.checkResponseUser();
+      const transactions = await this.rentalTransactionRepository.checkReturn();
 
       if (transactions.length === 0) return;
       console.log("transactions", transactions);
