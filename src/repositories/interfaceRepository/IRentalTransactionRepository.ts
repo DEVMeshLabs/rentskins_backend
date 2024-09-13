@@ -28,6 +28,7 @@ export interface IRentalTransactionRepository {
       | "WaitingForReturn"
       | "WaitingForUserDecision"
       | "WaitingForAdministratorsReturnConfirmation"
+      | "WaitingForReturnConfirmation"
       | "Completed"
       | "Failed"
   ): Promise<RentalTransaction>;

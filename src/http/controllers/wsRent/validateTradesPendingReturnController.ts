@@ -54,7 +54,7 @@ export async function rentValidateTradesPendingReturnController(
           const response =
             await makeUpdateStatusTransactionRentalUseCase().execute(
               transactionId,
-              "WaitingForAdministratorsReturnConfirmation"
+              "WaitingForReturnConfirmation"
             );
 
           const createNotification = makeCreateNotificationUseCase();

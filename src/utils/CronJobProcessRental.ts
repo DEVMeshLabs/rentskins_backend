@@ -160,54 +160,70 @@ export class CronJobProcessRental {
   }
 
   private async checkReturn(): Promise<void> {
-    const commissionRate = 0.05; // 5% de comissão
+    // const commissionRate = 0.1; // 10% de comissão
     console.log("Check Check");
     try {
-      const transactions = await this.rentalTransactionRepository.checkReturn();
+      const transactions = await this.rentalTransactionRepository.checkReturn(); // "WaitingForUserDecision" || "WaitingForAdministratorsReturnConfirmation"
 
       if (transactions.length === 0) return;
       console.log("transactions", transactions);
       const transactionIds = transactions.map((transaction) => transaction.id);
-      const sellerIds = transactions.map(
-        (transaction: RentalTransactionWithSkinRent) =>
-          transaction.skinsRent[0].seller_id
-      );
-      const skinIds = transactions.flatMap(
-        (transaction: RentalTransactionWithSkinRent) =>
-          transaction.skinsRent.map((skin) => skin.id)
-      );
+      // const sellerIds = transactions.map(
+      //   (transaction: RentalTransactionWithSkinRent) =>
+      //     transaction.skinsRent[0].seller_id
+      // );
+      // const skinIds = transactions.flatMap(
+      //   (transaction: RentalTransactionWithSkinRent) =>
+      //     transaction.skinsRent.map((skin) => skin.id)
+      // );
 
-      const notifications = transactions.map((transaction) => ({
-        owner_id: transaction.buyerId,
-        description:
-          "Não foi possível identificar sua resposta, portanto, a transação foi tratada como uma venda.",
-      }));
-
-      const updateWalletPromises = transactions.map(
-        (transaction: RentalTransactionWithSkinRent) => {
-          const totalSkinPrice = transaction.skinsRent.reduce(
-            (total, skin) => total + skin.skin_price,
-            0
-          );
-          const sellerId = transaction.skinsRent[0].seller_id;
-          const sellerAmount = totalSkinPrice * (1 - commissionRate); // Subtrai a comissão de 5%
-
-          return this.walletRepository.updateByUserValue(
-            sellerId,
-            "increment",
-            sellerAmount
-          );
+      const notifications = transactions.map((transaction) => {
+        if (
+          transaction.decisionUser !== "return" &&
+          transaction.decisionUser !== "buy"
+        ) {
+          return {
+            owner_id: transaction.buyerId,
+            description:
+              "Não foi possível identificar sua resposta, portanto, Faça a devolução da skin para administração.",
+          };
         }
-      );
+        return {
+          owner_id: transaction.buyerId,
+          description:
+            "Não foi possível identificar a devolução da skin para o vendedor, portanto, Faça a devolução da skin para administração.",
+        };
+      });
+      const notificationSeller = transactions.map((transaction) => {
+        return {
+          owner_id: (transaction as any).skinsRent[0].seller_id,
+          description:
+            "Não foi possível identificar a devolução da skin por parte do locatário, portanto, o caso foi passado para administração.",
+        };
+      });
+      // const updateWalletPromises = transactions.map(
+      //   (transaction: RentalTransactionWithSkinRent) => {
+      //     const totalSkinPrice = transaction.skinsRent.reduce(
+      //       (total, skin) => total + skin.skin_price,
+      //       0
+      //     );
+      //     const sellerId = transaction.skinsRent[0].seller_id;
+      //     const sellerAmount = totalSkinPrice * (1 - commissionRate); // Subtrai a comissão de 5%
+
+      //     return this.walletRepository.updateByUserValue(
+      //       sellerId,
+      //       "increment",
+      //       sellerAmount
+      //     );
+      //   }
+      // );
 
       await Promise.all([
         this.notificationRepository.createMany(notifications),
+        this.notificationRepository.createMany(notificationSeller),
         this.rentalTransactionRepository.updateMany(transactionIds, {
-          status: "Completed",
+          status: "WaitingForAdministratorsReturnConfirmation",
         }),
-        this.skinsRepository.updateMany(skinIds, "Completo"),
-        this.perfilRepository.updateTotalExchanges(sellerIds),
-        ...updateWalletPromises,
       ]);
     } catch (error) {
       console.error("Erro ao verificar a resposta do usuário:", error);
