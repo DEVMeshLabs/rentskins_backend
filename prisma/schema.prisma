@@ -118,6 +118,7 @@ enum RentalTransactionStatus {
   WaitingForReturn // "Aguardando devolução",
   WaitingForReturnConfirmation // "Esperando confirmação de devolução",
   //---------------------------------------------
+  WaitingForBuyerReturnConfirm // "Esperando confirmação de devolução do comprador",
   WaitingForAdministratorsReturnConfirmation // "Esperando confirmação de devolução dos administradores",
   Completed // "Completed",
   Failed // "Failed"
