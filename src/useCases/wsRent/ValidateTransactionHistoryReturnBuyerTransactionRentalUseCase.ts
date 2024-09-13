@@ -33,6 +33,7 @@ export class ValidateTransactionHistoryReturnBuyerTransactionRentalUseCase {
     if (!transactionRental) {
       throw new TransactionNotExistError();
     }
+    console.log(historic);
     console.log((historic as any).data);
     console.log("Iniciando! Buyer");
     if (transactionRental.status === "WaitingForReturnConfirmation") {
