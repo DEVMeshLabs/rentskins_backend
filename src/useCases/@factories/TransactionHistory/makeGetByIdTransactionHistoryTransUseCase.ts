@@ -1,9 +1,9 @@
 import { PrismaTransactionHistoryRepository } from "@/repositories/Prisma/prismaTransactionHistory";
-import { GetByIdTransactionHistoryTransUseCase } from "@/useCases/TransactionHistory/getByIdTransactionHistoryTransUseCase";
+import { GetByIdTransactionHistoryUseCase } from "@/useCases/TransactionHistory/getByIdTransactionHistoryUseCase";
 
 export function makeGetByIdTransactionHistoryTransUseCase() {
   const transactionRepository = new PrismaTransactionHistoryRepository();
-  const allTransactionHistory = new GetByIdTransactionHistoryTransUseCase(
+  const allTransactionHistory = new GetByIdTransactionHistoryUseCase(
     transactionRepository
   );
   return allTransactionHistory;
