@@ -11,15 +11,19 @@ export class UpdateStatusTransactionUseCase {
       | "NegociationAccepted"
       | "NegociationRejected"
   ) {
-    const findTransactionUser = await this.transactionRepository.updateStatus(
+    const findTransactionUser = await this.transactionRepository.findById(id);
+
+    if (!findTransactionUser) {
+      throw new TransactionNotExistError();
+    } else if (findTransactionUser.status === "NegociationAccepted") {
+      throw new Error("Transaction already accepted");
+    }
+
+    const updateTransaction = await this.transactionRepository.updateStatus(
       id,
       status
     );
 
-    if (!findTransactionUser) {
-      throw new TransactionNotExistError();
-    }
-
-    return findTransactionUser;
+    return updateTransaction;
   }
 }
