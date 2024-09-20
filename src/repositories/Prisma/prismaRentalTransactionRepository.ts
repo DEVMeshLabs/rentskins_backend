@@ -41,7 +41,7 @@ export class PrismaRentalTransactionRepository
       where: {
         status: "WaitingForGuaranteeConfirmation",
         createdAt: {
-          lt: new Date(now.getTime() - 20 * 60 * 1000), // menor que 20 minutos atrás
+          lt: new Date(now.getTime() - 5 * 60 * 1000), // Verifica se já passaram 5 minutos desde a criação
         },
       },
       include: { skinsRent: true, skinsGuarantee: true },
