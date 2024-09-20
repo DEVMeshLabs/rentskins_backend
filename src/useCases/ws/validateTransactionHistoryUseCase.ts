@@ -86,46 +86,55 @@ export class ValidateTransactionHistoryUseCase {
   async handleSuccessTransaction({
     transactionHistory,
   }: IUpdateTransactionHistory) {
-    const perfilSeller = await this.perfilRepository.findByUser(
-      transactionHistory.seller_id[0]
-    );
+    try {
+      const perfilSeller = await this.perfilRepository.findByUser(
+        transactionHistory.seller_id[0]
+      );
 
-    const transaction = await this.transactionRepository.findById(
-      transactionHistory.transaction_id
-    );
-    const { porcentagem } = formatBalance(transaction.balance);
+      if (!perfilSeller) {
+        throw new Error("Seller profile not found.");
+      }
 
-    await Promise.all([
-      this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
+      const transaction = await this.transactionRepository.findById(
+        transactionHistory.transaction_id
+      );
+      if (!transaction) {
+        throw new Error("Transaction not found.");
+      }
 
-      this.transactionHistory.updateId(transactionHistory.id, {
-        processTransaction: "Completed",
-      }),
-      this.transactionRepository.updateStatus(
-        transaction.id,
-        "NegociationAccepted"
-      ),
-      this.notificationRepository.create({
-        owner_id: transactionHistory.seller_id[0],
-        description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
-      }),
-      this.notificationRepository.create({
-        owner_id: transactionHistory.buyer_id,
-        description: `Parabéns! Sua compra foi finalizada com sucesso.`,
-      }),
-      this.skinRepository.updateById(transaction.skin_id, {
-        status: "Concluído",
-        saledAt: new Date(),
-      }),
-      this.walletRepository.updateByUserValue(
-        transactionHistory.seller_id[0],
-        "increment",
-        porcentagem
-      ),
-      this.transactionRepository.updateStatus(
-        transaction.id,
-        "NegociationAccepted"
-      ),
-    ]);
+      const { porcentagem } = formatBalance(transaction.balance);
+
+      await Promise.all([
+        this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
+        this.transactionHistory.updateId(transactionHistory.id, {
+          processTransaction: "Completed",
+        }),
+        this.transactionRepository.updateStatus(
+          transaction.id,
+          "NegociationAccepted"
+        ),
+        this.notificationRepository.create({
+          owner_id: transactionHistory.seller_id[0],
+          description: `Parabéns! Sua venda foi finalizada com sucesso. O valor recebido foi de ${porcentagem}.`,
+        }),
+        this.notificationRepository.create({
+          owner_id: transactionHistory.buyer_id,
+          description: `Parabéns! Sua compra foi finalizada com sucesso.`,
+        }),
+        this.skinRepository.updateById(transaction.skin_id, {
+          status: "Concluído",
+          saledAt: new Date(),
+        }),
+        this.walletRepository.updateByUserValue(
+          transactionHistory.seller_id[0],
+          "increment",
+          porcentagem
+        ),
+      ]);
+    } catch (error) {
+      console.error("Error handling success transaction:", error);
+      // Aqui você pode adicionar lógica para registrar o erro ou retornar uma resposta adequada
+      throw error; // Re-throw the error if you want it to propagate
+    }
   }
 }
