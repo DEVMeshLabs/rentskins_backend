@@ -7,7 +7,7 @@ export class GetManyTransactionHistoryUseCase {
 
   async execute() {
     const allTransactionHistory =
-      await this.transactionHistoryRepository.findByMany("Default");
+      await this.transactionHistoryRepository.findByMany("Pending");
     return allTransactionHistory;
   }
 }

@@ -89,6 +89,12 @@ export class CreateTransactionUseCase {
     }
 
     await Promise.allSettled([
+      this.transactionHisotry.create({
+        transaction_id: createTransaction.id,
+        seller_id,
+        buyer_id,
+        dateProcess: addHours(12),
+      }),
       this.notificationsRepository.create({
         owner_id: perfilSeller.owner_id,
         description: `A transação do item ${findSkin.skin_name} foi iniciada por ${formattedBalance}.`,
@@ -113,12 +119,6 @@ export class CreateTransactionUseCase {
       }),
       this.skinRepository.updateById(findSkin.id, {
         status: "Em andamento",
-      }),
-      this.transactionHisotry.create({
-        transaction_id: createTransaction.id,
-        seller_id,
-        buyer_id,
-        dateProcess: addHours(12),
       }),
     ]);
 
