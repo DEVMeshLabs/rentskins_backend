@@ -105,7 +105,7 @@ export class ValidateTransactionHistoryUseCase {
       const { porcentagem } = formatBalance(transaction.balance);
 
       await Promise.all([
-        this.perfilRepository.updateTotalExchanges(perfilSeller[0].id),
+        this.perfilRepository.updateTotalExchanges(perfilSeller.id as any),
         this.transactionHistory.updateId(transactionHistory.id, {
           processTransaction: "Completed",
         }),
