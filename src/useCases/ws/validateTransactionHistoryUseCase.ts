@@ -39,10 +39,7 @@ export class ValidateTransactionHistoryUseCase {
     const transaction = await this.transactionRepository.findById(
       transactionHistory.transaction_id
     );
-    console.log("Isso Aquii");
     if (transactionHistory.processTransaction === "Pending") {
-      console.log("Entrou aqui");
-
       const skin = await this.skinRepository.findById(transaction.skin_id);
 
       const filterTransactionParticipantsId = historic.payload.data.filter(

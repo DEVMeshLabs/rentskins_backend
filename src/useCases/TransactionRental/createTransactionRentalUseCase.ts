@@ -4,7 +4,6 @@ import { IRentalTransactionRepository } from "@/repositories/interfaceRepository
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
-import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 // ----------------------------------- Importando Errors -----------------------------------//
 import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
@@ -22,7 +21,6 @@ import type { ISkinGuaranteeRepository } from "@/repositories/interfaceRepositor
 export class CreateTransactionRentalUseCase {
   constructor(
     private rentalTransactionRepository: IRentalTransactionRepository,
-    private transactionHistory: ITransactionHistoryRepository,
     private skinRepository: ISkinsRepository,
     private skinGuaranteeRepository: ISkinGuaranteeRepository,
     private perfilRepository: IPerfilRepository,
@@ -34,6 +32,7 @@ export class CreateTransactionRentalUseCase {
     const sellerItemsMap = new Map<string, string[]>();
 
     const skinIds = (data.skinsRent as Skin[]).map((skin: Skin) => skin.id);
+
     const [skins, perfilComprador, walletComprador] = await Promise.all([
       this.skinRepository.findManySkins(skinIds),
       this.perfilRepository.findByUser(data.buyerId),
@@ -66,6 +65,41 @@ export class CreateTransactionRentalUseCase {
       sellerItemsMap.get(skin.seller_id)?.push(skin.skin_name);
     });
 
+    const guaranteeSkins =
+      await this.skinGuaranteeRepository.checkSkinGuaranteeLocaterioinTransaction(
+        data.buyerId
+      );
+
+    let skinsGuaranteeOperation;
+
+    if (guaranteeSkins.length === 0) {
+      console.log(
+        "Criando novas skins de garantia----------------------------------------------------------------------------------------------"
+      );
+      // Cria novas skins de garantia, caso não tenha nenhuma já associada
+      skinsGuaranteeOperation = {
+        create: (data.skinsGuarantee as GuaranteeSkin[]).map((skin) => ({
+          ...skin,
+          owner_id: data.buyerId,
+          skin_wear: skin.skin_wear ?? "",
+        })),
+      };
+    } else {
+      console.log(
+        "Conectando skins de garantia existentes-----------------------------------------------------------------------------------------"
+      );
+      skinsGuaranteeOperation = {
+        connect: guaranteeSkins.map((skin) => ({
+          id: skin.id,
+        })),
+        create: (data.skinsGuarantee as GuaranteeSkin[]).map((skin) => ({
+          ...skin,
+          owner_id: data.buyerId,
+          skin_wear: skin.skin_wear ?? "",
+        })),
+      };
+    }
+
     try {
       const [rent] = await Promise.all([
         this.rentalTransactionRepository.create({
@@ -76,17 +110,7 @@ export class CreateTransactionRentalUseCase {
               id: skin.id,
             })),
           },
-          skinsGuarantee: {
-            createMany: {
-              data: (data.skinsGuarantee as GuaranteeSkin[]).map((skin) => {
-                return {
-                  ...skin,
-                  owner_id: data.buyerId,
-                  skin_wear: skin.skin_wear ?? "",
-                };
-              }),
-            },
-          },
+          skinsGuarantee: skinsGuaranteeOperation,
         }),
 
         sellerItemsMap.forEach((itemNames, sellerId) => {

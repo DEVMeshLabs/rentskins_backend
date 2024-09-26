@@ -35,7 +35,6 @@ export class CreateWebHookTransactionUseCase {
   private async handlePaymentSucceeded(paymentIntent: any) {
     const { customer, amount, payment_method_types } = paymentIntent;
     const retrievedCustomer = await customers.retrieve(customer);
-    console.log(retrievedCustomer);
     const amountInBRL = (amount / 100).toLocaleString("pt-BR", {
       style: "currency",
       currency: "BRL",
@@ -63,12 +62,11 @@ export class CreateWebHookTransactionUseCase {
       paymentMethod: isPaymentMethodCard ? "Cartão de crédito" : "Pix",
     });
 
-    const response = send(
+    send(
       retrievedCustomer.email || "no-reply@domain.com",
       "Seu pagamento foi confirmado!",
       html
     );
-    console.log(response);
     return paymentIntent;
   }
 
