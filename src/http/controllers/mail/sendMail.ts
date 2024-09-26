@@ -9,7 +9,7 @@ export async function sendMailController(
   const { to, subject, value, paymentMethod } = req.body as {
     to: string;
     subject: string;
-    value: number;
+    value: string;
     paymentMethod: string;
     user: string;
   };

@@ -1,4 +1,5 @@
 import { env } from "@/env";
+import { generateProductHash } from "@/utils/generateProductHash";
 import axios from "axios";
 // import axios from "axios";
 
@@ -8,8 +9,8 @@ export class CreatePixTransactionUseCase {
       .post(
         "https://api.mercadopago.com/v1/payments",
         {
-          description: "Adicionando fundos na conta",
-          external_reference: "MP0001",
+          description: "",
+          external_reference: generateProductHash(),
           installments: 1,
 
           metadata: {
@@ -26,7 +27,7 @@ export class CreatePixTransactionUseCase {
           },
           payment_method_id: "pix",
           notification_url:
-            "https://api-rentskin-backend-on.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
+            "https://rentskins-backend-r447.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
           transaction_amount: amount,
         },
 
