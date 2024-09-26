@@ -2,7 +2,7 @@ interface IProps {
   user: string;
   title: string;
   date: string;
-  value: number;
+  value: string;
   paymentMethod: string;
 }
 
@@ -133,7 +133,7 @@ export function templateSendMail_1({
                 </tr>
                 <tr>
                     <th>Valor da Recarga:</th>
-                    <td class="highlight">R$ ${value}</td>
+                    <td class="highlight">${value}</td>
                 </tr>
                 <tr>
                     <th>Método de Pagamento:</th>

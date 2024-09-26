@@ -52,8 +52,8 @@ export class CreateCheckoutSessionStripeUseCase {
         .post(
           "https://api.mercadopago.com/v1/payments",
           {
-            description: "Adicionando fundos na conta.",
-            external_reference: `MP${referencia}`,
+            description: "Recarga de saldo",
+            external_reference: `RT${referencia}`,
             installments: 1,
             metadata: {
               id: owner_id,
@@ -69,7 +69,7 @@ export class CreateCheckoutSessionStripeUseCase {
             },
             payment_method_id: "pix",
             notification_url:
-              "https://api-rentskin-backend-on.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
+              "https://rentskins-backend-r447.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
             transaction_amount: amount,
           },
 
