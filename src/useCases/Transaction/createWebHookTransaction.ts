@@ -1,6 +1,6 @@
 /* eslint-disable no-case-declarations */
-import { templateSendMail_1 } from "@/http/controllers/mail/templates/sendMail_1";
 import { send } from "@/lib/nodemailer";
+import { templateSendMail_1 } from "@/lib/templates/sendMail_1";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { customers } from "@/server";
