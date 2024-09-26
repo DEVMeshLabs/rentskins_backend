@@ -94,7 +94,7 @@ export function templateSendMail_1({
         }
 
         .highlight {
-            color: #3498db;
+            color: #AAD42D;
             font-weight: bold;
         }
     </style>
