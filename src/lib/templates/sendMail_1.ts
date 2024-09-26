@@ -40,7 +40,7 @@ export function templateSendMail_1({
         }
 
         .email-header {
-            background-color: #3498db;
+            background-color: #AAD42D;
             padding: 20px;
             color: #ffffff;
             text-align: center;
@@ -58,20 +58,6 @@ export function templateSendMail_1({
             text-align: center;
             font-size: 12px;
             color: #888888;
-        }
-
-        .button {
-            display: inline-block;
-            padding: 12px 24px;
-            background-color: #3498db;
-            color: #ffffff;
-            text-decoration: none;
-            border-radius: 4px;
-            font-weight: bold;
-        }
-
-        .button:hover {
-            background-color: #2980b9;
         }
 
         @media (max-width: 600px) {
