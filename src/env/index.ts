@@ -14,6 +14,11 @@ const envSchema = z.object({
   STRIPE_SECRET_WEBHOOK_KEY: z.string(),
   MERCADO_SECRET_KEY: z.string(),
   KEY_STEAM_WEB_API: z.string(),
+  MAIL_HOST: z.string(),
+  MAIL_PORT: z.string(),
+  MAIL_USER: z.string(),
+  MAIL_PASS: z.string(),
+  MAIL_FROM: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

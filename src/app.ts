@@ -17,6 +17,7 @@ import { wsRouter } from "./http/controllers/ws/router";
 import { transactionHistoryRouter } from "./http/controllers/TransactionHistory/routes";
 import { wsRentRouter } from "./http/controllers/wsRent/router";
 import { skinGuaranteeRouter } from "./http/controllers/SkinGuarantee/routes";
+import { mailRoter } from "./http/controllers/mail/routes";
 
 export const app = fastify();
 
@@ -34,6 +35,7 @@ app.register(rentalTransactionRouter);
 app.register(wsRouter);
 app.register(wsRentRouter);
 app.register(skinGuaranteeRouter);
+app.register(mailRoter);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
