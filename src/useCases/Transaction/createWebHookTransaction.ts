@@ -57,7 +57,7 @@ export class CreateWebHookTransactionUseCase {
 
     const html = templateSendMail_1({
       user: retrievedCustomer.metadata.owner_name || "Cliente",
-      title: "Pagamento realizado com sucesso",
+      title: "Seu pagamento foi confirmado!",
       date: new Date().toLocaleDateString("pt-BR"),
       value: amountInBRL,
       paymentMethod: isPaymentMethodCard ? "Cartão de crédito" : "Pix",
@@ -65,7 +65,7 @@ export class CreateWebHookTransactionUseCase {
 
     const response = send(
       retrievedCustomer.email || "no-reply@domain.com",
-      "Pagamento realizado com sucesso",
+      "Seu pagamento foi confirmado!",
       html
     );
     console.log(response);

@@ -57,11 +57,13 @@ export class CreateCheckoutSessionStripeUseCase {
             installments: 1,
             metadata: {
               id: owner_id,
+              owner_name: perfilUser.owner_name,
             },
             payer: {
               entity_type: "individual",
               type: "customer",
               email,
+              owner_name: perfilUser.owner_name,
               identification: {
                 type: "CPF",
                 number: cpf,
