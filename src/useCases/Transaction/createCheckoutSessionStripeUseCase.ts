@@ -26,13 +26,15 @@ export class CreateCheckoutSessionStripeUseCase {
   }: IPayment) {
     const perfilUser = await this.perfilRepostiory.findByUser(owner_id);
     let customer_id;
-    const referencia = 1;
+    console.log("--------------------------", perfilUser);
 
-    if (perfilUser.stripe_id === null) {
+    const referencia = 1;
+    if (perfilUser && perfilUser.stripe_id === null) {
       const customer = await customers.create({
         email,
         metadata: {
           owner_id,
+          owner_name: perfilUser.owner_name,
         },
       });
 
@@ -100,6 +102,7 @@ export class CreateCheckoutSessionStripeUseCase {
       ],
       metadata: {
         owner_id,
+        owner_name: perfilUser.owner_name,
       },
       customer: customer_id,
       phone_number_collection: { enabled: true },
