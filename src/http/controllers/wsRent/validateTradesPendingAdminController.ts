@@ -37,8 +37,6 @@ export async function rentValidateTradesPendingAdminController(
         (offer: Tradeoffer) => offer.participantsteamid === rentId
       );
 
-      console.log(filteredSkins);
-
       if (filteredSkins.length > 0) {
         console.log(
           "Verifica se encontrou itens correspondentes ao participante"

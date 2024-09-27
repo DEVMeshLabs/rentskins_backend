@@ -19,6 +19,7 @@ const envSchema = z.object({
   MAIL_USER: z.string(),
   MAIL_PASS: z.string(),
   MAIL_FROM: z.string(),
+  MAIL_SENDGRID_API_KEY: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

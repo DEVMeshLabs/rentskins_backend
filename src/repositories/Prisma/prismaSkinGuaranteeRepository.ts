@@ -24,7 +24,7 @@ export class PrismaSkinGuaranteeRepository implements ISkinGuaranteeRepository {
   async findByAssets(assetIds: string[]): Promise<GuaranteeSkin[]> {
     const skins = await prisma.guaranteeSkin.findMany({
       where: { asset_id: { in: assetIds } },
-      include: { RentalTransaction: true },
+      include: { rentalTransactions: true },
     });
     return skins;
   }
@@ -34,6 +34,29 @@ export class PrismaSkinGuaranteeRepository implements ISkinGuaranteeRepository {
       where: {
         addedToBackpackAt: {
           not: null,
+        },
+      },
+    });
+    return skins;
+  }
+
+  async checkSkinGuaranteeLocaterioinTransaction(
+    locatarioId: string
+  ): Promise<any> {
+    const skins = await prisma.guaranteeSkin.findMany({
+      where: {
+        owner_id: locatarioId,
+        isSolicited: false,
+        returnedAt: null,
+      },
+      include: {
+        rentalTransactions: {
+          where: {
+            status: {
+              notIn: ["Failed", "Completed"],
+            },
+            returnDueAt: null,
+          },
         },
       },
     });

@@ -27,7 +27,6 @@ export async function createTransactionRentalController(
       daysQuantity: Number(daysQuantity),
       skinsGuarantee: skinsGuarantee as any,
     });
-    console.log(transaction);
     return reply.status(201).send(transaction);
   } catch (error) {
     const errorMappings = {
