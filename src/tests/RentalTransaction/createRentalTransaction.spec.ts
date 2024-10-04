@@ -29,6 +29,7 @@ let walletRepository: InMemoryWalletRepository;
 let notificationRepository: InMemoryNotificationRepository;
 let makeCreateSkinRepository: MakeCreateSkinRepository;
 let makeCreatePerfil: MakeCreatePerfilRepository;
+
 let sut: CreateTransactionRentalUseCase;
 
 describe("Rental Transaction Use Case", () => {

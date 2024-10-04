@@ -17,6 +17,8 @@ import { getAlreadyExistSkinInventory } from "./getAlreadyExistSkinInventory";
 import { getMedianPriceController } from "./getMedianPriceController";
 import { getLastSellerSkinsController } from "./getLastSellerSkinsController";
 import { getSkinSlugController } from "./getSkinSlugController";
+import axios from "axios";
+import { env } from "@/env";
 
 export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins", getSkinManyController);
@@ -47,4 +49,14 @@ export async function skinRouter(app: FastifyInstance) {
   );
   app.delete("/v1/skins/:id", deleteSkinController);
   app.put("/v1/skins/:id", { onRequest: [verifyJwt] }, updateSkinController);
+  app.get("/v1/test", async () => {
+    try {
+      const { data } = await axios.get(
+        `https://api.steampowered.com/IEconService/GetTradeHistory/v1/?key=${env.KEY_STEAM}&max_trades=50&get_descriptions=false&language=EN&include_failed=true&include_total=true`
+      );
+      return data;
+    } catch (error) {
+      return error;
+    }
+  });
 }

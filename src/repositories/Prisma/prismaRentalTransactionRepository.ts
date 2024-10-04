@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 export class PrismaRentalTransactionRepository
   implements IRentalTransactionRepository
 {
+  
   async findById(id: string) {
     const findRentalTransaction = await prisma.rentalTransaction.findFirst({
       where: { id, deletedAt: null },

@@ -3,7 +3,6 @@ import { Prisma, RentalTransaction } from "@prisma/client";
 export interface IRentalTransactionRepository {
   create(data: Prisma.RentalTransactionCreateInput): Promise<RentalTransaction>;
   findById(id: string): Promise<RentalTransaction | null>;
-
   findByMany(): Promise<RentalTransaction[]>;
   findByManyStatus(status: string): Promise<RentalTransaction[]>;
   checkPendingGuarantee(): Promise<RentalTransaction[]>;
