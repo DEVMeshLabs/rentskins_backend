@@ -15,13 +15,23 @@ export class InMemoryNotificationRepository implements INotificationRepository {
       description: data.description,
       skin_id: data.skin_id,
       new: true,
-      type: null,
+      type: data.type ?? null,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
+
+      rentalTransactionId: data.rentalTransactionId ?? null,
     };
+
     this.notifications.push(createNotification);
     return createNotification;
+  }
+
+  async createMany(data: Prisma.NotificationCreateManyInput[]) {
+    const createMany = data.map((notification) => {
+      return this.create(notification);
+    });
+    return createMany;
   }
 
   findByMany() {

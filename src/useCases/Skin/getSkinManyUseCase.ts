@@ -12,15 +12,16 @@ export class GetSkinManyUseCase {
 
   async execute(
     pageNumber: number,
-    itemsPerPage: number
+    itemsPerPage: number,
+    type: string
   ): Promise<GetSkinManyUseCaseResponse> {
     const totalSkinsFound = await this.skinRepository.findByCountSkins();
-
     const totalPages = Math.ceil(totalSkinsFound / itemsPerPage);
 
     const skins = await this.skinRepository.findByMany(
       pageNumber,
-      itemsPerPage
+      itemsPerPage,
+      type
     );
 
     return {

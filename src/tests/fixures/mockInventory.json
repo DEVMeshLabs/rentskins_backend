@@ -1,0 +1,35 @@
+[
+  {
+    "tradeid": "5301370636430327610",
+    "partnersteamid": "76561198015724229",
+    "timestamp": 1709589453,
+    "status": "confirmed",
+    "completed": true,
+    "date": "2024-03-04 21:57:33",
+    "sent": true,
+    "sentcount": 1,
+    "sentassets": [
+      {
+        "appid": 730,
+        "contextid": "2",
+        "assetid": "35298318122",
+        "classid": "5316842944",
+        "instanceid": "143865972",
+        "amount": "1",
+        "newassetid": "36215922801",
+        "newcontextid": "2"
+      }
+    ],
+    "sentassetids": [
+      "35298318122"
+    ],
+    "sentnewassetids": [
+      "36215922801"
+    ],
+    "received": false,
+    "receivedcount": 0,
+    "receivedassets": [],
+    "receivedassetids": [],
+    "receivednewassetids": []
+  }
+]

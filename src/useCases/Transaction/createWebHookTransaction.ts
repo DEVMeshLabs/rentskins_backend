@@ -1,4 +1,6 @@
 /* eslint-disable no-case-declarations */
+import { send } from "@/lib/nodemailer";
+import { templateSendMail_1 } from "@/lib/templates/sendMail_1";
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { customers } from "@/server";
@@ -10,48 +12,85 @@ export class CreateWebHookTransactionUseCase {
   ) {}
 
   async process(event: any) {
-    switch (event.type) {
-      case "payment_intent.succeeded":
-        const paymentIntentSucceeded = event.data.object;
+    try {
+      const { type, data } = event;
+      const paymentIntent = data.object;
 
-        // Pegando o customer
-        const customer = await customers.retrieve(
-          paymentIntentSucceeded.customer
-        );
+      switch (type) {
+        case "payment_intent.succeeded":
+          return this.handlePaymentSucceeded(paymentIntent);
 
-        // Atualizando a wallet e Perfil
-        await Promise.all([
-          this.walletRepository.updateByUserValue(
-            customer.metadata.owner_id,
-            "increment",
-            paymentIntentSucceeded.amount / 100
-          ),
+        case "payment_intent.payment_failed":
+          return this.handlePaymentFailed(paymentIntent);
 
-          await this.notificationRepository.create({
-            owner_id: customer.metadata.owner_id,
-            description: `O pagamento foi realizado com sucesso! ${(
-              paymentIntentSucceeded.amount / 100
-            ).toLocaleString("pt-BR", {
-              style: "currency",
-              currency: "BRL",
-              minimumFractionDigits: 2,
-            })} foram adicionados a sua conta.`,
-          }),
-        ]);
-
-        return paymentIntentSucceeded;
-
-      case "payment_intent.payment_failed":
-        const paymentIntentFailed = event.data.object;
-        await this.notificationRepository.create({
-          owner_id: customer.metadata.owner_id,
-          description: `O pagamento falhou. Tente novamente mais tarde.`,
-        });
-
-        return paymentIntentFailed;
-
-      default:
-        console.log(`Unhandled event type ${event.type}`);
+        default:
+          console.log(`Unhandled event type ${type}`);
+      }
+    } catch (error) {
+      console.error("Error processing webhook event:", error);
+      throw new Error("Failed to process Stripe webhook event.");
     }
+  }
+
+  private async handlePaymentSucceeded(paymentIntent: any) {
+    const { customer, amount, payment_method_types } = paymentIntent;
+    const retrievedCustomer = await customers.retrieve(customer);
+<<<<<<< HEAD
+=======
+    console.log(retrievedCustomer);
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
+    const amountInBRL = (amount / 100).toLocaleString("pt-BR", {
+      style: "currency",
+      currency: "BRL",
+      minimumFractionDigits: 2,
+    });
+
+    await Promise.all([
+      this.walletRepository.updateByUserValue(
+        retrievedCustomer.metadata.owner_id,
+        "increment",
+        amount / 100
+      ),
+      this.notificationRepository.create({
+        owner_id: retrievedCustomer.metadata.owner_id,
+        description: `O pagamento foi realizado com sucesso! ${amountInBRL} foram adicionados à sua conta.`,
+      }),
+    ]);
+    const isPaymentMethodCard = payment_method_types[0] === "card";
+
+    const html = templateSendMail_1({
+      user: retrievedCustomer.metadata.owner_name || "Cliente",
+      title: "Seu pagamento foi confirmado!",
+      date: new Date().toLocaleDateString("pt-BR"),
+      value: amountInBRL,
+      paymentMethod: isPaymentMethodCard ? "Cartão de crédito" : "Pix",
+    });
+
+<<<<<<< HEAD
+    send(
+=======
+    const response = send(
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
+      retrievedCustomer.email || "no-reply@domain.com",
+      "Seu pagamento foi confirmado!",
+      html
+    );
+<<<<<<< HEAD
+=======
+    console.log(response);
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
+    return paymentIntent;
+  }
+
+  private async handlePaymentFailed(paymentIntent: any) {
+    const { customer } = paymentIntent;
+    const retrievedCustomer = await customers.retrieve(customer);
+
+    await this.notificationRepository.create({
+      owner_id: retrievedCustomer.metadata.owner_id,
+      description: `O pagamento falhou. Tente novamente mais tarde.`,
+    });
+
+    return paymentIntent;
   }
 }

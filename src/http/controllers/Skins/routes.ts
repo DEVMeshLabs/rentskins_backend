@@ -28,10 +28,12 @@ export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins/search/:name", getManySearchController);
   app.get("/v1/skins/inventory/:id", getInventoryUserController);
   app.get("/v1/skins/slug/:slug", getSkinSlugController);
+
   app.post("/v1/skins/median/price", getMedianPriceController);
   app.post("/v1/skins/availability/:id", getAlreadyExistSkinInventory);
   app.post("/v1/skins", { onRequest: [verifyJwt] }, createSkinController);
   app.post("/v1/skins/lastsales", getLastSellerSkinsController);
+  app.post("/v1/skins/float", getFloatSkinController);
 
   app.post(
     "/v1/skins/inventory/:id",

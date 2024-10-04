@@ -6,15 +6,18 @@ export async function slug(
 ): Promise<string> {
   const hash = await createdHash(assetId);
 
-  // const formatText = market_name
-  //   .replace(/\s+/g, "-")
-  //   .replace(/\|/g, "")
-  //   .replace(/[()]/g, "-")
-  //   .replace(/--/g, "-")
-  //   .replace(/-$/, "")
-  //   .toLowerCase();
+  const returnSlug = `${skin_category}-${skin_weapon}-${hash}`;
 
-  return `${skin_category.toLowerCase()}-${skin_weapon.toLowerCase()}-${hash}`;
+  const formatText = returnSlug
+    .replace(/\s+/g, "-")
+    .replace(/\|/g, "")
+    .replace(/\//g, "-")
+    .replace(/[()]/g, "-")
+    .replace(/--/g, "-")
+    .replace(/-$/, "")
+    .toLowerCase();
+
+  return formatText;
 }
 
 async function createdHash(assetId) {

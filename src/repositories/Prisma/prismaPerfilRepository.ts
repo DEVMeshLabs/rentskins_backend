@@ -18,6 +18,14 @@ export class PrismaPerfilRepository implements IPerfilRepository {
     return perfilUser;
   }
 
+  async findByUsers(owner_ids: string[]) {
+    const perfilUser = await prisma.perfil.findFirst({
+      where: { owner_id: { in: owner_ids }, deletedAt: null },
+      include: { configuration: true, cart: true },
+    });
+    return perfilUser;
+  }
+
   async findByUserNotDeleteAt(owner_id: string) {
     const perfilUser = await prisma.perfil.findFirst({
       where: { owner_id },
@@ -85,6 +93,25 @@ export class PrismaPerfilRepository implements IPerfilRepository {
       data: { ...date, updatedAt: new Date() },
     });
     return updateUser;
+  }
+
+  async updateTotalExchanges(buyerIds: string[]) {
+    const updateTotalExchanges = await prisma.perfil.updateMany({
+      where: { owner_id: { in: buyerIds } },
+      data: { total_exchanges: { increment: 1 }, updatedAt: new Date() },
+    });
+
+    return updateTotalExchanges;
+  }
+
+  async updateTotalExchangesFailed(steamIds: string) {
+    const updateTotalExchanges = await prisma.perfil.update({
+      where: { owner_id: steamIds },
+      data: { total_exchanges_failed: { increment: 1 }, updatedAt: new Date() },
+    });
+    console.log(updateTotalExchanges);
+    console.log(updateTotalExchanges.total_exchanges_failed);
+    return updateTotalExchanges;
   }
 
   async updateByCart(owner_id: string, cart: string) {
