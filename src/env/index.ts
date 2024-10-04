@@ -15,7 +15,6 @@ const envSchema = z.object({
   MERCADO_SECRET_KEY: z.string(),
   KEY_STEAM_WEB_API: z.string(),
   MAIL_FROM: z.string(),
-  MAIL_SENDGRID_API_KEY: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

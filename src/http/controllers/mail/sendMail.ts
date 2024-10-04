@@ -13,17 +13,18 @@ export async function sendMailController(
     paymentMethod: string;
     user: string;
   };
+  const data = new Date();
+  const htmlTemplate = templateSendMail_1({
+    user: "Ítalo",
+    title: subject,
+    value,
+    date: data.toDateString(),
+    paymentMethod,
+  });
 
   try {
-    const data = new Date();
-    const htmlTemplate = templateSendMail_1({
-      user: "Ítalo",
-      title: subject,
-      value,
-      date: data.toDateString(),
-      paymentMethod,
-    });
     send(to, subject, htmlTemplate);
+
     return reply.status(200).send({ message: "Email enviado com sucesso" });
   } catch (error) {
     return reply.status(500).send({ error: error.message });

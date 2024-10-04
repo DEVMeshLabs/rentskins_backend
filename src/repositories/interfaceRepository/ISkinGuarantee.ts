@@ -8,5 +8,4 @@ export interface ISkinGuaranteeRepository {
   findById(id: string): Promise<GuaranteeSkin | null>;
   findByAssets(assetIds: string[]): Promise<GuaranteeSkin[]>;
   findManySend(): Promise<GuaranteeSkin[]>;
-  checkSkinGuaranteeLocaterioinTransaction(locatarioId: string): Promise<any>;
 }
