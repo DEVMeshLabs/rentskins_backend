@@ -5,16 +5,20 @@ import { z } from "zod";
 
 const envSchema = z.object({
   NODE_ENV: z.enum(["dev", "test", "production"]).default("dev"),
+  DATABASE_URL: z.string(),
   PORT: z.coerce.number().default(3333),
   JWT_SECRET: z.string(),
-  STEAM_USERNAME: z.string(),
-  STEAM_PASSWORD: z.string(),
   STEAM_KEY: z.string(),
   STRIPE_PUBLIC_KEY: z.string(),
   STRIPE_SECRET_KEY: z.string(),
   STRIPE_SECRET_WEBHOOK_KEY: z.string(),
   MERCADO_SECRET_KEY: z.string(),
-  KEY_STEAM: z.string(),
+  KEY_STEAM_WEB_API: z.string(),
+  MAIL_HOST: z.string(),
+  MAIL_PORT: z.string(),
+  MAIL_USER: z.string(),
+  MAIL_PASS: z.string(),
+  MAIL_FROM: z.string(),
 });
 
 const _env = envSchema.safeParse(process.env);

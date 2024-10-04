@@ -4,6 +4,11 @@ import cors from "@fastify/cors";
 import GlobalOffensive from "globaloffensive";
 import SteamUser from "steam-user";
 import SteamCommunity from "steamcommunity";
+import job from "node-schedule";
+import { makeCronJobProcessTransaction } from "./useCases/@factories/TransactionHistory/makeCronJobProcessTransaction";
+import { makeCronJobProcessRental } from "./useCases/@factories/RentalTransaction/makeCronJobRental";
+// import { makeCronJobProcessRental } from "./useCases/@factories/RentalTransaction/makeCronJobRental";
+
 export const user = new SteamUser();
 export const csgo = new GlobalOffensive(user);
 export const community = new SteamCommunity();
@@ -11,30 +16,21 @@ export const { checkout, webhooks, customers } = require("stripe")(
   env.STRIPE_SECRET_KEY
 );
 
-app.register(cors, {
-  origin: true,
+const makeCronJobTransaction = makeCronJobProcessTransaction();
+const makeCronJobRental = makeCronJobProcessRental();
+
+job.scheduleJob("*/2 * * * *", async () => {
+  await Promise.all([
+    makeCronJobTransaction.execute(),
+    makeCronJobRental.execute(),
+  ]);
 });
 
-// -------------------------- FLOAT ------------------------------
-
-// user.logOn({
-//   accountName: "usefairly",
-//   password: "6fd4050e3cf81fffd2b64eb4338be0d0",
-// });
-
-// user.on("loggedOn", () => {
-//   console.log("ok");
-//   user.gamesPlayed(730);
-//   csgo.on("connectedToGC", async () => {
-//     console.log("Logado!");
-//   });
-// });
-
-// user.on("error", (err) => {
-//   console.log(err.message);
-// });
-
-// --------------------------------------------------------
+app.register(cors, {
+  origin: "*",
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization", "Acc"],
+});
 
 app
   .listen({

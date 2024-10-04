@@ -1,4 +1,5 @@
 import fastify from "fastify";
+
 import { skinRouter } from "./http/controllers/Skins/routes";
 import { walletRouter } from "./http/controllers/Wallet/routes";
 import { configurationRouter } from "./http/controllers/Configuration/routes";
@@ -10,8 +11,13 @@ import { skinToCartRouter } from "./http/controllers/SkinToCart/routes";
 import { env } from "process";
 import { ZodError } from "zod";
 import jwt from "@fastify/jwt";
-import { Server } from "socket.io";
-import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/routes";
+import { rentalTransactionRouter } from "./http/controllers/RentalTransaction/router";
+import { Server } from "node:http";
+import { wsRouter } from "./http/controllers/ws/router";
+import { transactionHistoryRouter } from "./http/controllers/TransactionHistory/routes";
+import { wsRentRouter } from "./http/controllers/wsRent/router";
+import { skinGuaranteeRouter } from "./http/controllers/SkinGuarantee/routes";
+import { mailRoter } from "./http/controllers/mail/routes";
 
 export const app = fastify();
 
@@ -21,10 +27,15 @@ app.register(walletRouter);
 app.register(configurationRouter);
 app.register(notificationRouter);
 app.register(cartRouter);
-app.register(transactionRouter);
 app.register(perfilRouter);
 app.register(skinToCartRouter);
+app.register(transactionRouter);
+app.register(transactionHistoryRouter);
 app.register(rentalTransactionRouter);
+app.register(wsRouter);
+app.register(wsRentRouter);
+app.register(skinGuaranteeRouter);
+app.register(mailRoter);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {

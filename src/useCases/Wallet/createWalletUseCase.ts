@@ -31,6 +31,7 @@ export class CreateWalletUseCase {
       this.walletRepository.create({
         owner_id,
         owner_name,
+        value: 10000,
       }),
     ]);
 
