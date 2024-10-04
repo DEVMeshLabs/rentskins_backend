@@ -1,11 +1,11 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { CartNotExistError } from "@/useCases/errors/Cart/CartNotExistError";
-import { makeDeleteCartUseCase } from "@/useCases/factories/Cart/makeDeleteCartUseCase";
+import { CartNotExistError } from "@/useCases/@errors/Cart/CartNotExistError";
+import { makeDeleteCartUseCase } from "@/useCases/@factories/Cart/makeDeleteCartUseCase";
 
 export async function deleteCartController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
 
   try {
@@ -15,7 +15,7 @@ export async function deleteCartController(
     if (error instanceof CartNotExistError) {
       return reply.status(404).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
-  return reply.status(200).send();
+  return reply.status(204).send();
 }

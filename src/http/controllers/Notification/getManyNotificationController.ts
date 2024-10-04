@@ -1,15 +1,15 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { makeGetManyNotificationUseCase } from "@/useCases/factories/Notification/makeGetManyNotificationUseCase";
+import { makeGetManyNotificationUseCase } from "@/useCases/@factories/Notification/makeGetManyNotificationUseCase";
 
 export async function getManyNotificationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const makeCreateNot = makeGetManyNotificationUseCase();
-    const all = await makeCreateNot.execute();
-    return reply.status(200).send(all);
+    const response = await makeCreateNot.execute();
+    return reply.status(200).send(response);
   } catch (error) {
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 }

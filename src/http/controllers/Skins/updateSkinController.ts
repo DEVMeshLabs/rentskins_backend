@@ -1,20 +1,22 @@
-import { SkinNotExistError } from "@/useCases/errors/Skin/SkinNotExistsError";
-import { makeUpdateSkinUseCase } from "@/useCases/factories/Skin/makeUpdateSkinUseCase";
+import { SkinNotExistError } from "@/useCases/@errors/Skin/SkinNotExistsError";
+import { makeUpdateSkinUseCase } from "@/useCases/@factories/Skin/makeUpdateSkinUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export function updateSkinController(req: FastifyRequest, reply: FastifyReply) {
+export async function updateSkinController(
+  req: FastifyRequest,
+  reply: FastifyReply
+): Promise<FastifyReply | void> {
   const { id } = req.params as { id: string };
   const data = req.body;
 
   try {
     const updateSkin = makeUpdateSkinUseCase();
-    const up = updateSkin.execute(id, data);
-    return reply.status(200).send(up);
+    await updateSkin.execute(id, data);
   } catch (error) {
     if (error instanceof SkinNotExistError) {
       reply.status(404).send({ error: error.message });
     }
-
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
+  return reply.status(204).send();
 }

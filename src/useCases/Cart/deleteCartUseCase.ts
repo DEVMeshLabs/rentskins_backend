@@ -1,6 +1,6 @@
-import { ICartRepository } from "@/repositories/interface/ICartRepository";
+import { ICartRepository } from "@/repositories/interfaceRepository/ICartRepository";
 import { Cart } from "@prisma/client";
-import { CartNotExistError } from "../errors/Cart/CartNotExistError";
+import { CartNotExistError } from "../@errors/Cart/CartNotExistError";
 
 export class DeleteCartUseCase {
   constructor(private cartRepository: ICartRepository) {}

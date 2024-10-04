@@ -1,37 +1,24 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
 import { updateConfigurationSchema } from "./Schemas/updateConfigurationSchema";
-import { makeUpdateConfigurationUseCase } from "@/useCases/factories/Configuration/makeUpdateConfigurationUSeCase";
-import { ConfigurationNotExistError } from "@/useCases/errors/Configuration/ConfigurationNotExistError";
+import { makeUpdateConfigurationUseCase } from "@/useCases/@factories/Configuration/makeUpdateConfigurationUSeCase";
+import { ConfigurationNotExistError } from "@/useCases/@errors/Configuration/ConfigurationNotExistError";
+import { ConfigurationAlreadyExistCpfError } from "@/useCases/@errors/Configuration/ConfigurationAlreadyExistCpfError";
 
 export async function updateConfigurationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
-  const { id } = req.params as { id: string };
+): Promise<FastifyReply | void> {
+  const owner_id = req.user.ownerId;
+
+  if (!owner_id) {
+    return reply.status(404).send({ error: "owner_id não encontrado." });
+  }
 
   try {
-    const {
-      owner_id,
-      owner_email,
-      owner_name,
-      url_sell,
-      url_trade,
-      steam_guard,
-      agreed_with_emails,
-      agreed_with_terms,
-    } = updateConfigurationSchema.parse(req.body);
-    const createConfig = makeUpdateConfigurationUseCase();
-    await createConfig.execute(id, {
-      owner_id,
-      owner_email,
-      owner_name,
-      url_sell,
-      url_trade,
-      steam_guard,
-      agreed_with_emails,
-      agreed_with_terms,
-    });
+    const data = updateConfigurationSchema.parse(req.body);
+    const updateConfig = makeUpdateConfigurationUseCase();
+    await updateConfig.execute(owner_id, { ...data });
   } catch (error) {
     if (error instanceof z.ZodError) {
       return reply
@@ -39,7 +26,11 @@ export async function updateConfigurationController(
         .send({ message: "Erro de validação", errors: error.errors });
     } else if (error instanceof ConfigurationNotExistError) {
       return reply.status(404).send({ errors: error.message });
+    } else if (error instanceof ConfigurationAlreadyExistCpfError) {
+      return reply.status(409).send({ errors: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
+
+  return reply.status(204).send();
 }

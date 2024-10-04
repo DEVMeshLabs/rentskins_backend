@@ -1,64 +1,58 @@
-import { ISkinsRepository } from "@/repositories/interface/ISkinsRepository";
-import { Skin } from "@prisma/client";
-
-interface CreateSkinsUseCaseRequest {
-  skin_image: string;
-  skin_name: string;
-  skin_category: string;
-  skin_weapon: string;
-  skin_price: string;
-  skin_float: string;
-  skin_color: string;
-  skin_link_game: string;
-  skin_link_steam: string;
-  seller_name: string;
-  seller_id: string;
-  buyer_name?: string;
-  buyer_id?: string;
-  status: string;
-  status_float: string;
-  sale_type: string;
-}
+import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
+import { Prisma } from "@prisma/client";
+import { SkinAlreadyExistsError } from "../@errors/Skin/SkinAlreadyExistsError";
+import { KeySteamNotFoundError } from "../@errors/TransactionHistory/KeySteamNotFoundError";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
+import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
+import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
+import { SkinHasAlreadyBeenSoldOrAnnounced } from "../@errors/Skin/SkinHasAlreadyBeenSoldOrAnnounced";
 
 export class CreateSkinUseCase {
-  constructor(private skinsRepository: ISkinsRepository) {}
-  async execute({
-    skin_image,
-    skin_name,
-    skin_category,
-    skin_weapon,
-    skin_price,
-    skin_float,
-    skin_color,
-    skin_link_game,
-    skin_link_steam,
-    seller_name,
-    seller_id,
-    buyer_name,
-    buyer_id,
-    status,
-    status_float,
-    sale_type,
-  }: CreateSkinsUseCaseRequest): Promise<Skin> {
-    const skins = await this.skinsRepository.create({
-      skin_image,
-      skin_name,
-      skin_category,
-      skin_weapon,
-      skin_price,
-      skin_float,
-      skin_color,
-      skin_link_game,
-      skin_link_steam,
-      seller_name,
-      seller_id,
-      buyer_name,
-      buyer_id,
-      status,
-      status_float,
-      sale_type,
+  constructor(
+    private skinsRepository: ISkinsRepository,
+    private configRepostiory: IConfigurationRepository,
+    private transactionRepository: ITransactionRepository
+  ) {}
+
+  async execute(data: Prisma.SkinCreateInput): Promise<any> {
+    const existingSkins = await this.skinsRepository.findManyAssent();
+    const existingTransaction = await this.transactionRepository.findByMany();
+    const configSeller = await this.configRepostiory.findByUser(data.seller_id);
+
+    const duplicateSkins = existingSkins.filter(
+      (item) => item.asset_id === data.asset_id
+    );
+
+    const findSkinTransaction: any = existingTransaction.filter((item: any) => {
+      return (
+        item.skin.asset_id === data.asset_id &&
+        (item.status === "Default" ||
+          item.status === "NegociationAccepted" ||
+          item.status === "NegotiationSend")
+      );
     });
 
-    return skins;
+    if (!configSeller) {
+      throw new ConfigurationNotExistError();
+    } else if (!configSeller.key) {
+      throw new KeySteamNotFoundError();
+    }
+
+    if (duplicateSkins.length > 0) {
+      const idSkin = duplicateSkins[0].id;
+      const duplicateSkinName = duplicateSkins[0].skin_name;
+      const duplicateSkinAssetId = duplicateSkins[0].asset_id;
+      throw new SkinAlreadyExistsError(
+        duplicateSkinName,
+        idSkin,
+        duplicateSkinAssetId
+      );
+    } else if (findSkinTransaction.length > 0) {
+      const transactionDuplicate = findSkinTransaction[0].skin.skin_name;
+      throw new SkinHasAlreadyBeenSoldOrAnnounced(transactionDuplicate);
+    }
+    const createdSkins = await this.skinsRepository.create(data);
+
+    return createdSkins;
   }
 }

@@ -1,9 +1,13 @@
-FROM node:latest
+FROM node:latest AS run
 WORKDIR /src
-COPY package*.json .
+
+COPY package*.json ./
+RUN npm install --only=production
+
 COPY . .
-RUN npm ci
-RUN npm run build
-RUN npx prisma migrate deploy
-EXPOSE 3333
-CMD [ npm, run start]
+
+RUN npx prisma generate
+
+EXPOSE 3000
+
+CMD ["npm", "start"]

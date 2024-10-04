@@ -1,5 +1,5 @@
 import { Prisma } from "@prisma/client";
-import { INotificationRepository } from "../interface/INotificationRepository";
+import { INotificationRepository } from "../interfaceRepository/INotificationRepository";
 import { prisma } from "@/lib/prisma";
 
 export class PrismaNotificationRepository implements INotificationRepository {
@@ -26,15 +26,27 @@ export class PrismaNotificationRepository implements INotificationRepository {
     return createNot;
   }
 
+  async createMany(data: Prisma.NotificationCreateManyInput[]) {
+    const createMany = await prisma.notification.createMany({
+      data,
+    });
+    return createMany;
+  }
+
   async findByMany() {
     const findMany = await prisma.notification.findMany({
       where: { deletedAt: null },
+      orderBy: { createdAt: "desc" },
       include: { skin: true },
     });
     return findMany;
   }
 
-  async findManySkinNotifications(owner_id: string) {
+  async findManyUserNotifications(
+    owner_id: string,
+    page: number,
+    pageSize: number
+  ) {
     const findManySkin = await prisma.notification.findMany({
       where: {
         owner_id,
@@ -43,6 +55,8 @@ export class PrismaNotificationRepository implements INotificationRepository {
       orderBy: {
         createdAt: "desc",
       },
+      take: pageSize,
+      skip: (page - 1) * pageSize,
       include: { skin: true },
     });
     return findManySkin;

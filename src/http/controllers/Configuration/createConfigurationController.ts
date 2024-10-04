@@ -1,21 +1,22 @@
-import { makeCreateConfigurationUseCase } from "@/useCases/factories/Configuration/makeCreateConfigurationUseCase";
+import { makeCreateConfigurationUseCase } from "@/useCases/@factories/Configuration/makeCreateConfigurationUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 import { createConfigurationSchema } from "./Schemas/createConfigurationSchema";
 import { z } from "zod";
-import { ConfigurationAlreadyExistError } from "@/useCases/errors/Configuration/ConfigurationAlreadyExistError";
+import { ConfigurationAlreadyExistError } from "@/useCases/@errors/Configuration/ConfigurationAlreadyExistError";
 
 export async function createConfigurationController(
   req: FastifyRequest,
   reply: FastifyReply
-) {
+): Promise<FastifyReply | void> {
   try {
     const {
       owner_id,
       owner_email,
       owner_name,
+      owner_phone,
+      owner_cpf,
       url_sell,
       url_trade,
-      steam_guard,
       agreed_with_emails,
       agreed_with_terms,
     } = createConfigurationSchema.parse(req.body);
@@ -24,9 +25,10 @@ export async function createConfigurationController(
       owner_id,
       owner_email,
       owner_name,
+      owner_phone,
+      owner_cpf,
       url_sell,
       url_trade,
-      steam_guard,
       agreed_with_emails,
       agreed_with_terms,
     });
@@ -38,7 +40,7 @@ export async function createConfigurationController(
     } else if (error instanceof ConfigurationAlreadyExistError) {
       return reply.status(409).send({ errors: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 
   return reply.status(201).send();

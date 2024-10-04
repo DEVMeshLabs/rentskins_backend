@@ -1,12 +1,21 @@
-import { INotificationRepository } from "@/repositories/interface/INotificationRepository";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { DataFilter } from "@/utils/dataFilterDay";
 import { Notification } from "@prisma/client";
 
-export class GetManySkinNotification {
+export class GetManyUserNotification {
   constructor(private notification: INotificationRepository) {}
-  async execute(owner_id: string, tempo: string): Promise<Notification[]> {
+  async execute(
+    owner_id: string,
+    tempo: string,
+    page: number,
+    pageSize: number
+  ): Promise<Notification[]> {
     const getManySkinNotification =
-      await this.notification.findManySkinNotifications(owner_id);
+      await this.notification.findManyUserNotifications(
+        owner_id,
+        page,
+        pageSize
+      );
 
     const filtrando = {
       tudo: () => getManySkinNotification,

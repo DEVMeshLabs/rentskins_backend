@@ -1,25 +1,30 @@
-import { INotificationRepository } from "@/repositories/interface/INotificationRepository";
-import { Notification } from "@prisma/client";
-
-interface NotificationRequest {
-  owner_name: string;
-  owner_id: string;
-  description: string;
-  skin_id?: string;
-}
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
+import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
+import { Notification, Prisma } from "@prisma/client";
+import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
 
 export class CreateNotificationUseCase {
-  constructor(private notification: INotificationRepository) {}
+  constructor(
+    private notification: INotificationRepository,
+    private skinsRepository: ISkinsRepository
+  ) {}
+
   async execute({
-    owner_name,
     owner_id,
     description,
     skin_id,
-  }: NotificationRequest): Promise<Notification> {
+    type,
+  }: Prisma.NotificationCreateManyInput): Promise<Notification> {
+    const findSkin = await this.skinsRepository.findById(skin_id);
+
+    if (!findSkin) {
+      throw new SkinNotExistError();
+    }
+
     const createNot = await this.notification.create({
-      owner_name,
       owner_id,
       description,
+      type,
       skin_id,
     });
     return createNot;

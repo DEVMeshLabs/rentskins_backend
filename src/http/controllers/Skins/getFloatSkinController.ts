@@ -1,25 +1,26 @@
-import { user, csgo } from "@/server";
+import { makeGetSkinFloatUseCase } from "@/useCases/@factories/Skin/makeGetSkinFloatUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
+import { getFloatSchema } from "./Schemas/getFloatSchema";
 
 export async function getFloatSkinController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { id } = req.params as { id: string };
-  const { link, assetid } = req.body as { link: string; assetid: string };
+  const { url } = req.body as any;
 
-  console.log("Iniciando");
-  user.on("loggedOn", () => {
-    user.gamesPlayed(730);
-    console.log("Com");
-    csgo.on("connectedToGC", () => {
-      console.log("Logado!");
-      const filteredID = link.split("%D")[1];
-      return csgo.inspectItem(id, assetid, filteredID, ({ paintwear }) => {
-        console.log(paintwear);
-        return reply.status(200).send(paintwear);
-      });
-    });
-  });
-  user.on("error", (error) => console.log(error));
+  try {
+    const getSkinFloat = makeGetSkinFloatUseCase();
+    const response = await getSkinFloat.execute(url);
+    console.log(response);
+    return reply.status(200).send(response);
+  } catch (error) {
+    const errorMappings = {
+      SkinFloatUnauthorizedError: 401,
+      SkinFloatNoCreditsError: 402,
+      SkinFloatInvalidParametersLinkError: 406,
+      SkinFloatCantGetFloatError: 417,
+    };
+    const status = errorMappings[error.constructor.name] || 500;
+    return reply.status(status).send({ error: error.message });
+  }
 }

@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { ICartRepository } from "../interface/ICartRepository";
+import { ICartRepository } from "../interfaceRepository/ICartRepository";
 import { Prisma } from "@prisma/client";
 
 export class PrismaCartRepository implements ICartRepository {
@@ -9,6 +9,14 @@ export class PrismaCartRepository implements ICartRepository {
     });
 
     return createCart;
+  }
+
+  async updateByUser(owner_id: string, date: Prisma.CartUncheckedUpdateInput) {
+    const updateId = await prisma.cart.update({
+      where: { buyer_id: owner_id },
+      data: { ...date, updatedAt: new Date() },
+    });
+    return updateId;
   }
 
   async updateById(id: string, data: Prisma.CartUpdateInput) {
@@ -22,23 +30,23 @@ export class PrismaCartRepository implements ICartRepository {
   async findByMany() {
     const findMany = await prisma.cart.findMany({
       where: { deletedAt: null },
-      include: { buyer_skins: true },
+      include: { SkinToCart: { include: { skin: true } } },
     });
     return findMany;
   }
 
   async findById(id: string) {
     const findId = await prisma.cart.findFirst({
-      include: { buyer_skins: true },
       where: { id, deletedAt: null },
+      include: { SkinToCart: { include: { skin: true } } },
     });
     return findId;
   }
 
   async findByBuyer(buyer_id: string) {
     const findBuyer = await prisma.cart.findFirst({
-      include: { buyer_skins: true },
       where: { buyer_id, deletedAt: null },
+      include: { SkinToCart: { include: { skin: true } } },
     });
     return findBuyer;
   }

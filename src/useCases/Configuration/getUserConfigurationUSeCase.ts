@@ -1,8 +1,8 @@
-import { IConfigurationRepository } from "@/repositories/interface/IConfigurationRepository";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
 import { Configuration } from "@prisma/client";
-import { ConfigurationNotExistError } from "../errors/Configuration/ConfigurationNotExistError";
+import { ConfigurationNotExistError } from "../@errors/Configuration/ConfigurationNotExistError";
 
-export class GetUserConfigurationUseCase {
+export class GetUserIdConfigurationUseCase {
   constructor(private configuration: IConfigurationRepository) {}
 
   async execute(owner_id: string): Promise<Configuration> {
