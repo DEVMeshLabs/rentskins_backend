@@ -18,10 +18,12 @@ import { transactionHistoryRouter } from "./http/controllers/TransactionHistory/
 import { wsRentRouter } from "./http/controllers/wsRent/router";
 import { skinGuaranteeRouter } from "./http/controllers/SkinGuarantee/routes";
 import { mailRoter } from "./http/controllers/mail/routes";
+import { withdrawalRequestRouter } from "./http/controllers/WithdrawalRequestController/routes";
 
 export const app = fastify();
 
 app.register(jwt, { secret: env.JWT_SECRET });
+app.register(mailRoter);
 app.register(skinRouter);
 app.register(walletRouter);
 app.register(configurationRouter);
@@ -35,7 +37,7 @@ app.register(rentalTransactionRouter);
 app.register(wsRouter);
 app.register(wsRentRouter);
 app.register(skinGuaranteeRouter);
-app.register(mailRoter);
+app.register(withdrawalRequestRouter);
 
 app.setErrorHandler((error, _, reply) => {
   if (error instanceof ZodError) {
