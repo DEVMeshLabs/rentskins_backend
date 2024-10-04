@@ -4,6 +4,10 @@ import { IRentalTransactionRepository } from "@/repositories/interfaceRepository
 import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
+<<<<<<< HEAD
+=======
+import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
 import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 // ----------------------------------- Importando Errors -----------------------------------//
 import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
@@ -21,6 +25,10 @@ import type { ISkinGuaranteeRepository } from "@/repositories/interfaceRepositor
 export class CreateTransactionRentalUseCase {
   constructor(
     private rentalTransactionRepository: IRentalTransactionRepository,
+<<<<<<< HEAD
+=======
+    private transactionHistory: ITransactionHistoryRepository,
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
     private skinRepository: ISkinsRepository,
     private skinGuaranteeRepository: ISkinGuaranteeRepository,
     private perfilRepository: IPerfilRepository,
@@ -32,7 +40,10 @@ export class CreateTransactionRentalUseCase {
     const sellerItemsMap = new Map<string, string[]>();
 
     const skinIds = (data.skinsRent as Skin[]).map((skin: Skin) => skin.id);
+<<<<<<< HEAD
 
+=======
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
     const [skins, perfilComprador, walletComprador] = await Promise.all([
       this.skinRepository.findManySkins(skinIds),
       this.perfilRepository.findByUser(data.buyerId),
@@ -65,6 +76,7 @@ export class CreateTransactionRentalUseCase {
       sellerItemsMap.get(skin.seller_id)?.push(skin.skin_name);
     });
 
+<<<<<<< HEAD
     const guaranteeSkins =
       await this.skinGuaranteeRepository.checkSkinGuaranteeLocaterioinTransaction(
         data.buyerId
@@ -100,6 +112,8 @@ export class CreateTransactionRentalUseCase {
       };
     }
 
+=======
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
     try {
       const [rent] = await Promise.all([
         this.rentalTransactionRepository.create({
@@ -110,7 +124,21 @@ export class CreateTransactionRentalUseCase {
               id: skin.id,
             })),
           },
+<<<<<<< HEAD
           skinsGuarantee: skinsGuaranteeOperation,
+=======
+          skinsGuarantee: {
+            createMany: {
+              data: (data.skinsGuarantee as GuaranteeSkin[]).map((skin) => {
+                return {
+                  ...skin,
+                  owner_id: data.buyerId,
+                  skin_wear: skin.skin_wear ?? "",
+                };
+              }),
+            },
+          },
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
         }),
 
         sellerItemsMap.forEach((itemNames, sellerId) => {
