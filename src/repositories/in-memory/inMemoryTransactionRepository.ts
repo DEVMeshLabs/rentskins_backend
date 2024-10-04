@@ -3,13 +3,14 @@ import { ITransactionRepository } from "../interfaceRepository/ITransactionRepos
 import { randomUUID } from "crypto";
 
 export class InMemoryTransactionRepository implements ITransactionRepository {
-  public transactions: Transaction[] = [];
+  public transactions = [];
+
   private notImplemented(): Promise<any> {
     return this.notImplemented();
   }
 
   async create(data: Prisma.TransactionUncheckedCreateInput) {
-    const transaction = {
+    const transaction: Transaction = {
       id: data.id ?? randomUUID(),
       skin_id: data.skin_id,
       seller_id: data.seller_id,
@@ -17,19 +18,18 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
       seller_confirm: "Pending",
       buyer_confirm: "Pending",
       balance: data.balance,
-      status: "Em andamento",
+      status: data.status ?? "Default",
       salesAt: null,
       createdAt: new Date(),
       updatedAt: null,
       deletedAt: null,
     };
-
     this.transactions.push(transaction);
     return transaction;
   }
 
-  findByMany() {
-    return this.notImplemented();
+  async findByMany() {
+    return this.transactions;
   }
 
   findByUser(id: string, query?: string) {
@@ -47,6 +47,7 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     const getSkinTransaction = this.transactions.find(
       (item) => item.skin_id === skin_id
     );
+
     return getSkinTransaction;
   }
 
@@ -76,6 +77,24 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
     return getTransaction;
   }
 
+  async updateStatus(
+    id: string,
+    status:
+      | "Default"
+      | "NegotiationSend"
+      | "NegociationAccepted"
+      | "NegociationRejected"
+  ) {
+    const index = this.transactions.findIndex(
+      (transaction) => transaction.id === id
+    );
+    if (index !== -1) {
+      this.transactions[index] = { ...this.transactions[index], status };
+      return this.transactions[index];
+    }
+    return this.transactions[index];
+  }
+
   async updateId(id: string, data: any) {
     const index = this.transactions.findIndex(
       (transaction) => transaction.id === id
@@ -85,15 +104,6 @@ export class InMemoryTransactionRepository implements ITransactionRepository {
       this.transactions[index] = { ...this.transactions[index], ...data };
       return this.transactions[index];
     }
-    // const filter = this.transactions.find(
-    //   (transaction) => transaction.id === id
-    // );
-    // const update = { ...filter, ...data };
-
-    // const index = this.transactions.indexOf(filter);
-
-    // const updateTransaction = { ...this.transactions[index], ...update };
-
     return this.transactions[index];
   }
 }

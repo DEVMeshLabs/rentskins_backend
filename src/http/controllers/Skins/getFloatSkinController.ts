@@ -6,12 +6,12 @@ export async function getFloatSkinController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { url } = getFloatSchema.parse(req.body);
+  const { url } = req.body as any;
 
   try {
     const getSkinFloat = makeGetSkinFloatUseCase();
     const response = await getSkinFloat.execute(url);
-
+    console.log(response);
     return reply.status(200).send(response);
   } catch (error) {
     const errorMappings = {

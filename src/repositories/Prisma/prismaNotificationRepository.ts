@@ -26,6 +26,13 @@ export class PrismaNotificationRepository implements INotificationRepository {
     return createNot;
   }
 
+  async createMany(data: Prisma.NotificationCreateManyInput[]) {
+    const createMany = await prisma.notification.createMany({
+      data,
+    });
+    return createMany;
+  }
+
   async findByMany() {
     const findMany = await prisma.notification.findMany({
       where: { deletedAt: null },
@@ -34,10 +41,6 @@ export class PrismaNotificationRepository implements INotificationRepository {
     });
     return findMany;
   }
-
-  // take: pageSize,
-  // orderBy: { createdAt: "desc" },
-  // skip: (page - 1) * pageSize,
 
   async findManyUserNotifications(
     owner_id: string,

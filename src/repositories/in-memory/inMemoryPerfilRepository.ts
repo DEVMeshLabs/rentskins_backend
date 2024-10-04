@@ -41,6 +41,13 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
     return getUser;
   }
 
+  async findByUsers(owner_ids: string[]): Promise<Perfil | null> {
+    const getUser = this.perfil.find((item) =>
+      owner_ids.includes(item.owner_id)
+    );
+    return getUser;
+  }
+
   findById(id: string) {
     return this.notImplemented();
   }
@@ -86,6 +93,20 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
       };
     }
     return this.perfil[userProfileIndex];
+  }
+
+  async updateTotalExchanges(buyerIds: string[]) {
+    buyerIds.forEach((id) => {
+      const perfil = this.perfil.find((item) => item.id === id);
+      const userProfileIndex = this.perfil.findIndex((item) => item.id === id);
+
+      if (userProfileIndex !== -1) {
+        this.perfil[userProfileIndex] = {
+          ...this.perfil[userProfileIndex],
+          total_exchanges_completed: perfil.total_exchanges_completed + 1,
+        };
+      }
+    });
   }
 
   updateByIdUser(id: string, data: any): Promise<any> {
