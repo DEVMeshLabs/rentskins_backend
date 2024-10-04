@@ -1,22 +1,33 @@
 import { FastifyRequest, FastifyReply } from "fastify";
-import { makeCreateRentalTransactionUseCase } from "@/useCases/@factories/RentalTransaction/makeCreateRentalTransactionUseCase";
-import createRentalTransactionSchema from "./schemas/createRentalTransactionSchema";
+import { createRentalTransactionSchema } from "./schemas/createRentalTransactionSchema";
+import { makeCreateTransactionRentalUseCase } from "@/useCases/@factories/RentalTransaction/makeCreateRentalTransaction";
 
-export async function createRentalTransactionController(
+export async function createTransactionRentalController(
   req: FastifyRequest,
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
     const bodySchema = createRentalTransactionSchema;
-    const { owner_id, skin_id, days_quantity } = bodySchema.parse(req.body);
-
-    const createTransaction = makeCreateRentalTransactionUseCase();
-    const transaction = await createTransaction.execute({
-      owner_id,
-      skin_id,
-      days_quantity,
+    const {
+      buyerId,
+      daysQuantity,
+      totalPriceRent,
+      totalPriceSkins,
+      fee,
+      skinsRent,
+      skinsGuarantee,
+    } = bodySchema.parse(req.body);
+    const createTransactionRental = makeCreateTransactionRentalUseCase();
+    const transaction = await createTransactionRental.execute({
+      buyerId,
+      totalPriceRent,
+      totalPriceSkins,
+      fee,
+      skinsRent,
+      daysQuantity: Number(daysQuantity),
+      skinsGuarantee: skinsGuarantee as any,
     });
-
+    console.log(transaction);
     return reply.status(201).send(transaction);
   } catch (error) {
     const errorMappings = {
