@@ -3,8 +3,8 @@ import { ITransactionRepository } from "../interfaceRepository/ITransactionRepos
 import { prisma } from "@/lib/prisma";
 
 export class PrismaTransactionRepository implements ITransactionRepository {
-  async create(data: Prisma.TransactionCreateManyInput) {
-    const create = await prisma.transaction.createMany({
+  async create(data: Prisma.TransactionUncheckedCreateInput) {
+    const create = await prisma.transaction.create({
       data,
     });
     return create;
@@ -14,6 +14,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     const transactionAll = await prisma.transaction.findMany({
       where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
+      include: { skin: true },
     });
     return transactionAll;
   }
@@ -28,7 +29,9 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   async findById(id: string) {
     const findTransaction = await prisma.transaction.findFirst({
       where: { id, deletedAt: null },
+      include: { skin: true },
     });
+
     return findTransaction;
   }
 
@@ -54,25 +57,6 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return userTransaction;
   }
 
-  async lastSalesUser(seller_id: string) {
-    const lastSales = await prisma.transaction.findMany({
-      where: {
-        seller_id,
-        buyer_confirm: "Aceito",
-        seller_confirm: "Aceito",
-        salesAt: {
-          not: {
-            equals: null,
-          },
-        },
-      },
-      orderBy: {
-        salesAt: "desc",
-      },
-    });
-    return lastSales;
-  }
-
   async transactionCountAll(seller_id: string) {
     const count = await prisma.transaction.count({
       where: {
@@ -91,13 +75,20 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return transactionAll;
   }
 
-  // async updateStatus(id: string, status: string) {
-  //   const transactionAll = await prisma.transaction.update({
-  //     where: { id },
-  //     data: { status, updatedAt: new Date() },
-  //   });
-  //   return transactionAll;
-  // }
+  async updateStatus(
+    id: string,
+    status:
+      | "Default"
+      | "NegotiationSend"
+      | "NegociationAccepted"
+      | "NegociationRejected"
+  ) {
+    const updateStatus = prisma.transaction.update({
+      where: { id },
+      data: { status, updatedAt: new Date() },
+    });
+    return updateStatus;
+  }
 
   async updateId(id: string, data: Prisma.TransactionUpdateInput) {
     const updateId = await prisma.transaction.update({

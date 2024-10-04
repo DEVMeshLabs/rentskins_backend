@@ -24,6 +24,6 @@ export async function getManyUserNotificationController(
     if (error instanceof ZodError) {
       return reply.status(400).send({ error: error.message });
     }
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 }

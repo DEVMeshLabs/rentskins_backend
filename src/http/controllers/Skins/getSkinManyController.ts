@@ -8,10 +8,10 @@ export async function getSkinManyController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { page, pageSize } = paginationSkinsSchema.parse(req.query);
+    const { page, pageSize, type } = paginationSkinsSchema.parse(req.query);
     const getSkinMany = makeGetSkinMany();
 
-    const response = await getSkinMany.execute(page, pageSize);
+    const response = await getSkinMany.execute(page, pageSize, type);
 
     return reply.status(200).send(response);
   } catch (error) {
@@ -20,6 +20,6 @@ export async function getSkinManyController(
     } else if (error instanceof ZodError) {
       return reply.status(400).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

@@ -17,11 +17,7 @@ export class DeletePerfilUseCase {
       return response;
     }
 
-    const perfilToDelete = await this.perfilInfoRepository.deletePerfil(
-      id,
-      isForceDeletion
-    );
-
+    const perfilToDelete = await this.perfilInfoRepository.deletePerfil(id);
     return perfilToDelete;
   }
 }

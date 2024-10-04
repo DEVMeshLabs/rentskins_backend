@@ -11,51 +11,177 @@ datasource db {
 }
 
 model Skin {
-  id              String         @id @default(uuid()) @db.VarChar(36)
-  asset_id        String         @db.VarChar(255)
-  skin_image      String         @db.VarChar(255)
-  skin_name       String         @db.VarChar(255)
-  skin_category   String         @db.VarChar(255)
-  skin_weapon     String         @db.VarChar(255)
-  skin_price      Float
-  skin_float      String         @db.VarChar(255)
-  skin_rarity     String         @db.VarChar(255)
-  skin_link_game  String         @db.VarChar(255)
-  skin_link_steam String         @db.VarChar(255)
-  median_price    Float
-  seller_name     String         @db.VarChar(255)
-  seller_id       String         @db.VarChar(255)
-  status          String?        @db.VarChar(255)
-  status_float    String         @db.VarChar(255)
-  sale_type       String?        @db.VarChar(255)
-  saledAt         DateTime?
-  createdAt       DateTime       @default(now())
-  updatedAt       DateTime?
-  deletedAt       DateTime?
-  Notification    Notification[]
-  skinToCart      SkinToCart[]
-  Transaction     Transaction[]
+  id                    String              @id @default(uuid()) @db.VarChar(36)
+  asset_id              String              @db.VarChar(255)
+  skin_image            String              @db.VarChar(255)
+  skin_name             String              @db.VarChar(255)
+  skin_market_hash_name String              @db.VarChar(255)
+  skin_category         String              @db.VarChar(255)
+  skin_weapon           String              @db.VarChar(255)
+  skin_price            Float
+  pricesafe7d           Float
+  skin_float            String              @db.VarChar(255)
+  skin_paintseed        Float
+  skin_classid          String              @db.VarChar(255)
+  skin_instanceid       String              @db.VarChar(255)
+  skin_rarity           String              @db.VarChar(255)
+  skin_wear             String?             @db.VarChar(255)
+  skin_stickers         Json?
+  skin_color            String?             @db.VarChar(255)
+  skin_border_color     String?             @db.VarChar(255)
+  skin_link_game        String              @db.VarChar(255)
+  skin_link_steam       String              @db.VarChar(255)
+  seller_name           String              @db.VarChar(255)
+  seller_id             String              @db.VarChar(255)
+  status                String?             @db.VarChar(255)
+  status_float          String              @db.VarChar(255)
+  slug                  String?             @db.VarChar(255)
+  sale_type             String[]            @db.VarChar(255)
+  saledAt               DateTime?
+  createdAt             DateTime            @default(now())
+  updatedAt             DateTime?
+  deletedAt             DateTime?
+  Notification          Notification[]
+  skinToCart            SkinToCart[]
+  Transaction           Transaction[]
+  RentalTransaction     RentalTransaction?  @relation(fields: [rentalTransactionId], references: [id])
+  rentalTransactionId   String?             @db.VarChar(36)
+  TransactionHistory    TransactionHistory? @relation(fields: [transactionHistoryId], references: [id])
+  transactionHistoryId  String?             @db.VarChar(36)
 }
 
-model SkinToCart {
-  id     String @id @default(uuid()) @db.VarChar(36)
-  skinId String @db.VarChar(255)
-  cartId String @db.VarChar(255)
+model GuaranteeSkin {
+  id                    String    @id @default(uuid()) @db.VarChar(36)
+  owner_id              String    @db.VarChar(255)
+  asset_id              String    @db.VarChar(255)
+  skin_name             String    @db.VarChar(255)
+  skin_price            Float
+  skin_market_hash_name String    @db.VarChar(255)
+  skin_color            String    @db.VarChar(255)
+  skin_wear             String?   @db.VarChar(255)
+  skin_image            String    @db.VarChar(255)
+  skin_weapon           String    @db.VarChar(255)
+  skin_float            String?   @db.VarChar(255)
+  skin_paintseed        Float?
+  skin_classid          String    @db.VarChar(255)
+  skin_instanceid       String    @db.VarChar(255)
+  skin_rarity           String    @db.VarChar(255)
+  skin_stickers         Json?
+  skin_link_steam       String?   @db.VarChar(255)
+  skin_link_game        String?   @db.VarChar(255)
+  isSolicited           Boolean   @default(false)
+  returnedAt            DateTime?
+  addedToBackpackAt     DateTime?
+  withdrawAfter         DateTime?
 
-  skin Skin @relation(fields: [skinId], references: [id])
-  cart Cart @relation(fields: [cartId], references: [id])
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  owner               Perfil             @relation(fields: [owner_id], references: [owner_id])
+  RentalTransaction   RentalTransaction? @relation(fields: [rentalTransactionId], references: [id])
+  rentalTransactionId String?            @db.VarChar(36)
 }
 
-model Cart {
-  id         String       @id @default(uuid()) @db.VarChar(36)
-  buyer_id   String       @db.VarChar(255)
-  price      Float        @default(0)
-  createdAt  DateTime     @default(now())
-  updatedAt  DateTime?
-  deletedAt  DateTime?
-  skinId     String?      @db.VarChar(36)
-  SkinToCart SkinToCart[]
-  Perfil     Perfil[]
+enum TransactionStatus {
+  Default
+  NegotiationSend
+  NegociationAccepted
+  NegociationRejected
+}
+
+model Transaction {
+  id                 String               @id @default(uuid()) @db.VarChar(36)
+  skin_id            String               @db.VarChar(255)
+  buyer_id           String               @db.VarChar(255)
+  seller_id          String               @db.VarChar(255)
+  seller_confirm     String?              @default("Pendente") @db.VarChar(255)
+  buyer_confirm      String?              @default("Pendente") @db.VarChar(255)
+  balance            Float
+  status             TransactionStatus    @default(Default)
+  createdAt          DateTime             @default(now())
+  salesAt            DateTime?
+  updatedAt          DateTime?
+  deletedAt          DateTime?
+  skin               Skin?                @relation(fields: [skin_id], references: [id])
+  TransactionHistory TransactionHistory[]
+}
+
+enum RentalTransactionStatus {
+  WaitingForGuaranteeConfirmation // "Esperando confirmação da garantia",
+  WaitingForAdministrators // Esperando administradores
+  //---------------------------------------------
+  WaitingForBuyerConfirmation // "Esperando a confirmação do comprador",
+  WaitingForSellerConfirmation // "Esperando a confirmação do vendedor",
+  TrialPeriodStarted // "Periodo de teste iniciado",
+  //---------------------------------------------
+  WaitingForUserDecision // "Esperando decisão do usuário",
+  WaitingForReturn // "Aguardando devolução",
+  WaitingForReturnConfirmation // "Esperando confirmação de devolução",
+  //---------------------------------------------
+  WaitingForBuyerReturnConfirm // "Esperando confirmação de devolução do comprador",
+  WaitingForAdministratorsReturnConfirmation // "Esperando confirmação de devolução dos administradores",
+  Completed // "Completed",
+  Failed // "Failed"
+}
+
+enum DecisionUser {
+  buy
+  return
+}
+
+model RentalTransaction {
+  id                   String                  @id @default(uuid()) @db.VarChar(36)
+  buyerId              String                  @db.VarChar(255)
+  skinsRent            Skin[]
+  skinsGuarantee       GuaranteeSkin[]
+  totalPriceRent       Float?
+  totalPriceSkins      Float?
+  fee                  Float?
+  daysQuantity         Int
+  status               RentalTransactionStatus @default(WaitingForGuaranteeConfirmation)
+  deadlineNotified     Boolean                 @default(false)
+  returnNotified       Boolean                 @default(false)
+  decisionUser         DecisionUser?
+  startDate            DateTime?
+  endDate              DateTime?
+  guaranteeSentAt      DateTime?
+  sellerConfirmedAt    DateTime?
+  buyerConfirmedAt     DateTime?
+  trialPeriodStartedAt DateTime?
+  waitUserDecisionAt   DateTime?
+  returnDueAt          DateTime?
+  createdAt            DateTime                @default(now())
+  updatedAt            DateTime?               @updatedAt
+  deletedAt            DateTime?
+  notification         Notification[]
+  transactionHistory   TransactionHistory[]
+}
+
+enum ProcessTransactionStatus {
+  Default
+  Pending
+  Completed
+  Failed
+}
+
+model TransactionHistory {
+  id                 String                   @id @default(uuid()) @db.VarChar(36)
+  buyer_id           String                   @db.VarChar(255)
+  seller_id          String[]                 @db.VarChar(255)
+  skins              Skin[]
+  processTransaction ProcessTransactionStatus @default(Pending)
+  dateProcess        DateTime
+  rental             Boolean                  @default(false)
+  status             TransactionStatus        @default(Default)
+
+  transaction_id       String?            @db.VarChar(255)
+  rentalTransaction_id String?            @db.VarChar(255)
+  transaction          Transaction?       @relation(fields: [transaction_id], references: [id])
+  rentalTransaction    RentalTransaction? @relation(fields: [rentalTransaction_id], references: [id])
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime?
+  deletedAt DateTime?
 }
 
 model Wallet {
@@ -69,72 +195,81 @@ model Wallet {
 }
 
 model Notification {
-  id          String    @id @default(uuid()) @db.VarChar(36)
-  owner_id    String    @db.VarChar(255)
-  description String?   @db.VarChar(255)
-  new         Boolean?  @default(true)
-  type        String?   @db.VarChar(255)
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime?
-  deletedAt   DateTime?
-  skin        Skin?     @relation(fields: [skin_id], references: [id])
-  skin_id     String?   @db.VarChar(36)
+  id                  String             @id @default(uuid()) @db.VarChar(36)
+  owner_id            String             @db.VarChar(255)
+  description         String?            @db.VarChar(255)
+  new                 Boolean            @default(true)
+  type                String?            @db.VarChar(255)
+  createdAt           DateTime           @default(now())
+  updatedAt           DateTime?
+  deletedAt           DateTime?
+  skin                Skin?              @relation(fields: [skin_id], references: [id])
+  skin_id             String?            @db.VarChar(36)
+  RentalTransaction   RentalTransaction? @relation(fields: [rentalTransactionId], references: [id])
+  rentalTransactionId String?            @db.VarChar(36)
+}
+
+model Perfil {
+  id                        String          @id @default(uuid()) @db.VarChar(36)
+  owner_id                  String          @unique @db.VarChar(255)
+  owner_name                String          @db.VarChar(255)
+  owner_type                String          @default("Usuario") @db.VarChar(255)
+  owner_country             String?         @db.VarChar(5)
+  stripe_id                 String?         @db.VarChar(255)
+  account_status            String          @default("Ativo") @db.VarChar(20)
+  steam_url                 String          @db.VarChar(255)
+  picture                   String          @db.VarChar(255)
+  delivery_time             String          @db.VarChar(255)
+  total_exchanges           Int             @default(0)
+  total_exchanges_completed Int             @default(0)
+  total_exchanges_failed    Int             @default(0)
+  reliability               String          @default("Sem informações") @db.VarChar(255)
+  createdAt                 DateTime        @default(now())
+  updatedAt                 DateTime?
+  deletedAt                 DateTime?
+  steam_created_date        DateTime
+  configurationId           String?         @db.VarChar(36)
+  cart_id                   String?
+  cart                      Cart?           @relation(fields: [cart_id], references: [id], onDelete: Cascade)
+  configuration             Configuration?  @relation(fields: [configurationId], references: [id], onDelete: Cascade)
+  GuaranteeSkin             GuaranteeSkin[]
+}
+
+model SkinToCart {
+  id     String @id @default(uuid()) @db.VarChar(36)
+  skinId String @db.VarChar(36)
+  cartId String @db.VarChar(36)
+
+  skin Skin @relation(fields: [skinId], references: [id])
+  cart Cart @relation(fields: [cartId], references: [id])
+}
+
+model Cart {
+  id         String       @id @default(uuid()) @db.VarChar(36)
+  buyer_id   String       @unique @db.VarChar(255)
+  price      Float        @default(0)
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime?
+  deletedAt  DateTime?
+  skinId     String?      @db.VarChar(36)
+  SkinToCart SkinToCart[]
+  Perfil     Perfil[]
 }
 
 model Configuration {
   id                 String    @id @default(uuid()) @db.VarChar(36)
-  owner_id           String    @db.VarChar(255)
+  owner_id           String    @unique @db.VarChar(255)
   owner_name         String    @db.VarChar(255)
-  owner_email        String    @db.VarChar(255)
-  owner_phone        String    @db.VarChar(255)
-  owner_cpf          String    @db.VarChar(14)
-  url_trade          String    @db.VarChar(255)
-  url_sell           String    @db.VarChar(255)
-  agreed_with_emails Boolean?  @default(false)
-  agreed_with_terms  Boolean?  @default(false)
+  owner_email        String?   @db.VarChar(255)
+  owner_phone        String?   @db.VarChar(255)
+  owner_cpf          String?   @db.VarChar(14)
+  url_trade          String?   @db.VarChar(255)
+  url_sell           String?   @db.VarChar(255)
+  agreed_with_emails Boolean   @default(false)
+  agreed_with_terms  Boolean   @default(false)
+  key                String?   @db.VarChar(32)
   createdAt          DateTime  @default(now())
   updatedAt          DateTime?
   deletedAt          DateTime?
   Perfil             Perfil[]
-}
-
-model Perfil {
-  id                        String         @id @default(uuid()) @db.VarChar(36)
-  owner_id                  String         @unique @db.VarChar(255)
-  owner_name                String         @db.VarChar(255)
-  owner_type                String         @default("Usuario") @db.VarChar(255)
-  owner_country             String?        @db.VarChar(5)
-  stripe_id                 String?        @db.VarChar(255)
-  account_status            String         @default("Ativo") @db.VarChar(20)
-  steam_level               Int            @db.Integer
-  steam_url                 String         @db.VarChar(255)
-  picture                   String         @db.VarChar(255)
-  delivery_time             String         @default("Sem informações") @db.VarChar(255)
-  total_exchanges           Int            @default(0) @db.Integer
-  total_exchanges_completed Int            @default(0) @db.Integer
-  reliability               String         @default("Sem informações") @db.VarChar(255)
-  createdAt                 DateTime       @default(now())
-  updatedAt                 DateTime?
-  deletedAt                 DateTime?
-  steam_created_date        DateTime
-  configurationId           String?        @db.VarChar(36)
-  cart_id                   String?
-  configuration             Configuration? @relation(fields: [configurationId], references: [id], onDelete: Cascade)
-  cart                      Cart?          @relation(fields: [cart_id], references: [id], onDelete: Cascade)
-}
-
-model Transaction {
-  id             String    @id @default(uuid()) @db.VarChar(36)
-  skin_id        String    @db.VarChar(255)
-  buyer_id       String    @db.VarChar(255)
-  seller_id      String    @db.VarChar(255)
-  seller_confirm String?   @default("Pendente") @db.VarChar(255)
-  buyer_confirm  String?   @default("Pendente") @db.VarChar(255)
-  balance        Float
-  status         String?   @default("Em andamento") @db.VarChar(255)
-  createdAt      DateTime  @default(now())
-  salesAt        DateTime?
-  updatedAt      DateTime?
-  deletedAt      DateTime?
-  skin           Skin?     @relation(fields: [skin_id], references: [id])
 }

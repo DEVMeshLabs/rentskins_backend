@@ -17,6 +17,6 @@ export async function getConfigurationController(
       return reply.status(404).send({ error: error.message });
     }
 
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

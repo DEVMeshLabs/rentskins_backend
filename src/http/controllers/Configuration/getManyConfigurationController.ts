@@ -9,5 +9,7 @@ export async function getManyConfigurationController(
     const makeGetMany = makeGetManyConfigurationUseCase();
     const response = await makeGetMany.execute();
     return reply.status(200).send(response);
-  } catch (error) {}
+  } catch (error) {
+    return reply.status(500).send({ error: error.message });
+  }
 }

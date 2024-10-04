@@ -1,11 +1,14 @@
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { checkout, customers } from "@/server";
+import axios from "axios";
+import { env } from "process";
 
 interface IPayment {
   owner_id: string;
   email: string;
   amount: number;
   payment_method: string;
+  cpf: string;
   success_url: string;
   cancel_url: string;
 }
@@ -16,18 +19,25 @@ export class CreateCheckoutSessionStripeUseCase {
     owner_id,
     email,
     amount,
+    cpf,
     payment_method,
     success_url,
     cancel_url,
   }: IPayment) {
     const perfilUser = await this.perfilRepostiory.findByUser(owner_id);
     let customer_id;
+<<<<<<< HEAD
+=======
+    console.log("--------------------------", perfilUser);
+>>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
 
-    if (perfilUser.stripe_id === null) {
+    const referencia = 1;
+    if (perfilUser && perfilUser.stripe_id === null) {
       const customer = await customers.create({
         email,
         metadata: {
           owner_id,
+          owner_name: perfilUser.owner_name,
         },
       });
 
@@ -40,19 +50,64 @@ export class CreateCheckoutSessionStripeUseCase {
       customer_id = perfilUser.stripe_id;
     }
 
+    if (payment_method === "pix") {
+      const response: any = axios
+        .post(
+          "https://api.mercadopago.com/v1/payments",
+          {
+            description: "Recarga de saldo",
+            external_reference: `RT${referencia}`,
+            installments: 1,
+            metadata: {
+              id: owner_id,
+              owner_name: perfilUser.owner_name,
+            },
+            payer: {
+              entity_type: "individual",
+              type: "customer",
+              email,
+              owner_name: perfilUser.owner_name,
+              identification: {
+                type: "CPF",
+                number: cpf,
+              },
+            },
+            payment_method_id: "pix",
+            notification_url:
+              "https://rentskins-backend-r447.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
+            transaction_amount: amount,
+          },
+
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${env.MERCADO_SECRET_KEY}`,
+            },
+          }
+        )
+        .then((res) => res.data)
+        .catch((err) => {
+          console.log(err);
+        });
+      const link = await response;
+      const ticket = link.point_of_interaction.transaction_data.ticket_url;
+      return ticket;
+    }
+
     const session = await checkout.sessions.create({
       line_items: [
         {
           price_data: {
             unit_amount: amount * 100,
             currency: "brl",
-            product: "prod_OXhZUN8oYYERyj",
+            product: "prod_P3spuzJGzs7ivz",
           },
           quantity: 1,
         },
       ],
       metadata: {
         owner_id,
+        owner_name: perfilUser.owner_name,
       },
       customer: customer_id,
       phone_number_collection: { enabled: true },

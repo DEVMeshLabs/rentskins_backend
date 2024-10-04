@@ -1,23 +1,18 @@
-import { csgo } from "@/server";
+import { makeGetSkinFloatUseCase } from "@/useCases/@factories/Skin/makeGetSkinFloatUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
-export function getFloatSkinController(
+export async function getFloatSkinController(
   req: FastifyRequest,
   reply: FastifyReply
 ) {
-  const { id } = req.params as { id: string };
-  const { assetid, inspectLinks } = req.body as {
-    inspectLinks: string;
-    assetid: string;
-  };
+  const { url } = req.body as any;
 
-  if (csgo.haveGCSession) {
-    console.log("Entrou");
-    const filteredID = inspectLinks.split("%D")[1];
-    setTimeout(() => {
-      return csgo.inspectItem(id, assetid, filteredID, (item) => {
-        return reply.send(item);
-      });
-    }, 1000);
+  try {
+    const getSkinFloat = makeGetSkinFloatUseCase();
+    const response = await getSkinFloat.execute(url);
+    console.log(response);
+    return reply.status(200).send(response);
+  } catch (error) {
+    console.log(error);
   }
 }

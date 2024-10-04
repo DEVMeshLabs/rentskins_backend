@@ -23,7 +23,7 @@ export async function updateByIdCartController(
         .status(400)
         .send({ message: "Erro de validação", errors: error.errors });
     }
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 
   return reply.status(204).send();

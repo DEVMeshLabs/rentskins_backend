@@ -12,11 +12,11 @@ export class PrismaConfigurationRepository implements IConfigurationRepository {
     return deleteId;
   }
 
-  async updateById(
+  async updateByUser(
     owner_id: string,
     data: Prisma.ConfigurationUncheckedUpdateManyInput
   ) {
-    const updateUser = await prisma.configuration.updateMany({
+    const updateUser = await prisma.configuration.update({
       where: { owner_id },
       data: { ...data, updatedAt: new Date() },
     });
@@ -24,10 +24,15 @@ export class PrismaConfigurationRepository implements IConfigurationRepository {
   }
 
   async create(data: Prisma.ConfigurationCreateInput) {
-    const createConfiguration = await prisma.configuration.create({
-      data,
-    });
-    return createConfiguration;
+    try {
+      const createConfiguration = await prisma.configuration.create({
+        data,
+      });
+      return createConfiguration;
+    } catch (error) {
+      console.error("Erro ao criar a configuração:", error);
+      throw new Error(error);
+    }
   }
 
   async findByMany() {

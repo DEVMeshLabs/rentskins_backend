@@ -8,7 +8,10 @@ export class MediaDates {
     const segundosRestantes = segundos % 60;
     return `${horas.toString().padStart(2, "0")}:${minutos
       .toString()
-      .padStart(2, "0")}:${segundosRestantes.toString().padStart(2, "0")}`;
+      .padStart(2, "0")}:${segundosRestantes
+      .toFixed(0)
+      .toString()
+      .padStart(2, "0")}`;
   }
 
   horarioParaSegundos(horario: string): number {
@@ -26,8 +29,22 @@ export class MediaDates {
     return this.segundosParaHorario(mediaSegundos);
   }
 
-  async calcularDiferenciaDates(arrayDeDatas: Transaction[]): Promise<string> {
-    if (arrayDeDatas.length === 0) {
+  /**
+   * Calculates the difference between dates in the given array and returns the average time in the format "HH:mm:ss".
+   *
+   * @param {Transaction[]} arrayDeDatas - An array of Transaction objects containing createdAt and salesAt properties in the format "DD/MM/YYYY HH:mm:ss".
+   * @return {Promise<string>} A Promise that resolves to a string representing the average time in the format "HH:mm:ss".
+   */
+
+  async calcularDiferenciaDates(
+    arrayDeDatas: Transaction[],
+    seller_id: string
+  ): Promise<string> {
+    const filterTransactionOwnerId = arrayDeDatas.filter(
+      (item) => item.seller_id === seller_id
+    );
+
+    if (filterTransactionOwnerId.length <= 0) {
       return "Sem informações";
     }
 
@@ -39,9 +56,10 @@ export class MediaDates {
 
       const horas = Math.floor(diferenca / 3600);
       const minutos = Math.floor((diferenca % 3600) / 60);
-      const segundos = Math.floor(diferenca % 60).toFixed(2);
+      const segundos = Math.floor(diferenca % 60).toFixed(0);
+      const media = `${horas}:${minutos}:${segundos}`;
 
-      return `${horas}:${minutos}:${segundos}`;
+      return media;
     });
 
     const response = this.calcularMediaHorarios(dates);

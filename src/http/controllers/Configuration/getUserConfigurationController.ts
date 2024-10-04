@@ -1,5 +1,5 @@
 import { ConfigurationNotExistError } from "@/useCases/@errors/Configuration/ConfigurationNotExistError";
-import { makeGetUserConfigurationUseCase } from "@/useCases/@factories/Configuration/makeGetUserConfigurationUseCase";
+import { makeGetUserIdConfigurationUseCase } from "@/useCases/@factories/Configuration/makeGetUserIdConfigurationUseCase";
 import { FastifyRequest, FastifyReply } from "fastify";
 
 export async function getUserConfigurationController(
@@ -9,7 +9,7 @@ export async function getUserConfigurationController(
   const { owner_id } = req.params as { owner_id: string };
 
   try {
-    const makeGetConfiguration = makeGetUserConfigurationUseCase();
+    const makeGetConfiguration = makeGetUserIdConfigurationUseCase();
     const response = await makeGetConfiguration.execute(owner_id);
     return reply.status(200).send(response);
   } catch (error) {
@@ -17,6 +17,6 @@ export async function getUserConfigurationController(
       return reply.status(404).send({ error: error.message });
     }
 
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

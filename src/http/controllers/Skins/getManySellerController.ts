@@ -10,22 +10,15 @@ export async function getManyCartController(
 
   try {
     const getManySeller = makeGetManySellerUseCase();
-    const { page, pageSize, deletedAt } = paginationSkinsSchema.parse(
-      req.query
-    );
+    const { deletedAt } = paginationSkinsSchema.parse(req.query);
 
-    const response = await getManySeller.execute(
-      seller_id,
-      page,
-      pageSize,
-      deletedAt
-    );
+    const response = await getManySeller.execute(seller_id, deletedAt);
 
     return reply.status(200).send(response);
   } catch (error) {
     if (error instanceof Error) {
       return reply.status(404).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

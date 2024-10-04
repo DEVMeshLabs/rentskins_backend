@@ -23,22 +23,10 @@ export function getAlreadyExistSkinInventory(
       "english",
       (err: Error | null, inventory?: any) => {
         if (err) {
-          throw new Error();
+          return reply.status(500).send({ error: err.message });
         }
-        const filterInventory = inventory.filter((item: any) => {
-          if (
-            item.tags[0].name === "Container" ||
-            item.tags[0].name === "Graffiti" ||
-            item.tags[0].name === "Collectible" ||
-            item.tags[0].name === "Pass" ||
-            item.tags[0].name === "Patch"
-          ) {
-            return false;
-          }
-          return true;
-        });
 
-        const isAlreadyExist = filterInventory.some(
+        const isAlreadyExist = inventory.some(
           (item: any) => item.assetid === assetid
         );
 
@@ -55,6 +43,6 @@ export function getAlreadyExistSkinInventory(
     if (error instanceof ZodError) {
       return reply.status(400).send({ error });
     }
-    throw new Error();
+    return reply.status(500).send({ error: error.message });
   }
 }

@@ -8,14 +8,22 @@ export async function createCheckoutSessionStripeController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { owner_id, cancel_url, success_url, amount, payment_method, email } =
-      createCheckoutSessionSchema.parse(req.body);
+    const {
+      owner_id,
+      cancel_url,
+      success_url,
+      amount,
+      payment_method,
+      email,
+      cpf,
+    } = createCheckoutSessionSchema.parse(req.body);
     const makeTransaction = makeCreateCheckoutSessionStripe();
 
     const response = await makeTransaction.process({
       owner_id,
       payment_method,
       amount,
+      cpf,
       email,
       cancel_url,
       success_url,
@@ -26,6 +34,6 @@ export async function createCheckoutSessionStripeController(
     if (error instanceof ZodError) {
       return reply.status(400).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

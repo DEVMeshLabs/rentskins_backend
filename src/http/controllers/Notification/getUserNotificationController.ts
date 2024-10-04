@@ -16,6 +16,6 @@ export async function getUserNotificationController(
     if (error instanceof NotificationNotExistError) {
       return reply.status(404).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
 }

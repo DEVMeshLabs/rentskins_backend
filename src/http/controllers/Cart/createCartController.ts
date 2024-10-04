@@ -29,7 +29,7 @@ export async function createCartController(
     if (error instanceof CartAlreadyExistError) {
       return reply.status(409).send({ error: error.message });
     }
-    throw error;
+    return reply.status(500).send({ error: error.message });
   }
   return reply.status(201).send();
 }

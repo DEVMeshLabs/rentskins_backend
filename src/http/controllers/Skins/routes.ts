@@ -15,6 +15,8 @@ import { getInventoryManyUserController } from "./getInventoryManyUserController
 import { getInventoryUserController } from "./getInventoryUserController";
 import { getAlreadyExistSkinInventory } from "./getAlreadyExistSkinInventory";
 import { getMedianPriceController } from "./getMedianPriceController";
+import { getLastSellerSkinsController } from "./getLastSellerSkinsController";
+import { getSkinSlugController } from "./getSkinSlugController";
 
 export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins", getSkinManyController);
@@ -25,20 +27,24 @@ export async function skinRouter(app: FastifyInstance) {
   app.get("/v1/skins/category/:category", getManyCategoryController);
   app.get("/v1/skins/search/:name", getManySearchController);
   app.get("/v1/skins/inventory/:id", getInventoryUserController);
+  app.get("/v1/skins/slug/:slug", getSkinSlugController);
+
   app.post("/v1/skins/median/price", getMedianPriceController);
   app.post("/v1/skins/availability/:id", getAlreadyExistSkinInventory);
+  app.post("/v1/skins", { onRequest: [verifyJwt] }, createSkinController);
+  app.post("/v1/skins/lastsales", getLastSellerSkinsController);
+  app.post("/v1/skins/float", getFloatSkinController);
 
-  app.post("/v1/skins", { onRequest: verifyJwt }, createSkinController);
   app.post(
     "/v1/skins/inventory/:id",
-    { onRequest: verifyJwt },
+    { onRequest: [verifyJwt] },
     getInventoryManyUserController
   );
   app.post(
     "/v1/skins/float/:id",
-    { onRequest: verifyJwt },
+    { onRequest: [verifyJwt] },
     getFloatSkinController
   );
   app.delete("/v1/skins/:id", deleteSkinController);
-  app.put("/v1/skins/:id", { onRequest: verifyJwt }, updateSkinController);
+  app.put("/v1/skins/:id", { onRequest: [verifyJwt] }, updateSkinController);
 }

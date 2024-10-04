@@ -11,6 +11,10 @@ export async function configurationRouter(app: FastifyInstance) {
   app.get("/v1/configuration", getManyConfigurationController);
   app.get("/v1/configuration/:id", getConfigurationController);
   app.get("/v1/configuration/user/:owner_id", getUserConfigurationController);
-  app.put("/v1/configuration/:id", updateConfigurationController);
+  app.put(
+    "/v1/configuration",
+    { onRequest: [verifyJwt] },
+    updateConfigurationController
+  );
   app.delete("/v1/configuration/:id", deleteConfigurationController);
 }
