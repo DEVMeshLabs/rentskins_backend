@@ -1,9 +1,9 @@
 import { FastifyRequest, FastifyReply } from "fastify";
 import { z } from "zod";
-import { createWithdrawlRequestSchema } from "./Schema/createSchema";
 import { InsufficientFundsError } from "@/useCases/@errors/Wallet/InsufficientFundsError";
 import { WalletNotExistsError } from "@/useCases/@errors/Wallet/WalletNotExistsError";
 import { makeCreateWithdrawnlRequestUseCase } from "@/useCases/@factories/WithdrawnlRequest/makeCreateWithdrawlRequestUseCase";
+import { createWithdrawlRequestSchema } from "./Schema/createSchema";
 
 export async function createWithdrawlRequestController(
   req: FastifyRequest,
