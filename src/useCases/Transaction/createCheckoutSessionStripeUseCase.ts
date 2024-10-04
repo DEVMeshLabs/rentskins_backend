@@ -26,10 +26,6 @@ export class CreateCheckoutSessionStripeUseCase {
   }: IPayment) {
     const perfilUser = await this.perfilRepostiory.findByUser(owner_id);
     let customer_id;
-<<<<<<< HEAD
-=======
-    console.log("--------------------------", perfilUser);
->>>>>>> d2b3399d120f0962911eb543d1279f09e521edd8
 
     const referencia = 1;
     if (perfilUser && perfilUser.stripe_id === null) {

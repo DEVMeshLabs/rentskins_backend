@@ -8,7 +8,6 @@ export class GetManyWithdrawnlRequestUseCase {
 
   async execute(): Promise<WithdrawalRequest[]> {
     const walletAll = await this.withdrawnRequestRepository.findByMany();
-    // test
     return walletAll;
   }
 }

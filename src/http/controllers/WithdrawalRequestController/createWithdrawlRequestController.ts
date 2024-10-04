@@ -21,6 +21,7 @@ export async function createWithdrawlRequestController(
     });
   } catch (error) {
     if (error instanceof z.ZodError) {
+      console.log(error);
       return reply
         .status(400)
         .send({ message: "Erro de validação", errors: error.errors });
