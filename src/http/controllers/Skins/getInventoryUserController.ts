@@ -1,3 +1,4 @@
+
 import { FastifyRequest, FastifyReply } from "fastify";
 import { makeGetManySellerUseCase } from "@/useCases/@factories/Skin/makeGetManySellerUseCase";
 import { makeGetManyTransactionUseCase } from "@/useCases/@factories/Transaction/makeGetManyTransactionUseCase";
@@ -21,6 +22,7 @@ export async function getInventoryUserController(
       });
     }
     const baseUrl = `https://www.steamwebapi.com/steam/api/inventory?key=${process.env.KEY_STEAM_WEB_API}&steam_id=${id}&state=active`;
+
 
     const getInventory = await fetch(baseUrl).then((res) => res.json());
 
