@@ -2,7 +2,10 @@
 CREATE TYPE "TransactionStatus" AS ENUM ('Default', 'NegotiationSend', 'NegociationAccepted', 'NegociationRejected');
 
 -- CreateEnum
-CREATE TYPE "RentalTransactionStatus" AS ENUM ('WaitingForGuaranteeConfirmation', 'WaitingForAdministrators', 'WaitingForBuyerConfirmation', 'WaitingForSellerConfirmation', 'TrialPeriodStarted', 'WaitingForReturn', 'WaitingForUserDecision', 'Completed', 'Failed');
+CREATE TYPE "RentalTransactionStatus" AS ENUM ('WaitingForGuaranteeConfirmation', 'WaitingForAdministrators', 'WaitingForBuyerConfirmation', 'WaitingForSellerConfirmation', 'TrialPeriodStarted', 'WaitingForUserDecision', 'WaitingForReturn', 'WaitingForReturnConfirmation', 'WaitingForBuyerReturnConfirm', 'WaitingForAdministratorsReturnConfirmation', 'Completed', 'Failed');
+
+-- CreateEnum
+CREATE TYPE "DecisionUser" AS ENUM ('buy', 'return');
 
 -- CreateEnum
 CREATE TYPE "ProcessTransactionStatus" AS ENUM ('Default', 'Pending', 'Completed', 'Failed');
@@ -51,6 +54,7 @@ CREATE TABLE "GuaranteeSkin" (
     "owner_id" VARCHAR(255) NOT NULL,
     "asset_id" VARCHAR(255) NOT NULL,
     "skin_name" VARCHAR(255) NOT NULL,
+    "skin_price" DOUBLE PRECISION NOT NULL,
     "skin_market_hash_name" VARCHAR(255) NOT NULL,
     "skin_color" VARCHAR(255) NOT NULL,
     "skin_wear" VARCHAR(255),
@@ -64,9 +68,12 @@ CREATE TABLE "GuaranteeSkin" (
     "skin_stickers" JSONB,
     "skin_link_steam" VARCHAR(255),
     "skin_link_game" VARCHAR(255),
+    "isSolicited" BOOLEAN NOT NULL DEFAULT false,
+    "returnedAt" TIMESTAMP(3),
+    "addedToBackpackAt" TIMESTAMP(3),
+    "withdrawAfter" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
-    "rentalTransactionId" VARCHAR(36),
 
     CONSTRAINT "GuaranteeSkin_pkey" PRIMARY KEY ("id")
 );
@@ -98,11 +105,17 @@ CREATE TABLE "RentalTransaction" (
     "fee" DOUBLE PRECISION,
     "daysQuantity" INTEGER NOT NULL,
     "status" "RentalTransactionStatus" NOT NULL DEFAULT 'WaitingForGuaranteeConfirmation',
+    "deadlineNotified" BOOLEAN NOT NULL DEFAULT false,
+    "returnNotified" BOOLEAN NOT NULL DEFAULT false,
+    "decisionUser" "DecisionUser",
     "startDate" TIMESTAMP(3),
     "endDate" TIMESTAMP(3),
     "guaranteeSentAt" TIMESTAMP(3),
-    "deadlineNotified" BOOLEAN NOT NULL DEFAULT false,
-    "returnNotified" BOOLEAN NOT NULL DEFAULT false,
+    "sellerConfirmedAt" TIMESTAMP(3),
+    "buyerConfirmedAt" TIMESTAMP(3),
+    "trialPeriodStartedAt" TIMESTAMP(3),
+    "waitUserDecisionAt" TIMESTAMP(3),
+    "returnDueAt" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3),
     "deletedAt" TIMESTAMP(3),
@@ -225,6 +238,25 @@ CREATE TABLE "Configuration" (
     CONSTRAINT "Configuration_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "WithdrawalRequest" (
+    "id" VARCHAR(36) NOT NULL,
+    "owner_id" VARCHAR(255) NOT NULL,
+    "amount" DOUBLE PRECISION NOT NULL,
+    "status" VARCHAR(20) NOT NULL DEFAULT 'Pending',
+    "adminId" VARCHAR(255),
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "WithdrawalRequest_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "_GuaranteeTransactions" (
+    "A" VARCHAR(36) NOT NULL,
+    "B" VARCHAR(36) NOT NULL
+);
+
 -- CreateIndex
 CREATE UNIQUE INDEX "Wallet_owner_id_key" ON "Wallet"("owner_id");
 
@@ -237,6 +269,12 @@ CREATE UNIQUE INDEX "Cart_buyer_id_key" ON "Cart"("buyer_id");
 -- CreateIndex
 CREATE UNIQUE INDEX "Configuration_owner_id_key" ON "Configuration"("owner_id");
 
+-- CreateIndex
+CREATE UNIQUE INDEX "_GuaranteeTransactions_AB_unique" ON "_GuaranteeTransactions"("A", "B");
+
+-- CreateIndex
+CREATE INDEX "_GuaranteeTransactions_B_index" ON "_GuaranteeTransactions"("B");
+
 -- AddForeignKey
 ALTER TABLE "Skin" ADD CONSTRAINT "Skin_rentalTransactionId_fkey" FOREIGN KEY ("rentalTransactionId") REFERENCES "RentalTransaction"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
@@ -245,9 +283,6 @@ ALTER TABLE "Skin" ADD CONSTRAINT "Skin_transactionHistoryId_fkey" FOREIGN KEY (
 
 -- AddForeignKey
 ALTER TABLE "GuaranteeSkin" ADD CONSTRAINT "GuaranteeSkin_owner_id_fkey" FOREIGN KEY ("owner_id") REFERENCES "Perfil"("owner_id") ON DELETE RESTRICT ON UPDATE CASCADE;
-
--- AddForeignKey
-ALTER TABLE "GuaranteeSkin" ADD CONSTRAINT "GuaranteeSkin_rentalTransactionId_fkey" FOREIGN KEY ("rentalTransactionId") REFERENCES "RentalTransaction"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "Transaction" ADD CONSTRAINT "Transaction_skin_id_fkey" FOREIGN KEY ("skin_id") REFERENCES "Skin"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
@@ -275,3 +310,9 @@ ALTER TABLE "SkinToCart" ADD CONSTRAINT "SkinToCart_skinId_fkey" FOREIGN KEY ("s
 
 -- AddForeignKey
 ALTER TABLE "SkinToCart" ADD CONSTRAINT "SkinToCart_cartId_fkey" FOREIGN KEY ("cartId") REFERENCES "Cart"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_GuaranteeTransactions" ADD CONSTRAINT "_GuaranteeTransactions_A_fkey" FOREIGN KEY ("A") REFERENCES "GuaranteeSkin"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "_GuaranteeTransactions" ADD CONSTRAINT "_GuaranteeTransactions_B_fkey" FOREIGN KEY ("B") REFERENCES "RentalTransaction"("id") ON DELETE CASCADE ON UPDATE CASCADE;
