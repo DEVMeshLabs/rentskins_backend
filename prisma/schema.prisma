@@ -280,7 +280,7 @@ enum WithdrawalRequestStatus {
 
 model WithdrawalRequest {
   id           String   @id @default(uuid()) @db.VarChar(36)
-  owner_id     String   @unique @db.VarChar(255)
+  owner_id     String   @db.VarChar(255)
   amount       Float
   amountTotal  Float?
   pix_key      String   @db.VarChar(255)
@@ -290,6 +290,6 @@ model WithdrawalRequest {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  wallet_owner_id String @db.VarChar(255)
-  wallet          Wallet @relation(fields: [wallet_owner_id], references: [owner_id])
+  wallet_id String? @db.VarChar(255)
+  wallet    Wallet? @relation(fields: [wallet_id], references: [id])
 }

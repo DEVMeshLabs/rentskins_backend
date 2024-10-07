@@ -13,20 +13,20 @@ export class UpdateStatusUserWithdrawalRequestUseCase {
     private readonly notificationRepository: INotificationRepository
   ) {}
 
-  async execute(
-    owner_id: string,
-    status: "Approved" | "Rejected"
-  ): Promise<void> {
-    const withdrawalRequest = await this.withdrawalRequestRepository.findByUser(
-      owner_id
+  async execute(id: string, status: "Approved" | "Rejected"): Promise<void> {
+    const withdrawalRequest = await this.withdrawalRequestRepository.findById(
+      id
     );
-
+    console.log(withdrawalRequest);
     if (withdrawalRequest.status !== "Pending") {
       throw new HasAlreadyBeenUpdated();
     }
 
     const isWithdrawalRequestUpdated =
-      await this.withdrawalRequestRepository.updateStatusUser(owner_id, status);
+      await this.withdrawalRequestRepository.updateStatusUser(
+        withdrawalRequest.id,
+        status
+      );
 
     if (!isWithdrawalRequestUpdated) {
       throw new UpdateFailedError();

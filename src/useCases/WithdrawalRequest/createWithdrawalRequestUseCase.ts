@@ -24,54 +24,58 @@ export class CreateWithdrawalRequestUseCase {
   async execute(
     data: Prisma.WithdrawalRequestCreateInput
   ): Promise<WithdrawalRequest> {
-    const withdrawalRequestExists =
-      await this.withdrawalRequestRepository.findByUser(data.owner_id);
+    try {
+      const withdrawalRequestExists =
+        await this.withdrawalRequestRepository.findManyUser(data.owner_id);
 
-    if (
-      withdrawalRequestExists &&
-      withdrawalRequestExists.status === "Pending"
-    ) {
-      throw new AlreadyHaveWithdrawalRequest();
-    }
+      const findPendingWithdrawalRequest = withdrawalRequestExists.find(
+        (request) => request.status === "Pending"
+      );
+      if (findPendingWithdrawalRequest) {
+        throw new AlreadyHaveWithdrawalRequest();
+      }
 
-    const wallet = await this.walletRepository.findByUser(data.owner_id);
+      const wallet = await this.walletRepository.findByUser(data.owner_id);
 
-    if (!wallet) {
-      throw new WalletNotExistsError();
-    }
+      if (!wallet) {
+        throw new WalletNotExistsError();
+      }
 
-    const fee = this.calculateFee(data.amount);
+      const fee = this.calculateFee(data.amount);
 
-    if (wallet.value <= data.amount) {
-      throw new InsufficientFundsError();
-    }
+      if (wallet.value <= data.amount) {
+        throw new InsufficientFundsError();
+      }
 
-    const isWalletUpdated = await this.walletRepository.updateByUserValue(
-      data.owner_id,
-      "decrement",
-      data.amount
-    );
+      const isWalletUpdated = await this.walletRepository.updateByUserValue(
+        data.owner_id,
+        "decrement",
+        data.amount
+      );
 
-    if (!isWalletUpdated) {
-      throw new UpdateFailedError();
-    }
+      if (!isWalletUpdated) {
+        throw new UpdateFailedError();
+      }
 
-    const withdrawalRequest = await this.withdrawalRequestRepository.create({
-      ...data,
-      amountTotal: data.amount,
-      amount: data.amount - fee,
-      wallet: {
-        connect: {
-          owner_id: data.owner_id,
+      const withdrawalRequest = await this.withdrawalRequestRepository.create({
+        ...data,
+        amountTotal: data.amount,
+        amount: data.amount - fee,
+        wallet: {
+          connect: {
+            owner_id: data.owner_id,
+          },
         },
-      },
-    });
+      });
 
-    await this.notificationRepository.create({
-      owner_id: data.owner_id,
-      description: `Solicitação de saque de R$ ${data.amount} realizada com sucesso!`,
-    });
+      await this.notificationRepository.create({
+        owner_id: data.owner_id,
+        description: `Solicitação de saque de R$ ${data.amount} realizada com sucesso!`,
+      });
 
-    return withdrawalRequest;
+      return withdrawalRequest;
+    } catch (error) {
+      console.log(error);
+    }
   }
 }

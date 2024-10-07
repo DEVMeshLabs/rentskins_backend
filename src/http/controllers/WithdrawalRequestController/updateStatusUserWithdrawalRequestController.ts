@@ -8,12 +8,12 @@ export async function updateStatusUserWithdrawalRequestController(
   reply: FastifyReply
 ): Promise<FastifyReply | void> {
   try {
-    const { owner_id, status } = req.body as {
-      owner_id: string;
+    const { id, status } = req.body as {
+      id: string;
       status: "Approved" | "Rejected";
     };
     const updateStatus = makeUpdateStatusUserWithdrawnlRequestUseCase();
-    const response = await updateStatus.execute(owner_id, status);
+    const response = await updateStatus.execute(id, status);
 
     return reply.status(200).send(response);
   } catch (error) {
