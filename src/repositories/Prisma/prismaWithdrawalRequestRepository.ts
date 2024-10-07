@@ -28,6 +28,20 @@ export class PrismaWithdrawalRequestRepository
     return allTransactionsHistory;
   }
 
+  async findById(id: string) {
+    const transactionHistory = await prisma.withdrawalRequest.findFirst({
+      where: { id },
+    });
+    return transactionHistory;
+  }
+
+  async findManyUser(owner_id: string) {
+    const transactionHistory = await prisma.withdrawalRequest.findMany({
+      where: { owner_id },
+    });
+    return transactionHistory;
+  }
+
   async findByUser(owner_id: string) {
     const transactionHistory = await prisma.withdrawalRequest.findFirst({
       where: { owner_id },
@@ -35,9 +49,9 @@ export class PrismaWithdrawalRequestRepository
     return transactionHistory;
   }
 
-  async updateStatusUser(owner_id: string, status: "Approved" | "Rejected") {
-    const updatedTransaction = await prisma.withdrawalRequest.updateMany({
-      where: { owner_id },
+  async updateStatusUser(id: string, status: "Approved" | "Rejected") {
+    const updatedTransaction = await prisma.withdrawalRequest.update({
+      where: { id },
       data: { status },
     });
     return updatedTransaction;
