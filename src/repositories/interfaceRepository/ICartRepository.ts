@@ -6,5 +6,5 @@ export interface ICartRepository {
   findById(id: string): Promise<Cart>;
   findByBuyer(buyer_id: string): Promise<Cart>;
   updateById(id: string, data: Prisma.CartUpdateInput): Promise<Cart>;
-  deleteId(id: string): Promise<Cart>;
+  deleteId(id: string): Promise<Cart>; // test
 }
