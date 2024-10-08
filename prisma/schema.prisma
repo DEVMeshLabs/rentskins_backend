@@ -182,13 +182,14 @@ model TransactionHistory {
 }
 
 model Wallet {
-  id         String    @id @default(uuid()) @db.VarChar(36)
-  owner_id   String    @unique @db.VarChar(255)
-  owner_name String    @db.VarChar(255)
-  value      Float     @default(0)
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime?
-  deletedAt  DateTime?
+  id                String              @id @default(uuid()) @db.VarChar(36)
+  owner_id          String              @unique @db.VarChar(255)
+  owner_name        String              @db.VarChar(255)
+  value             Float               @default(0)
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime?
+  deletedAt         DateTime?
+  WithdrawalRequest WithdrawalRequest[]
 }
 
 model Notification {
@@ -271,12 +272,24 @@ model Configuration {
   Perfil             Perfil[]
 }
 
+enum WithdrawalRequestStatus {
+  Pending
+  Approved
+  Rejected
+}
+
 model WithdrawalRequest {
-  id        String   @id @default(uuid()) @db.VarChar(36)
-  owner_id  String   @db.VarChar(255)
-  amount    Float
-  status    String   @default("Pending") @db.VarChar(20)
-  adminId   String?  @db.VarChar(255)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id           String   @id @default(uuid()) @db.VarChar(36)
+  owner_id     String   @db.VarChar(255)
+  amount       Float
+  amountTotal  Float?
+  pix_key      String   @db.VarChar(255)
+  pix_key_type String   @db.VarChar(255)
+  status       String   @default("Pending") @db.VarChar(20)
+  adminId      String?  @db.VarChar(255)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  wallet_id String? @db.VarChar(255)
+  wallet    Wallet? @relation(fields: [wallet_id], references: [id])
 }

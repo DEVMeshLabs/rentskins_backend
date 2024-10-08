@@ -5,6 +5,7 @@ import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
 import type { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import type { IWithdrawalRequestRepository } from "@/repositories/interfaceRepository/IWithdrawalRequestRepository";
 import { UpdateFailedError } from "../@errors/Wallet/UpdateFailedError";
+import { AlreadyHaveWithdrawalRequest } from "../@errors/WithdrawalRequest/alreadyHaveWithdrawalRequest";
 
 export class CreateWithdrawalRequestUseCase {
   private static readonly FEE_PERCENTAGE = 0.01; // 1%
@@ -23,42 +24,58 @@ export class CreateWithdrawalRequestUseCase {
   async execute(
     data: Prisma.WithdrawalRequestCreateInput
   ): Promise<WithdrawalRequest> {
-    // Busca a carteira do usuário
-    const wallet = await this.walletRepository.findByUser(data.owner_id);
+    try {
+      const withdrawalRequestExists =
+        await this.withdrawalRequestRepository.findManyUser(data.owner_id);
 
-    if (!wallet) {
-      throw new WalletNotExistsError();
+      const findPendingWithdrawalRequest = withdrawalRequestExists.find(
+        (request) => request.status === "Pending"
+      );
+      if (findPendingWithdrawalRequest) {
+        throw new AlreadyHaveWithdrawalRequest();
+      }
+
+      const wallet = await this.walletRepository.findByUser(data.owner_id);
+
+      if (!wallet) {
+        throw new WalletNotExistsError();
+      }
+
+      const fee = this.calculateFee(data.amount);
+
+      if (wallet.value <= data.amount) {
+        throw new InsufficientFundsError();
+      }
+
+      const isWalletUpdated = await this.walletRepository.updateByUserValue(
+        data.owner_id,
+        "decrement",
+        data.amount
+      );
+
+      if (!isWalletUpdated) {
+        throw new UpdateFailedError();
+      }
+
+      const withdrawalRequest = await this.withdrawalRequestRepository.create({
+        ...data,
+        amountTotal: data.amount,
+        amount: data.amount - fee,
+        wallet: {
+          connect: {
+            owner_id: data.owner_id,
+          },
+        },
+      });
+
+      await this.notificationRepository.create({
+        owner_id: data.owner_id,
+        description: `Solicitação de saque de R$ ${data.amount} realizada com sucesso!`,
+      });
+
+      return withdrawalRequest;
+    } catch (error) {
+      console.log(error);
     }
-
-    const fee = this.calculateFee(data.amount);
-
-    if (wallet.value <= data.amount) {
-      throw new InsufficientFundsError();
-    }
-
-    const isWalletUpdated = await this.walletRepository.updateByUserValue(
-      data.owner_id,
-      "decrement",
-      data.amount
-    );
-
-    if (!isWalletUpdated) {
-      throw new UpdateFailedError();
-    }
-
-    // Cria a solicitação de saque
-    const withdrawalRequest = await this.withdrawalRequestRepository.create({
-      ...data,
-      amountTotal: data.amount,
-      amount: data.amount - fee,
-    });
-
-    // Envia a notificação para o usuário
-    await this.notificationRepository.create({
-      owner_id: data.owner_id,
-      description: `Solicitação de saque de R$ ${data.amount} realizada com sucesso!`,
-    });
-
-    return withdrawalRequest;
   }
 }
