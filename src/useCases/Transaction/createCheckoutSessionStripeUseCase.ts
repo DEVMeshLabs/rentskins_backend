@@ -26,13 +26,14 @@ export class CreateCheckoutSessionStripeUseCase {
   }: IPayment) {
     const perfilUser = await this.perfilRepostiory.findByUser(owner_id);
     let customer_id;
-    const referencia = 1;
 
-    if (perfilUser.stripe_id === null) {
+    const referencia = 1;
+    if (perfilUser && perfilUser.stripe_id === null) {
       const customer = await customers.create({
         email,
         metadata: {
           owner_id,
+          owner_name: perfilUser.owner_name,
         },
       });
 
@@ -50,16 +51,18 @@ export class CreateCheckoutSessionStripeUseCase {
         .post(
           "https://api.mercadopago.com/v1/payments",
           {
-            description: "Adicionando fundos na conta.",
-            external_reference: `MP${referencia}`,
+            description: "Recarga de saldo",
+            external_reference: `RT${referencia}`,
             installments: 1,
             metadata: {
               id: owner_id,
+              owner_name: perfilUser.owner_name,
             },
             payer: {
               entity_type: "individual",
               type: "customer",
               email,
+              owner_name: perfilUser.owner_name,
               identification: {
                 type: "CPF",
                 number: cpf,
@@ -67,7 +70,7 @@ export class CreateCheckoutSessionStripeUseCase {
             },
             payment_method_id: "pix",
             notification_url:
-              "https://api-rentskin-backend-on.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
+              "https://rentskins-backend-r447.onrender.com/v1/transaction/webhook/pix?source_news=webhooks",
             transaction_amount: amount,
           },
 
@@ -81,7 +84,6 @@ export class CreateCheckoutSessionStripeUseCase {
         .then((res) => res.data)
         .catch((err) => {
           console.log(err);
-          console.log(err.response.data.cause);
         });
       const link = await response;
       const ticket = link.point_of_interaction.transaction_data.ticket_url;
@@ -94,13 +96,14 @@ export class CreateCheckoutSessionStripeUseCase {
           price_data: {
             unit_amount: amount * 100,
             currency: "brl",
-            product: "prod_OXhZUN8oYYERyj",
+            product: "prod_P3spuzJGzs7ivz",
           },
           quantity: 1,
         },
       ],
       metadata: {
         owner_id,
+        owner_name: perfilUser.owner_name,
       },
       customer: customer_id,
       phone_number_collection: { enabled: true },

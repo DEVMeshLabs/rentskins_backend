@@ -4,6 +4,8 @@
     "Skins",
     "createCart",
     "package.json",
-    "workflow.yaml"
+    "workflow.yaml",
+    "Dockerfile",
+    "createPerfil"
   ]
 }

@@ -14,6 +14,7 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     const transactionAll = await prisma.transaction.findMany({
       where: { deletedAt: null },
       orderBy: { createdAt: "desc" },
+      include: { skin: true },
     });
     return transactionAll;
   }
@@ -28,7 +29,9 @@ export class PrismaTransactionRepository implements ITransactionRepository {
   async findById(id: string) {
     const findTransaction = await prisma.transaction.findFirst({
       where: { id, deletedAt: null },
+      include: { skin: true },
     });
+
     return findTransaction;
   }
 
@@ -72,13 +75,20 @@ export class PrismaTransactionRepository implements ITransactionRepository {
     return transactionAll;
   }
 
-  // async updateStatus(id: string, status: string) {
-  //   const transactionAll = await prisma.transaction.update({
-  //     where: { id },
-  //     data: { status, updatedAt: new Date() },
-  //   });
-  //   return transactionAll;
-  // }
+  async updateStatus(
+    id: string,
+    status:
+      | "Default"
+      | "NegotiationSend"
+      | "NegociationAccepted"
+      | "NegociationRejected"
+  ) {
+    const updateStatus = prisma.transaction.update({
+      where: { id },
+      data: { status, updatedAt: new Date() },
+    });
+    return updateStatus;
+  }
 
   async updateId(id: string, data: Prisma.TransactionUpdateInput) {
     const updateId = await prisma.transaction.update({

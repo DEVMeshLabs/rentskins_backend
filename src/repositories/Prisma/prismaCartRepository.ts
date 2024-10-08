@@ -11,6 +11,14 @@ export class PrismaCartRepository implements ICartRepository {
     return createCart;
   }
 
+  async updateByUser(owner_id: string, date: Prisma.CartUncheckedUpdateInput) {
+    const updateId = await prisma.cart.update({
+      where: { buyer_id: owner_id },
+      data: { ...date, updatedAt: new Date() },
+    });
+    return updateId;
+  }
+
   async updateById(id: string, data: Prisma.CartUpdateInput) {
     const update = await prisma.cart.update({
       where: { id },

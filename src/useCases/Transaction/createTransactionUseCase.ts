@@ -1,19 +1,21 @@
+// ------------------ Repositorys -----------------
 import { IPerfilRepository } from "@/repositories/interfaceRepository/IPerfilRepository";
 import { ITransactionRepository } from "@/repositories/interfaceRepository/ITransactionRepository";
+import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
+import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
+import { IConfigurationRepository } from "@/repositories/interfaceRepository/IConfigurationRepository";
+import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
+// ------------------ Errors -----------------
 import { PerfilNotExistError } from "../@errors/Perfil/PerfilInfoNotExistError";
 import { SameUsersError } from "../@errors/Skin/SameUsersError";
-import { ISkinsRepository } from "@/repositories/interfaceRepository/ISkinsRepository";
 import { SkinNotExistError } from "../@errors/Skin/SkinNotExistsError";
-import { IWalletRepository } from "@/repositories/interfaceRepository/IWalletRepository";
 import { InsufficientFundsError } from "../@errors/Wallet/InsufficientFundsError";
-import { INotificationRepository } from "@/repositories/interfaceRepository/INotificationRepository";
 import { CannotAdvertiseSkinNotYour } from "../@errors/Transaction/CannotAdvertiseSkinNotYour";
 import { SkinHasAlreadyBeenSoldError } from "../@errors/Transaction/SkinHasAlreadyBeenSoldError";
 import { WalletNotExistsError } from "../@errors/Wallet/WalletNotExistsError";
-import { makeProcessTransaction } from "../@factories/Transaction/makeProcessTransaction";
-import { calculateReliability } from "@/utils/calculateReliability";
-import cron from "node-cron";
-import { getFormattedDateArray } from "@/utils/getFormattedDate";
+// ------------------ Outros -----------------
+import { ITransactionHistoryRepository } from "@/repositories/interfaceRepository/ITransactionHistoryRepository";
+import { addHours } from "@/utils/compareDates";
 
 interface ITransactionRequest {
   seller_id: string;
@@ -24,10 +26,12 @@ interface ITransactionRequest {
 export class CreateTransactionUseCase {
   constructor(
     private transactionRepository: ITransactionRepository,
+    private transactionHisotry: ITransactionHistoryRepository,
     private perfilRepository: IPerfilRepository,
     private skinRepository: ISkinsRepository,
     private walletRepository: IWalletRepository,
-    private notificationsRepository: INotificationRepository
+    private notificationsRepository: INotificationRepository,
+    private configurationRepository: IConfigurationRepository
   ) {}
 
   async execute({ seller_id, buyer_id, skin_id }: ITransactionRequest) {
@@ -43,6 +47,7 @@ export class CreateTransactionUseCase {
       this.skinRepository.findById(skin_id),
       this.walletRepository.findByUser(buyer_id),
       this.transactionRepository.findBySkinTransaction(skin_id),
+      this.configurationRepository.findByUser(seller_id),
     ]);
 
     if (!perfilBuyer || !perfilSeller) {
@@ -58,9 +63,12 @@ export class CreateTransactionUseCase {
     } else if (findSkin.seller_id !== seller_id) {
       throw new CannotAdvertiseSkinNotYour();
     } else if (findSkinTransaction) {
-      throw new SkinHasAlreadyBeenSoldError(
-        `${findSkin.skin_name} ${findSkin.asset_id}`
-      );
+      if (
+        (findSkinTransaction && findSkinTransaction.status === "Default") ||
+        findSkinTransaction.status === "NegotiationSend"
+      ) {
+        throw new SkinHasAlreadyBeenSoldError();
+      }
     }
 
     const formattedBalance = findSkin.skin_price.toLocaleString("pt-BR", {
@@ -69,24 +77,34 @@ export class CreateTransactionUseCase {
       minimumFractionDigits: 2,
     });
 
-    const [createTransaction] = await Promise.all([
-      this.transactionRepository.create({
-        skin_id,
+    const createTransaction = await this.transactionRepository.create({
+      skin_id,
+      seller_id,
+      buyer_id,
+      balance: findSkin.skin_price,
+    });
+
+    if (!createTransaction) {
+      throw new Error("Transaction not created");
+    }
+
+    await Promise.allSettled([
+      this.transactionHisotry.create({
+        transaction_id: createTransaction.id,
         seller_id,
         buyer_id,
-        balance: findSkin.skin_price,
+        dateProcess: addHours(12),
       }),
-
       this.notificationsRepository.create({
         owner_id: perfilSeller.owner_id,
-        description: `Venda do item ${findSkin.skin_name}, realizada por ${formattedBalance}.`,
+        description: `A transação do item ${findSkin.skin_name} foi iniciada por ${formattedBalance}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
 
       this.notificationsRepository.create({
         owner_id: perfilBuyer.owner_id,
-        description: `Compra do item ${findSkin.skin_name} realizada por ${formattedBalance}.`,
+        description: `A transação do item ${findSkin.skin_name} foi iniciada por ${formattedBalance}.`,
         type: "Input",
         skin_id: findSkin.id,
       }),
@@ -96,45 +114,13 @@ export class CreateTransactionUseCase {
         "decrement",
         findSkin.skin_price
       ),
+      this.perfilRepository.updateByUser(perfilSeller.owner_id, {
+        total_exchanges: perfilSeller.total_exchanges + 1,
+      }),
+      this.skinRepository.updateById(findSkin.id, {
+        status: "Em andamento",
+      }),
     ]);
-
-    await this.perfilRepository.updateByUser(perfilSeller.owner_id, {
-      total_exchanges: perfilSeller.total_exchanges + 1,
-    });
-    await this.skinRepository.updateById(skin_id, {
-      status: "Em andamento",
-    });
-
-    if (perfilSeller.total_exchanges > 2) {
-      const reliability = await calculateReliability(perfilSeller.owner_id);
-      await this.perfilRepository.updateByUser(perfilSeller.owner_id, {
-        reliability,
-      });
-    }
-
-    const dataHoraExecucao = getFormattedDateArray(0, 0, 2, 0);
-
-    try {
-      const minhaTarefaCron = cron.schedule(
-        `${dataHoraExecucao[0]} ${dataHoraExecucao[1]} ${dataHoraExecucao[2]} ${dataHoraExecucao[3]} ${dataHoraExecucao[4]} *}`,
-        async () => {
-          const processTransaction = makeProcessTransaction();
-          console.log("Iniciando cronnnnnnnnnnnnnnnnnnnnnnnn.");
-          await processTransaction.execute(
-            createTransaction,
-            findSkin,
-            perfilBuyer,
-            perfilSeller
-          );
-          console.log("Finalizando cronnnnnnnnnnnnnnnnnnnnnnnn.");
-        },
-        { timezone: "America/Sao_Paulo" }
-      );
-
-      minhaTarefaCron.start();
-    } catch (error) {
-      console.log({ error: error.message });
-    }
 
     return createTransaction;
   }

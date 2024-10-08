@@ -29,8 +29,22 @@ export class MediaDates {
     return this.segundosParaHorario(mediaSegundos);
   }
 
-  async calcularDiferenciaDates(arrayDeDatas: Transaction[]): Promise<string> {
-    if (arrayDeDatas.length === 0) {
+  /**
+   * Calculates the difference between dates in the given array and returns the average time in the format "HH:mm:ss".
+   *
+   * @param {Transaction[]} arrayDeDatas - An array of Transaction objects containing createdAt and salesAt properties in the format "DD/MM/YYYY HH:mm:ss".
+   * @return {Promise<string>} A Promise that resolves to a string representing the average time in the format "HH:mm:ss".
+   */
+
+  async calcularDiferenciaDates(
+    arrayDeDatas: Transaction[],
+    seller_id: string
+  ): Promise<string> {
+    const filterTransactionOwnerId = arrayDeDatas.filter(
+      (item) => item.seller_id === seller_id
+    );
+
+    if (filterTransactionOwnerId.length <= 0) {
       return "Sem informações";
     }
 

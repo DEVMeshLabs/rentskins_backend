@@ -16,9 +16,10 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
       owner_type: "Usuario",
       owner_country: null,
       account_status: "Ativo",
-      delivery_time: "",
+      delivery_time: data.delivery_time ?? "Sem informações",
       total_exchanges: data.total_exchanges ?? 0,
-      total_exchanges_completed: 0,
+      total_exchanges_completed: data.total_exchanges_completed ?? 0,
+      total_exchanges_failed: data.total_exchanges_failed ?? 0,
       reliability: "Sem informações",
       steam_created_date: null,
       picture: data.picture,
@@ -37,6 +38,13 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
 
   async findByUser(owner_id: string): Promise<Perfil | null> {
     const getUser = this.perfil.find((item) => item.owner_id === owner_id);
+    return getUser;
+  }
+
+  async findByUsers(owner_ids: string[]): Promise<Perfil | null> {
+    const getUser = this.perfil.find((item) =>
+      owner_ids.includes(item.owner_id)
+    );
     return getUser;
   }
 
@@ -85,6 +93,20 @@ export class InMemoryPerfilRepository implements IPerfilRepository {
       };
     }
     return this.perfil[userProfileIndex];
+  }
+
+  async updateTotalExchanges(buyerIds: string[]) {
+    buyerIds.forEach((id) => {
+      const perfil = this.perfil.find((item) => item.id === id);
+      const userProfileIndex = this.perfil.findIndex((item) => item.id === id);
+
+      if (userProfileIndex !== -1) {
+        this.perfil[userProfileIndex] = {
+          ...this.perfil[userProfileIndex],
+          total_exchanges_completed: perfil.total_exchanges_completed + 1,
+        };
+      }
+    });
   }
 
   updateByIdUser(id: string, data: any): Promise<any> {
